@@ -48,7 +48,7 @@ def CreateLAMMPSTestCaseOMP(testcase_name, script_names):
 # collect all the script files and generate the tests automatically by a recursive search and
 # skipping a selection of folders
 
-test_user_omp_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..', 'legacy', 'test-user-omp'))
+test_user_omp_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'legacy', 'test-user-omp'))
 
 skip_list = []
 
