@@ -8,7 +8,7 @@ __email__ = "richard.berger@temple.edu"
 import unittest
 import os
 import glob
-from lammps_testing.testrunner import LAMMPSTestCase, SkipTest, LAMMPS_DIR, LAMMPS_MPI_MODE
+from lammps_testing.testrunner import LAMMPSTestCase, SkipTest, LAMMPS_DIR, LAMMPS_MPI_MODE, LAMMPS_TEST_MODES
 
 
 def CreateLAMMPSTestCase(testcase_name, script_names):
@@ -50,10 +50,18 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
 
     for script_name in script_names:
         name = '_'.join(script_name.split('.')[1:])
-        methods["test_" + name + "_serial"] = test_serial(script_name)
-        methods["test_" + name + "_parallel"] = test_parallel(script_name)
-        methods["test_" + name + "_parallel_omp"] = test_parallel_omp(script_name)
-        methods["test_" + name + "_serial_valgrind"] = test_serial_valgrind(name, script_name)
+
+        if 'serial' in LAMMPS_TEST_MODES:
+            methods["test_" + name + "_serial"] = test_serial(script_name)
+
+        if 'parallel' in LAMMPS_TEST_MODES:
+            methods["test_" + name + "_parallel"] = test_parallel(script_name)
+
+        if 'omp' in LAMMPS_TEST_MODES:
+            methods["test_" + name + "_parallel_omp"] = test_parallel_omp(script_name)
+
+        if 'valgrind' in LAMMPS_TEST_MODES:
+            methods["test_" + name + "_serial_valgrind"] = test_serial_valgrind(name, script_name)
 
     return type(testcase_name.title() + "TestCase", (LAMMPSTestCase, unittest.TestCase), methods)
 
@@ -78,8 +86,11 @@ for name in os.listdir(examples_dir):
         script_names = map(os.path.basename, glob.glob(os.path.join(path, 'in.*')))
         vars()[name.title() + "TestCase"] = CreateLAMMPSTestCase(name, script_names)
 
-SkipTest(CombTestCase, "test_comb3_parallel_omp", "comb3 currently not supported by USER-OMP")
-SkipTest(BalanceTestCase, "test_balance_bond_fast_parallel", "Crashes randomly")
+if 'omp' in LAMMPS_TEST_MODES:
+    SkipTest(CombTestCase, "test_comb3_parallel_omp", "comb3 currently not supported by USER-OMP")
+
+if 'parallel' in LAMMPS_TEST_MODES:
+    SkipTest(BalanceTestCase, "test_balance_bond_fast_parallel", "Crashes randomly")
 
 if __name__ == '__main__':
     unittest.main()

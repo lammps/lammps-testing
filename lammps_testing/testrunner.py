@@ -13,6 +13,7 @@ from subprocess import call
 LAMMPS_DIR=os.environ['LAMMPS_DIR']           # full path of LAMMPS main directory
 LAMMPS_BINARY=os.environ['LAMMPS_BINARY']     # full path of LAMMPS binary being tested
 LAMMPS_MPI_MODE=os.environ['LAMMPS_MPI_MODE'] # one of openmpi, mpich
+LAMMPS_TEST_MODES=os.environ['LAMMPS_TEST_MODES'].split(':') # test modes separated by colons. e.g. serial:parallel:omp:valgrind
 
 class LAMMPSTestCase:
     """ Mixin class for each LAMMPS test case. Defines utility function to run in serial or parallel"""
