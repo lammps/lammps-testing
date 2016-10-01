@@ -1,2 +1,6 @@
 __pycache__
 *.pyc
+log.lammps
+stdout.log
+stderr.log
+log.cite
