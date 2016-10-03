@@ -19,10 +19,11 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
     def setUp(self):
         self.cwd = os.path.join(TESTS_DIR, "commands", testcase_name)
 
-    def test_serial(script_name):
+    def test_serial(func_name, script_name):
         def test_serial_run(self):
             rc = self.run_script(script_name)
             self.assertEqual(rc, 0)
+        test_serial_run.__name__ = func_name
         return test_serial_run
 
     methods = {"setUp": setUp}
@@ -32,7 +33,8 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
         name = '_'.join(name.split('-'))
         name = '_'.join(name.split('+'))
 
-        methods["test_" + name + "_serial"] = test_serial(script_name)
+        func_name = "test_" + name + "_serial"
+        methods[func_name] = test_serial(func_name, script_name)
 
     return type(testcase_name.title() + "TestCase", (LAMMPSTestCase, unittest.TestCase), methods)
 

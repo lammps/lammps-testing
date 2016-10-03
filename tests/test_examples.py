@@ -17,22 +17,25 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
     def setUp(self):
         self.cwd = os.path.join(LAMMPS_DIR, "examples", testcase_name)
 
-    def test_serial(script_name):
+    def test_serial(func_name, script_name):
         def test_serial_run(self):
             rc = self.run_script(script_name)
             self.assertEqual(rc, 0)
+        test_serial_run.__name__ = func_name
         return test_serial_run
 
-    def test_parallel(script_name):
+    def test_parallel(func_name, script_name):
         def test_parallel_run(self):
             rc = self.run_script(script_name, nprocs=4)
             self.assertEqual(rc, 0)
+        test_parallel_run.__name__ = func_name
         return test_parallel_run
 
-    def test_parallel_omp(script_name):
+    def test_parallel_omp(func_name, script_name):
         def test_parallel_omp_run(self):
             rc = self.run_script(script_name, nthreads=4)
             self.assertEqual(rc, 0)
+        test_parallel_omp_run.__name__ = func_name
         return test_parallel_omp_run
 
     def test_serial_valgrind(name, script_name):
@@ -44,6 +47,7 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
         def test_serial_valgrind_run(self):
             rc = self.run_script(script_name,launcher=valgrind_exec)
             self.assertEqual(rc, 0)
+        test_serial_valgrind_run.__name__ = func_name
         return test_serial_valgrind_run
 
     methods = {"setUp": setUp}
@@ -52,16 +56,20 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
         name = '_'.join(script_name.split('.')[1:])
 
         if 'serial' in LAMMPS_TEST_MODES:
-            methods["test_" + name + "_serial"] = test_serial(script_name)
+            func_name = "test_" + name + "_serial"
+            methods[func_name] = test_serial(func_name, script_name)
 
         if 'parallel' in LAMMPS_TEST_MODES:
-            methods["test_" + name + "_parallel"] = test_parallel(script_name)
+            func_name = "test_" + name + "_parallel"
+            methods[func_name] = test_parallel(func_name, script_name)
 
         if 'omp' in LAMMPS_TEST_MODES:
-            methods["test_" + name + "_parallel_omp"] = test_parallel_omp(script_name)
+            func_name = "test_" + name + "_parallel_omp"
+            methods[func_name] = test_parallel_omp(func_name, script_name)
 
         if 'valgrind' in LAMMPS_TEST_MODES:
-            methods["test_" + name + "_serial_valgrind"] = test_serial_valgrind(name, script_name)
+            func_name = "test_" + name + "_serial_valgrind"
+            methods[func_name] = test_serial_valgrind(func_name, name, script_name)
 
     return type(testcase_name.title() + "TestCase", (LAMMPSTestCase, unittest.TestCase), methods)
 
