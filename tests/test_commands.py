@@ -48,7 +48,6 @@ skip_list = []
 
 for name in os.listdir(commands_dir):
     path = os.path.join(commands_dir, name)
-    print(name)
 
     if name in skip_list:
         continue

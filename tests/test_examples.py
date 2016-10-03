@@ -83,7 +83,6 @@ skip_list = ['accelerate', 'hugoniostat', 'kim', 'neb', 'python', 'reax', 'rerun
 
 for name in os.listdir(examples_dir):
     path = os.path.join(examples_dir, name)
-    print(name)
 
     if name in skip_list:
         continue
