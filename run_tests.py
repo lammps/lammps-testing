@@ -22,7 +22,6 @@ def load_tests(filename):
             parts = testname.id().split('.')
             classname = '.'.join(parts[0:-1])
             name = parts[-1]
-            print(parts)
             selector = "{0}.{1}:{2}.{3}".format(*parts)
             tests.append({'classname': classname, 'name': name, 'time': 1.0, 'selector' : selector})
 
@@ -55,13 +54,13 @@ def create_job_queues(tests, nprocesses):
 
     sorted_tests = sorted(tests, key=lambda x: float(x['time']), reverse=True)
 
-    for x in sorted_tests:
+    for t in sorted_tests:
         work_assignment = sorted([(sum([float(x['time']) for x in q]), i) for i,q in enumerate(queues)])
 
         # select queue with lowest work assignment
         selected_queue = work_assignment[0][1]
 
-        queues[selected_queue].append(x)
+        queues[selected_queue].append(t)
 
     return queues
 
