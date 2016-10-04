@@ -68,6 +68,7 @@ def create_job_queues(tests, nprocesses):
 parser = argparse.ArgumentParser(description='run nosetests in parallel and load balance using timning information')
 parser.add_argument('files', metavar='FILE', nargs='+', help='python module file(s) containing tests')
 parser.add_argument('-p', '--processes', type=int, help='number of parallel processes', default=1)
+parser.add_argument('-d', '--dry-run', action='store_true', help='do not run nosetests, but output schedule', default=False)
 
 args = parser.parse_args()
 
@@ -102,5 +103,6 @@ def run_nose(args):
     call = ['nosetests', '-v', '--with-xunit', '--xunit-file=' + xunitfile] + selected_tests
     subprocess.call(call)
 
-pool = Pool(processes=args.processes)
-pool.map(run_nose, enumerate(queues))
+if not args.dry_run:
+    pool = Pool(processes=args.processes)
+    pool.map(run_nose, enumerate(queues))
