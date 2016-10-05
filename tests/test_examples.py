@@ -10,6 +10,7 @@ import os
 import glob
 from lammps_testing.testrunner import LAMMPSTestCase, SkipTest, LAMMPS_DIR, LAMMPS_MPI_MODE, LAMMPS_TEST_MODES
 
+TESTS_DIR=os.path.dirname(os.path.realpath(__file__))
 
 def CreateLAMMPSTestCase(testcase_name, script_names):
     """ Utility function to generate LAMMPS test case classes with both serial and parallel
@@ -77,7 +78,7 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
 # collect all the script files and generate the tests automatically by a recursive search and
 # skipping a selection of folders
 
-examples_dir = os.path.join(LAMMPS_DIR, 'examples')
+examples_dir = os.path.join(TESTS_DIR, 'examples')
 
 skip_list = ['accelerate', 'hugoniostat', 'kim', 'neb', 'python', 'reax', 'rerun', 'tad']
 
