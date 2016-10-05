@@ -16,7 +16,7 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
     """ Utility function to generate LAMMPS test case classes with both serial and parallel
         testing functions for each input script"""
     def setUp(self):
-        self.cwd = os.path.join(LAMMPS_DIR, "examples", testcase_name)
+        self.cwd = os.path.join(TESTS_DIR, "examples", testcase_name)
 
     def test_serial(func_name, script_name):
         def test_serial_run(self):
