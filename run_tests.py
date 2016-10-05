@@ -1,3 +1,4 @@
+#!/bin/env python3
 import os
 import nose
 import xml.etree.ElementTree as ET
