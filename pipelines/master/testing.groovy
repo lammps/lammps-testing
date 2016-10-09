@@ -90,7 +90,6 @@ node {
                 stage 'Enabling modules'
 
                 sh '''
-                #make -C src yes-user-smd yes-user-molfile yes-compress yes-python
                 make -C src yes-user-molfile yes-compress yes-python
 
                 make -C src yes-poems yes-voronoi yes-user-colvars yes-user-awpmd yes-meam
