@@ -32,9 +32,9 @@ node {
 
     try {
         docker.withRegistry('https://registry.hub.docker.com', 'docker-registry-login') {
-            stage('Setting up build environment') {
-                def envImage = docker.image('rbberger/lammps-testing:ubuntu_latest')
+            def envImage = docker.image('rbberger/lammps-testing:ubuntu_latest')
 
+            stage('Setting up build environment') {
                 // ensure image is current
                 envImage.pull()
             }
