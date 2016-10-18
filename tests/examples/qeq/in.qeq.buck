@@ -38,4 +38,4 @@ fix  		1 all nve
 #fix       	2 all qeq/dynamic  1 10 1.0e-4 100 param.qeq2
 fix        	2 all qeq/fire     1 10 1.0e-4 100 param.qeq2
 
-run  		50
+run  		100
