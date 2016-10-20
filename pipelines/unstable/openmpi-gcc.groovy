@@ -103,7 +103,7 @@ node {
                 }
 
                 stage('Testing') {
-                    timeout(10) {
+                    timeout(15) {
                         sh '''
                         source pyenv/bin/activate
                         cd python
