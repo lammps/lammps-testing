@@ -103,17 +103,19 @@ node {
                 }
 
                 stage('Testing') {
-                    sh '''
-                    source pyenv/bin/activate
-                    cd python
-                    python install.py
-                    cd ..
-                    cd lammps-testing
-                    env
-                    python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py
-                    cd ..
-                    deactivate
-                    '''
+                    timeout(10) {
+                        sh '''
+                        source pyenv/bin/activate
+                        cd python
+                        python install.py
+                        cd ..
+                        cd lammps-testing
+                        env
+                        python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py
+                        cd ..
+                        deactivate
+                        '''
+                    }
                 }
 
                 sh 'ccache -s'
