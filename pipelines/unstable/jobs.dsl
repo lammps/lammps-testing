@@ -22,6 +22,7 @@ scripts.each { name ->
                         extensions {
                             pathRestriction {
                                 includedRegions("pipelines/unstable/${name}.groovy")
+                                excludedRegions("")
                             }
                         }
                     }
