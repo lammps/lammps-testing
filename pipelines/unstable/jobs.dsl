@@ -16,7 +16,14 @@ scripts.each { name ->
                             github('lammps/lammps-testing')
                             credentials('lammps-jenkins')
                         }
+
                         branches('pipelines')
+
+                        extensions {
+                            pathRestriction {
+                                includedRegions("pipelines/unstable/${name}.groovy")
+                            }
+                        }
                     }
                 }
                 scriptPath("pipelines/unstable/${name}.groovy")
