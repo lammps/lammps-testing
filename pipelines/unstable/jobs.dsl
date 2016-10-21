@@ -2,7 +2,7 @@ folder('dsl')
 
 def scripts = ['serial-gcc', 'serial-clang']
 
-scripts.each { name -> 
+scripts.each { name ->
     pipelineJob("dsl/${name}") {
         triggers {
             githubPush()
@@ -19,11 +19,11 @@ scripts.each { name ->
 
                         branches('pipelines')
 
-                        extensions {
-                            pathRestriction {
-                                includedRegions("pipelines/unstable/${name}.groovy")
-                                excludedRegions("")
-                            }
+                        configure { gitScm ->
+                            gitScm / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
+                              includedRegions("pipelines/unstable/${name}.groovy")
+                              excludedRegions('')
+                          }
                         }
                     }
                 }
@@ -31,5 +31,4 @@ scripts.each { name ->
             }
         }
     }
-
 }
