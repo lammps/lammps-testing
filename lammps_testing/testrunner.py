@@ -10,10 +10,18 @@ from subprocess import call
 
 # Before running any tests these two environment variables must be set
 
-LAMMPS_DIR=os.environ['LAMMPS_DIR']           # full path of LAMMPS main directory
-LAMMPS_BINARY=os.environ['LAMMPS_BINARY']     # full path of LAMMPS binary being tested
-LAMMPS_MPI_MODE=os.environ['LAMMPS_MPI_MODE'] # one of openmpi, mpich
-LAMMPS_TEST_MODES=os.environ['LAMMPS_TEST_MODES'].split(':') # test modes separated by colons. e.g. serial:parallel:omp:valgrind
+# full path of LAMMPS main directory
+LAMMPS_DIR=os.environ['LAMMPS_DIR']
+
+# full path of LAMMPS binary being tested
+LAMMPS_BINARY=os.environ['LAMMPS_BINARY']
+
+# one of openmpi, mpich
+LAMMPS_MPI_MODE=os.environ.get('LAMMPS_MPI_MODE', default='openmpi')
+
+# test modes separated by colons. e.g. serial:parallel:omp:valgrind
+LAMMPS_TEST_MODES=os.environ.get('LAMMPS_TEST_MODES', default='serial').split(':')
+
 
 class LAMMPSTestCase:
     """ Mixin class for each LAMMPS test case. Defines utility function to run in serial or parallel"""
@@ -61,6 +69,7 @@ class LAMMPSTestCase:
             print(err, file=sys.stderr)
 
         return retcode
+
 
 def SkipTest(cls, func_name, reason):
     """ utility function to skip a specific test for a reason """
