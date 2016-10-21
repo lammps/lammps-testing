@@ -1,9 +1,9 @@
-folder('dsl')
+folder('lammps/unstable')
 
 def scripts = ['serial-gcc', 'serial-clang']
 
 scripts.each { name ->
-    pipelineJob("dsl/${name}") {
+    pipelineJob("lammps/unstable/${name}") {
         triggers {
             githubPush()
         }
