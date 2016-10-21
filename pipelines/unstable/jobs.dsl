@@ -1,22 +1,27 @@
 folder('dsl')
 
-pipelineJob('dsl/serial-gcc') {
-    triggers {
-        githubPush()
-    }
+def scripts = ['serial-gcc', 'serial-clang']
 
-    definition {
-        cpsScm {
-            scm {
-                git {
-                    remote {
-                        github('lammps/lammps-testing')
-                        credentials('lammps-jenkins')
+scripts.each { name -> 
+    pipelineJob("dsl/${name}") {
+        triggers {
+            githubPush()
+        }
+
+        definition {
+            cpsScm {
+                scm {
+                    git {
+                        remote {
+                            github('lammps/lammps-testing')
+                            credentials('lammps-jenkins')
+                        }
+                        branches('pipelines')
                     }
-                    branches('pipelines')
                 }
+                scriptPath("pipelines/unstable/${name}.groovy")
             }
-            scriptPath('pipelines/unstable/serial-gcc.groovy')
         }
     }
+
 }
