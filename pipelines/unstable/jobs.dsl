@@ -1,6 +1,6 @@
 folder('lammps/unstable')
 
-def scripts = ['serial-gcc', 'serial-clang']
+def scripts = ['serial-gcc', 'serial-clang', 'openmpi-gcc']
 
 scripts.each { name ->
     pipelineJob("lammps/unstable/${name}") {
