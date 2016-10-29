@@ -17,10 +17,10 @@ LAMMPS_DIR=os.environ['LAMMPS_DIR']
 LAMMPS_BINARY=os.environ['LAMMPS_BINARY']
 
 # one of openmpi, mpich
-LAMMPS_MPI_MODE=os.environ.get('LAMMPS_MPI_MODE', default='openmpi')
+LAMMPS_MPI_MODE=os.environ.get('LAMMPS_MPI_MODE', 'openmpi')
 
 # test modes separated by colons. e.g. serial:parallel:omp:valgrind
-LAMMPS_TEST_MODES=os.environ.get('LAMMPS_TEST_MODES', default='serial').split(':')
+LAMMPS_TEST_MODES=os.environ.get('LAMMPS_TEST_MODES', 'serial').split(':')
 
 
 class LAMMPSTestCase:
