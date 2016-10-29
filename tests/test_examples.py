@@ -39,7 +39,7 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
         test_parallel_omp_run.__name__ = func_name
         return test_parallel_omp_run
 
-    def test_serial_valgrind(name, script_name):
+    def test_serial_valgrind(func_name, name, script_name):
         valgrind_exec = ["valgrind", "--leak-check=full", "--xml=yes", "--xml-file=" + name + ".memcheck"]
 
         if LAMMPS_MPI_MODE == "openmpi" and os.path.exists("/usr/share/openmpi/openmpi-valgrind.supp"):
