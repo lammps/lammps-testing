@@ -32,9 +32,11 @@ RUN wget http://www.msweet.org/files/project1/htmldoc-1.8.29-source.tar.gz -O /t
 
 RUN yum install -y epel-release
 
-RUN yum install -y python34 python-virtualenv
+RUN yum install -y python34 python-virtualenv python-pip
 
 RUN yum install -y which
+
+RUN pip install --upgrade pip virtualenv 
 
 USER jenkins
 
