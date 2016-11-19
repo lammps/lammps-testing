@@ -38,6 +38,8 @@ RUN yum install -y which
 
 RUN pip install --upgrade pip virtualenv 
 
+RUN yum update -y && yum install -y texlive
+
 USER jenkins
 
 CMD /bin/bash
