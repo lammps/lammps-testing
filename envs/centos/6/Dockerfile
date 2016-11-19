@@ -25,6 +25,10 @@ RUN yum install -y redhat-rpm-config
 
 RUN yum install -y @development-tools fedora-packager rpmdevtools
 
+RUN yum install -y wget
+
+RUN wget http://www.msweet.org/files/project1/htmldoc-1.8.29-source.tar.gz -O /tmp/htmldoc-1.8.29-source.tar.gz && cd /tmp && tar xvzf /tmp/htmldoc-1.8.29-source.tar.gz && cd htmldoc-1.8.29 && ./configure && make install && cd && rm -rf /tmp/htmldoc*
+
 USER jenkins
 
 CMD /bin/bash
