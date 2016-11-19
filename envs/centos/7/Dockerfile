@@ -34,6 +34,8 @@ RUN yum install -y epel-release
 
 RUN yum install -y python34 python-virtualenv
 
+RUN yum install -y which
+
 USER jenkins
 
 CMD /bin/bash
