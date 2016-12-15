@@ -1,6 +1,6 @@
 folder('lammps/master-dsl')
 
-def scripts = ['serial', 'shlib', 'openmpi', 'testing']
+def scripts = ['serial', 'shlib', 'openmpi', 'testing', 'build-docs']
 
 scripts.each { name ->
     pipelineJob("lammps/master-dsl/${name}") {
