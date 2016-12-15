@@ -1,4 +1,4 @@
-folder('build-envs-dsl') {
+folder('build-envs') {
   description('We use Docker images to set up our various build environments. These projects build the docker images and publish them on DockerHub.')
 }
 
@@ -8,7 +8,7 @@ def scripts = ['centos_6', 'centos_7', 'centos_latest',
                'ubuntu_12.04', 'ubuntu_14.04', 'ubuntu_16.04', 'ubuntu_latest']
 
 scripts.each { name ->
-    pipelineJob("build-envs-dsl/${name}") {
+    pipelineJob("build-envs/${name}") {
         triggers {
             githubPush()
         }
@@ -41,7 +41,7 @@ scripts.each { name ->
     }
 }
 
-listView('build-envs-dsl/CentOS') {
+listView('build-envs/CentOS') {
   jobs {
     regex("centos_.*")
   }
@@ -56,7 +56,7 @@ listView('build-envs-dsl/CentOS') {
   }
 }
 
-listView('build-envs-dsl/Fedora') {
+listView('build-envs/Fedora') {
   jobs {
     regex("fedora_.*")
   }
@@ -71,7 +71,7 @@ listView('build-envs-dsl/Fedora') {
   }
 }
 
-listView('build-envs-dsl/OpenSUSE') {
+listView('build-envs/OpenSUSE') {
   jobs {
     regex("opensuse_.*")
   }
@@ -86,7 +86,7 @@ listView('build-envs-dsl/OpenSUSE') {
   }
 }
 
-listView('build-envs-dsl/Ubuntu') {
+listView('build-envs/Ubuntu') {
   jobs {
     regex("ubuntu_.*")
   }
