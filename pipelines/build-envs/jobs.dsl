@@ -73,7 +73,7 @@ listView('build-envs-dsl/Fedora') {
 
 listView('build-envs-dsl/OpenSUSE') {
   jobs {
-    regex("centos_.*")
+    regex("opensuse_.*")
   }
   columns {
     status()
@@ -88,7 +88,7 @@ listView('build-envs-dsl/OpenSUSE') {
 
 listView('build-envs-dsl/Ubuntu') {
   jobs {
-    regex("centos_.*")
+    regex("ubuntu_.*")
   }
   columns {
     status()
