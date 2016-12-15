@@ -1,4 +1,6 @@
-folder('build-envs-dsl')
+folder('build-envs-dsl') {
+  description('We use Docker images to set up our various build environments. These projects build the docker images and publish them on DockerHub.')
+}
 
 def scripts = ['centos_6', 'centos_7', 'centos_latest',
                'fedora_20', 'fedora_21', 'fedora_22', 'fedora_23', 'fedora_24', 'fedora_latest',
@@ -37,4 +39,28 @@ scripts.each { name ->
             }
         }
     }
+}
+
+listView('build-envs-dsl/CentOS') {
+  jobs {
+    names('centos_6', 'centos_7', 'centos_latest')
+  }
+}
+
+listView('build-envs-dsl/Fedora') {
+  jobs {
+    names('fedora_20', 'fedora_21', 'fedora_22', 'fedora_23', 'fedora_24', 'fedora_latest')
+  }
+}
+
+listView('build-envs-dsl/OpenSUSE') {
+  jobs {
+    names('opensuse_13.1', 'opensuse_13.2', 'opensuse_42.1')
+  }
+}
+
+listView('build-envs-dsl/Ubuntu') {
+  jobs {
+    names('ubuntu_12.04', 'ubuntu_14.04', 'ubuntu_16.04', 'ubuntu_latest')
+  }
 }
