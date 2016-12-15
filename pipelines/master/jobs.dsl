@@ -1,9 +1,9 @@
-folder('lammps/master-dsl')
+folder('lammps/master')
 
 def scripts = ['serial', 'shlib', 'openmpi', 'testing', 'build-docs']
 
 scripts.each { name ->
-    pipelineJob("lammps/master-dsl/${name}") {
+    pipelineJob("lammps/master/${name}") {
         triggers {
             githubPush()
         }
