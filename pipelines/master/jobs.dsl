@@ -25,7 +25,7 @@ scripts.each { name ->
                         configure { gitScm ->
                             gitScm / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
                               includedRegions("pipelines/master/${name}.groovy")
-                              excludedRegions('')
+                              excludedRegions('.*')
                           }
                         }
                     }
