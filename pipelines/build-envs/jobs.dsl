@@ -42,37 +42,61 @@ scripts.each { name ->
 }
 
 listView('build-envs-dsl/CentOS') {
-  jobFilters {
-    all()
-  }
   jobs {
-    names('build-envs-dsl/centos_6', 'build-envs-dsl/centos_7', 'build-envs-dsl/centos_latest')
+    regex("centos_.*")
+  }
+  columns {
+    status()
+    weather()
+    name()
+    lastSuccess()
+    lastFailure()
+    lastDuration()
+    buildButton()
   }
 }
 
 listView('build-envs-dsl/Fedora') {
-  jobFilters {
-    all()
-  }
   jobs {
-    names('build-envs-dsl/fedora_20', 'build-envs-dsl/fedora_21', 'build-envs-dsl/fedora_22', 'build-envs-dsl/fedora_23', 'build-envs-dsl/fedora_24', 'build-envs-dsl/fedora_latest')
+    regex("fedora_.*")
+  }
+  columns {
+    status()
+    weather()
+    name()
+    lastSuccess()
+    lastFailure()
+    lastDuration()
+    buildButton()
   }
 }
 
 listView('build-envs-dsl/OpenSUSE') {
-  jobFilters {
-    all()
-  }
   jobs {
-    names('build-envs-dsl/opensuse_13.1', 'build-envs-dsl/opensuse_13.2', 'build-envs-dsl/opensuse_42.1')
+    regex("centos_.*")
+  }
+  columns {
+    status()
+    weather()
+    name()
+    lastSuccess()
+    lastFailure()
+    lastDuration()
+    buildButton()
   }
 }
 
 listView('build-envs-dsl/Ubuntu') {
-  jobFilters {
-    all()
-  }
   jobs {
-    names('build-envs-dsl/ubuntu_12.04', 'build-envs-dsl/ubuntu_14.04', 'build-envs-dsl/ubuntu_16.04', 'build-envs-dsl/ubuntu_latest')
+    regex("centos_.*")
+  }
+  columns {
+    status()
+    weather()
+    name()
+    lastSuccess()
+    lastFailure()
+    lastDuration()
+    buildButton()
   }
 }
