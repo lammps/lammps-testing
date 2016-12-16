@@ -24,6 +24,8 @@ RUN apt-get update && apt-get install -y python-virtualenv
 
 RUN apt-get update && apt-get install -y texlive
 
+RUN apt-get update && apt-get install -y bc
+
 USER jenkins
 
 CMD /bin/bash
