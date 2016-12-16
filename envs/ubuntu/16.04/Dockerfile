@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y texlive
 
 RUN apt-get update && apt-get install -y bc
 
+RUN apt-get update && apt-get install -y software-properties-common python-software-properties
+
 RUN add-apt-repository ppa:ubuntu-toolchain-r/test && apt-get update && apt-get install -y gcc-6 g++-6
 
 USER jenkins
