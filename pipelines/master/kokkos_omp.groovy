@@ -29,6 +29,7 @@ node {
 
             // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
             docker.image(envImage.imageName()).inside {
+                sh '${COMP} --version'
                 sh 'ccache -C'
                 sh 'ccache -M 5G'
 
