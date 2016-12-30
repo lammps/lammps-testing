@@ -29,6 +29,16 @@ RUN yum install -y wget
 
 RUN wget http://www.msweet.org/files/project1/htmldoc-1.8.29-source.tar.gz -O /tmp/htmldoc-1.8.29-source.tar.gz && cd /tmp && tar xvzf /tmp/htmldoc-1.8.29-source.tar.gz && cd htmldoc-1.8.29 && ./configure && make install && cd && rm -rf /tmp/htmldoc*
 
+RUN yum install -y which
+
+RUN yum install -y https://centos6.iuscommunity.org/ius-release.rpm
+RUN yum install -y python35u python35u-pip
+RUN pip3.5 install virtualenv
+
+RUN yum update -y && yum install -y texlive
+
+RUN ln -s /usr/bin/python3.5 /usr/bin/python3
+
 USER jenkins
 
 CMD /bin/bash
