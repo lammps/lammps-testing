@@ -1,6 +1,6 @@
 node {
     def os = 'fedora'
-    def version = 20
+    def version = 25
     
     stage('Checkout') {
         checkout([$class: 'GitSCM', branches: [[name: '*/pipelines']], userRemoteConfigs: [[url: 'https://github.com/lammps/lammps-testing.git', credentialsId: 'lammps-jenkins']],
