@@ -12,6 +12,7 @@ RUN yum install -y redhat-rpm-config
 RUN yum install -y @development-tools fedora-packager rpmdevtools
 RUN yum install -y valgrind
 RUN yum install -y wget
+RUN yum install -y gcc-c++
 
 RUN wget http://www.msweet.org/files/project1/htmldoc-1.8.29-source.tar.gz -O /tmp/htmldoc-1.8.29-source.tar.gz && cd /tmp && tar xvzf /tmp/htmldoc-1.8.29-source.tar.gz && cd htmldoc-1.8.29 && ./configure && make install && cd && rm -rf /tmp/htmldoc*
 
@@ -20,7 +21,6 @@ RUN yum install -y which
 RUN pip install --upgrade pip virtualenv
 RUN pip install gcovr
 RUN yum update -y && yum install -y texlive
-RUN yum install -y gcc-c++
 
 ENV MODULEPATH /etc/modulefiles:/usr/share/modulefiles:/usr/share/Modules/modulefiles
 ENV PATH /usr/lib/ccache:$PATH
