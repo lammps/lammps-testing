@@ -84,14 +84,14 @@ node {
                 stage 'Enabling modules'
 
                 sh '''
-                make -C yes-asphere
+                make -C src yes-asphere
                 make -C src yes-body
                 make -C src yes-class2
                 make -C src yes-colloid
-                make -C src  yes-compress
-                make -C src  yes-coreshell
-                make -C src  yes-dipole
-                make -C src  yes-fld
+                make -C src yes-compress
+                make -C src yes-coreshell
+                make -C src yes-dipole
+                make -C src yes-fld
                 make -C src yes-granular
                 make -C src yes-kspace
                 make -C src yes-manybody
