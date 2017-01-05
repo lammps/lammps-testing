@@ -5,14 +5,12 @@ def scripts = ['regression-pr']
 scripts.each { name ->
     pipelineJob("lammps/pull-requests/${name}") {
         triggers {
-            gitHubPRTrigger {
-                triggerMode('heavyHooks')
+            onPullRequest {
+                mode {
+                    heavyHooks()
+                }
                 events {
-                    gitHubPRLabelAddedEvent {
-                        label {
-                            labels('test-for-regression')
-                        }
-                    }
+                    labelAdded('test-for-regression')
                 }
             }
         }
