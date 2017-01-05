@@ -29,6 +29,7 @@ scripts.each { script_name ->
                             name('lammps')
                             github('lammps/lammps')
                             credentials('lammps-jenkins')
+                            refspec('+refs/pull/${GITHUB_PR_NUMBER}/merge:refs/remotes/lammps/pull/${GITHUB_PR_NUMBER}/merge')
                         }
 
                         branches('lammps-testing/master')
