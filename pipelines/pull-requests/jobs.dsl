@@ -2,8 +2,8 @@ folder('lammps/pull-requests')
 
 def scripts = ['regression-pr']
 
-scripts.each { name ->
-    pipelineJob("lammps/pull-requests/${name}") {
+scripts.each { script_name ->
+    pipelineJob("lammps/pull-requests/${script_name}") {
         triggers {
             onPullRequest {
                 mode {
@@ -34,7 +34,7 @@ scripts.each { name ->
                         branches('lammps-testing/master')
                     }
                 }
-                scriptPath("pipelines/pull-requests/${name}.groovy")
+                scriptPath("pipelines/pull-requests/${script_name}.groovy")
             }
         }
     }
