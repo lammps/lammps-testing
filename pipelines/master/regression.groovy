@@ -134,8 +134,10 @@ node {
                 stage 'Compiling'
                 sh 'make -j 8 -C src mode=shexe ${MACH} CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}"'
 
-                /*stage 'Testing'
-
+                stage 'Testing'
+                sh 'python2 lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -v CORES 8" tests/examples -exclude kim 2>&1 |tee test.out'
+                sh 'grep "*** no failures ***" test.out'
+                /*
                 sh '''
                 source pyenv/bin/activate
                 cd python
