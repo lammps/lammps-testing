@@ -20,7 +20,7 @@ scripts.each { name ->
                             credentials('lammps-jenkins')
                         }
 
-                        branches('pipelines')
+                        branches('master')
 
                         configure { gitScm ->
                             gitScm / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {

@@ -3,7 +3,7 @@ node {
     def version = 23
     
     stage('Checkout') {
-        checkout([$class: 'GitSCM', branches: [[name: '*/pipelines']], userRemoteConfigs: [[url: 'https://github.com/lammps/lammps-testing.git', credentialsId: 'lammps-jenkins']],
+        checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/lammps/lammps-testing.git', credentialsId: 'lammps-jenkins']],
                   extensions: [[$class: 'PathRestriction', includedRegions: 'envs/'+os+'/'+version+'/.*']]
                  ])
     }
