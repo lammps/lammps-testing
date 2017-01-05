@@ -6,7 +6,7 @@ scripts.each { name ->
     pipelineJob("lammps/pull-requests/${name}") {
         triggers {
             gitHubPRTrigger {
-                triggerMode('Hooks')
+                triggerMode('heavyHooks')
                 events {
                     gitHubPRLabelAddedEvent {
                         label {
