@@ -135,6 +135,11 @@ node {
                 sh 'make -j 8 -C src mode=shexe ${MACH} CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}"'
 
                 stage 'Testing'
+                sh 'rm -rf lammps-testing/tests/examples/USER/eff'
+                sh 'rm -rf lammps-testing/tests/examples/USER/misc/imd'
+                sh 'rm -rf lammps-testing/tests/examples/USER/fep'
+                sh 'rm -rf lammps-testing/tests/examples/USER/lb'
+                sh 'rm -rf lammps-testing/tests/examples/HEAT'
                 sh 'python2 lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -v CORES 8" lammps-testing/tests/examples -exclude kim 2>&1 |tee test.out'
                 sh 'grep "*** no failures ***" test.out'
                 /*
