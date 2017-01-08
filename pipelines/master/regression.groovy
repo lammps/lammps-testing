@@ -141,7 +141,8 @@ node {
                 sh 'rm -rf lammps-testing/tests/examples/USER/lb'
                 sh 'rm -rf lammps-testing/tests/examples/HEAT'
                 sh 'python2 lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -v CORES 8" lammps-testing/tests/examples -exclude kim 2>&1 |tee test.out'
-                sh 'grep "*** no failures ***" test.out'
+                sh 'python lammps-testing/lammps_testing/generate_regression_xml.py --test-dir $PWD/lammps-testing/tests/'
+//                sh 'grep "*** no failures ***" test.out'
                 /*
                 sh '''
                 source pyenv/bin/activate
@@ -166,5 +167,5 @@ node {
 
     step([$class: 'WarningsPublisher', canComputeNew: false, consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']], defaultEncoding: '', excludePattern: '', healthy: '', includePattern: '', messagesPattern: '', unHealthy: ''])
     step([$class: 'AnalysisPublisher', canComputeNew: false, defaultEncoding: '', healthy: '', unHealthy: ''])
-    //junit 'lammps-testing/nosetests-*.xml'
+    junit 'regression.xml'
 }
