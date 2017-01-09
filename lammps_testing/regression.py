@@ -304,7 +304,7 @@ def extract_data(file,stdout):
     return [False,dictionary,data,msg]
 
   for name in lg.names:
-    if (name == "CPU"): continue
+    if (name == "CPU" or name == "T/CPU" or name == "S/CPU" or name == "CPULeft"): continue
     dictionary.append(name)
     data.append(lg.get(name))
   return [True,dictionary,data,msg]
