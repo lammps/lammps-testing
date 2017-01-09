@@ -37,7 +37,7 @@ region          slab block 0 5 0 5 8 9
 fix		4 addatoms deposit 100 0 100 12345 region slab near 1.0 &
                 mol dimer vz -1.0 -1.0 shake 6
 fix		5 addatoms wall/reflect zhi EDGE
-fix             6 all shake 0.0001 20 1000 b 1 mol dimer
+fix             6 all shake 0.0001 20 0 b 1 mol dimer
 
 thermo_style	custom step atoms temp epair etotal press
 thermo          100

@@ -1,5 +1,5 @@
 variable	sname index h2
-log		${sname}.spe.log
+#log		${sname}.spe.log
 
 units 		electron
 newton		on
@@ -38,7 +38,7 @@ thermo_modify	temp effTemp press effPress
 fix 		3 all temp/rescale/eff 10 0.0 300.0 0.02 1.0
 fix		1 all nve/eff
 
-run		10000
+run		1
 unfix		3
 
 #compute         1 all property/atom spin eradius
@@ -47,4 +47,4 @@ unfix		3
 
 #fix		1 all nve/eff
 
-run 		100000
+run 		1

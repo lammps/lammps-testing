@@ -73,7 +73,7 @@ variable        k33 equal trap(f_JJ[5])*${scale}
 thermo	        $d
 thermo_style    custom step temp v_Jx v_Jy v_Jz v_k11 v_k22 v_k33
 
-run             100000
+run             10000
 
 variable        kappa equal (v_k11+v_k22+v_k33)/3.0
 print           "running average conductivity: ${kappa}"

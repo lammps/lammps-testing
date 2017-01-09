@@ -1,5 +1,5 @@
 variable        sname index Li.ang
-log             ${sname}.spe.log
+#log             ${sname}.spe.log
 
 units           real
 newton          on
@@ -36,7 +36,7 @@ thermo_style    custom step etotal pe ke v_eke v_epauli v_ecoul v_erres press v_
 thermo_modify	temp effTemp press effPress flush yes	
 
 #min_style	cg
-#minimize	0 1e-6 100 1000
+#minimize	0 1e-6 10 10
 #write_restart	${sname}.min.restart
 
 timestep	0.005
@@ -46,7 +46,7 @@ fix 		0 all temp/rescale/eff 1 10.0 3000.0 0.05 1.0
 #fix		0 all langevin/eff 3000.0 3000.0 10.0 699483
 fix		1 all nve/eff
 
-run		1000
+run		10
 unfix		0
 unfix		1
 
@@ -54,5 +54,5 @@ fix		1 all nvt/eff temp 3000.0 3000.0 100.0
 compute         1 all property/atom spin eradius ervel
 dump            1 all custom 1000 ${sname}.nvt.lammpstrj id type q c_1[1] c_1[2] x y z vx vy vz c_1[3]
 
-run 		100000
+run 		10
 

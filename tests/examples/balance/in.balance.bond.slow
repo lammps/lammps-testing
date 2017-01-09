@@ -59,4 +59,4 @@ fix             10 all balance 50 0.9 rcb
 thermo_style    custom step temp epair press f_10[3] f_10
 thermo          100                
 
-run		40000
+run		200

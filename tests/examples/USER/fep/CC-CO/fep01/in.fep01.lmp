@@ -9,7 +9,7 @@ angle_style harmonic
 dihedral_style opls
 special_bonds lj/coul 0.0 0.0 0.5
 
-read_data data.0.lmp
+read_data ../mols/data.0.lmp
 # read_restart restart.*.lmp
 # reset_timestep 0
 
@@ -55,7 +55,7 @@ pair_coeff    7    7  lj/cut/coul/long    0.0000   1.0000  # Hw Hw
 pair_coeff    7    8  lj/cut/coul/long    0.0000   1.0000  # Hw Ow
 pair_coeff    8    8  lj/cut/coul/long    0.1554   3.1655  # Ow Ow
 
-variable nsteps equal 2500000
+variable nsteps equal 1000
 variable nprint equal ${nsteps}/500
 variable ndump equal ${nsteps}/100
 # variable nrestart equal ${nsteps}/10
@@ -72,11 +72,11 @@ velocity all create ${temp} 12345
 thermo_style multi
 thermo ${nprint}
 
-fix fSHAKE all shake 0.0001 20 ${nprint} b 2 4 5 a 6
+fix fSHAKE all shake 0.0001 20 0 b 2 4 5 a 6
 
 fix fNPT all npt temp ${temp} ${temp} 100 iso ${press} ${press} 500
 
-run 250000
+run 1000
 reset_timestep 0
 
 

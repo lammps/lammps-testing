@@ -36,5 +36,5 @@ thermo  100
 restart 2000000 restart.one restart.two
 
 # execution
-run 	 6500000
+run 	 65000
 write_restart Restart.final

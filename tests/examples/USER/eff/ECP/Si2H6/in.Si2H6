@@ -4,7 +4,7 @@
 # General parameters
 
 variable	sname index Si2H6
-log		${sname}.log
+#log		${sname}.log
 
 units		electron
 newton		on

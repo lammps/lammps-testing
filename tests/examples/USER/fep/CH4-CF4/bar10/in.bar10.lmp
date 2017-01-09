@@ -8,7 +8,7 @@ bond_style harmonic
 angle_style harmonic
 special_bonds lj/coul 0.0 0.0 0.5
 
-read_data data.1.lmp
+read_data ../mols/data.1.lmp
 # read_restart restart.*.lmp
 # reset_timestep 0
 
@@ -32,7 +32,7 @@ pair_coeff    4    4  lj/cut/coul/long    0.0000   1.0000  # Hw Hw
 pair_coeff    4    5  lj/cut/coul/long    0.0000   1.7792  # Hw Ow
 pair_coeff    5    5  lj/cut/coul/long    0.1554   3.1655  # Ow Ow
 
-variable nsteps equal 500000
+variable nsteps equal 1000
 variable nprint equal ${nsteps}/500
 variable ndump equal ${nsteps}/100
 # variable nrestart equal ${nsteps}/10
@@ -49,11 +49,11 @@ velocity all create ${temp} 12345
 thermo_style multi
 thermo ${nprint}
 
-fix fSHAKE all shake 0.0001 20 ${nprint} b 3 a 4
+fix fSHAKE all shake 0.0001 20 0 b 3 a 4
 
 fix fNPT all npt temp ${temp} ${temp} 100 iso ${press} ${press} 500
 
-run 200000
+run 1000
 reset_timestep 0
 
 variable dlambda equal  1.0

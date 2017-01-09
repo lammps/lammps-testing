@@ -29,7 +29,7 @@ shell "rm -f out*.colvars.*"
 fix		2 all colvars peptide.colvars
 fix		2a ref setforce 0.0 0.0 0.0
 
-fix		4 all shake 0.0001 10 100 b 4 6 8 10 12 14 18 a 31
+fix		4 all shake 0.0001 10 0 b 4 6 8 10 12 14 18 a 31
 
 #dump		1 colvar custom 1 dump.colvar.lammpstrj id xu yu zu fx fy fz
 #dump_modify 1 sort id

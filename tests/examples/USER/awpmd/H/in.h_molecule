@@ -1,5 +1,5 @@
 variable	sname index h_molecule
-log		${sname}.spe.log
+#log		${sname}.spe.log
 
 units 		real
 newton		on

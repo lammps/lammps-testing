@@ -1,5 +1,5 @@
 variable        sname index h2bulk
-log		${sname}.npt.log
+#log		${sname}.npt.log
 
 units 		electron
 newton		on
@@ -25,7 +25,7 @@ thermo_modify	temp effTemp
 # structure minimization
 dump            1 all xyz 1 ${sname}.min.xyz
 min_style	cg
-minimize 	0 1.0e-4 1 10000
+minimize 	0 1.0e-4 1 10
 undump		1
 
 # create initial velocities according to temp, w/out e radial dof
@@ -41,7 +41,7 @@ dump		2 all xyz 10000 ${sname}.npt.xyz
 compute         1 all property/atom spin eradius
 dump		3 all custom 10000 ${sname}.npt.lammpstrj id type x y z c_1[1] c_1[2]
 
-run		10000000
+run		1
 
 unfix		1
 undump		2

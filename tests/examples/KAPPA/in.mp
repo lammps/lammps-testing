@@ -60,7 +60,7 @@ variable        tdiff equal f_2[11][3]-f_2[1][3]
 thermo_style	custom step temp epair etotal f_3 v_tdiff
 
 thermo		1000
-run		20000
+run		2000
 
 # thermal conductivity calculation
 # reset fix thermal/conductivity to zero energy accumulation
@@ -70,4 +70,4 @@ fix		3 all thermal/conductivity 10 z 20
 fix             ave all ave/time 1 1 1000 v_tdiff ave running
 thermo_style	custom step temp epair etotal f_3 v_tdiff f_ave
 
-run		20000
+run		2000

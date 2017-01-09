@@ -93,7 +93,7 @@ variable omegax equal omega(all,x)
 variable omegay equal omega(all,y)
 variable omegaz equal omega(all,z)
 
-thermo_style   custom v_vx v_vy v_vz v_omegax v_omegay v_omegaz
+thermo_style   custom step v_vx v_vy v_vz v_omegax v_omegay v_omegaz
 thermo         10
 
-run	       200000
+run	       20

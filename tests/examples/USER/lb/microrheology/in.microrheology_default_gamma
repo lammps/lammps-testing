@@ -113,7 +113,7 @@ variable x2 equal x[242]
 variable y2 equal y[242]
 variable z2 equal z[242]
 
-thermo_style custom v_x1 v_y1 v_z1 v_x2 v_y2 v_z2
+thermo_style custom step v_x1 v_y1 v_z1 v_x2 v_y2 v_z2
 thermo       1
 
-run	       2000000000
+run	       20

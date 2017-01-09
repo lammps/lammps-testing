@@ -73,4 +73,4 @@ fix	1 all lb/fluid 1 2 1.0 1.0 setGamma 3.303 dx 4.0 dm 10.0 calcforce 20 sphere
 #---------------------------------------------------------------------------
 fix     2 all nve
 
-run	300000
+run	20

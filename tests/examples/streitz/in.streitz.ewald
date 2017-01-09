@@ -39,12 +39,12 @@ neigh_modify	every 10 delay 0 check yes
 timestep        0.0004
 
 thermo_style	custom step temp etotal pe evdwl ecoul elong &
-                c_q1 c_q2 v_qsum press spcpu
+                c_q1 c_q2 v_qsum press
 thermo_modify  	norm yes
-thermo   	10
+thermo   	1
 
 velocity  	all create 300.0 42128
 fix     	1 all qeq/slater 1 12.0 1.0e-6 100 coul/streitz
 fix     	2 all nve
 
-run    		100
+run    		5

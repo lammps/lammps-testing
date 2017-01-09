@@ -59,4 +59,4 @@ thermo_style custom step cpu etotal ke temp pe ebond eangle edihed eimp evdwl ec
 thermo 50
 
 timestep 0.5
-run 2000
+run 20

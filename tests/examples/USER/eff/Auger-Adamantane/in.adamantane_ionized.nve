@@ -1,5 +1,5 @@
 variable	sname index adamantane_ionized
-log		${sname}.nve.log
+#log		${sname}.nve.log
 
 units 		electron
 newton		on
@@ -26,7 +26,7 @@ dump            1 all xyz 500 ${sname}.min.xyz
 compute         1 all property/atom spin eradius erforce
 dump            2 all custom 500 ${sname}.min.lammpstrj id type x y z c_1[1] c_1[2] fx fy fz c_1[3]
 min_modify	line quadratic
-minimize        0.0 1.0e-5 10000 100000
+minimize        0.0 1.0e-5 10 100
 
 undump		1
 undump		2
@@ -44,7 +44,7 @@ dump            1 all xyz 1000 ${sname}.nve.xyz
 dump            2 all custom 1000 ${sname}.nve.lammpstrj id type x y z c_1[1] c_1[2] fx fy fz c_1[3]
 #restart		1000 ${sname}.nve.restart1 ${sname}.nve.restart2
 
-run		200000
+run		20
 
 unfix		1
 undump		1

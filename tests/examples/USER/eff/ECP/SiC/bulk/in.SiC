@@ -38,5 +38,5 @@ compute         1 all property/atom spin eradius erforce
 dump            2 all custom ${nstep} ${sname}.min.lammpstrj id type q c_1[1] c_1[2] x y z fx fy fz c_1[3]
 dump            3 all custom ${nstep} ${sname}.data.restart id type q c_1[1] c_1[2] x y z
 min_modify      line quadratic
-minimize        0 1e-8 100000 1000000
+minimize        0 1e-8 10 100
 

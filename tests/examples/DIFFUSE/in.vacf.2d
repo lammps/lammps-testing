@@ -60,4 +60,4 @@ thermo_style	custom step temp c_vacf[4] v_vacf
 #dump		2 all image 100 image.*.jpg type type zoom 1.6 adiam 1.2
 
 thermo          1000
-run	        100000
+run	        10000

@@ -99,11 +99,11 @@ thermo 100
 thermo_style custom step lx ly lz press pxx pyy pzz pe temp
 
 # Run for at least 2 picosecond (assuming 1 fs timestep)
-run 2000
+run 200
 
 # Loop to run until pressure is below the variable eqpress (defined at beginning of file)
 label loopeq 
-variable eq loop 100 
+variable eq loop 100
 run 250
 variable converge equal press
 if "${converge} <= 0" then "variable converge equal -press" else "variable converge equal press" 
@@ -156,7 +156,7 @@ label loop
 displace_atoms	all ramp x 0.0 ${srate1} z 10 100 units box
 run		100
 variable runtime equal ${runtime}+100
-if "${runtime} < 100000" then "jump ${fname} loop"
+if "${runtime} < 300" then "jump ${fname} loop"
 
 ######################################
 # SIMULATION DONE
