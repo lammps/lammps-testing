@@ -6,6 +6,7 @@ node {
 
     dir('lammps-testing') {
         git url: 'https://github.com/lammps/lammps-testing.git', credentialsId: 'lammps-jenkins', branch: 'master'
+        sh 'git clean -x -f -d'
     }
 
     env.CCACHE_DIR= pwd() + '/.ccache'
