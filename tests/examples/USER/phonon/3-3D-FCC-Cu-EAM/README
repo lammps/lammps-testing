@@ -13,8 +13,8 @@ The files under this directory:
  8) dos.dat                : phonon DOS data from CuPhonon.bin.6500000
  9) dos-expr.dat           : experimental PDOS for Cu
 10) dos-ld.dat             : PDOS by LD based on EAM
-11) in.disp/in.disp2       : input file to get disp.dat by phana
-12) in.dos                 : input file to get dos.dat by phana
+11) input.disp/input.disp2 : input file to get disp.dat by phana
+12) input.dos              : input file to get dos.dat by phana
 13) in.EAM3D               : LAMMPS input file
 14) log.lammps             : LAMMPS log file
 15) map.in                 : LAMMPS input file for fix-phonon

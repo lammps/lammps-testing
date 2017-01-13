@@ -8,7 +8,7 @@ The files under this directory:
  3) SiC.tersoff            : Tersoff potential file for SiC
  4) data.pos               : LAMMPS input file
  5) pdisp.dat              : phonon dispersion data from Graphene.bin.6000000
- 6) in.disp                : input file to get disp.dat by phana
+ 6) input.disp             : input file to get disp.dat by phana
  7) in.graphene            : LAMMPS input file
  8) log.lammps             : LAMMPS log file
  9) map.in                 : LAMMPS input file for fix-phonon
