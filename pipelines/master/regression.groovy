@@ -40,12 +40,12 @@ node {
                 sh 'ccache -C'
                 sh 'ccache -M 5G'
 
-                if (! fileExists('pyenv') ) {
-                    sh 'virtualenv pyenv'
+                if (! fileExists('pyenv2') ) {
+                    sh 'virtualenv --python=$(which python2) pyenv2'
                 }
 
                 sh '''
-                source pyenv/bin/activate
+                source pyenv2/bin/activate
                 pip install nose
                 pip install nose2
                 deactivate
@@ -142,22 +142,17 @@ node {
                 sh 'rm -rf lammps-testing/tests/examples/USER/fep'
                 sh 'rm -rf lammps-testing/tests/examples/USER/lb'
                 sh 'rm -rf lammps-testing/tests/examples/HEAT'
-                sh 'python2 lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -v CORES 8" lammps-testing/tests/examples -exclude kim 2>&1 |tee test.out'
-                sh 'python lammps-testing/lammps_testing/generate_regression_xml.py --test-dir $PWD/lammps-testing/tests/'
-//                sh 'grep "*** no failures ***" test.out'
-                /*
+
                 sh '''
                 source pyenv/bin/activate
                 cd python
                 python install.py
                 cd ..
-                cd lammps-testing
-                env
-                python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py
-                cd ..
+                python2 lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -v CORES 8" lammps-testing/tests/examples -exclude kim 2>&1 |tee test.out
                 deactivate
                 '''
-                */
+                sh 'python lammps-testing/lammps_testing/generate_regression_xml.py --test-dir $PWD/lammps-testing/tests/'
+//                sh 'grep "*** no failures ***" test.out'
 
                 sh 'ccache -s'
             }
