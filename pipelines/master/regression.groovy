@@ -142,6 +142,7 @@ node {
                 sh 'rm -rf lammps-testing/tests/examples/USER/fep'
                 sh 'rm -rf lammps-testing/tests/examples/USER/lb'
                 sh 'rm -rf lammps-testing/tests/examples/HEAT'
+                sh 'rm -rf lammps-testing/tests/examples/COUPLE'
 
                 sh '''
                 source pyenv/bin/activate
