@@ -49,7 +49,7 @@ variable 	err equal c_volvor-v_volsys
 
 # output voronoi global quantities
 
-thermo_style 	custom c_volvor v_volsys vol v_err c_v1[3] c_v1[4] c_v1[5] c_v1[6] c_v1[7]
+thermo_style 	custom step c_volvor v_volsys vol v_err c_v1[3] c_v1[4] c_v1[5] c_v1[6] c_v1[7]
 thermo 		1
 
 run  		0
@@ -79,7 +79,7 @@ compute 	sumarea all reduce sum c_v2[3]
 
 # output voronoi global quantities
 
-thermo_style 	custom c_sumarea c_v2[3] c_v2[4] c_v2[5] c_v2[6] c_v2[7]
+thermo_style 	custom step c_sumarea c_v2[3] c_v2[4] c_v2[5] c_v2[6] c_v2[7]
 thermo 		1
 
 run  		0
