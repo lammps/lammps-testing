@@ -59,6 +59,7 @@ node {
                 stage 'Building libraries'
 
                 sh '''
+                make -C lib/atc -f Makefile.mpic++ clean
                 make -C lib/colvars -f Makefile.g++ clean
                 make -C lib/poems -f Makefile.g++ CXX="${COMP}" clean
                 #make -C lib/voronoi -f Makefile.g++ CXX="${COMP}" clean
@@ -67,6 +68,7 @@ node {
                 make -C lib/qmmm -f Makefile.gfortran clean
                 make -C lib/reax -f Makefile.gfortran clean
 
+                make -j 8 -C lib/atc -f Makefile.mpic++
                 make -j 8 -C lib/colvars -f Makefile.g++ CXX="${COMP}"
                 make -j 8 -C lib/poems -f Makefile.g++ CXX="${COMP}"
                 make -j 8 -C lib/awpmd -f Makefile.mpicc CC="${COMP}"
@@ -115,6 +117,7 @@ node {
                 make -C src yes-srd
                 make -C src yes-voronoi
                 make -C src yes-xtc
+                make -C src yes-user-atc
                 make -C src yes-user-awpmd
                 make -C src yes-user-cg-cmm
                 make -C src yes-user-colvars
