@@ -152,12 +152,13 @@ node {
                 cd python
                 python install.py
                 cd ..
+                rm *.out *.xml
                 python2 lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -v CORES 8" lammps-testing/tests/examples -exclude kim prd tad neb USER/atc 2>&1 |tee test0.out
                 python2 lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -partition 4x2 -v CORES 8" lammps-testing/tests/examples -only prd 2>&1 |tee test1.out
                 deactivate
                 '''
                 sh 'python lammps-testing/lammps_testing/generate_regression_xml.py --test-dir $PWD/lammps-testing/tests/ --log-file test0.out --out-file regression_00.xml'
-                sh 'python lammps-testing/lammps_testing/generate_regression_xml.py --test-dir $PWD/lammps-testing/tests/ --log-file test0.out --out-file regression_01.xml'
+                sh 'python lammps-testing/lammps_testing/generate_regression_xml.py --test-dir $PWD/lammps-testing/tests/ --log-file test1.out --out-file regression_01.xml'
 //                sh 'grep "*** no failures ***" test.out'
 
                 sh 'ccache -s'
