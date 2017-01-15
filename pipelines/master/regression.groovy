@@ -153,7 +153,7 @@ node {
                 python install.py
                 cd ..
                 rm *.out *.xml
-                python2 lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -v CORES 8" lammps-testing/tests/examples -exclude kim prd tad neb USER/atc USER/quip USER/misc/grem USER/misc/i-pi 2>&1 |tee test0.out
+                python2 lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -v CORES 8" lammps-testing/tests/examples -exclude kim prd tad neb USER/atc USER/quip USER/misc/grem USER/misc/i-pi USER/misc/pimd 2>&1 |tee test0.out
                 python2 lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -partition 4x2 -v CORES 8" lammps-testing/tests/examples -only prd 2>&1 |tee test1.out
                 deactivate
                 '''
