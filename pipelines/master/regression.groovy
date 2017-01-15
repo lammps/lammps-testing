@@ -134,6 +134,7 @@ node {
                 make -C src yes-user-reaxc
                 make -C src yes-user-sph
                 make -C src yes-user-tally
+                make -C src yes-user-smtbq
                 '''
 
                 stage 'Compiling'
