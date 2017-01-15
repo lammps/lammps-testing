@@ -18,7 +18,7 @@ mass		1 63.550
 group		internal region mdInternal
 # specify inter-atomic potential
 pair_style	eam
-pair_coeff  	* * ../../../../potentials/Cu_u3.eam
+pair_coeff  	* * Cu_u3.eam
 # specify neighbor/re-neighboring parameters
 neighbor	0.3 bin
 neigh_modify	every 10 delay 0 check no

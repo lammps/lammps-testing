@@ -36,7 +36,7 @@ group    internal region SYSTEM
 group    upper region UPPER 
 group    lower region LOWER 
 #pair_style  eam
-#pair_coeff  * * ../../../../potentials/Cu_u3.eam
+#pair_coeff  * * Cu_u3.eam
 #pair_style lj/smooth 8.0 10.0
 #pair_coeff * * 10.0 1.5
 pair_style  lj/smooth/linear 5.456108274435118
