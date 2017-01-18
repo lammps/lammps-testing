@@ -122,6 +122,7 @@ node {
                 make -C src yes-user-cg-cmm
                 make -C src yes-user-colvars
                 make -C src yes-user-diffraction
+                make -C src yes-user-dpd
                 make -C src yes-user-drude
                 make -C src yes-user-eff
                 make -C src yes-user-fep
