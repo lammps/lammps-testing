@@ -41,5 +41,5 @@ restart      1000000 restart.one restart.two
 dump   1 all xyz 50000 dump.graphene.xyz
 
 # execution
-run 	 6000000
+run 	 2000000
 write_restart Restart.final
