@@ -1,4 +1,4 @@
-FROM opensuse:13.1
+FROM opensuse:42.2
 
 RUN zypper update -y
 RUN zypper install -y gcc clang make cmake
