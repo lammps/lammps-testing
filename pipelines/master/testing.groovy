@@ -77,6 +77,7 @@ node {
                 make -j 8 -C lib/awpmd -f Makefile.mpicc CC="${COMP}"
                 make -j 8 -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran
                 make -j 8 -C lib/h5md
+                make -C src/STUBS clean
                 '''
 
                 sh '''
