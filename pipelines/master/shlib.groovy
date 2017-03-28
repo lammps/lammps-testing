@@ -54,6 +54,7 @@ node {
                 make -C lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
                 make -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran clean
                 make -C lib/h5md clean
+                make -C src/STUBS clean
 
                 make -j 8 -C lib/colvars -f Makefile.g++ CXX="${COMP}"
                 make -j 8 -C lib/poems -f Makefile.g++ CXX="${COMP}"
