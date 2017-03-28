@@ -24,6 +24,7 @@ node {
     env.LAMMPS_MPI_MODE = 'openmpi'
     env.LAMMPS_BINARY = pwd() + '/src/lmp_' + env.MACH
     env.LAMMPS_TEST_MODES = 'serial'
+    env.LAMMPS_POTENTIALS = pwd() + '/potentials'
 
     stage 'Setting up build environment'
 
