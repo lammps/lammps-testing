@@ -68,7 +68,6 @@ node {
                 sh '''
                 make -C lib/colvars -f Makefile.g++ clean
                 make -C lib/poems -f Makefile.g++ CXX="${COMP}" clean
-                #make -C lib/voronoi -f Makefile.g++ CXX="${COMP}" clean
                 make -C lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
                 make -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran clean
                 make -C lib/h5md clean
@@ -84,9 +83,10 @@ node {
                 sh '''
                 cd lib/voronoi
                 rm -rf build
-                python2 install.py -d build -g
+                mkdir build
+                python2 Install.py -g build
                 sed -i 's/CFLAGS=/CFLAGS=-fPIC /' build/voro++-0.4.6/config.mk
-                python2 install.py -d build -b -l
+                python2 Install.py -b build/voro++-0.4.6 -l build/voro++-0.4.6
                 '''
 
                 stage 'Enabling modules'
