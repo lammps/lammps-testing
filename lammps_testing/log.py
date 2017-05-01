@@ -58,10 +58,14 @@ import gzip
 
 # Class definition
 class log2:
+  STYLE_DEFAULT = 0
+  STYLE_MULTI   = 1
+
   def __init__(self,filename):
     alpha = re.compile('[a-df-zA-DF-Z]') # except e or E for floating-point numbers
+    kvpairs = re.compile('([a-zA-Z_0-9]+)\s+=\s*([0-9\.eE\-]+)')
+    style = log2.STYLE_DEFAULT
     self._runs = []
-    self._fields = []
     with open(filename, 'rt') as f:
         in_thermo = False
         for line in f:
@@ -71,23 +75,42 @@ class log2:
               current_run = {}
               for k in keys:
                 current_run[k] = []
+            elif line.startswith('---------------- Step'):
+              if not in_thermo:
+                current_run = {'Step': [], 'CPU': []}
+              in_thermo = True
+              style = log2.STYLE_MULTI
+              str_step, str_cpu = line.strip('-\n').split('-----')
+              step = float(str_step.split()[1])
+              cpu  = float(str_cpu.split('=')[1].split()[0])
+              current_run["Step"].append(step)
+              current_run["CPU"].append(cpu)
             elif line.startswith('Loop time of'):
               in_thermo = False
               self._runs.append(current_run)
-              self._fields.append(keys)
             elif in_thermo:
-              if alpha.search(line):
-                continue
+              if style == log2.STYLE_DEFAULT:
+                if alpha.search(line):
+                  continue
 
-              for k, v in zip(keys, map(float, line.split())):
-                current_run[k].append(v)
+                for k, v in zip(keys, map(float, line.split())):
+                  current_run[k].append(v)
+              elif style == log2.STYLE_MULTI:
+                if '=' not in line:
+                  continue
+
+                for k,v in kvpairs.findall(line):
+                  if k not in current_run:
+                    current_run[k] = [float(v)]
+                  else:
+                    current_run[k].append(float(v))
 
   @property
   def names(self):
-    all_fields = []
-    for f in self._fields:
-      all_fields += f
-    return list(set(all_fields))
+    all_keys = []
+    for r in self._runs:
+      all_keys += list(r.keys())
+    return list(set(all_keys))
 
   def get(self, key):
     data = []
