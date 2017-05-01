@@ -13,7 +13,7 @@ RUN dnf install -y valgrind
 RUN dnf install -y wget
 RUN dnf install -y gcc-c++
 
-RUN wget https://github.com/michaelrsweet/htmldoc/releases/download/v1.8.30/htmldoc-1.8.30-source.tar.gz -O /tmp/htmldoc-1.8.30-source.tar.gz && cd /tmp && tar xvzf /tmp/htmldoc-1.8.30-source.tar.gz && cd htmldoc-1.8.30 && ./configure && make install && cd && rm -rf /tmp/htmldoc*
+RUN wget https://github.com/michaelrsweet/htmldoc/releases/download/v1.8.30/htmldoc-1.8.30-source.tar.gz -O /tmp/htmldoc-1.8.30-source.tar.gz && mkdir /tmp/htmldoc-1.8.30 && cd /tmp/htmldoc-1.8.30 && tar xvzf /tmp/htmldoc-1.8.30-source.tar.gz && ./configure && make install && cd && rm -rf /tmp/htmldoc*
 
 RUN dnf install -y python3 python-virtualenv python-nose python-pip
 RUN dnf install -y which
