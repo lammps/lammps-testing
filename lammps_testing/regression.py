@@ -275,7 +275,8 @@ def add_test(test,lmps,descriptor):
     return msg
   dmy = time.strftime("%d%b%y")
   system_name = platform.system()
-  shutil.copyfile(log,"log."+dmy+"."+system_name.lower()+"."+descriptor+"."+test)
+  target_file = "log."+dmy+"."+system_name.lower()+"."+descriptor+"."+test
+  shutil.copyfile(log,target_file)
   return msg
 
 #====================================================
@@ -293,6 +294,7 @@ def extract_data(file,stdout):
 
   try:
     if logreader.__name__ == "log": lg= logreader(file)
+    elif logreader.__name__ == "log2": lg= logreader(file)
     elif logreader.__name__ == "olog": lg= logreader(file,"Step")
     else: raise Exception("Unknown log reader")
   except:
@@ -578,8 +580,9 @@ if __name__ == '__main__':
   tests = init()
 
   if logread[0] != ".": sys.path.append(logread[0])
-  strcmd = "from %s import %s as logreader" % (logread[1],logread[1])
-  exec strcmd
+  #strcmd = "from %s import %s as logreader" % (logread[1],logread[1])
+  #exec strcmd
+  from log import log2 as logreader
 
   nfails = 0
   fail_list = []

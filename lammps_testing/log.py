@@ -57,6 +57,44 @@ import sys, re, glob
 import gzip
 
 # Class definition
+class log2:
+  def __init__(self,filename):
+    alpha = re.compile('[a-df-zA-DF-Z]') # except e or E for floating-point numbers
+    self._runs = []
+    self._fields = []
+    with open(filename, 'rt') as f:
+        in_thermo = False
+        for line in f:
+            if line.startswith('Step '):
+              in_thermo = True
+              keys = line.split()
+              current_run = {}
+              for k in keys:
+                current_run[k] = []
+            elif line.startswith('Loop time of'):
+              in_thermo = False
+              self._runs.append(current_run)
+              self._fields.append(keys)
+            elif in_thermo:
+              if alpha.search(line):
+                continue
+
+              for k, v in zip(keys, map(float, line.split())):
+                current_run[k].append(v)
+
+  @property
+  def names(self):
+    all_fields = []
+    for f in self._fields:
+      all_fields += f
+    return list(set(all_fields))
+
+  def get(self, key):
+    data = []
+    for run in self._runs:
+        if key in run:
+          data += run[key]
+    return data
 
 class log:
 
