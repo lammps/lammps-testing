@@ -4,7 +4,7 @@ node {
     
     stage('Checkout') {
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/lammps/lammps-testing.git', credentialsId: 'lammps-jenkins']],
-                  extensions: [[$class: 'PathRestriction', excludedRegions: '.*', includedRegions: 'envs/'+os+'/'+version+'/.*']]
+                  extensions: [[$class: 'PathRestriction', includedRegions: 'envs/'+os+'/'+version+'/.*']]
                  ])
     }
 
