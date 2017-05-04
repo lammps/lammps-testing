@@ -53,7 +53,7 @@ node {
                 #make -C lib/voronoi -f Makefile.g++ CXX="${COMP}" clean
                 make -C lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
                 make -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran clean
-                make -C lib/h5md clean
+                make -C lib/h5md -f Makefile.h5cc clean
                 make -C src/STUBS clean
 
                 make -j 8 -C lib/colvars -f Makefile.g++ CXX="${COMP}"
@@ -61,7 +61,7 @@ node {
                 #make -j 8 -C lib/voronoi -f Makefile.g++ CXX="${COMP}"
                 make -j 8 -C lib/awpmd -f Makefile.mpicc CC="${COMP}"
                 make -j 8 -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran
-                make -j 8 -C lib/h5md
+                make -j 8 -C lib/h5md -f Makefile.h5cc
                 '''
 
                 stage 'Enabling modules'
