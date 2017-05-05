@@ -81,7 +81,7 @@ node {
                 rm -rf build
                 mkdir build
                 python2 Install.py -g
-                sed -i 's/CFLAGS=/CFLAGS=-fPIC /' build/voro++-0.4.6/config.mk
+                sed -i 's/CFLAGS=/CFLAGS=-fPIC /' voro++-0.4.6/config.mk
                 python2 Install.py -b -l
                 '''
 
