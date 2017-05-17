@@ -66,6 +66,18 @@ job('lammps/pull-requests/regression-pr') {
                 content('${GITHUB_PR_COND_REF} run ended')
             }
             unstableAs('FAILURE')
+            buildMessage {
+                successMsg {
+                  content('${GITHUB_PR_COND_REF} build successful!')
+                }
+                failureMsg {
+                  content('${GITHUB_PR_COND_REF} build failed!')
+                }
+            }
+            statusVerifier {
+            }
+            errorHandler {
+            }
         }
         slackNotifier {
             includeTestSummary(true)
