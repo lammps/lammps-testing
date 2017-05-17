@@ -52,7 +52,7 @@ job('lammps/pull-requests/regression-pr') {
     }
 
     publishers {
-        warnings(['GNU Make + GNU C Compiler (gcc)']) {
+        warnings(['GNU Make + GNU C Compiler (gcc)'], [:]) {
             resolveRelativePaths()
         }
         junit {
