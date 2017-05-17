@@ -28,6 +28,7 @@ job('lammps/pull-requests/regression-pr') {
                 }
             }
         }
+        gitHubPushTrigger()
     }
 
     wrappers {
@@ -43,5 +44,11 @@ job('lammps/pull-requests/regression-pr') {
 
     steps {
         shell(readFileFromWorkspace('pipelines/pull-requests/regression-pr.sh'))
+    }
+
+    publishers {
+        junit {
+            testResults('lammps-testing/nosetests-*.xml')
+        }
     }
 }
