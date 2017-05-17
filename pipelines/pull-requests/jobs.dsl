@@ -43,12 +43,41 @@ job('lammps/pull-requests/regression-pr') {
     }
 
     steps {
+        gitHubPRStatusBuilder {
+            statusMessage {
+                content('${GITHUB_PR_COND_REF} run started')
+            }
+        }
         shell(readFileFromWorkspace('pipelines/pull-requests/regression-pr.sh'))
     }
 
     publishers {
+        warnings(['GNU Make + GNU C Compiler (gcc)']) {
+            resolveRelativePaths()
+        }
         junit {
             testResults('lammps-testing/nosetests-*.xml')
+        }
+        analysisCollector {
+            warnings()
+        }
+        gitHubPRBuildStatusPublisher {
+            statusMsg {
+                content('${GITHUB_PR_COND_REF} run ended')
+            }
+            unstableAs('FAILURE')
+        }
+        slackNotifier {
+            includeTestSummary(true)
+            notifyAborted(true)
+            notifyBackToNormal(true)
+            notifyFailure(true)
+            notifyNotBuilt(true)
+            notifyRegression(true)
+            notifyRepeatedFailure(true)
+            notifySuccess(true)
+            notifyUnstable(true)
+            startNotification(false)
         }
     }
 }
