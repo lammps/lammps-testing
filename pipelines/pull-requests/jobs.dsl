@@ -1,7 +1,6 @@
 folder('lammps/pull-requests')
 
-job {
-    name 'lammps/pull-requests/regression-pr'
+job('lammps/pull-requests/regression-pr') {
     scm {
         git {
             branch('origin-pull/pull/${GITHUB_PR_NUMBER}/merge')
@@ -19,6 +18,7 @@ job {
 
     triggers {
         gitHubPRTrigger {
+            spec("* * * * *")
             triggerMode('HEAVY_HOOKS')
             events {
                 gitHubPRLabelAddedEvent {
