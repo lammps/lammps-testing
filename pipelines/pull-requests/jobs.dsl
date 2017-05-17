@@ -75,6 +75,7 @@ job('lammps/pull-requests/regression-pr') {
                 }
             }
             statusVerifier {
+                buildStatus(null)
             }
             errorHandler {
             }
