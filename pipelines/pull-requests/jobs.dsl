@@ -42,6 +42,6 @@ job('lammps/pull-requests/regression-pr') {
     }
 
     steps {
-        shell(readFileFromWorkspace('regression-pr.sh'))
+        shell(readFileFromWorkspace('pipelines/pull-requests/regression-pr.sh'))
     }
 }
