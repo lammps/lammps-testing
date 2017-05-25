@@ -49,7 +49,7 @@ class LAMMPSTestCase:
             elif LAMMPS_MPI_MODE == "mpich":
                 mpi_options += ["-env", "OMP_NUM_THREADS", str(nthreads)]
         elif nthreads > 1 or force_openmp:
-            lammps_options += ["-pk", "omp", str(nthreads)]
+            lammps_options += ["-sf", "omp", "-pk", "omp", str(nthreads)]
 
         outfile_path = os.path.join(self.cwd, "stdout.log")
         errfile_path = os.path.join(self.cwd, "stderr.log")
