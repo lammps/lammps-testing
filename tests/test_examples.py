@@ -96,6 +96,7 @@ for name in os.listdir(examples_dir):
 
 if 'omp' in LAMMPS_TEST_MODES:
     SkipTest(CombTestCase, "test_comb3_parallel_omp", "comb3 currently not supported by USER-OMP")
+    SkipTest(SnapTestCase, "test_snap_hybrid_WSNAP_HePair_parallel_omp", "snap_hybrid currently not supported by USER-OMP")
 
 if 'parallel' in LAMMPS_TEST_MODES:
     SkipTest(BalanceTestCase, "test_balance_bond_fast_parallel", "Crashes randomly")
