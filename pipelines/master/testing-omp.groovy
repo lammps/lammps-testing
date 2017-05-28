@@ -28,7 +28,7 @@ def getTestSummary = { ->
 }
 
 node {
-    def build_name = 'jenkins/testing'
+    def build_name = 'jenkins/testing-omp'
 
     stage 'Checkout'
     git branch: 'master', credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps.git'
