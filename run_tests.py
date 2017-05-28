@@ -1,4 +1,5 @@
-#!/bin/env python3
+#!/bin/env python
+from __future__ import print_function
 import os
 import nose
 import xml.etree.ElementTree as ET
