@@ -9,7 +9,7 @@ scripts.each { name ->
         }
 
         concurrentBuild(false)
-        quietPeriod(10)
+        quietPeriod(300)
 
         definition {
             cpsScm {
