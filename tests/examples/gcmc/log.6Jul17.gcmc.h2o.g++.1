@@ -1,5 +1,4 @@
-LAMMPS (20 Jun 2017)
-OMP_NUM_THREADS environment is not set. Defaulting to 1 thread. (../comm.cpp:90)
+LAMMPS (6 Jul 2017)
   using 1 OpenMP thread(s) per MPI task
 # GCMC for CO2 molecular fluid, rigid/small/nvt dynamics
 # Rigid CO2 TraPPE model
@@ -79,7 +78,7 @@ velocity       	all create 338.0 54654
 timestep        1.0
 
 minimize 0.0 0.0 100 1000
-WARNING: Resetting reneighboring criteria during minimization (../min.cpp:168)
+WARNING: Using 'neigh_modify every 1 delay 0 check yes' setting during minimization (../min.cpp:168)
 Ewald initialization ...
 WARNING: Using 12-bit tables for long-range coulomb (../kspace.cpp:321)
   G vector (1/distance) = 0.170448
@@ -103,9 +102,9 @@ Per MPI rank memory allocation (min/avg/max) = 11.88 | 11.88 | 11.88 Mbytes
 Step Temp E_pair E_mol TotEng Press 
        0          338   -4.1890564 9.2628112e-06     18.98377    739.06991 
      100          338   -30.182886   0.85607237   -6.1539961   -2535.3207 
-Loop time of 0.148445 on 1 procs for 100 steps with 24 atoms
+Loop time of 0.0513496 on 1 procs for 100 steps with 24 atoms
 
-32.0% CPU use with 1 MPI tasks x 1 OpenMP threads
+99.6% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 Minimization stats:
   Stopping criterion = max iterations
@@ -119,14 +118,14 @@ Minimization stats:
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.12643    | 0.12643    | 0.12643    |   0.0 | 85.17
-Bond    | 0.001163   | 0.001163   | 0.001163   |   0.0 |  0.78
-Kspace  | 0.008855   | 0.008855   | 0.008855   |   0.0 |  5.97
-Neigh   | 0.001165   | 0.001165   | 0.001165   |   0.0 |  0.78
-Comm    | 0.00852    | 0.00852    | 0.00852    |   0.0 |  5.74
-Output  | 5.2e-05    | 5.2e-05    | 5.2e-05    |   0.0 |  0.04
+Pair    | 0.04317    | 0.04317    | 0.04317    |   0.0 | 84.07
+Bond    | 0.00048041 | 0.00048041 | 0.00048041 |   0.0 |  0.94
+Kspace  | 0.0030823  | 0.0030823  | 0.0030823  |   0.0 |  6.00
+Neigh   | 0.00045824 | 0.00045824 | 0.00045824 |   0.0 |  0.89
+Comm    | 0.003314   | 0.003314   | 0.003314   |   0.0 |  6.45
+Output  | 1.3351e-05 | 1.3351e-05 | 1.3351e-05 |   0.0 |  0.03
 Modify  | 0          | 0          | 0          |   0.0 |  0.00
-Other   |            | 0.002256   |            |       |  1.52
+Other   |            | 0.0008311  |            |       |  1.62
 
 Nlocal:    24 ave 24 max 24 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
@@ -167,22 +166,22 @@ Per MPI rank memory allocation (min/avg/max) = 11.63 | 11.63 | 11.63 Mbytes
 Step Temp E_pair E_mol TotEng Press 
        0    518.26667   -30.182886            0   -7.0100684     993.1985 
     1000     326.9865   -62.258445            0   -47.638175   -5.3440813 
-Loop time of 0.318844 on 1 procs for 1000 steps with 24 atoms
+Loop time of 0.142857 on 1 procs for 1000 steps with 24 atoms
 
-Performance: 270.979 ns/day, 0.089 hours/ns, 3136.330 timesteps/s
-32.0% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 604.802 ns/day, 0.040 hours/ns, 7000.027 timesteps/s
+99.6% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.24502    | 0.24502    | 0.24502    |   0.0 | 76.85
-Bond    | 0.000314   | 0.000314   | 0.000314   |   0.0 |  0.10
-Kspace  | 0.027367   | 0.027367   | 0.027367   |   0.0 |  8.58
-Neigh   | 0.01049    | 0.01049    | 0.01049    |   0.0 |  3.29
-Comm    | 0.023523   | 0.023523   | 0.023523   |   0.0 |  7.38
-Output  | 4.5e-05    | 4.5e-05    | 4.5e-05    |   0.0 |  0.01
-Modify  | 0.007836   | 0.007836   | 0.007836   |   0.0 |  2.46
-Other   |            | 0.004245   |            |       |  1.33
+Pair    | 0.10907    | 0.10907    | 0.10907    |   0.0 | 76.35
+Bond    | 0.0001297  | 0.0001297  | 0.0001297  |   0.0 |  0.09
+Kspace  | 0.011934   | 0.011934   | 0.011934   |   0.0 |  8.35
+Neigh   | 0.0045395  | 0.0045395  | 0.0045395  |   0.0 |  3.18
+Comm    | 0.011328   | 0.011328   | 0.011328   |   0.0 |  7.93
+Output  | 1.4305e-05 | 1.4305e-05 | 1.4305e-05 |   0.0 |  0.01
+Modify  | 0.0038798  | 0.0038798  | 0.0038798  |   0.0 |  2.72
+Other   |            | 0.00196    |            |       |  1.37
 
 Nlocal:    24 ave 24 max 24 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
@@ -198,11 +197,11 @@ Neighbor list builds = 25
 Dangerous builds = 0
 
 variable        tfac equal 5.0/3.0 # (3 trans + 2 rot)/(3 trans)
-fix             mygcmc all gcmc 100 100 100 0 54341 ${temp} ${mu} ${disp} mol                 h2omol tfac_insert ${tfac} group h2o shake wshake
-fix             mygcmc all gcmc 100 100 100 0 54341 338.0 ${mu} ${disp} mol                 h2omol tfac_insert ${tfac} group h2o shake wshake
-fix             mygcmc all gcmc 100 100 100 0 54341 338.0 -8.1 ${disp} mol                 h2omol tfac_insert ${tfac} group h2o shake wshake
-fix             mygcmc all gcmc 100 100 100 0 54341 338.0 -8.1 0.5 mol                 h2omol tfac_insert ${tfac} group h2o shake wshake
-fix             mygcmc all gcmc 100 100 100 0 54341 338.0 -8.1 0.5 mol                 h2omol tfac_insert 1.66666666666667 group h2o shake wshake
+fix             mygcmc all gcmc 100 100 0 0 54341 ${temp} ${mu} ${disp} mol                 h2omol tfac_insert ${tfac} group h2o shake wshake
+fix             mygcmc all gcmc 100 100 0 0 54341 338.0 ${mu} ${disp} mol                 h2omol tfac_insert ${tfac} group h2o shake wshake
+fix             mygcmc all gcmc 100 100 0 0 54341 338.0 -8.1 ${disp} mol                 h2omol tfac_insert ${tfac} group h2o shake wshake
+fix             mygcmc all gcmc 100 100 0 0 54341 338.0 -8.1 0.5 mol                 h2omol tfac_insert ${tfac} group h2o shake wshake
+fix             mygcmc all gcmc 100 100 0 0 54341 338.0 -8.1 0.5 mol                 h2omol tfac_insert 1.66666666666667 group h2o shake wshake
 
 # output
 
@@ -224,46 +223,46 @@ WARNING: Using 12-bit tables for long-range coulomb (../kspace.cpp:321)
   estimated relative force accuracy = 0.0001
   KSpace vectors: actual max1d max3d = 16 2 62
                   kxmax kymax kzmax  = 2 2 2
-WARNING: Fix gcmc using full_energy option (../fix_gcmc.cpp:441)
+WARNING: Fix gcmc using full_energy option (../fix_gcmc.cpp:445)
 0 atoms in group FixGCMC:gcmc_exclusion_group:mygcmc
 0 atoms in group FixGCMC:rotation_gas_atoms:mygcmc
 WARNING: Neighbor exclusions used with KSpace solver may give inconsistent Coulombic energies (../neighbor.cpp:472)
 Per MPI rank memory allocation (min/avg/max) = 11.63 | 11.63 | 11.63 Mbytes
 Step Temp Press PotEng KinEng Density Atoms v_iacc v_dacc v_tacc v_racc 
     1000     326.9865   -4.3509713   -62.258445     14.62027   0.23910963       24            0            0            0            0 
-    2000    96.446623   -3532.7591   -316.33097     15.23692   0.80699501       81  0.054042819  0.013280212   0.23328473    0.7928139 
-    3000    93.296169   -4970.1262   -410.20751    17.520184   0.95643854       96  0.031856952 0.0069575589   0.16341538   0.79454947 
-    4000    88.209135   -6435.6239   -412.22358    16.564885   0.95643854       96  0.020831933 0.0046694683   0.12924291   0.78219169 
-    5000    109.60962   -5140.3158   -422.29513    21.237155   0.98632724       99    0.0159992 0.0035227216   0.11814388   0.77515933 
-    6000    82.315413   -4774.8391   -428.85186     15.94883   0.98632724       99  0.012897505 0.0027865133   0.10828872   0.76929174 
-Loop time of 175.394 on 1 procs for 5000 steps with 99 atoms
+    2000    116.99793   -5344.1527   -286.61595    17.088682   0.74721761       75  0.048183096  0.013941446            0            0 
+    3000    106.86746   -3920.4926   -361.60598    18.794545   0.89666113       90  0.035637919  0.012768883            0            0 
+    4000    75.002668    540.46846    -414.8511    14.531966   0.98632724       99  0.025963651 0.0093451705            0            0 
+    5000    79.924788   -2131.1173   -437.21216    15.962121    1.0162159      102  0.019879728 0.0070418993            0            0 
+    6000    95.552773   -3647.0233   -438.24276    19.083253    1.0162159      102  0.015753613 0.0056885133            0            0 
+Loop time of 43.7648 on 1 procs for 5000 steps with 102 atoms
 
-Performance: 2.463 ns/day, 9.744 hours/ns, 28.507 timesteps/s
-32.0% CPU use with 1 MPI tasks x 1 OpenMP threads
+Performance: 9.871 ns/day, 2.431 hours/ns, 114.247 timesteps/s
+99.7% CPU use with 1 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 17.784     | 17.784     | 17.784     |   0.0 | 10.14
-Bond    | 0.037802   | 0.037802   | 0.037802   |   0.0 |  0.02
-Kspace  | 0.47106    | 0.47106    | 0.47106    |   0.0 |  0.27
-Neigh   | 0.68391    | 0.68391    | 0.68391    |   0.0 |  0.39
-Comm    | 0.41674    | 0.41674    | 0.41674    |   0.0 |  0.24
-Output  | 0.00049    | 0.00049    | 0.00049    |   0.0 |  0.00
-Modify  | 155.93     | 155.93     | 155.93     |   0.0 | 88.90
-Other   |            | 0.06814    |            |       |  0.04
+Pair    | 7.4469     | 7.4469     | 7.4469     |   0.0 | 17.02
+Bond    | 0.018439   | 0.018439   | 0.018439   |   0.0 |  0.04
+Kspace  | 0.19987    | 0.19987    | 0.19987    |   0.0 |  0.46
+Neigh   | 0.3374     | 0.3374     | 0.3374     |   0.0 |  0.77
+Comm    | 0.20954    | 0.20954    | 0.20954    |   0.0 |  0.48
+Output  | 0.00028443 | 0.00028443 | 0.00028443 |   0.0 |  0.00
+Modify  | 35.515     | 35.515     | 35.515     |   0.0 | 81.15
+Other   |            | 0.03725    |            |       |  0.09
 
-Nlocal:    99 ave 99 max 99 min
+Nlocal:    102 ave 102 max 102 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Nghost:    7197 ave 7197 max 7197 min
+Nghost:    7399 ave 7399 max 7399 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
-Neighs:    83970 ave 83970 max 83970 min
+Neighs:    89020 ave 89020 max 89020 min
 Histogram: 1 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 83970
-Ave neighs/atom = 848.182
+Total # of neighbors = 89020
+Ave neighs/atom = 872.745
 Ave special neighs/atom = 2
-Neighbor list builds = 10129
+Neighbor list builds = 5137
 Dangerous builds = 0
 
-Total wall time: 0:02:55
+Total wall time: 0:00:43
