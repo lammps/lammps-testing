@@ -71,7 +71,7 @@ fix             wshake  all shake 0.0001 50 0 b 1 a 1 mol h2omol
 run 1000
 
 variable        tfac equal 5.0/3.0 # (3 trans + 2 rot)/(3 trans)
-fix             mygcmc all gcmc 100 100 100 0 54341 ${temp} ${mu} ${disp} mol &
+fix             mygcmc all gcmc 100 100 0 0 54341 ${temp} ${mu} ${disp} mol &
                 h2omol tfac_insert ${tfac} group h2o shake wshake
 
 # output
