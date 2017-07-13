@@ -21,16 +21,14 @@
 #
 ###############################################################################
 
-log                 log.spce_ehex
-
 # energy flux into the reservoir
  variable F         	equal 0.075
 
 # timestep              
- variable dt             equal 3.0  
+ variable dt             equal 2.0  
 
 # simulation time for the production run (1 ns)
- variable tprod      	equal 1000000
+ variable tprod      	equal 5000
 
 # total number of timesteps
  variable Nprod      	equal floor(${tprod}/${dt})
@@ -88,7 +86,7 @@ log                 log.spce_ehex
  variable vcmx equal "vcm(all,x)"
  variable vcmy equal "vcm(all,y)"
  variable vcmz equal "vcm(all,z)"
- variable vcm2 equal v_vcmx*v_vcmx+v_vcmy*v_vcmy+v_vcmz*v_vcmz
+ variable vcm2 equal round(100000000000000000000*(v_vcmx*v_vcmx+v_vcmy*v_vcmy+v_vcmz*v_vcmz))/100000000000000000000
 
 # compute temperature, pressure, potential energy, kinetic energy and total energy
  compute   cT  all temp
@@ -149,8 +147,7 @@ log                 log.spce_ehex
  timestep        ${dt}
 
  thermo_style    custom step temp v_Tlo_act v_Thi_act ke pe etotal press v_vcm2
- thermo_modify   flush yes
- thermo          1000
+ thermo          100
 
  compute         cchT  all  chunk/atom bin/1d z lower ${dz}
  fix             fchT  all  ave/chunk  ${Nsamp} ${Nrepeat} ${Nevery} cchT v_T file out.Tspce_ehex

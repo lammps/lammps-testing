@@ -1,0 +1,294 @@
+LAMMPS (6 Jul 2017)
+  using 1 OpenMP thread(s) per MPI task
+###############################################################################
+#
+#
+#  This input script is a modified version of the example script spce_ehex.lmp
+#  which is part of the supplementary (open access) material of the paper
+#
+#  P. Wirnsberger, D. Frenkel and C. Dellago,
+#  "An enhanced version of the heat exchange algorithm with excellent energy
+#  conservation properties", J. Chem. Phys. 143, 124104 (2015).
+#
+#  The full article is available on arXiv: http://arxiv.org/pdf/1507.07081.
+#
+#
+#  Description:
+#  ------------
+#
+#  This file is a LAMMPS input script for carrying out a NEMD simulation of
+#  SPC/E water using the eHEX/a algorithm. The run produces two files:
+#  "out.Tspce_ehex" contains the temperature profile and "out.Espce_ehex" the time
+#  evolution of the total energy.
+#
+###############################################################################
+
+# energy flux into the reservoir
+ variable F         	equal 0.075
+
+# timestep
+ variable dt             equal 2.0
+
+# simulation time for the production run (1 ns)
+ variable tprod      	equal 5000
+
+# total number of timesteps
+ variable Nprod      	equal floor(${tprod}/${dt})
+ variable Nprod      	equal floor(5000/${dt})
+ variable Nprod      	equal floor(5000/2)
+
+# parameters for the SPC/E model
+ variable epsOO       	equal 0.15535
+ variable sigOO       	equal 3.166
+ variable theta       	equal 109.47
+
+# long-range and short-range cutoffs, respectively
+ variable cutC        	equal (xhi-xlo)/2.
+ variable cutLJ  	equal 11
+
+# specification of units, spatial dimensions, boundary conditions and atom-style
+ units        real
+ dimension    3
+ boundary     p p p
+ atom_style   full
+ read_data    "data.spce"
+  orthogonal box = (-12.6314 -12.6314 -25.2628) to (12.6314 12.6314 25.2628)
+  1 by 1 by 1 MPI processor grid
+  reading atoms ...
+  3072 atoms
+  reading velocities ...
+  3072 velocities
+  scanning bonds ...
+  2 = max bonds/atom
+  scanning angles ...
+  1 = max angles/atom
+  reading bonds ...
+  2048 bonds
+  reading angles ...
+  1024 angles
+  2 = max # of 1-2 neighbors
+  1 = max # of 1-3 neighbors
+  1 = max # of 1-4 neighbors
+  2 = max # of special neighbors
+
+# group atoms to molecules
+ group    O type 2
+1024 atoms in group O
+ group    H type 1
+2048 atoms in group H
+ group    water type 1 2
+3072 atoms in group water
+
+# define the pair style with long-range Coulomb interaction
+# and short-range LJ interaction
+ pair_style    	lj/cut/coul/long ${cutLJ} ${cutC}
+ pair_style    	lj/cut/coul/long 11 ${cutC}
+ pair_style    	lj/cut/coul/long 11 12.6314
+ pair_coeff    	2 2 ${epsOO} ${sigOO}
+ pair_coeff    	2 2 0.15535 ${sigOO}
+ pair_coeff    	2 2 0.15535 3.166
+ pair_coeff    	1 2 0 0
+ pair_coeff    	1 1 0 0
+
+# use Ewald summation with a precision of 1.e-5
+ kspace_style   ewald 1.e-5
+
+# use harmonic bonds between sites of a molecules
+# NOTE: this will not have any effects as we use RATTLE to keep the bonds fixed,
+#       but it is recommended.
+ bond_style    	harmonic
+ angle_style   	harmonic
+ bond_coeff    	1 1000.00 1.000
+ angle_coeff   	1 100.0 ${theta}
+ angle_coeff   	1 100.0 109.47
+
+# increase neigbor skin because of the large timestep
+ neighbor  4.5 bin
+
+# use standard correction terms for the truncated tail of the LJ potential
+ pair_modify tail yes
+
+ variable    Nsamp    equal 10
+ variable    Nrepeat  equal floor(${Nprod}/${Nsamp})
+ variable    Nrepeat  equal floor(2500/${Nsamp})
+ variable    Nrepeat  equal floor(2500/10)
+ variable    Nevery   equal ${Nsamp}*${Nrepeat}
+ variable    Nevery   equal 10*${Nrepeat}
+ variable    Nevery   equal 10*250
+
+# compute the centre of mass velocity of the box (vcmx, vcmy, vcmz)
+ variable vcmx equal "vcm(all,x)"
+ variable vcmy equal "vcm(all,y)"
+ variable vcmz equal "vcm(all,z)"
+ variable vcm2 equal round(100000000000000000000*(v_vcmx*v_vcmx+v_vcmy*v_vcmy+v_vcmz*v_vcmz))/100000000000000000000
+
+# compute temperature, pressure, potential energy, kinetic energy and total energy
+ compute   cT  all temp
+ compute   cP  all pressure thermo_temp
+ compute   cPe all pe
+ compute   cKe all ke
+ variable  vE  equal c_cKe+c_cPe
+
+# specify the reservoir extents
+ variable Lz          equal zhi-zlo
+ variable delta       equal 4
+ variable dz          equal ${Lz}/60
+ variable dz          equal 50.5255/60
+ variable zlo_Thi     equal -${Lz}/4.-${delta}/2.
+ variable zlo_Thi     equal -50.5255/4.-${delta}/2.
+ variable zlo_Thi     equal -50.5255/4.-4/2.
+ variable zhi_Thi     equal ${zlo_Thi}+${delta}
+ variable zhi_Thi     equal -14.631375+${delta}
+ variable zhi_Thi     equal -14.631375+4
+ variable zlo_Tlo     equal ${Lz}/4.-${delta}/2.
+ variable zlo_Tlo     equal 50.5255/4.-${delta}/2.
+ variable zlo_Tlo     equal 50.5255/4.-4/2.
+ variable zhi_Tlo     equal ${zlo_Tlo}+${delta}
+ variable zhi_Tlo     equal 10.631375+${delta}
+ variable zhi_Tlo     equal 10.631375+4
+
+# create regions of low and high temperature and apply thermostats
+ region   Thi_region     block INF INF INF INF ${zlo_Thi} ${zhi_Thi}
+ region   Thi_region     block INF INF INF INF -14.631375 ${zhi_Thi}
+ region   Thi_region     block INF INF INF INF -14.631375 -10.631375
+ region   Tlo_region     block INF INF INF INF ${zlo_Tlo} ${zhi_Tlo}
+ region   Tlo_region     block INF INF INF INF 10.631375 ${zhi_Tlo}
+ region   Tlo_region     block INF INF INF INF 10.631375 14.631375
+
+# compute temperature of reservoirs using 3 degrees of freedom for every atom
+ compute  cTlo   water temp/region Tlo_region
+ compute  cThi   water temp/region Thi_region
+
+# rescale temperature to correct for the constraint bonds (6 instead of 9 degrees of freedom per molecule)
+ variable  Tlo_act    equal c_cTlo/2*3
+ variable  Thi_act    equal c_cThi/2*3
+
+# thermostat the reservoirs using the eHEX algorithm
+# NOTE: add the keyword "hex" at the end of each of the two following lines
+#       if you want to use the HEX algorithm.
+
+ fix fHi all ehex 1  ${F}   region Thi_region com constrain
+ fix fHi all ehex 1  0.075   region Thi_region com constrain
+ fix fLo all ehex 1 -${F}   region Tlo_region com constrain
+ fix fLo all ehex 1 -0.075   region Tlo_region com constrain
+
+# use velocity Verlet integration
+ fix fNVE all nve
+
+# calculate the (kinetic) temperature from the kinetic
+# energy per atom
+# kB is Boltzmann's constant
+# NOTE: For simplicity, we do not subtract the centre of mass
+#       velocity of the individual slabs in this example script.
+#       However, we did take this into account in the publication.
+#       (The differences are negligible for our setup.)
+
+ variable  kB  equal  0.001987204
+ compute   ke  water  ke/atom
+ variable  T   atom   c_ke/${kB}
+ variable  T   atom   c_ke/0.001987204
+
+# use RATTLE with a precision of 1.e-10
+ fix    fRattle all rattle 1e-10 400 0 b 1 a 1
+  0 = # of size 2 clusters
+  0 = # of size 3 clusters
+  0 = # of size 4 clusters
+  1024 = # of frozen angles
+
+# output the timestep, temperatures (average, cold reservoir, hot reservoir), energies (kinetic, potential and total),
+# pressure and squared com velocity every 100 timesteps
+ reset_timestep  0
+ timestep        ${dt}
+ timestep        2
+
+ thermo_style    custom step temp v_Tlo_act v_Thi_act ke pe etotal press v_vcm2
+ thermo          100
+
+ compute         cchT  all  chunk/atom bin/1d z lower ${dz}
+ compute         cchT  all  chunk/atom bin/1d z lower 0.842091666666667
+ fix             fchT  all  ave/chunk  ${Nsamp} ${Nrepeat} ${Nevery} cchT v_T file out.Tspce_ehex
+ fix             fchT  all  ave/chunk  10 ${Nrepeat} ${Nevery} cchT v_T file out.Tspce_ehex
+ fix             fchT  all  ave/chunk  10 250 ${Nevery} cchT v_T file out.Tspce_ehex
+ fix             fchT  all  ave/chunk  10 250 2500 cchT v_T file out.Tspce_ehex
+
+ fix             fE    all  ave/time 10 500 5000 v_vE file out.Espce_ehex
+ run             ${Nprod}
+ run             2500
+Ewald initialization ...
+WARNING: Using 12-bit tables for long-range coulomb (../kspace.cpp:321)
+  G vector (1/distance) = 0.234029
+  estimated absolute RMS force accuracy = 0.00363217
+  estimated relative force accuracy = 1.09382e-05
+  KSpace vectors: actual max1d max3d = 903 11 6083
+                  kxmax kymax kzmax  = 6 6 11
+Neighbor list info ...
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 17.1314
+  ghost atom cutoff = 17.1314
+  binsize = 8.5657, bins = 3 3 6
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d/newton
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 64.75 | 64.75 | 64.75 Mbytes
+Step Temp v_Tlo_act v_Thi_act KinEng PotEng TotEng Press v_vcm2 
+       0    399.28553    345.31026    514.38426    2436.3278    -10062.57   -7626.2426    342.82044            0 
+     100    402.11915    341.04635    504.97443    2453.6177   -10079.852   -7626.2347     562.9011            0 
+     200    399.25218    355.36095    442.95509    2436.1243   -10062.257   -7626.1325    361.12072            0 
+     300    388.11995    340.44003       486.97    2368.1986   -9994.4121   -7626.2136    799.87657            0 
+     400    396.28953    326.60879    494.25294     2418.047   -10044.698   -7626.6512    906.22658            0 
+     500    400.89353    350.60564    486.47389    2446.1394   -10072.338   -7626.1983    450.82733            0 
+     600    398.04976    341.92182    485.71381    2428.7874   -10054.963   -7626.1756    978.00596            0 
+     700    388.36072    326.03681    431.58624    2369.6677   -9995.3158   -7625.6482    1268.3998            0 
+     800    396.92352     369.6651    430.76003    2421.9154    -10048.65   -7626.7347    418.10719            0 
+     900    392.36965    339.89873    471.68977     2394.129   -10020.255   -7626.1264    359.95817            0 
+    1000    397.18202    315.33307    430.69983    2423.4927   -10049.019   -7625.5265    757.95376            0 
+    1100    389.71916    346.47951    459.35833    2377.9565   -10003.551   -7625.5947    1381.0602            0 
+    1200    402.87786    315.47343    521.90049    2458.2472   -10084.682   -7626.4347    430.01936            0 
+    1300    396.41426    290.10832     468.1363    2418.8081   -10045.308   -7626.5003    460.46762            0 
+    1400    392.72828    338.82246    442.91168    2396.3173   -10022.902   -7626.5852    765.37522            0 
+    1500    394.56988     344.9215    443.94489    2407.5542   -10033.655   -7626.1004    1068.0825            0 
+    1600    397.18698    334.07001    437.07943     2423.523    -10049.65   -7626.1271    69.560209            0 
+    1700    391.91179     333.7085    465.33402    2391.3353   -10017.797   -7626.4618    1002.2053            0 
+    1800    402.57577    328.04337    440.25438    2456.4039   -10082.975   -7626.5713    1003.6037            0 
+    1900    396.28781    307.29402    426.28167    2418.0365   -10044.309   -7626.2726     1370.895            0 
+    2000    406.15511    344.39502     461.3139     2478.244    -10104.41    -7626.166    412.30403            0 
+    2100    403.79393    341.31275    420.37138    2463.8367   -10090.406   -7626.5693    436.45772            0 
+    2200    400.83625    313.92801    482.94185    2445.7898   -10071.934   -7626.1445    42.449812            0 
+    2300    384.64525    331.00902    426.71811    2346.9969   -9972.6244   -7625.6274    976.01047            0 
+    2400    409.97175    314.54679    475.61111    2501.5321   -10128.253   -7626.7209    697.99573            0 
+    2500    402.18225    327.79364    523.59544    2454.0027   -10079.845    -7625.842    534.80388            0 
+Loop time of 225.532 on 1 procs for 2500 steps with 3072 atoms
+
+Performance: 1.915 ns/day, 12.530 hours/ns, 11.085 timesteps/s
+98.7% CPU use with 1 MPI tasks x 1 OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 145.78     | 145.78     | 145.78     |   0.0 | 64.64
+Bond    | 0.0053835  | 0.0053835  | 0.0053835  |   0.0 |  0.00
+Kspace  | 65.48      | 65.48      | 65.48      |   0.0 | 29.03
+Neigh   | 9.878      | 9.878      | 9.878      |   0.0 |  4.38
+Comm    | 0.69191    | 0.69191    | 0.69191    |   0.0 |  0.31
+Output  | 0.0074396  | 0.0074396  | 0.0074396  |   0.0 |  0.00
+Modify  | 3.5417     | 3.5417     | 3.5417     |   0.0 |  1.57
+Other   |            | 0.1433     |            |       |  0.06
+
+Nlocal:    3072 ave 3072 max 3072 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Nghost:    25629 ave 25629 max 25629 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+Neighs:    3.08276e+06 ave 3.08276e+06 max 3.08276e+06 min
+Histogram: 1 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 3082765
+Ave neighs/atom = 1003.5
+Ave special neighs/atom = 2
+Neighbor list builds = 73
+Dangerous builds = 0
+
+Total wall time: 0:03:45
