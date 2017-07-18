@@ -62,6 +62,7 @@ pair_coeff	3 3 1.0 1.5
 pair_coeff	1 4 0.0 1.0 0.5
 pair_coeff	2 4 0.0 1.0 1.0
 pair_coeff	3 4 0.0 1.0 0.75
+pair_coeff	4 4 0.0 1.0 0.0
 
 delete_atoms	overlap 1.0 small big
 
@@ -110,4 +111,4 @@ thermo		1000
 #dump		1 all image 1000 image.*.jpg type type zoom 1.6
 #dump_modify	1 pad 6 adiam 1 1 adiam 2 2.0 adiam 3 1.5 adiam 4 0.1
 
-run		1000
+run		100000
