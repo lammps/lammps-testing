@@ -97,8 +97,8 @@ node {
     step([$class: 'AnalysisPublisher', canComputeNew: false, defaultEncoding: '', healthy: '', unHealthy: ''])
 
     if (currentBuild.result == 'FAILURE') {
-        slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
+        slackSend channel: '#lammps-workshop', color: 'bad', message: "(WORKSHOP) Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
     } else {
-        slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
+        slackSend channel: '#lammps-workshop', color: 'good', message: "(WORKSHOP) Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
     }
 }
