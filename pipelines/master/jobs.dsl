@@ -1,9 +1,9 @@
-folder('lammps/master')
+folder('lammps-git-training/master')
 
-def scripts = ['serial', 'shlib', 'openmpi', 'testing', 'build-docs', 'kokkos_omp', 'regression', 'testing-omp', 'serial-clang', 'shlib-clang', 'openmpi-clang']
+def scripts = ['serial', 'shlib', 'openmpi', 'testing', 'build-docs']
 
 scripts.each { name ->
-    pipelineJob("lammps/master/${name}") {
+    pipelineJob("lammps-git-training/master/${name}") {
         triggers {
             githubPush()
         }
@@ -20,7 +20,7 @@ scripts.each { name ->
                             credentials('lammps-jenkins')
                         }
 
-                        branches('master')
+                        branches('lammps_workshop_2017')
 
                         configure { gitScm ->
                             gitScm / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
