@@ -31,13 +31,13 @@ node {
     def build_name = 'jenkins/testing'
 
     stage 'Checkout'
-    git branch: 'lammps_workshop_2017', credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps-git-tutorial.git'
+    git branch: 'master', credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps-git-tutorial.git'
     git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
 
     step([$class: 'GitHubCommitStatusSetter', commitShaSource: [$class: 'ManuallyEnteredShaSource', sha: git_commit], contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: build_name], reposSource: [$class: 'ManuallyEnteredRepositorySource', url: 'https://github.com/lammps/lammps-git-tutorial.git'], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: 'building...', state: 'PENDING']]]])
 
     dir('lammps-testing') {
-        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PathRestriction', excludedRegions: '', includedRegions: 'pipelines/master/testing.groovy']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps-testing.git']]])
+        checkout([$class: 'GitSCM', branches: [[name: '*/lammps_workshop_2017']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PathRestriction', excludedRegions: '', includedRegions: 'pipelines/master/testing.groovy']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps-testing.git']]])
     }
 
     env.CCACHE_DIR= pwd() + '/.ccache'
