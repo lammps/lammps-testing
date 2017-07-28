@@ -4,43 +4,43 @@ def scripts = ['build-docs-pr']
 
 scripts.each { name ->
     pipelineJob("lammps-git-training/pull-requests/${name}") {
-
-    properties {
-        githubProjectUrl("https://github.com/lammps/lammps-git-tutorial")
-    }
-
-    triggers {
-        gitHubPRTrigger {
-            triggerMode('HEAVY_HOOKS')
-            events {
-                gitHubPROpenEvent()
-                gitHubPRCommitEvent()
-            }
+        properties {
+            githubProjectUrl("https://github.com/lammps/lammps-git-tutorial")
         }
-    }
 
-    concurrentBuild(false)
-    quietPeriod(300)
-
-    definition {
-        cpsScm {
-            scm {
-                git {
-                    remote {
-                        github('lammps/lammps-testing')
-                        credentials('lammps-jenkins')
-                    }
-
-                    branches('lammps_workshop_2017')
-
-                    configure { gitScm ->
-                        gitScm / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
-                          includedRegions("pipelines/pull-requests/${name}.groovy")
-                      }
-                    }
+        triggers {
+            gitHubPRTrigger {
+                triggerMode('HEAVY_HOOKS')
+                events {
+                    gitHubPROpenEvent()
+                    gitHubPRCommitEvent()
                 }
             }
-            scriptPath("pipelines/pull-requests/${name}.groovy")
+        }
+
+        concurrentBuild(false)
+        quietPeriod(300)
+
+        definition {
+            cpsScm {
+                scm {
+                    git {
+                        remote {
+                            github('lammps/lammps-testing')
+                            credentials('lammps-jenkins')
+                        }
+
+                        branches('lammps_workshop_2017')
+
+                        configure { gitScm ->
+                            gitScm / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
+                              includedRegions("pipelines/pull-requests/${name}.groovy")
+                          }
+                        }
+                    }
+                }
+                scriptPath("pipelines/pull-requests/${name}.groovy")
+            }
         }
     }
 }
