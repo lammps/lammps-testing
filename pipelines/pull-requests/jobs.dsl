@@ -4,13 +4,9 @@ def scripts = ['build-docs-pr']
 
 scripts.each { name ->
     pipelineJob("lammps-git-training/pull-requests/${name}") {
-        properties {
-            githubProjectUrl("https://github.com/lammps/lammps-git-tutorial")
-        }
-
         triggers {
             gitHubPRTrigger {
-                spec("* * * * *")
+                spec("")
                 triggerMode('HEAVY_HOOKS')
                 events {
                     gitHubPROpenEvent()
@@ -42,6 +38,10 @@ scripts.each { name ->
                 }
                 scriptPath("pipelines/pull-requests/${name}.groovy")
             }
+        }
+
+        properties {
+            githubProjectUrl("https://github.com/lammps/lammps-git-tutorial")
         }
     }
 }
