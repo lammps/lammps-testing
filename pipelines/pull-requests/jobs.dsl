@@ -10,6 +10,7 @@ scripts.each { name ->
 
         triggers {
             gitHubPRTrigger {
+                spec("* * * * *")
                 triggerMode('HEAVY_HOOKS')
                 events {
                     gitHubPROpenEvent()
