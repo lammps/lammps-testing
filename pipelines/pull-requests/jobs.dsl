@@ -1,6 +1,6 @@
 folder('lammps-git-training/pull-requests')
 
-def scripts = ['build-docs-pr']
+def scripts = ['serial-pr', 'openmpi-pr', 'shlib-pr', 'build-docs-pr']
 
 scripts.each { name ->
     pipelineJob("lammps-git-training/pull-requests/${name}") {
@@ -13,6 +13,7 @@ scripts.each { name ->
                     gitHubPRCommitEvent()
                 }
             }
+            gitHubPushTrigger()
         }
 
         concurrentBuild(false)
