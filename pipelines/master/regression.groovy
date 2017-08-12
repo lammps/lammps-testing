@@ -91,7 +91,7 @@ node {
                 stage 'Building libraries'
 
                 sh '''
-                make -C lib/atc -f Makefile.mpic++ clean
+                make -C lib/atc -f Makefile.mpic++ EXTRAMAKE="Makefile.lammps.installed" clean
                 make -C lib/colvars -f Makefile.g++ clean
                 make -C lib/poems -f Makefile.g++ CXX="${COMP}" clean
                 make -C lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
@@ -99,7 +99,7 @@ node {
                 make -C lib/qmmm -f Makefile.gfortran clean
                 make -C lib/reax -f Makefile.gfortran clean
 
-                make -j 8 -C lib/atc -f Makefile.mpic++
+                make -j 8 -C lib/atc EXTRAMAKE="Makefile.lammps.installed" -f Makefile.mpic++
                 make -j 8 -C lib/colvars -f Makefile.g++ CXX="${COMP}"
                 make -j 8 -C lib/poems -f Makefile.g++ CXX="${COMP}"
                 make -j 8 -C lib/awpmd -f Makefile.mpicc CC="${COMP}"
@@ -110,11 +110,8 @@ node {
 
                 sh '''
                 cd lib/voronoi
-                rm -rf build
-                mkdir build
-                python2 Install.py -g
-                sed -i 's/CFLAGS=/CFLAGS=-fPIC /' voro++-0.4.6/config.mk
-                python2 Install.py -b -l
+                python2 Install.py -b
+                cd ../..
                 '''
 
                 stage 'Enabling modules'

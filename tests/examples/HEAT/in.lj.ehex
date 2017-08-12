@@ -21,19 +21,17 @@
 #
 ###############################################################################
 
-log 		    log.lj_ehex
-
 # heat flux
 variable J          equal 0.15 	        		
 
 # timestep
-variable dt         equal 0.007
+variable dt         equal 0.005
 
 # cutoff radius for shifted LJ-potential
 variable rc         equal 3.0
 
 # simulation time for the production run
-variable tprod      equal 5000
+variable tprod      equal 20
 
 # total number of timesteps
 variable Nprod      equal floor(${tprod}/${dt})
@@ -104,16 +102,16 @@ fix            fNVEGrad  all   nve
 variable vcmx equal "vcm(all,x)"
 variable vcmy equal "vcm(all,y)"
 variable vcmz equal "vcm(all,z)"
-variable vcm2 equal v_vcmx*v_vcmx+v_vcmy*v_vcmy+v_vcmz*v_vcmz
+variable vcm2 equal round(100000000000000000000*(v_vcmx*v_vcmx+v_vcmy*v_vcmy+v_vcmz*v_vcmz))/100000000000000000000
 
 # specify the timestep
 timestep  ${dt}
 
 # frequency for console output
-thermo    10000
+thermo    100
 
 # print timestep, temperature, total energy and v_com^2 to console
-thermo_style   custom step temp etotal v_vcm2
+thermo_style   custom step temp etotal ke pe v_vcm2
 
 # calculate spatial average of temperature
 compute	       cchT  all  chunk/atom bin/1d z lower ${dz}

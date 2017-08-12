@@ -114,11 +114,8 @@ node {
 
                 sh '''
                 cd lib/voronoi
-                rm -rf build
-                mkdir build
-                python2 Install.py -g
-                sed -i 's/CFLAGS=/CFLAGS=-fPIC /' voro++-0.4.6/config.mk
-                python2 Install.py -b -l
+                python2 Install.py -b
+                cd ../..
                 '''
 
                 stage 'Enabling modules'

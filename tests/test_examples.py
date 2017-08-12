@@ -80,7 +80,7 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
 
 examples_dir = os.path.join(TESTS_DIR, 'examples')
 
-skip_list = ['accelerate', 'hugoniostat', 'kim', 'neb', 'reax', 'rerun', 'tad', 'prd', 'mscg']
+skip_list = ['accelerate', 'kim', 'neb', 'reax', 'rerun', 'tad', 'prd', 'mscg']
 
 for name in os.listdir(examples_dir):
     path = os.path.join(examples_dir, name)
