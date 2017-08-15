@@ -13,7 +13,7 @@ RUN dnf install -y valgrind
 RUN dnf install -y wget
 RUN dnf install -y make python ccache git dos2unix mingw32-nsis mingw32-gcc-c++ mingw32-gcc-gfortran mingw32-libjpeg-static mingw32-pthreads-static mingw32-libgomp mingw32-libpng-static
 
-RUN wget https://github.com/michaelrsweet/htmldoc/releases/download/v1.8.30/htmldoc-1.8.30-source.tar.gz -O /tmp/htmldoc-1.8.30-source.tar.gz && mkdir /tmp/htmldoc-1.8.30 && cd /tmp/htmldoc-1.8.30 && tar xvzf /tmp/htmldoc-1.8.30-source.tar.gz && ./configure && make install && cd && rm -rf /tmp/htmldoc*
+RUN wget https://github.com/michaelrsweet/htmldoc/releases/download/v1.9/htmldoc-1.9-source.tar.gz -O /tmp/htmldoc-1.9-source.tar.gz && mkdir /tmp/htmldoc-1.9 && cd /tmp/htmldoc-1.9 && tar xvzf /tmp/htmldoc-1.9-source.tar.gz && ./configure && make install && cd && rm -rf /tmp/htmldoc*
 
 RUN dnf install -y python3 python-virtualenv python-nose python-pip
 RUN dnf install -y which
