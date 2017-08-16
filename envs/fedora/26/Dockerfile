@@ -21,6 +21,7 @@ RUN pip install --upgrade pip virtualenv
 RUN pip install gcovr
 
 RUN dnf update -y && dnf install -y texlive
+RUN dnf install -y zlib zlib-devel mingw32-zlib-static
 
 ENV MODULEPATH /etc/modulefiles:/usr/share/modulefiles:/usr/share/Modules/modulefiles
 ENV PATH /usr/lib/ccache:$PATH
