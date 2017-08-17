@@ -11,9 +11,10 @@ RUN dnf install -y redhat-rpm-config
 RUN dnf install -y @development-tools fedora-packager rpmdevtools
 RUN dnf install -y valgrind
 RUN dnf install -y wget
-RUN dnf install -y make python ccache git dos2unix mingw32-nsis mingw32-gcc-c++ mingw32-gcc-gfortran mingw32-libjpeg-static mingw32-pthreads-static mingw32-libgomp mingw32-libpng-static
+RUN dnf install -y make python ccache git dos2unix mingw32-nsis mingw32-gcc-c++ mingw32-gcc-gfortran mingw32-libjpeg-static mingw32-pthreads-static mingw32-libgomp mingw32-libpng-static mingw32-zlib-static
+RUN dnf install -y mingw64-gcc-c++ mingw64-gcc-gfortran mingw64-libjpeg-static mingw64-pthreads-static mingw64-libgomp mingw64-libpng-static mingw64-zlib-static
 
-RUN wget https://github.com/michaelrsweet/htmldoc/releases/download/v1.9/htmldoc-1.9-source.tar.gz -O /tmp/htmldoc-1.9-source.tar.gz && mkdir /tmp/htmldoc-1.9 && cd /tmp/htmldoc-1.9 && tar xvzf /tmp/htmldoc-1.9-source.tar.gz && ./configure && make install && cd && rm -rf /tmp/htmldoc*
+RUN dnf install -y htmldoc
 
 RUN dnf install -y python3 python-virtualenv python-nose python-pip
 RUN dnf install -y which
@@ -21,7 +22,6 @@ RUN pip install --upgrade pip virtualenv
 RUN pip install gcovr
 
 RUN dnf update -y && dnf install -y texlive
-RUN dnf install -y zlib zlib-devel mingw32-zlib-static
 
 ENV MODULEPATH /etc/modulefiles:/usr/share/modulefiles:/usr/share/Modules/modulefiles
 ENV PATH /usr/lib/ccache:$PATH
