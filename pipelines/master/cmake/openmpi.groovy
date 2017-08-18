@@ -1,5 +1,5 @@
 node {
-    def build_name = 'jenkins/cmake/serial'
+    def build_name = 'jenkins/cmake/openmpi'
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
