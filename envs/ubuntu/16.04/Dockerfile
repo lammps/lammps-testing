@@ -32,6 +32,8 @@ RUN add-apt-repository ppa:ubuntu-toolchain-r/test && apt-get update && apt-get 
 
 RUN apt-get update && apt-get install -y gfortran-6
 
+RUN apt-get update && apt-get install -y cmake
+
 USER jenkins
 
 CMD /bin/bash
