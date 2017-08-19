@@ -1,6 +1,6 @@
 folder('lammps/master/cmake')
 
-def scripts = ['serial', 'openmpi']
+def scripts = ['serial', 'openmpi', 'enable_all']
 
 scripts.each { name ->
     pipelineJob("lammps/master/cmake/${name}") {
