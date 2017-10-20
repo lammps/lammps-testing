@@ -35,6 +35,7 @@ node {
 
                 // clean up project directory
                 sh '''
+                make -C src purge
                 make -C src clean-all
                 make -C src yes-all
                 make -C src no-lib
