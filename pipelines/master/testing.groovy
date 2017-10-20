@@ -86,6 +86,7 @@ node {
                 // clean up project directory
                 sh '''
                 make -C src clean-all
+                make -C src purge
                 make -C src yes-all
                 make -C src no-lib
                 make -C src no-mpiio
