@@ -3,8 +3,8 @@ folder('build-envs') {
 }
 
 def scripts = ['centos_6', 'centos_7', 'centos_latest',
-               'fedora_21', 'fedora_22', 'fedora_23', 'fedora_24', 'fedora_25', 'fedora_26', 'fedora_latest',
-               'opensuse_13.2', 'opensuse_42.1', 'opensuse_42.2',
+               'fedora_21', 'fedora_22', 'fedora_23', 'fedora_24', 'fedora_25', 'fedora_26', 'fedora_27', 'fedora_latest',
+               'opensuse_13.2', 'opensuse_42.1', 'opensuse_42.2', 'opensuse_42.3',
                'ubuntu_12.04', 'ubuntu_14.04', 'ubuntu_16.04', 'ubuntu_latest']
 
 scripts.each { name ->
