@@ -1,9 +1,10 @@
 node {
-    def build_name = "jenkins/cmake/master/{env.PACKAGE}"
+    def package_name = env.PACKAGE
+    def build_name = "jenkins/cmake/master/${package_name}"
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
-    def cmake_options = "-DENABLE_{env.PACKAGE}=on"
+    def cmake_options = "-DENABLE_${package_name}=on"
 
     stage('Checkout') {
         dir('lammps') {
