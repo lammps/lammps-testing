@@ -52,9 +52,10 @@ node {
 
     warnings consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']]
 
-    if (currentBuild.result == 'FAILURE') {
+/*    if (currentBuild.result == 'FAILURE') {
         slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
     } else {
         slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
     }
+*/
 }
