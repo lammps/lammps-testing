@@ -34,6 +34,8 @@ RUN apt-get update && apt-get install -y gfortran-6
 
 RUN apt-get update && apt-get install -y cmake
 
+RUN apt-get update && apt-get install -y libvtk6-dev libeigen3-dev
+
 USER jenkins
 
 CMD /bin/bash
