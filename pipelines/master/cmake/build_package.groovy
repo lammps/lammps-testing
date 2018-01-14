@@ -4,7 +4,7 @@ node {
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
-    def cmake_options = "-DENABLE_${package_name}=on"
+    def cmake_options = "-DENABLE_${package_name}=on -DENABLE_MPI=on -DCMAKE_CXX_FLAGS=\"-O3 -Wall -Wno-unused-result -Wno-maybe-uninitialized\""
 
     stage('Checkout') {
         dir('lammps') {

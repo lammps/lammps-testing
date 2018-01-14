@@ -58,10 +58,6 @@ folder('lammps/master/cmake/packages')
 
 packages.each { name ->
     pipelineJob("lammps/master/cmake/packages/${name}") {
-        triggers {
-            githubPush()
-        }
-
         environmentVariables {
             env("PACKAGE", name)
         }
