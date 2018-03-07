@@ -13,6 +13,6 @@ RUN apt install -y build-essential ccache gfortran openmpi-bin libopenmpi-dev li
 
 ENV PATH /usr/lib/ccache:$PATH
 
-#USER jenkins
+USER jenkins
 
 CMD /bin/bash
