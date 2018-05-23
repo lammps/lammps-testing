@@ -211,4 +211,6 @@ node {
     } else {
         step([$class: 'GitHubCommitStatusSetter', commitShaSource: [$class: 'ManuallyEnteredShaSource', sha: git_commit], contextSource: [$class: 'ManuallyEnteredCommitContextSource', context: build_name], reposSource: [$class: 'ManuallyEnteredRepositorySource', url: 'https://github.com/lammps/lammps.git'], statusResultSource: [$class: 'ConditionalStatusResultSource', results: [[$class: 'AnyBuildResult', message: summary, state: 'SUCCESS']]]])
     }
+
+    step([$class: 'Mailer', notifyEveryUnstableBuild: true, recipients: 'akohlmey@gmail.com richard.berger@temple.edu', sendToIndividuals: false])
 }
