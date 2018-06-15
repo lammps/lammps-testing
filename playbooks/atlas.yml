@@ -1,0 +1,36 @@
+---
+ - hosts: atlas.cst.temple.edu
+   tasks:
+    - name: add jenkins group
+      group:
+        name: jenkins
+        gid: 114
+    - name: create jenkins user
+      user:
+        name: jenkins
+        uid: 106
+        group: jenkins
+    - name: add software packages
+      dnf:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+       - "@Development tools"
+       - vim	
+       - openmpi
+       - openmpi-devel
+       - mpich
+       - mpich-devel
+       - ccache
+       - clang
+       - valgrind
+       - wget
+       - python3
+       - python-virtualenv
+       - python-nose
+       - python-pip
+       - which
+    - name: upgrade pip and virtualenv
+      shell: pip install --upgrade pip virtualenv
+    - name: install gcovr
+      shell: pip install gcovr
