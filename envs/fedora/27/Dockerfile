@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM fedora:27
 
 RUN dnf update -y && dnf groupinstall -y "Development tools"
 RUN dnf install -y openmpi openmpi-devel

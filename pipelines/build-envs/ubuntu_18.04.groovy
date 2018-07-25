@@ -1,6 +1,6 @@
 node {
-    def os = 'opensuse'
-    def version = 13.2
+    def os = 'ubuntu'
+    def version = 18.04
     
     stage('Checkout') {
         checkout([$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/lammps/lammps-testing.git', credentialsId: 'lammps-jenkins']],

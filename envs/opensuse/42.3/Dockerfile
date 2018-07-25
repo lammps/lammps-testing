@@ -1,4 +1,4 @@
-FROM opensuse:13.2
+FROM opensuse:42.3
 
 RUN zypper update -y
 RUN zypper install -y gcc clang make cmake
@@ -12,7 +12,7 @@ RUN zypper install -y valgrind
 RUN zypper install -y wget
 RUN zypper install -y rpm-build
 
-RUN wget http://www.msweet.org/files/project1/htmldoc-1.8.29-source.tar.gz -O /tmp/htmldoc-1.8.29-source.tar.gz && cd /tmp && tar xvzf /tmp/htmldoc-1.8.29-source.tar.gz && cd htmldoc-1.8.29 && ./configure && make install && cd && rm -rf /tmp/htmldoc*
+RUN mkdir -p /tmp/htmldoc && cd /tmp/htmldoc && wget https://github.com/michaelrsweet/htmldoc/releases/download/v1.9.1/htmldoc-1.9.1-source.tar.gz && tar xvzf htmldoc-1.9.1-source.tar.gz && ./configure && make install && cd && rm -rf /tmp/htmldoc
 
 RUN zypper install -y python3 python-virtualenv python-nose python-pip
 RUN zypper install -y which
