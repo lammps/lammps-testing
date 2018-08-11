@@ -32,6 +32,13 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
         test_parallel_run.__name__ = func_name
         return test_parallel_run
 
+    def test_gpu(func_name, script_name):
+        def test_gpu_run(self):
+            rc = self.run_script(script_name, force_gpu=True)
+            self.assertEqual(rc, 0)
+        test_gpu_run.__name__ = func_name
+        return test_gpu_run
+
     def test_parallel_omp(func_name, script_name):
         def test_parallel_omp_run(self):
             rc = self.run_script(script_name, nthreads=4)
@@ -59,6 +66,10 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
         if 'serial' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_serial"
             methods[func_name] = test_serial(func_name, script_name)
+
+        if 'gpu' in LAMMPS_TEST_MODES:
+            func_name = "test_" + name + "_gpu"
+            methods[func_name] = test_gpu(func_name, script_name)
 
         if 'parallel' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_parallel"
