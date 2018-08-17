@@ -25,7 +25,7 @@ LAMMPS_TEST_MODES=os.environ.get('LAMMPS_TEST_MODES', 'serial').split(':')
 
 class LAMMPSTestCase:
     """ Mixin class for each LAMMPS test case. Defines utility function to run in serial or parallel"""
-    def run_script(self, script_name, nprocs=1, nthreads=1, screen=True, log=None, launcher=[], force_openmp=False, force_mpi=False, force_gpu=False):
+    def run_script(self, script_name, nprocs=1, nthreads=1, ngpus=1, screen=True, log=None, launcher=[], force_openmp=False, force_mpi=False, force_gpu=False, force_kokkos=False, force_cuda=False):
         if screen:
             output_options = []
         else:
@@ -41,6 +41,14 @@ class LAMMPSTestCase:
 
         if nthreads > 1 or force_openmp:
             lammps_options += ["-sf", "omp"]
+
+        if force_kokkos:
+            lammps_options += ["-k", "on"]
+            if nthreads > 1:
+                lammps_options += ["t", str(nthreads)]
+            if force_cuda:
+                lammps_options += ["g", str(ngpus)]
+            lammps_options += ["-sf", "kk"]
 
         if force_gpu:
             lammps_options += ["-pk", "gpu", "1", "-sf", "gpu"]
