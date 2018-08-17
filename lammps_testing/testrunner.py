@@ -39,7 +39,7 @@ class LAMMPSTestCase:
         mpi_options = []
         lammps_options = ["-in", script_name] + output_options
 
-        if nthreads > 1 or force_openmp:
+        if nthreads > 1 and force_openmp:
             lammps_options += ["-sf", "omp"]
 
         if force_kokkos:
