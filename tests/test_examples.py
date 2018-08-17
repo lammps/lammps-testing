@@ -92,6 +92,18 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
             func_name = "test_" + name + "_gpu"
             methods[func_name] = test_gpu(func_name, script_name)
 
+        if 'kokkos_omp' in LAMMPS_TEST_MODES:
+            func_name = "test_" + name + "_kokkos_omp"
+            methods[func_name] = test_kokkos_omp(func_name, script_name)
+
+        if 'kokkos_cuda' in LAMMPS_TEST_MODES:
+            func_name = "test_" + name + "_kokkos_cuda"
+            methods[func_name] = test_kokkos_cuda(func_name, script_name)
+
+        if 'kokkos_cuda_omp' in LAMMPS_TEST_MODES:
+            func_name = "test_" + name + "_kokkos_cuda_omp"
+            methods[func_name] = test_kokkos_cuda_omp(func_name, script_name)
+
         if 'parallel' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_parallel"
             methods[func_name] = test_parallel(func_name, script_name)
