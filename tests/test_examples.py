@@ -39,6 +39,27 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
         test_gpu_run.__name__ = func_name
         return test_gpu_run
 
+    def test_kokkos_omp(func_name, script_name):
+        def test_kokkos_omp_run(self):
+            rc = self.run_script(script_name, force_kokkos=True, nthreads=4)
+            self.assertEqual(rc, 0)
+        test_kokkos_omp_run.__name__ = func_name
+        return test_kokkos_omp_run
+
+    def test_kokkos_cuda(func_name, script_name):
+        def test_kokkos_cuda_run(self):
+            rc = self.run_script(script_name, force_kokkos=True, force_cuda=True)
+            self.assertEqual(rc, 0)
+        test_kokkos_cuda_run.__name__ = func_name
+        return test_kokkos_cuda_run
+
+    def test_kokkos_cuda_omp(func_name, script_name):
+        def test_kokkos_cuda_omp_run(self):
+            rc = self.run_script(script_name, force_kokkos=True, force_cuda=True, nthreads=4)
+            self.assertEqual(rc, 0)
+        test_kokkos_cuda_omp_run.__name__ = func_name
+        return test_kokkos_cuda_omp_run
+
     def test_parallel_omp(func_name, script_name):
         def test_parallel_omp_run(self):
             rc = self.run_script(script_name, nthreads=4)
@@ -70,6 +91,18 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
         if 'gpu' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_gpu"
             methods[func_name] = test_gpu(func_name, script_name)
+
+        if 'kokkos_omp' in LAMMPS_TEST_MODES:
+            func_name = "test_" + name + "_kokkos_omp"
+            methods[func_name] = test_kokkos_omp(func_name, script_name)
+
+        if 'kokkos_cuda' in LAMMPS_TEST_MODES:
+            func_name = "test_" + name + "_kokkos_cuda"
+            methods[func_name] = test_kokkos_cuda(func_name, script_name)
+
+        if 'kokkos_cuda_omp' in LAMMPS_TEST_MODES:
+            func_name = "test_" + name + "_kokkos_cuda_omp"
+            methods[func_name] = test_kokkos_cuda_omp(func_name, script_name)
 
         if 'parallel' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_parallel"
