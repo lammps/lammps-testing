@@ -23,6 +23,8 @@ RUN mkdir -p /etc/OpenCL/vendors && \
     echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd
 
 RUN apt install -y vim
+RUN apt install -y gdb
+RUN apt install -y valgrind
 
 ENV PATH /usr/lib/ccache:$PATH
 
