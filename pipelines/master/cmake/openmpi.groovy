@@ -3,7 +3,7 @@ node {
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
-    def cmake_options = ['-C ../cmake/presets/all_on.cmake',
+    def cmake_options = ['-C ../lammps/cmake/presets/all_on.cmake',
                          '-D DOWNLOAD_VORO=on',
                          '-D DOWNLOAD_MSCG=on',
                          '-D PKG_USER-LB=off',
