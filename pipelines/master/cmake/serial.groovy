@@ -47,7 +47,7 @@ node {
                     stage('Configure') {
                         sh 'rm -rf build'
                         sh 'mkdir build'
-                        sh 'cd build && cmake ' + cmake_options.join(' ') + "../lammps/cmake"
+                        sh 'cd build && cmake ' + cmake_options.join(' ') + " ../lammps/cmake"
                     }
 
                     stage('Compile') {
