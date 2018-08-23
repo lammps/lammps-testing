@@ -40,7 +40,7 @@ class LAMMPSTestCase:
         lammps_options = ["-in", script_name] + output_options
 
         if nthreads > 1 and force_openmp:
-            lammps_options += ["-sf", "omp"]
+            lammps_options += ["-sf", "omp", "-pk", "omp", str(nthreads)]
 
         if force_kokkos:
             lammps_options += ["-k", "on"]
@@ -59,8 +59,6 @@ class LAMMPSTestCase:
                 mpi_options += ["-x", "OMP_NUM_THREADS="+str(nthreads)]
             elif LAMMPS_MPI_MODE == "mpich":
                 mpi_options += ["-env", "OMP_NUM_THREADS", str(nthreads)]
-        elif nthreads > 1 or force_openmp:
-            lammps_options += ["-sf", "omp", "-pk", "omp", str(nthreads)]
 
         outfile_path = os.path.join(self.cwd, "stdout.log")
         errfile_path = os.path.join(self.cwd, "stderr.log")
