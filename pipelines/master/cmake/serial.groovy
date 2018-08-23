@@ -3,7 +3,22 @@ node {
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
-    def cmake_options = ''
+    def cmake_options = ['-C ../cmake/presets/all_on.cmake',
+                         '-D DOWNLOAD_VORO=on',
+                         '-D DOWNLOAD_MSCG=on',
+                         '-D PKG_USER-LB=off',
+                         '-D PKG_LATTE=off',
+                         '-D PKG_KIM=off',
+                         '-D PKG_USER-QUIP=off',
+                         '-D PKG_USER-QMMM=off',
+                         '-D PKG_USER-H5MD=off',
+                         '-D PKG_GPU=off',
+                         '-D PKG_KOKKOS=off',
+                         '-D PKG_USER-INTEL=off',
+                         '-D PKG_USER-OMP=off',
+                         '-D PKG_MPIIO=off',
+                         '-D BUILD_MPI=off',
+                         '-D BUILD_OMP=off']
 
     stage('Checkout') {
         dir('lammps') {
@@ -32,7 +47,7 @@ node {
                     stage('Configure') {
                         sh 'rm -rf build'
                         sh 'mkdir build'
-                        sh 'cd build && cmake ../lammps/cmake ' + cmake_options
+                        sh 'cd build && cmake ' + cmake_options.join(' ') + "../lammps/cmake"
                     }
 
                     stage('Compile') {
