@@ -1,4 +1,4 @@
-FROM fedora:22
+FROM fedora:29
 
 RUN dnf update -y && dnf groupinstall -y "Development tools"
 RUN dnf install -y openmpi openmpi-devel
@@ -11,15 +11,16 @@ RUN dnf install -y redhat-rpm-config
 RUN dnf install -y @development-tools fedora-packager rpmdevtools
 RUN dnf install -y valgrind
 RUN dnf install -y wget
-RUN dnf install -y gcc-c++
 
-RUN wget https://github.com/michaelrsweet/htmldoc/releases/download/v1.8.30/htmldoc-1.8.30-source.tar.gz -O /tmp/htmldoc-1.8.30-source.tar.gz && mkdir /tmp/htmldoc-1.8.30 && cd /tmp/htmldoc-1.8.30 && tar xvzf /tmp/htmldoc-1.8.30-source.tar.gz && ./configure && make install && cd && rm -rf /tmp/htmldoc*
+RUN mkdir -p /tmp/htmldoc && cd /tmp/htmldoc && wget https://github.com/michaelrsweet/htmldoc/releases/download/v1.9.1/htmldoc-1.9.1-source.tar.gz && tar xvzf htmldoc-1.9.1-source.tar.gz && ./configure && make install && cd && rm -rf /tmp/htmldoc
 
 RUN dnf install -y python3 python-virtualenv python-nose python-pip
 RUN dnf install -y which
 RUN pip install --upgrade pip virtualenv
 RUN pip install gcovr
+
 RUN dnf update -y && dnf install -y texlive
+RUN dnf update -y && dnf install -y cmake
 
 ENV MODULEPATH /etc/modulefiles:/usr/share/modulefiles:/usr/share/Modules/modulefiles
 ENV PATH /usr/lib/ccache:$PATH
