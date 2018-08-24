@@ -5,6 +5,7 @@ node {
     def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
     def cmake_options = ['-C ../lammps/cmake/presets/all_on.cmake',
                          '-D DOWNLOAD_VORO=on',
+                         '-D CMAKE_CXX_FLAGS="-Wno-unused-result"',
                          '-D PKG_MSCG=off',
                          '-D PKG_USER-LB=off',
                          '-D PKG_LATTE=off',

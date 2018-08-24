@@ -4,6 +4,7 @@ node {
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
     def cmake_options = ['-C ../lammps/cmake/presets/all_on.cmake',
+                         '-D CMAKE_CXX_FLAGS="-Wno-unused-result"',
                          '-D DOWNLOAD_VORO=on',
                          '-D PKG_MSCG=off',
                          '-D PKG_USER-LB=off',
