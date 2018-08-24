@@ -181,7 +181,7 @@ node {
                 sh 'rm -rf lammps-testing/tests/examples/COUPLE'
 
                 sh '''
-                source pyenv2/bin/activate
+                source pyenv/bin/activate
                 cd python
                 python install.py
                 cd ..
