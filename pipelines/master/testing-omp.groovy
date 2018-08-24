@@ -72,11 +72,12 @@ node {
                 sh 'ccache -C'
                 sh 'ccache -M 5G'
 
-                if (! fileExists('pyenv') ) {
-                    sh 'virtualenv pyenv'
+                if (fileExists('pyenv') ) {
+                    sh 'rm -rf pyenv'
                 }
 
                 sh '''
+                virtualenv pyenv
                 source pyenv/bin/activate
                 pip install nose
                 pip install nose2
