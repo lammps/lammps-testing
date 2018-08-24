@@ -13,10 +13,10 @@ node {
     env.LMP_INC  = '-I/usr/include/hdf5/serial -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -DLAMMPS_BIGBIG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized'
     env.JPG_LIB  = '-L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -ljpeg -lpng -lz'
 
-    env.CC = 'gcc-6'
-    env.CXX = 'g++-6'
-    env.OMPI_CC = 'gcc-6'
-    env.OMPI_CXX = 'g++-6'
+    env.CC = 'gcc'
+    env.CXX = 'g++'
+    env.OMPI_CC = 'gcc'
+    env.OMPI_CXX = 'g++'
 
     stage 'Setting up build environment'
 
