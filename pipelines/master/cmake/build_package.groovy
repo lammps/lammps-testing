@@ -4,7 +4,7 @@ node {
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
-    def cmake_options = "-DENABLE_${package_name}=on -DENABLE_MPI=on -DCMAKE_CXX_FLAGS=\"-O3 -Wall -Wno-unused-result -Wno-maybe-uninitialized\""
+    def cmake_options = "-D PKG_${package_name}=on -D BUILD_MPI=on -D CMAKE_CXX_FLAGS=\"-O3 -Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized\""
 
     stage('Checkout') {
         dir('lammps') {
@@ -16,6 +16,14 @@ node {
             git branch: 'master', credentialsId: 'lammps-jenkins', url: testing_project_url
         }
     }
+
+    env.LAMMPS_DIR = pwd() + '/lammps'
+    env.LAMMPS_MPI_MODE = 'openmpi'
+    env.LAMMPS_BINARY = pwd() + '/build/lmp'
+    env.LAMMPS_TEST_MODES = 'serial'
+    env.LAMMPS_POTENTIALS = pwd() + '/lammps/potentials'
+    env.LAMMPS_TEST_DIRS = env.PACKAGE_TEST_DIR
+    env.LAMMPS_CMAKE_OPTIONS = cmake_options
 
     def utils = load 'lammps-testing/pipelines/master/cmake/utils.groovy'
     //utils.setGitHubCommitStatus(project_url, git_commit, 'building...', 'PENDING')
@@ -30,14 +38,45 @@ node {
 
                 // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
                 docker.image(envImage.imageName()).inside {
+                    if ( fileExists('pyenv') ) {
+                        sh 'rm -rf pyenv'
+                    }
+                    sh 'virtualenv --python=$(which python) pyenv'
+
+                    sh '''
+                    source pyenv/bin/activate
+                    pip install nose
+                    deactivate
+                    '''
+
                     stage('Configure') {
                         sh 'rm -rf build'
                         sh 'mkdir build'
-                        sh 'cd build && cmake ../lammps/cmake ' + cmake_options
+                        sh '''
+                        source pyenv2/bin/activate
+                        cd build/
+                        cd build && cmake $LAMMPS_CMAKE_OPTIONS ../lammps/cmake'
+                        cd ..
+                        deactivate
+                        '''
                     }
 
                     stage('Compile') {
                         sh 'make -C build'
+                    }
+
+                    stage('Testing') {
+                        sh '''
+                        source pyenv/bin/activate
+                        cd python
+                        python install.py
+                        cd ..
+                        cd lammps-testing
+                        env
+                        python run_tests.py --processes 8 tests/test_package.py
+                        cd ..
+                        deactivate
+                        '''
                     }
                 }
             }
