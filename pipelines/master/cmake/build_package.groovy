@@ -53,7 +53,7 @@ node {
                         sh 'rm -rf build'
                         sh 'mkdir build'
                         sh '''
-                        source pyenv2/bin/activate
+                        source pyenv/bin/activate
                         cd build/
                         cd build && cmake $LAMMPS_CMAKE_OPTIONS ../lammps/cmake'
                         cd ..
