@@ -4,7 +4,8 @@ node {
     def project_url = 'https://github.com/ellio167/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
-    def cmake_options = "-D PKG_${package_name}=on -D BUILD_MPI=on -D CMAKE_CXX_FLAGS=\"-O3 -Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized\""
+    def cmake_options = ['-D CMAKE_CXX_FLAGS="-Wall -Wextra -Wno-unused-result"',
+                         "-D PKG_${package_name}=on"]
 
     stage('Checkout') {
         dir('lammps') {
@@ -38,44 +39,22 @@ node {
 
                 // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
                 docker.image(envImage.imageName()).inside {
-                    if ( fileExists('pyenv') ) {
-                        sh 'rm -rf pyenv'
-                    }
-                    sh 'virtualenv --python=$(which python) pyenv'
-
-                    sh '''
-                    source pyenv/bin/activate
-                    pip install nose
-                    deactivate
-                    '''
-
                     stage('Configure') {
                         sh 'rm -rf build'
                         sh 'mkdir build'
-                        sh '''
-                        source pyenv/bin/activate
-                        cd build
-                        cmake $LAMMPS_CMAKE_OPTIONS ../lammps/cmake
-                        cd ..
-                        deactivate
-                        '''
+                        sh 'cd build && cmake ' + cmake_options.join(' ') + " ../lammps/cmake"
                     }
 
                     stage('Compile') {
-                        sh 'make -C build'
+                        sh 'make -C build -j 8'
                     }
 
                     stage('Testing') {
                         sh '''
-                        source pyenv/bin/activate
-                        cd python
-                        python install.py
-                        cd ..
                         cd lammps-testing
                         env
                         python run_tests.py --processes 8 tests/test_package.py
                         cd ..
-                        deactivate
                         '''
                     }
                 }
