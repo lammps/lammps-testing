@@ -55,7 +55,7 @@ node {
                         sh '''
                         source pyenv/bin/activate
                         cd build/
-                        cd build && cmake $LAMMPS_CMAKE_OPTIONS ../lammps/cmake'
+                        cd build && cmake $LAMMPS_CMAKE_OPTIONS ../lammps/cmake
                         cd ..
                         deactivate
                         '''
