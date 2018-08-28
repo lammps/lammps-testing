@@ -59,6 +59,7 @@ node {
                         virtualenv pyenv
                         source pyenv/bin/activate
                         pip install nose
+                        env
                         python run_tests.py --processes 8 tests/test_package.py
                         deactivate
                         cd ..
