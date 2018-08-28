@@ -23,7 +23,7 @@ node {
     env.LAMMPS_BINARY = pwd() + '/build/lmp'
     env.LAMMPS_TEST_MODES = 'serial'
     env.LAMMPS_POTENTIALS = pwd() + '/lammps/potentials'
-    env.LAMMPS_TEST_DIRS = env.PACKAGE_TEST_DIR
+    env.LAMMPS_TEST_DIRS = env.PACKAGE_TEST_DIRS
     env.LAMMPS_CMAKE_OPTIONS = cmake_options
 
     def utils = load 'lammps-testing/pipelines/master/cmake/utils.groovy'
