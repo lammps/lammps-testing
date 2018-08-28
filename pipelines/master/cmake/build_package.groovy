@@ -50,10 +50,17 @@ node {
                     }
 
                     stage('Testing') {
+                        if ( fileExists('pyenv') ) {
+                            sh 'rm -rf lammps-testing/pyenv'
+                        }
+
                         sh '''
                         cd lammps-testing
-                        env
+                        virtualenv pyenv
+                        source pyenv/bin/activate
+                        pip install nose
                         python run_tests.py --processes 8 tests/test_package.py
+                        deactivate
                         cd ..
                         '''
                     }
