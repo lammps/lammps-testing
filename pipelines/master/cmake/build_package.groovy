@@ -1,14 +1,14 @@
 node {
     def package_name = env.PACKAGE
     def build_name = "jenkins/cmake/master/${package_name}"
-    def project_url = 'https://github.com/lammps/lammps.git'
+    def project_url = 'https://github.com/ellio167/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
     def cmake_options = "-D PKG_${package_name}=on -D BUILD_MPI=on -D CMAKE_CXX_FLAGS=\"-O3 -Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized\""
 
     stage('Checkout') {
         dir('lammps') {
-            git branch: 'master', credentialsId: 'lammps-jenkins', url: project_url
+            git branch: 'kim-v2-update', credentialsId: 'lammps-jenkins', url: project_url
             def git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         }
 
