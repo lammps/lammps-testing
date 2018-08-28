@@ -90,6 +90,7 @@ node {
     }
 
     warnings consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']]
+    junit 'lammps-testing/nosetests*.xml'
 
 /*    if (currentBuild.result == 'FAILURE') {
         slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
