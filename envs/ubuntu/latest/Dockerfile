@@ -12,7 +12,7 @@ RUN apt update && apt upgrade -y && apt install -y build-essential ccache gfortr
 RUN apt-get -y install software-properties-common --no-install-recommends
 RUN add-apt-repository -y ppa:openkim-team/daily
 RUN apt-get update -y
-RUN apt-get -y install autopkgtest libkim-api-v2-dev
+RUN apt-get -y install autopkgtest libkim-api-v2-dev libkim-api-v2-models
 
 ENV PATH /usr/lib/ccache:$PATH
 
