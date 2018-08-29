@@ -22,6 +22,9 @@ LAMMPS_MPI_MODE=os.environ.get('LAMMPS_MPI_MODE', 'openmpi')
 # test modes separated by colons. e.g. serial:parallel:omp:valgrind
 LAMMPS_TEST_MODES=os.environ.get('LAMMPS_TEST_MODES', 'serial').split(':')
 
+# list of folders which should be scanned for tests
+LAMMPS_TEST_DIRS=os.environ.get('LAMMPS_TEST_DIRS', '').split(':')
+
 
 class LAMMPSTestCase:
     """ Mixin class for each LAMMPS test case. Defines utility function to run in serial or parallel"""

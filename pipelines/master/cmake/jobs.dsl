@@ -60,6 +60,7 @@ packages.each { name ->
     pipelineJob("lammps/master/cmake/packages/${name}") {
         environmentVariables {
             env("PACKAGE", name)
+            env("PACKAGE_TEST_DIRS", name.toLowerCase())
         }
 
         concurrentBuild(false)
