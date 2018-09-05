@@ -86,7 +86,7 @@ node {
     stage('Checkout') {
         dir('lammps') {
             git branch: 'master', credentialsId: 'lammps-jenkins', url: project_url
-            def git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+            env.lammps_git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         }
 
         dir('lammps-testing') {
@@ -95,7 +95,7 @@ node {
     }
 
     def utils = load 'lammps-testing/pipelines/master/cmake/utils.groovy'
-    utils.setGitHubCommitStatus(project_url, git_commit, 'building...', 'PENDING')
+    utils.setGitHubCommitStatus(project_url, env.lammps_git_commit, 'building...', 'PENDING')
 
     env.LAMMPS_DIR = pwd() + '/lammps'
     env.LAMMPS_MPI_MODE = 'openmpi'
@@ -146,7 +146,7 @@ node {
                     }
                 }
             }
-            utils.setGitHubCommitStatus(project_url, git_commit, 'build successful!', 'SUCCESS')
+            utils.setGitHubCommitStatus(project_url, env.lammps_git_commit, 'build successful!', 'SUCCESS')
 
         } catch (err) {
             echo "Caught: ${err}"
@@ -159,9 +159,9 @@ node {
     def summary = getTestSummary()
 
     if(hasFailedTests()) {
-        utils.setGitHubCommitStatus(project_url, git_commit, summary, 'FAILURE')
+        utils.setGitHubCommitStatus(project_url, env.lammps_git_commit, summary, 'FAILURE')
     } else {
-        utils.setGitHubCommitStatus(project_url, git_commit, summary, 'SUCCESS')
+        utils.setGitHubCommitStatus(project_url, env.lammps_git_commit, summary, 'SUCCESS')
     }
 
     if (currentBuild.result == 'FAILURE') {
