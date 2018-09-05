@@ -62,7 +62,7 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
 
     def test_parallel_omp(func_name, script_name):
         def test_parallel_omp_run(self):
-            rc = self.run_script(script_name, nthreads=4)
+            rc = self.run_script(script_name, nthreads=4, force_openmp=True)
             self.assertEqual(rc, 0)
         test_parallel_omp_run.__name__ = func_name
         return test_parallel_omp_run
