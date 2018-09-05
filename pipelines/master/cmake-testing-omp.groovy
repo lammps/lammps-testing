@@ -155,10 +155,11 @@ node {
     }
 
     warnings consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']]
-    junit 'lammps-testing/nosetests-*.xml'
+    junit keepLongStdio: true, testResults: 'lammps-testing/nosetests-*.xml'
     def summary = getTestSummary()
 
     if(hasFailedTests()) {
+        currentBuild.result = 'FAILURE'
         utils.setGitHubCommitStatus(project_url, build_name, env.lammps_git_commit, summary, 'FAILURE')
     } else {
         utils.setGitHubCommitStatus(project_url, build_name, env.lammps_git_commit, summary, 'SUCCESS')
