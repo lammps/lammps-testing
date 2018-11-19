@@ -1,0 +1,10 @@
+---
+ - name: add jenkins group
+   group:
+     name: jenkins
+     gid: 114
+ - name: create jenkins user
+   user:
+     name: jenkins
+     uid: 108
+     group: jenkins
