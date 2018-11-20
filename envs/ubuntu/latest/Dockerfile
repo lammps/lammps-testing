@@ -13,6 +13,7 @@ RUN apt-get -y install software-properties-common --no-install-recommends
 RUN add-apt-repository -y ppa:openkim-team/daily
 RUN apt-get update -y
 RUN apt-get -y install autopkgtest libkim-api-v2-dev libkim-api-v2-models
+RUN apt-get update -y && apt-get -y install libenchant-dev
 
 ENV PATH /usr/lib/ccache:$PATH
 
