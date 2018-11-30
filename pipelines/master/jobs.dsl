@@ -1,6 +1,6 @@
 folder('lammps/master')
 
-def scripts = ['serial', 'shlib', 'openmpi', 'testing', 'build-docs', 'kokkos_omp', 'regression', 'testing-omp', 'cmake-testing-omp', 'serial-clang', 'shlib-clang', 'openmpi-clang']
+def scripts = ['serial', 'shlib', 'openmpi', 'testing', 'build-docs', 'kokkos_omp', 'regression', 'testing-omp', 'cmake-testing-omp', 'serial-clang', 'shlib-clang', 'openmpi-clang', 'spellcheck-docs']
 
 scripts.each { name ->
     pipelineJob("lammps/master/${name}") {
@@ -9,7 +9,7 @@ scripts.each { name ->
         }
 
         concurrentBuild(false)
-        quietPeriod(300)
+        quietPeriod(600)
 
         definition {
             cpsScm {
