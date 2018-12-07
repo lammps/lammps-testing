@@ -1,4 +1,4 @@
-node {
+node('atlas2') {
     def build_name = 'jenkins/build-docs'
 
     stage 'Checkout'
