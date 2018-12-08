@@ -57,7 +57,7 @@ node('atlas2') {
                     }
                 }
             }
-
+            currentBuild.result = 'SUCCESS'
         } catch (err) {
             echo "Caught: ${err}"
             currentBuild.result = 'FAILURE'
