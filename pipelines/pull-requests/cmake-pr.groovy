@@ -34,8 +34,6 @@ node('atlas2') {
         }
     }
 
-    def utils = load 'lammps-testing/pipelines/master/cmake/utils.groovy'
-    //utils.setGitHubCommitStatus(project_url, git_commit, 'building...', 'PENDING')
     gitHubPRStatus githubPRMessage('${GITHUB_PR_COND_REF} run started')
 
     stage('Setup') {
@@ -59,16 +57,14 @@ node('atlas2') {
                     }
                 }
             }
-            //utils.setGitHubCommitStatus(project_url, git_commit, 'build successful!', 'SUCCESS')
 
         } catch (err) {
             echo "Caught: ${err}"
             currentBuild.result = 'FAILURE'
-            //utils.setGitHubCommitStatus(project_url, git_commit, 'build failed!', 'FAILURE')
         }
     }
 
-    githubPRStatusPublisher buildMessage: message(failureMsg: githubPRMessage('Can\'t set status; build failed.'), successMsg: githubPRMessage('Can\'t set status; build succeeded.')), statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended'), unstableAs: 'FAILURE'
+    githubPRStatusPublisher statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended'), unstableAs: 'SUCCESS'
 
     warnings consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']]
 
