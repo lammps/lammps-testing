@@ -70,13 +70,11 @@ node {
                     make -C lib/colvars -f Makefile.g++ clean
                     make -C lib/poems -f Makefile.g++ CXX="${COMP}" clean
                     make -C lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
-                    make -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran clean
                     make -C lib/h5md clean
 
                     make -j 8 -C lib/colvars -f Makefile.g++ CXX="${COMP}"
                     make -j 8 -C lib/poems -f Makefile.g++ CXX="${COMP}"
                     make -j 8 -C lib/awpmd -f Makefile.mpicc CC="${COMP}"
-                    make -j 8 -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran
                     make -j 8 -C lib/h5md
                     '''
 
@@ -93,7 +91,7 @@ node {
                     sh '''
                     make -C src yes-user-molfile yes-compress yes-python
 
-                    make -C src yes-poems yes-voronoi yes-user-colvars yes-user-awpmd yes-meam
+                    make -C src yes-poems yes-voronoi yes-user-colvars yes-user-awpmd yes-user-meamc
                     make -C src yes-user-h5md
                     make -C src yes-mpiio yes-user-lb
                     '''

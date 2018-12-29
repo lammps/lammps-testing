@@ -53,7 +53,6 @@ node {
                 make -C lib/poems -f Makefile.g++ CXX="${COMP}" clean
                 #make -C lib/voronoi -f Makefile.g++ CXX="${COMP}" clean
                 make -C lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
-                make -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran clean
                 make -C lib/h5md -f Makefile.h5cc clean
                 make -C src/STUBS clean
 
@@ -61,7 +60,6 @@ node {
                 make -j 8 -C lib/poems -f Makefile.g++ CXX="${COMP}"
                 #make -j 8 -C lib/voronoi -f Makefile.g++ CXX="${COMP}"
                 make -j 8 -C lib/awpmd -f Makefile.mpicc CC="${COMP}"
-                make -j 8 -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran
                 make -j 8 -C lib/h5md -f Makefile.h5cc
                 '''
 
@@ -72,7 +70,7 @@ node {
                 make -C src yes-user-molfile yes-compress yes-python
 
                 #make -C src yes-poems yes-voronoi yes-user-colvars yes-user-awpmd yes-meam
-                make -C src yes-poems yes-user-colvars yes-user-awpmd yes-meam
+                make -C src yes-poems yes-user-colvars yes-user-awpmd yes-user-meamc
 
                 make -C src yes-user-h5md
                 '''
