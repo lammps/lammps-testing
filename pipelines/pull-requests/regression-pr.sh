@@ -31,17 +31,13 @@ make -C lib/atc -f Makefile.mpic++ clean
 make -C lib/colvars -f Makefile.g++ clean
 make -C lib/poems -f Makefile.g++ CXX="${COMP}" clean
 make -C lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
-make -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran clean
 make -C lib/qmmm -f Makefile.gfortran clean
-make -C lib/reax -f Makefile.gfortran clean
 
 make -j 8 -C lib/atc -f Makefile.mpic++
 make -j 8 -C lib/colvars -f Makefile.g++ CXX="${COMP}"
 make -j 8 -C lib/poems -f Makefile.g++ CXX="${COMP}"
 make -j 8 -C lib/awpmd -f Makefile.mpicc CC="${COMP}"
-make -j 8 -C lib/meam -f Makefile.gfortran CC=gcc F90=gfortran
 make -j 8 -C lib/qmmm -f Makefile.gfortran
-make -j 8 -C lib/reax -f Makefile.gfortran
 
 cd lib/voronoi
 python2 Install.py -g
@@ -61,7 +57,6 @@ make -C src yes-granular
 make -C src yes-kspace
 make -C src yes-manybody
 make -C src yes-mc
-make -C src yes-meam
 make -C src yes-misc
 make -C src yes-molecule
 make -C src yes-mpiio
@@ -70,7 +65,6 @@ make -C src yes-peri
 make -C src yes-poems
 make -C src yes-python
 make -C src yes-qeq
-make -C src yes-reax
 make -C src yes-replica
 make -C src yes-rigid
 make -C src yes-shock
@@ -88,6 +82,7 @@ make -C src yes-user-drude
 make -C src yes-user-eff
 make -C src yes-user-fep
 make -C src yes-user-lb
+make -C src yes-user-meamc
 make -C src yes-user-misc
 make -C src yes-user-molfile
 make -C src yes-user-phonon

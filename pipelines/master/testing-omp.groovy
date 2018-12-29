@@ -98,14 +98,12 @@ node {
                 make -C lib/poems -f Makefile.g++ CXX="${COMP}" clean
                 make -C lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
                 make -C lib/qmmm -f Makefile.gfortran clean
-                make -C lib/reax -f Makefile.gfortran clean
 
                 make -j 8 -C lib/atc -f Makefile.mpic++ EXTRAMAKE="Makefile.lammps.installed"
                 make -j 8 -C lib/colvars -f Makefile.g++ CXX="${COMP}"
                 make -j 8 -C lib/poems -f Makefile.g++ CXX="${COMP}"
                 make -j 8 -C lib/awpmd -f Makefile.mpicc CC="${COMP}"
                 make -j 8 -C lib/qmmm -f Makefile.gfortran
-                make -j 8 -C lib/reax -f Makefile.gfortran
                 '''
 
                 sh '''
@@ -137,7 +135,6 @@ node {
                 make -C src yes-poems
                 make -C src yes-python
                 make -C src yes-qeq
-                make -C src yes-reax
                 make -C src yes-replica
                 make -C src yes-rigid
                 make -C src yes-shock
