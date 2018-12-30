@@ -12,7 +12,7 @@ lattice		fcc 3.52 orient	x 1 0 0 orient y 0 1 1 orient z 0 -1 1 &
 		origin 0.5 0 0 
 create_atoms	1 box
 
-pair_style	meam
+pair_style	meam/c
 pair_coeff	* * library.meam Ni4 Ni.meam Ni4 Ni4 Ni4
 
 neighbor	0.3 bin
