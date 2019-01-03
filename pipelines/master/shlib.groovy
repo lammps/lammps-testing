@@ -21,7 +21,7 @@ node {
 
     stage 'Setting up build environment'
 
-    def envImage = docker.image('lammps-testing:ubuntu_latest')
+    def envImage = docker.image('lammps_testing:ubuntu_latest')
 
     try {
         docker.withRegistry('http://glados.cst.temple.edu:5000') {
