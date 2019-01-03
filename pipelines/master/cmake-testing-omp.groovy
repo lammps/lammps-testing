@@ -31,7 +31,7 @@ node {
     def build_name = 'jenkins/cmake-testing-omp'
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
-    def docker_image_name = 'rbberger/lammps-testing:ubuntu_latest'
+    def docker_image_name = 'lammps_testing:ubuntu_latest'
     def cmake_options = ['-D BUILD_LIB=on',
                          '-D BUILD_SHARED_LIBS=on',
                          '-D BUILD_OMP=on',
@@ -109,7 +109,7 @@ node {
         def envImage = docker.image(docker_image_name)
 
         try {
-            docker.withRegistry('https://registry.hub.docker.com', 'docker-registry-login') {
+            docker.withRegistry('http://glados.cst.temple.edu:5000') {
                 // ensure image is current
                 envImage.pull()
 
