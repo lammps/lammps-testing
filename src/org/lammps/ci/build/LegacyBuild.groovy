@@ -16,6 +16,7 @@ abstract class LegacyBuild implements Serializable {
     protected def name
     protected def steps
 
+    def compiler = 'g++'
     def lammps_mode = LAMMPS_MODE.exe
     def lammps_mach = 'serial'
     def lammps_size = LAMMPS_SIZES.SMALLBIG
@@ -75,7 +76,7 @@ abstract class LegacyBuild implements Serializable {
 
     protected def configure() {
         steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
-        steps.env.COMP     = 'g++'
+        steps.env.COMP     = compiler
         steps.env.MACH     = "${lammps_mach}"
         steps.env.MODE     = "${lammps_mode}"
         steps.env.LMPFLAGS = '-sf off'
