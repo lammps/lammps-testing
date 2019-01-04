@@ -1,6 +1,7 @@
 package org.lammps.ci
 import org.lammps.ci.build.Serial
 import org.lammps.ci.build.Shlib
+import org.lammps.ci.build.OpenMPI
 
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
@@ -13,6 +14,9 @@ def regular_build(build_name) {
             break
         case 'new-shlib':
             s = new Shlib(this)
+            break
+        case 'new-openmpi':
+            s = new OpenMPI(this)
             break
         default:
             currentBuild.result = 'FAILURE'

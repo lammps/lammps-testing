@@ -15,9 +15,11 @@ enum LAMMPS_SIZES {
 abstract class LegacyBuild implements Serializable {
     protected def name
     protected def steps
-    def lammps_mode  = LAMMPS_MODE.exe
-    def lammps_mach  = 'serial'
+
+    def lammps_mode = LAMMPS_MODE.exe
+    def lammps_mach = 'serial'
     def lammps_size = LAMMPS_SIZES.SMALLBIG
+    def packages = []
 
     LegacyBuild(name, steps) {
         this.name  = name
@@ -29,37 +31,45 @@ abstract class LegacyBuild implements Serializable {
             steps.sh '''
             make -C lammps/src purge
             make -C lammps/src clean-all
-            make -C lammps/src yes-all
-            make -C lammps/src no-lib
-            make -C lammps/src no-mpiio
-            make -C lammps/src no-user-omp
-            make -C lammps/src no-user-intel
-            make -C lammps/src no-user-lb
-            make -C lammps/src no-user-smd
-            make -C lammps/src yes-user-molfile yes-compress yes-python
-            make -C lammps/src yes-poems yes-user-colvars yes-user-awpmd yes-user-meamc
-            make -C lammps/src yes-user-h5md
-            make -C lammps/src yes-user-dpd
-            make -C lammps/src yes-user-reaxc
-            make -C lammps/src yes-user-meamc
             '''
+
+            packages.each {
+                steps.sh "make -C lammps/src $it"
+            }
         }
     }
 
     protected def build_libraries() {
         steps.stage('Building libraries') {
-            steps.sh '''
-            make -C lammps/lib/colvars -f Makefile.g++ clean
-            make -C lammps/lib/poems -f Makefile.g++ CXX="${COMP}" clean
-            make -C lammps/lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
-            make -C lammps/lib/h5md -f Makefile.h5cc clean
-            make -C lammps/src/STUBS clean
+            steps.sh 'make -C lammps/src/STUBS clean'
 
-            make -j 8 -C lammps/lib/colvars -f Makefile.g++ CXX="${COMP}"
-            make -j 8 -C lammps/lib/poems -f Makefile.g++ CXX="${COMP}"
-            make -j 8 -C lammps/lib/awpmd -f Makefile.mpicc CC="${COMP}"
-            make -j 8 -C lammps/lib/h5md -f Makefile.h5cc
-            '''
+            if('yes-user-colvars' in packages) {
+                steps.sh '''
+                make -C lammps/lib/colvars -f Makefile.g++ clean
+                make -j 8 -C lammps/lib/colvars -f Makefile.g++ CXX="${COMP}"
+                '''
+            }
+
+            if('yes-poems' in packages) {
+                steps.sh '''
+                make -C lammps/lib/poems -f Makefile.g++ CXX="${COMP}" clean
+                make -j 8 -C lammps/lib/poems -f Makefile.g++ CXX="${COMP}"
+                '''
+            }
+
+            if('yes-user-awpmd' in packages) {
+                steps.sh '''
+                make -C lammps/lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
+                make -j 8 -C lammps/lib/awpmd -f Makefile.mpicc CC="${COMP}"
+                '''
+            }
+
+            if('yes-user-awpmd' in packages) {
+                steps.sh '''
+                make -C lammps/lib/h5md -f Makefile.h5cc clean
+                make -j 8 -C lammps/lib/h5md -f Makefile.h5cc
+                '''
+            }
         }
     }
 

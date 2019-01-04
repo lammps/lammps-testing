@@ -1,18 +1,18 @@
 package org.lammps.ci.build
 
-class Shlib extends LegacyBuild {
-    Shlib(steps) {
-        super('jenkins/shlib', steps)
-        lammps_mode = LAMMPS_MODE.shlib
-        lammps_mach = 'serial'
-        lammps_size = LAMMPS_SIZES.SMALLBIG
+class OpenMPI extends LegacyBuild {
+    OpenMPI(steps) {
+        super('jenkins/openmpi', steps)
+        compiler    = 'mpicxx'
+        lammps_mode = LAMMPS_MODE.exe
+        lammps_mach = 'mpi'
+        lammps_size = LAMMPS_SIZES.BIGBIG
 
         packages << 'yes-all'
         packages << 'no-lib'
         packages << 'no-mpiio'
         packages << 'no-user-omp'
         packages << 'no-user-intel'
-        packages << 'no-user-lb'
         packages << 'no-user-smd'
         packages << 'yes-user-molfile'
         packages << 'yes-compress'
@@ -25,5 +25,7 @@ class Shlib extends LegacyBuild {
         packages << 'yes-user-dpd'
         packages << 'yes-user-reaxc'
         packages << 'yes-user-meamc'
+        packages << 'yes-mpiio'
+        packages << 'yes-user-lb'
     }
 }
