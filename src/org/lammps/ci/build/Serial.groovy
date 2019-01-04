@@ -1,6 +1,6 @@
 package org.lammps.ci.build
 
-def build_name = 'jenkins/serial'
+def name = 'jenkins/serial'
 
 def build() {
     env.CCACHE_DIR= pwd() + '/.ccache'
