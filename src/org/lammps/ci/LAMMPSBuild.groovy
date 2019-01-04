@@ -4,6 +4,7 @@ import org.lammps.ci.build.Serial
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
     def docker_image_name = 'lammps_testing:ubuntu_latest'
+    def project_url = 'https://github.com/lammps/lammps.git'
 
     node {
         switch(build_name) {
@@ -13,7 +14,7 @@ def regular_build(build_name) {
         }
 
         stage('Checkout') {
-            git branch: 'master', credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps.git'
+            git branch: 'master', credentialsId: 'lammps-jenkins', url: project_url
             git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         }
 
