@@ -82,8 +82,13 @@ abstract class LegacyBuild implements Serializable {
         steps.env.MACH     = "${lammps_mach}"
         steps.env.MODE     = "${lammps_mode}"
         steps.env.LMPFLAGS = '-sf off'
-        steps.env.LMP_INC  = "-I../../src/STUBS -I/usr/include/hdf5/serial -DLAMMPS_${lammps_size} -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized"
-        steps.env.JPG_LIB  = '-L../../src/STUBS/ -L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -lmpi_stubs -ljpeg -lpng -lz'
+        steps.env.LMP_INC  = "-I/usr/include/hdf5/serial -DLAMMPS_${lammps_size} -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized"
+        steps.env.JPG_LIB  = '-L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -ljpeg -lpng -lz'
+
+        if(lammps_mach != 'mpi') {
+            steps.env.LMP_INC = "-I../../src/STUBS ${steps.env.LMP_INC}"
+            steps.env.JPG_LIB = "-L../../src/STUBS/ ${steps.env.JPG_LIB} -lmpi_stubs"
+        }
 
         steps.env.CC = c_compiler
         steps.env.CXX = cxx_compiler
