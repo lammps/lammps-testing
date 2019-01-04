@@ -8,24 +8,8 @@ class Serial implements Serializable {
         this.steps = steps
     }
 
-    def build() {
-        steps.env.CCACHE_DIR= steps.pwd() + '/.ccache'
-        steps.env.COMP     = 'g++'
-        steps.env.MACH     = 'serial'
-        steps.env.LMPFLAGS = '-sf off'
-        steps.env.LMP_INC  = '-I../../src/STUBS -I/usr/include/hdf5/serial -DLAMMPS_SMALLSMALL -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized'
-        steps.env.JPG_LIB  = '-L../../src/STUBS/ -L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -lmpi_stubs -ljpeg -lpng -lz'
-
-        steps.env.CC = 'gcc'
-        steps.env.CXX = 'g++'
-        steps.env.OMPI_CC = 'gcc'
-        steps.env.OMPI_CXX = 'g++'
-
-        steps.sh 'ccache -C'
-        steps.sh 'ccache -M 5G'
-
-        // clean up project directory
-        steps.stage('Enabling modules') {
+    private def enable_packages() {
+        steps.stage('Enable packages') {
             steps.sh '''
             make -C src purge
             make -C src clean-all
@@ -41,7 +25,9 @@ class Serial implements Serializable {
             make -C src yes-user-h5md
             '''
         }
+    }
 
+    private def build_libraries() {
         steps.stage('Building libraries') {
             steps.sh '''
             make -C lib/colvars -f Makefile.g++ clean
@@ -56,6 +42,26 @@ class Serial implements Serializable {
             make -j 8 -C lib/h5md -f Makefile.h5cc
             '''
         }
+    }
+
+    def build() {
+        steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
+        steps.env.COMP     = 'g++'
+        steps.env.MACH     = 'serial'
+        steps.env.LMPFLAGS = '-sf off'
+        steps.env.LMP_INC  = '-I../../src/STUBS -I/usr/include/hdf5/serial -DLAMMPS_SMALLSMALL -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized'
+        steps.env.JPG_LIB  = '-L../../src/STUBS/ -L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -lmpi_stubs -ljpeg -lpng -lz'
+
+        steps.env.CC = 'gcc'
+        steps.env.CXX = 'g++'
+        steps.env.OMPI_CC = 'gcc'
+        steps.env.OMPI_CXX = 'g++'
+
+        steps.sh 'ccache -C'
+        steps.sh 'ccache -M 5G'
+
+        enable_packages()
+        build_libraries()
 
         steps.stage('Compiling') {
             steps.sh 'make -j 8 -C src ${MACH} MPICMD="${MPICMD}" CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" TAG="${TAG}-$CC" LMPFLAGS="${LMPFLAGS}"'

@@ -6,7 +6,7 @@ def regular_build(build_name) {
     def docker_image_name = 'lammps_testing:ubuntu_latest'
     def project_url = 'https://github.com/lammps/lammps.git'
 
-    node {
+    node('atlas2') {
         switch(build_name) {
             case 'serial':
                 s = new Serial(this)
