@@ -9,7 +9,7 @@ def regular_build(build_name) {
     node {
         switch(build_name) {
             case 'serial':
-                s = new Serial()
+                s = new Serial(this)
                 break
         }
 
@@ -33,7 +33,7 @@ def regular_build(build_name) {
 
                 // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
                 docker.image(envImage.imageName()).inside {
-                    s.build(env)
+                    s.build()
                 }
             }
 

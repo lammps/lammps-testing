@@ -1,27 +1,32 @@
 package org.lammps.ci.build
 
-class Serial {
-    String name = 'jenkins/serial'
+class Serial implements Serializable {
+    def name = 'jenkins/serial'
+    def steps
 
-    def build(env) {
-        env.CCACHE_DIR= pwd() + '/.ccache'
-        env.COMP     = 'g++'
-        env.MACH     = 'serial'
-        env.LMPFLAGS = '-sf off'
-        env.LMP_INC  = '-I../../src/STUBS -I/usr/include/hdf5/serial -DLAMMPS_SMALLSMALL -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized'
-        env.JPG_LIB  = '-L../../src/STUBS/ -L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -lmpi_stubs -ljpeg -lpng -lz'
+    Serial(steps) {
+        this.steps = steps
+    }
 
-        env.CC = 'gcc'
-        env.CXX = 'g++'
-        env.OMPI_CC = 'gcc'
-        env.OMPI_CXX = 'g++'
+    def build() {
+        steps.env.CCACHE_DIR= steps.pwd() + '/.ccache'
+        steps.env.COMP     = 'g++'
+        steps.env.MACH     = 'serial'
+        steps.env.LMPFLAGS = '-sf off'
+        steps.env.LMP_INC  = '-I../../src/STUBS -I/usr/include/hdf5/serial -DLAMMPS_SMALLSMALL -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized'
+        steps.env.JPG_LIB  = '-L../../src/STUBS/ -L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -lmpi_stubs -ljpeg -lpng -lz'
 
-        sh 'ccache -C'
-        sh 'ccache -M 5G'
+        steps.env.CC = 'gcc'
+        steps.env.CXX = 'g++'
+        steps.env.OMPI_CC = 'gcc'
+        steps.env.OMPI_CXX = 'g++'
+
+        steps.sh 'ccache -C'
+        steps.sh 'ccache -M 5G'
 
         // clean up project directory
-        stage('Enabling modules') {
-            sh '''
+        steps.stage('Enabling modules') {
+            steps.sh '''
             make -C src purge
             make -C src clean-all
             make -C src yes-all
@@ -37,8 +42,8 @@ class Serial {
             '''
         }
 
-        stage('Building libraries') {
-            sh '''
+        steps.stage('Building libraries') {
+            steps.sh '''
             make -C lib/colvars -f Makefile.g++ clean
             make -C lib/poems -f Makefile.g++ CXX="${COMP}" clean
             make -C lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
@@ -52,10 +57,10 @@ class Serial {
             '''
         }
 
-        stage('Compiling') {
-            sh 'make -j 8 -C src ${MACH} MPICMD="${MPICMD}" CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" TAG="${TAG}-$CC" LMPFLAGS="${LMPFLAGS}"'
+        steps.stage('Compiling') {
+            steps.sh 'make -j 8 -C src ${MACH} MPICMD="${MPICMD}" CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" TAG="${TAG}-$CC" LMPFLAGS="${LMPFLAGS}"'
         }
 
-        sh 'ccache -s'
+        steps.sh 'ccache -s'
     }
 }
