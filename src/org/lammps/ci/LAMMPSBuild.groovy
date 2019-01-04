@@ -33,7 +33,7 @@ def regular_build(build_name) {
 
                 // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
                 docker.image(envImage.imageName()).inside {
-                    s.build()
+                    s.build(env)
                 }
             }
 

@@ -3,7 +3,7 @@ package org.lammps.ci.build
 class Serial {
     String name = 'jenkins/serial'
 
-    def build() {
+    def build(env) {
         env.CCACHE_DIR= pwd() + '/.ccache'
         env.COMP     = 'g++'
         env.MACH     = 'serial'
