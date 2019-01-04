@@ -1,5 +1,6 @@
 package org.lammps.ci
 import org.lammps.ci.build.Serial
+import org.lammps.ci.build.Shlib
 
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
@@ -7,9 +8,16 @@ def regular_build(build_name) {
     def project_url = 'https://github.com/lammps/lammps.git'
 
     switch(build_name) {
-        case 'serial':
+        case 'new-serial':
             s = new Serial(this)
             break
+        case 'new-shlib':
+            s = new Shlib(this)
+            break
+        default:
+            currentBuild.result = 'FAILURE'
+            echo 'unknown build_name'
+            return
     }
 
     stage('Checkout') {
