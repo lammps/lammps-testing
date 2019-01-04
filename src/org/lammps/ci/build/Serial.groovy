@@ -1,3 +1,5 @@
+package org.lammps.ci.build
+
 def build_name = 'jenkins/serial'
 
 def build() {
