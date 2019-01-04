@@ -13,8 +13,10 @@ def regular_build(build_name) {
     }
 
     stage('Checkout') {
-        git branch: 'master', credentialsId: 'lammps-jenkins', url: project_url
-        git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        dir('lammps') {
+            git branch: 'master', credentialsId: 'lammps-jenkins', url: project_url
+            git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        }
     }
 
     def utils = new Utils()
