@@ -99,7 +99,6 @@ abstract class LegacyBuild implements Serializable {
     def build() {
         configure()
 
-        steps.sh 'ccache -C'
         steps.sh 'ccache -M 5G'
 
         enable_packages()
