@@ -111,4 +111,8 @@ abstract class LegacyBuild implements Serializable {
 
         steps.sh 'ccache -s'
     }
+
+    def post_action() {
+        steps.warnings consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']]
+    }
 }

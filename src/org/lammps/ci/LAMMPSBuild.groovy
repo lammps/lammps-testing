@@ -5,6 +5,8 @@ import org.lammps.ci.build.OpenMPI
 import org.lammps.ci.build.SerialClang
 import org.lammps.ci.build.ShlibClang
 import org.lammps.ci.build.OpenMPIClang
+import org.lammps.ci.build.Documentation
+
 
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
@@ -29,6 +31,9 @@ def regular_build(build_name) {
             break
         case 'new-openmpi-clang':
             s = new OpenMPIClang(this)
+            break
+        case 'new-build-docs':
+            s = new Documentation(this)
             break
         default:
             currentBuild.result = 'FAILURE'
@@ -69,7 +74,7 @@ def regular_build(build_name) {
         utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build failed!', 'FAILURE')
     }
 
-    warnings consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']]
+    s.post_actions()
 
     if (currentBuild.result == 'FAILURE') {
         slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
@@ -85,9 +90,31 @@ def pull_request(build_name) {
     //def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
 
     switch(build_name) {
-        case 'serial':
+        case 'new-serial':
             s = new Serial(this)
             break
+        case 'new-shlib':
+            s = new Shlib(this)
+            break
+        case 'new-openmpi':
+            s = new OpenMPI(this)
+            break
+        case 'new-serial-clang':
+            s = new SerialClang(this)
+            break
+        case 'new-shlib-clang':
+            s = new ShlibClang(this)
+            break
+        case 'new-openmpi-clang':
+            s = new OpenMPIClang(this)
+            break
+        case 'new-build-docs':
+            s = new Documentation(this)
+            break
+        default:
+            currentBuild.result = 'FAILURE'
+            echo 'unknown build_name'
+            return
     }
 
     stage('Checkout') {
