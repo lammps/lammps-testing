@@ -153,7 +153,7 @@ def pull_request(build_name) {
 
     githubPRStatusPublisher statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended'), unstableAs: 'SUCCESS'
 
-    warnings consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']]
+    s.post_actions()
 
     if (currentBuild.result == 'FAILURE') {
         slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"

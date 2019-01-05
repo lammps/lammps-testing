@@ -26,7 +26,7 @@ class Documentation implements Serializable {
         }
     }
 
-    def post_action() {
+    def post_actions() {
         steps.warnings canComputeNew: false, canResolveRelativePaths: false, canRunOnFailed: true, categoriesPattern: 'RemovedInSphinx20Warning', consoleParsers: [[parserName: 'Sphinx Spelling Check'],[parserName: 'Sphinx Documentation Build']], defaultEncoding: '', excludePattern: '', failedTotalAll: '1', healthy: '0', includePattern: '', messagesPattern: '', unHealthy: '1', unstableTotalAll: '1'
     }
 }
