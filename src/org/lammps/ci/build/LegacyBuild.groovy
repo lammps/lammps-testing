@@ -47,23 +47,31 @@ abstract class LegacyBuild implements Serializable {
             steps.sh 'make -C lammps/src/STUBS clean'
 
             if('yes-user-colvars' in packages) {
-                steps.sh 'make -j 8 -C lammps/src lib-colvars args="-m ${MACH}"'
+                steps.sh '''
+                make -C lammps/lib/colvars -f Makefile.g++ clean
+                make -j 8 -C lammps/lib/colvars -f Makefile.g++ CXX="${COMP}"
+                '''
             }
 
             if('yes-poems' in packages) {
-                steps.sh 'make -j 8 -C lammps/src lib-poems args="-m ${MACH}"'
+                steps.sh '''
+                make -C lammps/lib/poems -f Makefile.g++ clean
+                make -j 8 -C lammps/lib/poems -f Makefile.g++ CC="${COMP}" LINK="${COMP}"
+                '''
             }
 
             if('yes-user-awpmd' in packages) {
-                steps.sh 'make -j 8 -C lammps/src lib-awpmd args="-m ${MACH}"'
+                steps.sh '''
+                make -C lammps/lib/awpmd -f Makefile.mpicc clean
+                make -j 8 -C lammps/lib/awpmd -f Makefile.mpicc CC="${COMP}"
+                '''
             }
 
-            if('yes-user-h5md' in packages) {
-                steps.sh 'make -j 8 -C lammps/src lib-h5md args="-m ${MACH}"'
-            }
-
-            if('yes-voronoi' in packages) {
-                steps.sh 'make -j 8 -C lammps/src lib-voronoi args="-b"'
+            if('yes-user-awpmd' in packages) {
+                steps.sh '''
+                make -C lammps/lib/h5md -f Makefile.h5cc clean
+                make -j 8 -C lammps/lib/h5md -f Makefile.h5cc
+                '''
             }
         }
     }
