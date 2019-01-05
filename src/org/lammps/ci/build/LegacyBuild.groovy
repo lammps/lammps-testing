@@ -67,7 +67,7 @@ abstract class LegacyBuild implements Serializable {
                 '''
             }
 
-            if('yes-user-awpmd' in packages) {
+            if('yes-user-h5md' in packages) {
                 steps.sh '''
                 make -C lammps/lib/h5md -f Makefile.h5cc clean
                 make -j 8 -C lammps/lib/h5md -f Makefile.h5cc
