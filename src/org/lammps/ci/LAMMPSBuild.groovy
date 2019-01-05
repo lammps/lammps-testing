@@ -67,19 +67,19 @@ def regular_build(build_name) {
             }
         }
 
-        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build successful!', 'SUCCESS')
+        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build successful!' + s.message, 'SUCCESS')
     } catch (err) {
         echo "Caught: ${err}"
         currentBuild.result = 'FAILURE'
-        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build failed!', 'FAILURE')
+        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build failed!' + s.message, 'FAILURE')
     }
 
     s.post_actions()
 
     if (currentBuild.result == 'FAILURE') {
-        slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
+        slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!" + s.message
     } else {
-        slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
+        slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!" + s.message
     }
 }
 

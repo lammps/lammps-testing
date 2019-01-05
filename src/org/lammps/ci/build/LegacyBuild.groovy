@@ -23,6 +23,7 @@ abstract class LegacyBuild implements Serializable {
     def lammps_mach = 'serial'
     def lammps_size = LAMMPS_SIZES.SMALLBIG
     def packages = []
+    def message = ''
 
     LegacyBuild(name, steps) {
         this.name  = name
