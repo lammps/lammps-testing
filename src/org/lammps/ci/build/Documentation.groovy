@@ -11,18 +11,18 @@ class Documentation implements Serializable {
 
     def build() {
         steps.stage('Generate HTML') {
-            steps.sh 'make -C doc -j 8 html'
-            steps.sh 'cd doc/html; tar cvzf ../lammps-docs.tar.gz *'
-            steps.archiveArtifacts 'doc/lammps-docs.tar.gz'
+            steps.sh 'make -C lammps/doc -j 8 html'
+            steps.sh 'cd lammps/doc/html; tar cvzf ../lammps-docs.tar.gz *'
+            steps.archiveArtifacts 'lammps/doc/lammps-docs.tar.gz'
         }
 
         steps.stage('Generate PDF') {
-            steps.sh 'make -C doc pdf'
-            steps.archiveArtifacts 'doc/Manual.pdf'
+            steps.sh 'make -C lammps/doc pdf'
+            steps.archiveArtifacts 'lammps/doc/Manual.pdf'
         }
 
         steps.stage('Check Spelling') {
-            steps.sh 'make -C doc -j 8 spelling'
+            steps.sh 'make -C lammps/doc -j 8 spelling'
         }
     }
 
