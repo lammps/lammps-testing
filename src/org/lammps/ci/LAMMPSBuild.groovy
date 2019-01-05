@@ -6,12 +6,15 @@ import org.lammps.ci.build.SerialClang
 import org.lammps.ci.build.ShlibClang
 import org.lammps.ci.build.OpenMPIClang
 import org.lammps.ci.build.Documentation
+import org.lammps.ci.build.Testing
 
 
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
     def docker_image_name = 'lammps_testing:ubuntu_latest'
     def project_url = 'https://github.com/lammps/lammps.git'
+    def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
+    def testing = false
 
     switch(build_name) {
         case 'new-serial':
@@ -35,6 +38,10 @@ def regular_build(build_name) {
         case 'new-build-docs':
             s = new Documentation(this)
             break
+        case 'new-testing':
+            s = new Testing(this)
+            testing = true
+            break
         default:
             currentBuild.result = 'FAILURE'
             echo 'unknown build_name'
@@ -45,6 +52,11 @@ def regular_build(build_name) {
         dir('lammps') {
             git branch: 'master', credentialsId: 'lammps-jenkins', url: project_url
             git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        }
+        if(testing){
+            dir('lammps-testing') {
+                git branch: 'master', credentialsId: 'lammps-jenkins', url: testing_project_url
+            }
         }
     }
 
@@ -67,18 +79,18 @@ def regular_build(build_name) {
             }
         }
 
-        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build successful!' + s.message, 'SUCCESS')
     } catch (err) {
         echo "Caught: ${err}"
         currentBuild.result = 'FAILURE'
-        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build failed!' + s.message, 'FAILURE')
     }
 
     s.post_actions()
 
     if (currentBuild.result == 'FAILURE') {
+        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build failed!' + s.message, 'FAILURE')
         slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!" + s.message
     } else {
+        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build successful!' + s.message, 'SUCCESS')
         slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!" + s.message
     }
 }
@@ -87,7 +99,8 @@ def pull_request(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
     def docker_image_name = 'lammps_testing:ubuntu_latest'
     def project_url = 'https://github.com/lammps/lammps.git'
-    //def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
+    def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
+    def testing = false
 
     switch(build_name) {
         case 'new-serial':
@@ -111,6 +124,10 @@ def pull_request(build_name) {
         case 'new-build-docs':
             s = new Documentation(this)
             break
+        case 'new-testing':
+            s = new Testing(this)
+            testing = true
+            break
         default:
             currentBuild.result = 'FAILURE'
             echo 'unknown build_name'
@@ -124,9 +141,11 @@ def pull_request(build_name) {
             checkout([$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]])
         }
 
-    /*    dir('lammps-testing') {
-            git branch: 'master', credentialsId: 'lammps-jenkins', url: testing_project_url
-        }*/
+        if(testing) {
+            dir('lammps-testing') {
+                git branch: 'master', credentialsId: 'lammps-jenkins', url: testing_project_url
+            }
+        }
     }
 
     gitHubPRStatus githubPRMessage('${GITHUB_PR_COND_REF} run started')
@@ -151,14 +170,14 @@ def pull_request(build_name) {
         currentBuild.result = 'FAILURE'
     }
 
-    githubPRStatusPublisher statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended'), unstableAs: 'SUCCESS'
-
     s.post_actions()
 
+    githubPRStatusPublisher statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended' + s.message), unstableAs: 'SUCCESS'
+
     if (currentBuild.result == 'FAILURE') {
-        slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
+        slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!" + s.message
     } else {
-        slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
+        slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!" + s.message
     }
 }
 

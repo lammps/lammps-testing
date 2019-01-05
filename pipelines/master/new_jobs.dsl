@@ -1,6 +1,6 @@
 folder('lammps/master')
 
-def scripts = ['new-serial', 'new-shlib', 'new-openmpi', 'new-serial-clang', 'new-shlib-clang', 'new-openmpi-clang', 'new-build-docs']
+def scripts = ['new-serial', 'new-shlib', 'new-openmpi', 'new-serial-clang', 'new-shlib-clang', 'new-openmpi-clang', 'new-build-docs', 'new-testing']
 
 scripts.each { name ->
     pipelineJob("lammps/master/${name}") {
