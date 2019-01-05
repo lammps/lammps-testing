@@ -69,7 +69,7 @@ abstract class LegacyTesting implements Serializable {
         return true
     }
 
-    def getTestSummary()
+    def getTestSummary() {
         def testResultAction = steps.currentBuild.rawBuild.getAction(AbstractTestResultAction.class)
 
         if (testResultAction != null) {
