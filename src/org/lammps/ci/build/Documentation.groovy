@@ -3,6 +3,7 @@ package org.lammps.ci.build
 class Documentation implements Serializable {
     protected def name
     protected def steps
+	def message = ''
 
     Documentation(steps) {
         this.name = 'jenkins/build-docs'
