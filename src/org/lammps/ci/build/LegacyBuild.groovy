@@ -81,7 +81,7 @@ class LegacyBuild implements Serializable {
         }
     }
 
-    protected def configure() {
+    def configure() {
         steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
         steps.env.COMP     = compiler
         steps.env.MACH     = "${lammps_mach}"
@@ -102,8 +102,6 @@ class LegacyBuild implements Serializable {
     }
 
     def build() {
-        configure()
-
         steps.sh 'ccache -M 5G'
 
         enable_packages()

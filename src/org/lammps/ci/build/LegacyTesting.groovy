@@ -84,6 +84,7 @@ abstract class LegacyTesting implements Serializable {
 
     protected def configure() {
         build.configure()
+
         steps.env.LMP_INC  = "${steps.env.LMP_INC} ${test_compile_flags}"
         steps.env.JPG_LIB  = "${steps.env.JPG_LIB} ${test_link_flags}"
 
@@ -102,7 +103,7 @@ abstract class LegacyTesting implements Serializable {
         }
 
         steps.sh '''
-        virtualenv --python=$(which python3) pyenv
+        virtualenv pyenv
         source pyenv/bin/activate
         pip install nose
         deactivate
