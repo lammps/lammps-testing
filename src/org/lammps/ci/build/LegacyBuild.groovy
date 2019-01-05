@@ -55,14 +55,14 @@ abstract class LegacyBuild implements Serializable {
 
             if('yes-poems' in packages) {
                 steps.sh '''
-                make -C lammps/lib/poems -f Makefile.g++ CXX="${COMP}" clean
-                make -j 8 -C lammps/lib/poems -f Makefile.g++ CXX="${COMP}"
+                make -C lammps/lib/poems -f Makefile.g++ clean
+                make -j 8 -C lammps/lib/poems -f Makefile.g++ CC="${COMP}" LINK="${COMP}"
                 '''
             }
 
             if('yes-user-awpmd' in packages) {
                 steps.sh '''
-                make -C lammps/lib/awpmd -f Makefile.mpicc CC="${COMP}" clean
+                make -C lammps/lib/awpmd -f Makefile.mpicc clean
                 make -j 8 -C lammps/lib/awpmd -f Makefile.mpicc CC="${COMP}"
                 '''
             }
