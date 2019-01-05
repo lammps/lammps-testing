@@ -10,6 +10,9 @@ class Documentation implements Serializable {
         this.steps = steps
     }
 
+    def configure() {
+    }
+
     def build() {
         steps.stage('Generate HTML') {
             steps.sh 'make -C lammps/doc -j 8 html'
