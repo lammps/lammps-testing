@@ -55,7 +55,7 @@ abstract class LegacyBuild implements Serializable {
             }
 
             if('yes-user-awpmd' in packages) {
-                steps.sh 'make -j 8 -C lammps/src lib-awpmd args="-m ${MACH} -e installed"'
+                steps.sh 'make -j 8 -C lammps/src lib-awpmd args="-m ${MACH}"'
             }
 
             if('yes-user-h5md' in packages) {
