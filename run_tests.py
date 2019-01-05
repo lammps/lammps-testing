@@ -18,8 +18,10 @@ def load_tests(filename):
 
     loader = nose.loader.TestLoader()
     ctx = loader.loadTestsFromName(filename)
+    print(ctx)
 
     for tc in list(ctx):
+        print(tc)
         for testname in list(tc):
             parts = testname.id().split('.')
             classname = '.'.join(parts[0:-1])
