@@ -26,6 +26,6 @@ class Testing extends LegacyTesting {
         build.packages << 'yes-user-reaxc'
         build.packages << 'yes-user-meamc'
 
-        test_mode.serial = true
+        test_modes.serial = true
     }
 }
