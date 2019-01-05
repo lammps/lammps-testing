@@ -4,8 +4,8 @@ class Documentation implements Serializable {
     protected def name
     protected def steps
 
-    Documentation(name, steps) {
-        this.name  = name
+    Documentation(steps) {
+        this.name = 'jenkins/build-docs'
         this.steps = steps
     }
 
