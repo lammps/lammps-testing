@@ -12,7 +12,7 @@ enum LAMMPS_SIZES {
     BIGBIG
 }
 
-abstract class LegacyBuild implements Serializable {
+class LegacyBuild implements Serializable {
     protected def name
     protected def steps
 
