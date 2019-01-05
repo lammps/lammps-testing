@@ -102,7 +102,7 @@ abstract class LegacyTesting implements Serializable {
         }
 
         steps.sh '''
-        virtualenv pyenv
+        virtualenv --python=$(which python3) pyenv
         source pyenv/bin/activate
         pip install nose
         deactivate
