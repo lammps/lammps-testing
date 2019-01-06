@@ -78,6 +78,20 @@ class LegacyBuild implements Serializable {
             if('yes-voronoi' in packages) {
                 steps.sh 'make -j 8 -C lammps/src lib-voronoi args="-b"'
             }
+
+            if('yes-atc' in packages) {
+                steps.sh '''
+                make -C lammps/lib/atc -f Makefile.${MACH} clean
+                make -j 8 -C lammps/lib/atc -f Makefile.${MACH} EXTRAMAKE="Makefile.lammps.installed"
+                '''
+            }
+
+            if('yes-qmmm' in packages) {
+                steps.sh '''
+                make -C lammps/lib/qmmm -f Makefile.${MACH} clean
+                make -j 8 -C lammps/lib/qmmm -f Makefile.${MACH}
+                '''
+            }
         }
     }
 

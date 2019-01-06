@@ -7,6 +7,7 @@ import org.lammps.ci.build.ShlibClang
 import org.lammps.ci.build.OpenMPIClang
 import org.lammps.ci.build.Documentation
 import org.lammps.ci.build.Testing
+import org.lammps.ci.build.TestingOMP
 
 
 def regular_build(build_name) {
@@ -40,6 +41,10 @@ def regular_build(build_name) {
             break
         case 'new-testing':
             s = new Testing(this)
+            testing = true
+            break
+        case 'new-testing-omp':
+            s = new TestingOMP(this)
             testing = true
             break
         default:
@@ -127,6 +132,10 @@ def pull_request(build_name) {
             break
         case 'new-testing':
             s = new Testing(this)
+            testing = true
+            break
+        case 'new-testing-omp':
+            s = new TestingOMP(this)
             testing = true
             break
         default:
