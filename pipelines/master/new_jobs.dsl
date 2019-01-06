@@ -18,3 +18,24 @@ scripts.each { name ->
         }
     }
 }
+
+folder('lammps/master/cmake')
+
+def cmake_scripts = ['new-cmake-serial']
+
+cmake_scripts.each { name ->
+    pipelineJob("lammps/master/cmake/${name}") {
+        triggers {
+            githubPush()
+        }
+
+        concurrentBuild(false)
+
+        definition {
+            cps {
+                script(readFileFromWorkspace('pipelines/master/master.groovy'))
+                sandbox()
+            }
+        }
+    }
+}

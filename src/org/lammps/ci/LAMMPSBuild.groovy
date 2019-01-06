@@ -10,6 +10,7 @@ import org.lammps.ci.build.Testing
 import org.lammps.ci.build.TestingOMP
 import org.lammps.ci.build.Regression
 import org.lammps.ci.build.Intel
+import org.lammps.ci.build.SerialCMake
 
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
@@ -21,6 +22,9 @@ def regular_build(build_name) {
     switch(build_name) {
         case 'new-serial':
             s = new Serial(this)
+            break
+        case 'new-cmake-serial':
+            s = new SerialCMake(this)
             break
         case 'new-shlib':
             s = new Shlib(this)
