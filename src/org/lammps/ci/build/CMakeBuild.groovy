@@ -16,27 +16,25 @@ class CMakeBuild implements Serializable {
     }
 
     def configure() {
+        steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
         steps.env.CC = c_compiler
         steps.env.CXX = cxx_compiler
         steps.env.OMPI_CC = c_compiler
         steps.env.OMPI_CXX = cxx_compiler
+        steps.stage('Configure') {
+            steps.sh 'ccache -M 5G'
+            steps.sh 'rm -rf build'
+            steps.sh 'mkdir build'
+            steps.sh '#!/bin/bash -l\n cd build && cmake ' + cmake_options.join(' ') + ' ../lammps/cmake'
+        }
     }
 
     def build() {
-        steps.sh 'ccache -M 5G'
 
         steps.stage('Compiling') {
-            stage('Configure') {
-                steps.sh 'rm -rf build'
-                steps.sh 'mkdir build'
-                steps.sh '#!/bin/bash -l\n cd build && cmake ' + cmake_options.join(' ') + ' ../lammps/cmake'
-            }
-
-            stage('Compile') {
-                steps.sh '''#!/bin/bash -l
-                make -C build -j 8
-                '''
-            }
+            steps.sh '''#!/bin/bash -l
+            make -C build -j 8
+            '''
         }
 
         steps.sh 'ccache -s'
