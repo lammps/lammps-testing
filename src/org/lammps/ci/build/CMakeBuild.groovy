@@ -32,11 +32,9 @@ class CMakeBuild implements Serializable {
     def build() {
 
         steps.stage('Compiling') {
-            steps.ansiColor('xterm') {
-                steps.sh '''#!/bin/bash -l
-                make -C build -j 8
-                '''
-            }
+            steps.sh '''#!/bin/bash -l
+            make -C build -j 8
+            '''
         }
 
         steps.sh 'ccache -s'
