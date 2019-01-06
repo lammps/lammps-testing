@@ -23,6 +23,7 @@ def load_tests(filename):
     for tc in list(ctx):
         print(tc)
         for testname in list(tc):
+            print(testname)
             parts = testname.id().split('.')
             classname = '.'.join(parts[0:-1])
             name = parts[-1]
