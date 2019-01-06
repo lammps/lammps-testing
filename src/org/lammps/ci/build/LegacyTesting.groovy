@@ -106,26 +106,34 @@ abstract class LegacyTesting implements Serializable {
         virtualenv pyenv
         source pyenv/bin/activate
         pip install nose
+        cd lammps/python
+        python install.py
+        cd ../..
         deactivate
         '''
 
         steps.stage('Testing') {
-            steps.sh '''
-            source pyenv/bin/activate
-            cd lammps/python
-            python install.py
-            cd ../..
-            cd lammps-testing
-            python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py
-            cd ..
-            deactivate
-            '''
+            test()
         }
+    }
+
+    def test() {
+        steps.sh '''
+        source pyenv/bin/activate
+        cd lammps-testing
+        python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py
+        cd ..
+        deactivate
+        '''
+    }
+
+    def collect_reports() {
+        steps.junit 'lammps-testing/nosetests-*.xml'
     }
 
     def post_actions() {
         steps.warnings consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']]
-        steps.junit 'lammps-testing/nosetests-*.xml'
+        collect_reports()
         message = '\n' + getTestSummary()
 
         if(hasFailedTests()) {

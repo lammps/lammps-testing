@@ -8,7 +8,7 @@ import org.lammps.ci.build.OpenMPIClang
 import org.lammps.ci.build.Documentation
 import org.lammps.ci.build.Testing
 import org.lammps.ci.build.TestingOMP
-
+import org.lammps.ci.build.Regression
 
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
@@ -45,6 +45,10 @@ def regular_build(build_name) {
             break
         case 'new-testing-omp':
             s = new TestingOMP(this)
+            testing = true
+            break
+        case 'new-regression':
+            s = new Regression(this)
             testing = true
             break
         default:
@@ -136,6 +140,10 @@ def pull_request(build_name) {
             break
         case 'new-testing-omp':
             s = new TestingOMP(this)
+            testing = true
+            break
+        case 'new-regression':
+            s = new Regression(this)
             testing = true
             break
         default:
