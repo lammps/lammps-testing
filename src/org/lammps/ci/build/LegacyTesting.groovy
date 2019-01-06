@@ -116,6 +116,7 @@ abstract class LegacyTesting implements Serializable {
             python install.py
             cd ../..
             cd lammps-testing
+            env
             python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py
             cd ..
             deactivate
