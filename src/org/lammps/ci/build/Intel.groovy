@@ -3,7 +3,7 @@ package org.lammps.ci.build
 class Intel extends LegacyBuild {
     Intel(steps) {
         super('jenkins/intel', steps)
-        compiler    = 'mpiicpc -qopenmp'
+        compiler    = 'ccache mpiicpc -qopenmp'
         c_compiler  = 'ccache icc'
         cxx_compiler  = 'ccache icpc'
         lammps_mode = LAMMPS_MODE.shexe
