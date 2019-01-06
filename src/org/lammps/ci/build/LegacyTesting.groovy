@@ -91,7 +91,7 @@ abstract class LegacyTesting implements Serializable {
         steps.env.LAMMPS_DIR = steps.pwd() + '/lammps'
         steps.env.LAMMPS_MPI_MODE = "${mpi_mode}"
         steps.env.LAMMPS_BINARY = steps.env.LAMMPS_DIR + '/src/lmp_' + steps.env.MACH
-        steps.env.LAMMPS_TEST_MODES = '${test_modes}'
+        steps.env.LAMMPS_TEST_MODES = "${test_modes}"
         steps.env.LAMMPS_POTENTIALS = steps.env.LAMMPS_DIR + '/potentials'
     }
 
@@ -116,7 +116,6 @@ abstract class LegacyTesting implements Serializable {
             python install.py
             cd ../..
             cd lammps-testing
-            env
             python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py
             cd ..
             deactivate
