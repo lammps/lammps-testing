@@ -14,7 +14,7 @@ class TestModes {
     def valgrind = false
 
     String toString() {
-        modes = []
+        def modes = []
 
         if(serial) {
             modes << 'serial'
