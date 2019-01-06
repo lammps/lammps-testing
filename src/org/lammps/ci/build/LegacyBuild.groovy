@@ -32,7 +32,7 @@ class LegacyBuild implements Serializable {
 
     protected def enable_packages() {
         steps.stage('Enable packages') {
-            steps.sh '''
+            steps.sh '''#!/bin/bash -l
             make -C lammps/src purge
             make -C lammps/src clean-all
             '''
@@ -45,49 +45,53 @@ class LegacyBuild implements Serializable {
 
     protected def build_libraries() {
         steps.stage('Building libraries') {
-            steps.sh 'make -C lammps/src/STUBS clean'
+            steps.sh '''#!/bin/bash -l
+            make -C lammps/src/STUBS clean
+            '''
 
             if('yes-user-colvars' in packages) {
-                steps.sh '''
+                steps.sh '''#!/bin/bash -l
                 make -C lammps/lib/colvars -f Makefile.${MACH} clean
                 make -j 8 -C lammps/lib/colvars -f Makefile.${MACH} CXX="${COMP}"
                 '''
             }
 
             if('yes-poems' in packages) {
-                steps.sh '''
+                steps.sh '''#!/bin/bash -l
                 make -C lammps/lib/poems -f Makefile.${MACH} clean
                 make -j 8 -C lammps/lib/poems -f Makefile.${MACH} CC="${COMP}" LINK="${COMP}"
                 '''
             }
 
             if('yes-user-awpmd' in packages) {
-                steps.sh '''
+                steps.sh '''#!/bin/bash -l
                 make -C lammps/lib/awpmd -f Makefile.${MACH} clean
                 make -j 8 -C lammps/lib/awpmd -f Makefile.${MACH} CC="${COMP}" EXTRAMAKE=Makefile.lammps.installed
                 '''
             }
 
             if('yes-user-h5md' in packages) {
-                steps.sh '''
+                steps.sh '''#!/bin/bash -l
                 make -C lammps/lib/h5md -f Makefile.h5cc clean
                 make -j 8 -C lammps/lib/h5md -f Makefile.h5cc
                 '''
             }
 
             if('yes-voronoi' in packages) {
-                steps.sh 'make -j 8 -C lammps/src lib-voronoi args="-b"'
+                steps.sh '''#!/bin/bash -l
+                make -j 8 -C lammps/src lib-voronoi args="-b"
+                '''
             }
 
             if('yes-user-atc' in packages) {
-                steps.sh '''
+                steps.sh '''#!/bin/bash -l
                 make -C lammps/lib/atc -f Makefile.${MACH} clean
                 make -j 8 -C lammps/lib/atc -f Makefile.${MACH} EXTRAMAKE="Makefile.lammps.installed"
                 '''
             }
 
             if('yes-user-qmmm' in packages) {
-                steps.sh '''
+                steps.sh '''#!/bin/bash -l
                 make -C lammps/lib/qmmm -f Makefile.${MACH} clean
                 make -j 8 -C lammps/lib/qmmm -f Makefile.${MACH}
                 '''
@@ -122,7 +126,9 @@ class LegacyBuild implements Serializable {
         build_libraries()
 
         steps.stage('Compiling') {
-            steps.sh 'make -j 8 -C lammps/src mode=${MODE} ${MACH} MACH=${MACH} CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"'
+            steps.sh '''#!/bin/bash -l
+            make -j 8 -C lammps/src mode=${MODE} ${MACH} MACH=${MACH} CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
+            '''
         }
 
         steps.sh 'ccache -s'
