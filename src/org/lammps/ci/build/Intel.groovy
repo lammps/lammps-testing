@@ -18,6 +18,6 @@ class Intel extends LegacyBuild {
     def configure() {
        super.configure()
        steps.env.LMP_INC="-g -mkl=sequential -DLAMMPS_MEMALIGN=64 -qno-offload -fno-alias -ansi-alias -restrict -xHost -O2 -fp-model fast=2 -no-prec-div -qoverride-limits -DFFT_MKL -DFFT_DOUBLE -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -DLAMMPS_${lammps_size} -Wall -w2"
-       steps.env.LMP_LIB='-g -ltbbmalloc -ltbbmalloc_proxy -ljpeg -lpng -lz -mkl=sequential'
+       steps.env.JPG_LIB='-g -ltbbmalloc -ltbbmalloc_proxy -ljpeg -lpng -lz -mkl=sequential'
     }
 }
