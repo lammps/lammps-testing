@@ -93,8 +93,10 @@ def regular_build(build_name) {
 
             // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
             docker.image(envImage.imageName()).inside {
-                s.configure()
-                s.build()
+                ansiColor('xterm') {
+                    s.configure()
+                    s.build()
+                }
             }
         }
 
@@ -188,8 +190,10 @@ def pull_request(build_name) {
 
             // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
             docker.image(envImage.imageName()).inside {
-                s.configure()
-                s.build()
+                ansiColor('xterm') {
+                    s.configure()
+                    s.build()
+                }
             }
         }
         currentBuild.result = 'SUCCESS'
