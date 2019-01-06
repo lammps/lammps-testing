@@ -1,0 +1,121 @@
+LAMMPS (4 Jan 2019)
+# Streitz-Mintmire potential with alpha-alumina
+# option to use with Ewald or Wolf sum
+# EAM (AlO.eam.alloy) includes 1994 SM and 2004 Zhou versions
+# Streitz Mintmire (coul/streitz) does not include 2004 Zhou modifications
+# Contributing authors: Ray Shan, Chris Weinberger (Sandia)
+
+units		metal
+atom_style	charge
+dimension       3
+boundary        p p p
+
+read_data    	data.streitz
+  orthogonal box = (0 0 0) to (24.7337 28.56 25.9798)
+  2 by 2 by 2 MPI processor grid
+  reading atoms ...
+  2160 atoms
+
+group    	type1 type 1
+864 atoms in group type1
+compute   	charge1 type1 property/atom q
+compute   	q1 type1 reduce ave c_charge1
+group    	type2 type 2
+1296 atoms in group type2
+compute   	charge2 type2 property/atom q
+compute   	q2 type2 reduce ave c_charge2
+
+variable   	qcat equal 2.8
+variable  	qani equal -${qcat}*count(type1)/count(type2)
+variable  	qani equal -2.8*count(type1)/count(type2)
+set   		group type1 charge ${qcat}
+set   		group type1 charge 2.8
+  864 settings made for charge
+set   		group type2 charge ${qani}
+set   		group type2 charge -1.86666666666667
+  1296 settings made for charge
+variable   	qsum equal count(type1)*c_q1+count(type2)*c_q2
+
+# Ewald sum for coul/streitz
+#pair_style  	hybrid/overlay coul/streitz 12.0 ewald eam/alloy
+#kspace_style  	ewald 1e-6
+
+# Wolf sum for coul/streitz
+pair_style  	hybrid/overlay coul/streitz 12.0 wolf 0.31 eam/alloy
+
+pair_coeff   	* * coul/streitz AlO.streitz Al O
+pair_coeff   	* * eam/alloy AlO.eam.alloy Al O
+Reading potential file AlO.eam.alloy with DATE: 2015-02-19
+
+neighbor	1.0 bin
+neigh_modify	every 10 delay 0 check yes
+timestep        0.0004
+
+thermo_style	custom step temp etotal pe evdwl ecoul elong                 c_q1 c_q2 v_qsum press
+thermo_modify  	norm yes
+thermo   	1
+
+velocity  	all create 300.0 42128
+fix     	1 all qeq/slater 1 12.0 1.0e-6 100 coul/streitz
+fix     	2 all nve
+
+run    		5
+Neighbor list info ...
+  update every 10 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 13
+  ghost atom cutoff = 13
+  binsize = 6.5, bins = 4 5 4
+  3 neighbor lists, perpetual/occasional/extra = 3 0 0
+  (1) pair coul/streitz, perpetual
+      attributes: full, newton on
+      pair build: full/bin/atomonly
+      stencil: full/bin/3d
+      bin: standard
+  (2) pair eam/alloy, perpetual, half/full from (1)
+      attributes: half, newton on
+      pair build: halffull/newton
+      stencil: none
+      bin: none
+  (3) fix qeq/slater, perpetual, copy from (1)
+      attributes: full, newton on
+      pair build: copy
+      stencil: none
+      bin: none
+Per MPI rank memory allocation (min/avg/max) = 12.6 | 13.25 | 13.9 Mbytes
+Step Temp TotEng PotEng E_vdwl E_coul E_long c_q1 c_q2 v_qsum Press 
+       0          300   -6.3403863   -6.3791464   -2.7952901   -3.5838563            0    2.8665317   -1.9110211            0   -25874.956 
+       1    299.30143   -6.3404062   -6.3790761   -2.7952178   -3.5838582            0     2.865162    -1.910108 -9.094947e-13    -24885.39 
+       2     298.1021   -6.3404215   -6.3789364    -2.795044   -3.5838923            0    2.8639971   -1.9093314 -4.5474735e-13    -23991.77 
+       3    296.41314   -6.3404282   -6.3787249   -2.7947699   -3.5839549            0    2.8633812   -1.9089208 -4.5474735e-13    -23434.13 
+       4    294.24968   -6.3404286   -6.3784457   -2.7943973   -3.5840484            0    2.8632016   -1.9088011            0   -23134.504 
+       5    291.63102   -6.3404254   -6.3781042    -2.793929   -3.5841752            0    2.8632634   -1.9088422 -9.094947e-13   -22958.486 
+Loop time of 0.817383 on 8 procs for 5 steps with 2160 atoms
+
+Performance: 0.211 ns/day, 113.525 hours/ns, 6.117 timesteps/s
+99.6% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.35202    | 0.3529     | 0.35375    |   0.1 | 43.17
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.0016287  | 0.0024823  | 0.0033662  |   1.4 |  0.30
+Output  | 0.00038487 | 0.0004032  | 0.0004438  |   0.0 |  0.05
+Modify  | 0.46153    | 0.46155    | 0.46157    |   0.0 | 56.47
+Other   |            | 4.847e-05  |            |       |  0.01
+
+Nlocal:    270 ave 288 max 252 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+Nghost:    6946.5 ave 6964 max 6929 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+Neighs:    147366 ave 157188 max 137544 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+FullNghs:  294732 ave 314376 max 275088 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+
+Total # of neighbors = 2357856
+Ave neighs/atom = 1091.6
+Neighbor list builds = 0
+Dangerous builds = 0
+Total wall time: 0:00:00

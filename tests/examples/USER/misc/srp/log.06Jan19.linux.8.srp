@@ -1,0 +1,160 @@
+LAMMPS (4 Jan 2019)
+units           lj
+atom_style      full
+boundary p p p
+
+special_bonds lj/coul 1 1 1
+newton on on
+
+# save an extra atom type for bond particles
+read_data data.chain
+  orthogonal box = (0 0 0) to (10 10 10)
+  2 by 2 by 2 MPI processor grid
+  reading atoms ...
+  3000 atoms
+  reading velocities ...
+  3000 velocities
+  scanning bonds ...
+  1 = max bonds/atom
+  reading bonds ...
+  2700 bonds
+  2 = max # of 1-2 neighbors
+  2 = max # of special neighbors
+
+neighbor        2.0 bin
+neigh_modify    every 10 check yes
+
+bond_style      harmonic
+bond_coeff      * 225.0 0.85
+
+comm_modify vel yes
+comm_modify cutoff 3.6
+
+# must use pair hybrid, since srp bond particles
+# do not interact with other atoms types
+pair_style      hybrid dpd 1.0 1.0 373692 srp 0.8 1 mid
+pair_coeff      1 1 dpd 60.0 4.5 1.0
+pair_coeff      1 2 none
+pair_coeff      2 2 srp 100.0
+
+# auto normalization of thermo quantities is turned off by pair srp
+# just divide by natoms
+variable        natoms equal count(all)
+variable        nPotEng equal c_thermo_pe/v_natoms
+
+thermo 50
+thermo_style custom step temp pe v_nPotEng press atoms v_natoms lx ly lz
+
+fix  1 all nve
+timestep        0.01
+
+restart 500	mid-run-*.restart
+
+run          1000
+Using type 2 for bond particles
+Thermo normalization turned off by pair srp (../pair_srp.cpp:498)
+Neighbor list info ...
+  update every 10 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 3
+  ghost atom cutoff = 3.6
+  binsize = 1.5, bins = 7 7 7
+  3 neighbor lists, perpetual/occasional/extra = 3 0 0
+  (1) pair dpd, perpetual, skip from (3)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (2) pair srp, perpetual, skip from (3)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (3) neighbor class addition, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d/newton
+      bin: standard
+Removed/inserted 0/2700 bond particles. (../fix_srp.cpp:256)
+Per MPI rank memory allocation (min/avg/max) = 9.142 | 9.144 | 9.145 Mbytes
+Step Temp PotEng v_nPotEng Press Atoms v_natoms Lx Ly Lz 
+       0   0.98262092    31772.336    10.590779    60.819362     5700         3000           10           10           10 
+      50   0.97241438    31759.287    10.586429    61.367472     5700         3000           10           10           10 
+     100    1.0062332    31645.723    10.548574    61.501374     5700         3000           10           10           10 
+     150   0.99541493    31730.846    10.576949    61.167376     5700         3000           10           10           10 
+     200   0.99768804    31742.954    10.580985     61.04773     5700         3000           10           10           10 
+     250    1.0304037    31568.142    10.522714    61.232534     5700         3000           10           10           10 
+     300    1.0122993    31750.675    10.583558    61.513418     5700         3000           10           10           10 
+     350   0.98675503     31776.76    10.592253    61.231252     5700         3000           10           10           10 
+     400   0.99597534    31730.726    10.576909    61.197976     5700         3000           10           10           10 
+     450    1.0109687    31758.073    10.586024    61.021251     5700         3000           10           10           10 
+     500    1.0096893    31824.824    10.608275    61.594906     5700         3000           10           10           10 
+     550    1.0131316    31784.152    10.594717    61.463186     5700         3000           10           10           10 
+     600     0.992367    31810.366    10.603455    60.976637     5700         3000           10           10           10 
+     650   0.99699033    31770.962    10.590321    61.416712     5700         3000           10           10           10 
+     700    1.0049142    31790.292    10.596764    61.270946     5700         3000           10           10           10 
+     750    1.0035508     31861.72    10.620573    61.477721     5700         3000           10           10           10 
+     800     1.018831     31758.47    10.586157    61.698143     5700         3000           10           10           10 
+     850    1.0131227    31782.404    10.594135    61.142475     5700         3000           10           10           10 
+     900   0.99260804    31676.162    10.558721    60.743122     5700         3000           10           10           10 
+     950   0.98550925    31791.275    10.597092    61.205498     5700         3000           10           10           10 
+    1000     1.001713    31721.592    10.573864    60.870271     5700         3000           10           10           10 
+Deleted 2700 atoms, new total = 3000
+Loop time of 2.07871 on 8 procs for 1000 steps with 3000 atoms
+
+Performance: 415641.746 tau/day, 481.067 timesteps/s
+98.4% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.96873    | 0.98825    | 1.0112     |   1.3 | 47.54
+Bond    | 0.0074464  | 0.0075861  | 0.0077511  |   0.1 |  0.36
+Neigh   | 0.49255    | 0.4927     | 0.49293    |   0.0 | 23.70
+Comm    | 0.53226    | 0.55528    | 0.57456    |   1.8 | 26.71
+Output  | 0.0035445  | 0.0036063  | 0.0037935  |   0.1 |  0.17
+Modify  | 0.017801   | 0.01826    | 0.018921   |   0.3 |  0.88
+Other   |            | 0.01303    |            |       |  0.63
+
+Nlocal:    375 ave 383 max 366 min
+Histogram: 1 0 1 0 1 3 0 0 1 1
+Nghost:    5071.75 ave 5098 max 5040 min
+Histogram: 1 0 1 2 0 0 0 2 0 2
+Neighs:    63405.1 ave 65143 max 61894 min
+Histogram: 1 1 1 1 0 1 1 1 0 1
+
+Total # of neighbors = 507241
+Ave neighs/atom = 169.08
+Ave special neighs/atom = 1.8
+Neighbor list builds = 24
+Dangerous builds = 0
+
+write_restart   end-run.restart
+Using type 2 for bond particles
+Thermo normalization turned off by pair srp (../pair_srp.cpp:498)
+Neighbor list info ...
+  update every 10 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 3
+  ghost atom cutoff = 3.6
+  binsize = 1.5, bins = 7 7 7
+  3 neighbor lists, perpetual/occasional/extra = 3 0 0
+  (1) pair dpd, perpetual, skip from (3)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (2) pair srp, perpetual, skip from (3)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (3) neighbor class addition, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d/newton
+      bin: standard
+
+Please see the log.cite file for references relevant to this simulation
+
+Total wall time: 0:00:02

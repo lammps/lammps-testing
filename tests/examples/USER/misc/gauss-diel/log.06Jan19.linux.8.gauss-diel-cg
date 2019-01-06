@@ -1,0 +1,216 @@
+LAMMPS (4 Jan 2019)
+# Ionic surfactant system: S12S
+
+units           lj
+dimension       3
+atom_style      full
+
+read_data       data.gauss-diel
+  orthogonal box = (-35 -35 -35) to (35 35 35)
+  2 by 2 by 2 MPI processor grid
+  reading atoms ...
+  4200 atoms
+  scanning bonds ...
+  1 = max bonds/atom
+  scanning angles ...
+  1 = max angles/atom
+  scanning dihedrals ...
+  1 = max dihedrals/atom
+  reading bonds ...
+  3600 bonds
+  reading angles ...
+  3300 angles
+  reading dihedrals ...
+  3000 dihedrals
+  2 = max # of 1-2 neighbors
+  2 = max # of 1-3 neighbors
+  4 = max # of 1-4 neighbors
+  6 = max # of special neighbors
+
+pair_style      hybrid/overlay                              lj/cut 3.5                                  lj/cut/coul/long 8.0 18.0                   gauss/cut 3.4                               coul/diel 2.5
+pair_modify    shift yes
+
+dielectric      0.4255
+kspace_style    pppm/cg 0.0001
+kspace_modify   mesh 12 12 12 order 3
+
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  opls
+
+pair_coeff  1     1     lj/cut/coul/long 0.5 1.775 3.268        # HG   HG
+pair_coeff  1     1     gauss/cut        0.1 2.549 0.1525
+pair_coeff  1     2     lj/cut           0.31623 1.5329 1.7206  # HG   CM
+pair_coeff  1     3     lj/cut           0.31623 1.5329 1.7206  # HG   CT
+pair_coeff  1     4     lj/cut/coul/long 0.05 1.75 4.375        # HG   CI
+pair_coeff  1     4     gauss/cut        0.2805 1.45 0.112
+pair_coeff  1     4     coul/diel        78. 1.375 0.112
+pair_coeff  2     2     lj/cut           0.2000 1.2910 3.2275   # CM   CM
+pair_coeff  2     3     lj/cut           0.2000 1.2910 3.2275   # CM   CT
+pair_coeff  2     4     lj/cut           0.4472 1.1455 1.28585  # CM   CI
+pair_coeff  3     3     lj/cut           1.95 1.291 3.2275      # CT   CT
+pair_coeff  3     4     lj/cut           0.4472 1.1455 1.28585  # CT   CI
+pair_coeff  4     4     lj/cut/coul/long 1.0 10. 1.12246          # CI   CI
+
+bond_coeff  1      12650.0000   0.7500 # HG CM FROM TOP
+bond_coeff  2      12650.0000   0.5000 # CM CM FROM TOP
+bond_coeff  3      12650.0000   0.5000 # CM CM FROM TOP
+bond_coeff  4      12650.0000   0.5000 # CM CM FROM TOP
+bond_coeff  5      12650.0000   0.5000 # CM CM FROM TOP
+bond_coeff  6      12650.0000   0.5000 # CM CM FROM TOP
+bond_coeff  7      12650.0000   0.5000 # CM CM FROM TOP
+bond_coeff  8      12650.0000   0.5000 # CM CM FROM TOP
+bond_coeff  9      12650.0000   0.5000 # CM CM FROM TOP
+bond_coeff  10     12650.0000   0.5000 # CM CM FROM TOP
+bond_coeff  11     12650.0000   0.5000 # CM CM FROM TOP
+bond_coeff  12     12650.0000   0.5000 # CM CT FROM TOP
+
+angle_coeff 1           85.7600 109.5000 # HG CM CM FROM TOP
+angle_coeff 2           85.7600 111.0000 # CM CM CM FROM TOP
+angle_coeff 3           85.7600 111.0000 # CM CM CM FROM TOP
+angle_coeff 4           85.7600 111.0000 # CM CM CM FROM TOP
+angle_coeff 5           85.7600 111.0000 # CM CM CM FROM TOP
+angle_coeff 6           85.7600 111.0000 # CM CM CM FROM TOP
+angle_coeff 7           85.7600 111.0000 # CM CM CM FROM TOP
+angle_coeff 8           85.7600 111.0000 # CM CM CM FROM TOP
+angle_coeff 9           85.7600 111.0000 # CM CM CM FROM TOP
+angle_coeff 10          85.7600 111.0000 # CM CM CM FROM TOP
+angle_coeff 11          85.7600 111.0000 # CM CM CT FROM TOP
+
+dihedral_coeff 1     5.7431 -2.53241 5.0742 0.0 # HG CM CM CM FROM TOP
+dihedral_coeff 2     5.7431 -2.53241 5.0742 0.0 # CM CM CM CM FROM TOP
+dihedral_coeff 3     5.7431 -2.53241 5.0742 0.0 # CM CM CM CM FROM TOP
+dihedral_coeff 4     5.7431 -2.53241 5.0742 0.0 # CM CM CM CM FROM TOP
+dihedral_coeff 5     5.7431 -2.53241 5.0742 0.0 # CM CM CM CM FROM TOP
+dihedral_coeff 6     5.7431 -2.53241 5.0742 0.0 # CM CM CM CM FROM TOP
+dihedral_coeff 7     5.7431 -2.53241 5.0742 0.0 # CM CM CM CM FROM TOP
+dihedral_coeff 8     5.7431 -2.53241 5.0742 0.0 # CM CM CM CM FROM TOP
+dihedral_coeff 9     5.7431 -2.53241 5.0742 0.0 # CM CM CM CM FROM TOP
+dihedral_coeff 10    5.7431 -2.53241 5.0742 0.0 # CM CM CM CT FROM TOP
+
+timestep        0.002
+
+reset_timestep  0
+
+group           cions type 4
+300 atoms in group cions
+group           sds subtract all cions
+3900 atoms in group sds
+
+velocity        all create 1. 87287 dist gaussian
+
+neighbor        1.5 multi
+neigh_modify    exclude molecule/intra sds
+neigh_modify    every 5 delay 0 check yes
+
+fix             1 all nve/limit 0.2
+fix             2 all langevin 1.0 1.0 0.05 18273
+
+thermo_style    multi
+thermo          500
+
+run             2000
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (../kspace.cpp:321)
+  G vector (1/distance) = 0.109901
+  grid = 12 12 12
+  stencil order = 3
+  estimated absolute RMS force accuracy = 0.000494145
+  estimated relative force accuracy = 0.000494145
+  using double precision FFTs
+  3d grid and FFT values/proc = 729 288
+WARNING: Neighbor exclusions used with KSpace solver may give inconsistent Coulombic energies (../neighbor.cpp:471)
+Neighbor list info ...
+  update every 5 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 19.5
+  ghost atom cutoff = 19.5
+  binsize = 1.39292, bins = 51 51 51
+  5 neighbor lists, perpetual/occasional/extra = 5 0 0
+  (1) pair lj/cut, perpetual, skip from (5)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (2) pair lj/cut/coul/long, perpetual, skip from (5)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (3) pair gauss/cut, perpetual, skip from (5)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (4) pair coul/diel, perpetual, skip from (5)
+      attributes: half, newton on
+      pair build: skip
+      stencil: none
+      bin: none
+  (5) neighbor class addition, perpetual
+      attributes: half, newton on
+      pair build: half/multi/newton
+      stencil: half/multi/3d/newton
+      bin: standard
+  PPPM/cg optimization cutoff: 1e-05
+  Total charged atoms: 14.3%
+  Min/max charged atoms/proc: 11.3% 16.9%
+Per MPI rank memory allocation (min/avg/max) = 10.77 | 11.11 | 12.11 Mbytes
+---------------- Step        0 ----- CPU =      0.0000 (sec) ----------------
+TotEng   =         9.9401 KinEng   =         1.4996 Temp     =         1.0000 
+PotEng   =         8.4405 E_bond   =         0.0036 E_angle  =         0.1237 
+E_dihed  =         0.3185 E_impro  =         0.0000 E_vdwl   =         8.0100 
+E_coul   =        -0.0116 E_long   =        -0.0036 Press    =         0.4086 
+---------------- Step      500 ----- CPU =      0.4323 (sec) ----------------
+TotEng   =         2.7881 KinEng   =         1.5273 Temp     =         1.0184 
+PotEng   =         1.2608 E_bond   =         0.4529 E_angle  =         0.3844 
+E_dihed  =         0.4277 E_impro  =         0.0000 E_vdwl   =        -0.0022 
+E_coul   =         0.0016 E_long   =        -0.0035 Press    =        -0.0027 
+---------------- Step     1000 ----- CPU =      0.8462 (sec) ----------------
+TotEng   =         2.7685 KinEng   =         1.4797 Temp     =         0.9867 
+PotEng   =         1.2888 E_bond   =         0.4669 E_angle  =         0.3879 
+E_dihed  =         0.4388 E_impro  =         0.0000 E_vdwl   =        -0.0020 
+E_coul   =         0.0011 E_long   =        -0.0038 Press    =        -0.0003 
+---------------- Step     1500 ----- CPU =      1.2732 (sec) ----------------
+TotEng   =         2.8092 KinEng   =         1.5019 Temp     =         1.0015 
+PotEng   =         1.3073 E_bond   =         0.4716 E_angle  =         0.3748 
+E_dihed  =         0.4673 E_impro  =         0.0000 E_vdwl   =        -0.0034 
+E_coul   =         0.0010 E_long   =        -0.0039 Press    =        -0.0056 
+---------------- Step     2000 ----- CPU =      1.6956 (sec) ----------------
+TotEng   =         2.8481 KinEng   =         1.5096 Temp     =         1.0066 
+PotEng   =         1.3386 E_bond   =         0.4741 E_angle  =         0.3764 
+E_dihed  =         0.4952 E_impro  =         0.0000 E_vdwl   =        -0.0037 
+E_coul   =         0.0005 E_long   =        -0.0040 Press    =         0.0018 
+Loop time of 1.69566 on 8 procs for 2000 steps with 4200 atoms
+
+Performance: 203814.917 tau/day, 1179.484 timesteps/s
+98.0% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.14368    | 0.17755    | 0.23331    |   7.7 | 10.47
+Bond    | 0.31392    | 0.40146    | 0.47112    |   7.7 | 23.68
+Kspace  | 0.40211    | 0.50971    | 0.61426    |  10.2 | 30.06
+Neigh   | 0.04202    | 0.042133   | 0.042289   |   0.0 |  2.48
+Comm    | 0.45001    | 0.46145    | 0.47284    |   1.3 | 27.21
+Output  | 0.00021079 | 0.00024133 | 0.00029591 |   0.0 |  0.01
+Modify  | 0.074137   | 0.09078    | 0.1056     |   3.4 |  5.35
+Other   |            | 0.01233    |            |       |  0.73
+
+Nlocal:    525 ave 625 max 427 min
+Histogram: 1 1 0 2 0 1 0 2 0 1
+Nghost:    4466 ave 4640 max 4345 min
+Histogram: 2 1 0 0 1 2 1 0 0 1
+Neighs:    1083.62 ave 1530 max 720 min
+Histogram: 1 1 1 1 1 0 1 0 1 1
+
+Total # of neighbors = 8669
+Ave neighs/atom = 2.06405
+Ave special neighs/atom = 4.71429
+Neighbor list builds = 14
+Dangerous builds = 2
+
+Please see the log.cite file for references relevant to this simulation
+
+Total wall time: 0:00:01

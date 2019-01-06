@@ -1,0 +1,80 @@
+LAMMPS (4 Jan 2019)
+# REAX potential for AuO system
+# .....
+
+units		real
+
+atom_style	charge
+read_data	data.AuO
+  orthogonal box = (0 0 0) to (26.1562 21.5425 24.0025)
+  2 by 2 by 2 MPI processor grid
+  reading atoms ...
+  960 atoms
+
+pair_style	reax/c lmp_control
+pair_coeff	* * ffield.reax.AuO O Au
+Reading potential file ffield.reax.AuO with DATE: 2011-02-18
+
+neighbor	2 bin
+neigh_modify	every 10 delay 0 check no
+
+fix		1 all nve
+fix             2 all qeq/reax 1 0.0 10.0 1e-6 param.qeq
+fix             3 all temp/berendsen 500.0 500.0 100.0
+
+timestep	0.25
+
+#dump		1 all atom 30 dump.reax.auo
+
+run		100
+Neighbor list info ...
+  update every 10 steps, delay 0 steps, check no
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 12
+  ghost atom cutoff = 12
+  binsize = 6, bins = 5 4 5
+  2 neighbor lists, perpetual/occasional/extra = 2 0 0
+  (1) pair reax/c, perpetual
+      attributes: half, newton off, ghost
+      pair build: half/bin/newtoff/ghost
+      stencil: half/ghost/bin/3d/newtoff
+      bin: standard
+  (2) fix qeq/reax, perpetual, copy from (1)
+      attributes: half, newton off, ghost
+      pair build: copy
+      stencil: none
+      bin: none
+Per MPI rank memory allocation (min/avg/max) = 67.31 | 67.31 | 67.31 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       0            0   -72201.743            0   -72201.743   -166.20062 
+     100    69.043377   -72076.311            0   -71878.943    22701.547 
+Loop time of 4.64468 on 8 procs for 100 steps with 960 atoms
+
+Performance: 0.465 ns/day, 51.608 hours/ns, 21.530 timesteps/s
+99.3% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 3.9249     | 3.9293     | 3.9428     |   0.3 | 84.60
+Neigh   | 0.17277    | 0.17931    | 0.18584    |   1.4 |  3.86
+Comm    | 0.019947   | 0.032682   | 0.037693   |   2.9 |  0.70
+Output  | 3.7548e-05 | 3.979e-05  | 5.058e-05  |   0.0 |  0.00
+Modify  | 0.49646    | 0.50293    | 0.50951    |   0.9 | 10.83
+Other   |            | 0.0004347  |            |       |  0.01
+
+Nlocal:    120 ave 120 max 120 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+Nghost:    3111 ave 3111 max 3111 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+Neighs:    55874 ave 55874 max 55874 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 446992
+Ave neighs/atom = 465.617
+Neighbor list builds = 10
+Dangerous builds not checked
+
+Please see the log.cite file for references relevant to this simulation
+
+Total wall time: 0:00:04

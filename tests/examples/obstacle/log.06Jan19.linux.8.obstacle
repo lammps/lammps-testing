@@ -1,0 +1,161 @@
+LAMMPS (4 Jan 2019)
+# 2d LJ obstacle flow
+
+dimension	2
+boundary	p s p
+
+atom_style	atomic
+neighbor	0.3 bin
+neigh_modify	delay 5
+
+# create geometry
+
+lattice		hex 0.7
+Lattice spacing in x,y,z = 1.28436 2.22457 1.28436
+region		box block 0 40 0 10 -0.25 0.25
+create_box	3 box
+Created orthogonal box = (0 0 -0.321089) to (51.3743 22.2457 0.321089)
+  4 by 2 by 1 MPI processor grid
+create_atoms	1 box
+Created 840 atoms
+  Time spent = 0.000722759 secs
+
+mass		1 1.0
+mass		2 1.0
+mass		3 1.0
+
+# LJ potentials
+
+pair_style	lj/cut 1.12246
+pair_coeff	* * 1.0 1.0 1.12246
+
+# define groups
+
+region	        1 block INF INF INF 1.25 INF INF
+group		lower region 1
+120 atoms in group lower
+region		2 block INF INF 8.75 INF INF INF
+group		upper region 2
+120 atoms in group upper
+group		boundary union lower upper
+240 atoms in group boundary
+group		flow subtract all boundary
+600 atoms in group flow
+
+set		group lower type 2
+  120 settings made for type
+set		group upper type 3
+  120 settings made for type
+
+# initial velocities
+
+compute	        mobile flow temp
+velocity	flow create 1.0 482748 temp mobile
+fix		1 all nve
+fix		2 flow temp/rescale 200 1.0 1.0 0.02 1.0
+fix_modify	2 temp mobile
+
+# Poiselle flow
+
+velocity	boundary set 0.0 0.0 0.0
+fix		3 lower setforce 0.0 0.0 0.0
+fix		4 upper setforce 0.0 NULL 0.0
+fix		5 upper aveforce 0.0 -0.5 0.0
+fix		6 flow addforce 1.0 0.0 0.0
+
+# 2 obstacles
+
+region		void1 sphere 10 4 0 3
+delete_atoms	region void1
+Deleted 36 atoms, new total = 804
+region		void2 sphere 20 7 0 3
+delete_atoms	region void2
+Deleted 35 atoms, new total = 769
+
+fix		7 flow indent 100 sphere 10 4 0 4
+fix		8 flow indent 100 sphere 20 7 0 4
+fix		9 all enforce2d
+
+# Run
+
+timestep	0.003
+thermo		1000
+thermo_modify	temp mobile
+WARNING: Temperature for thermo pressure is not for group all (../thermo.cpp:488)
+
+#dump		1 all atom 100 dump.obstacle
+
+#dump		2 all image 500 image.*.jpg type type #		zoom 1.6 adiam 1.5
+#dump_modify	2 pad 5
+
+#dump		3 all movie 500 movie.mpg type type #		zoom 1.6 adiam 1.5
+#dump_modify	3 pad 5
+
+run		25000
+Neighbor list info ...
+  update every 1 steps, delay 5 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 1.42246
+  ghost atom cutoff = 1.42246
+  binsize = 0.71123, bins = 73 32 1
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/2d/newton
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 3.048 | 3.048 | 3.048 Mbytes
+Step Temp E_pair E_mol TotEng Press Volume 
+       0    1.0004177            0            0   0.68689281   0.46210058    1143.0857 
+    1000            1  -0.32494012            0   0.36166587    1.2240503    1282.5239 
+    2000            1  -0.37815616            0   0.30844982    1.0642877    1312.5691 
+    3000            1  -0.49062352            0   0.19598246    1.5239343    1322.2627 
+    4000            1  -0.50097189            0    0.1856341    1.4610024    1367.6515 
+    5000            1  -0.50005706            0   0.18654893    1.3530122    1405.9895 
+    6000            1  -0.44229321            0   0.24431277    1.1989773    1431.8451 
+    7000            1   -0.4559661            0   0.23063988    1.2226051    1443.3514 
+    8000            1  -0.41088995            0   0.27571603    1.1232326    1439.2982 
+    9000            1  -0.38778402            0   0.29882196     1.152696    1438.9276 
+   10000            1  -0.39421126            0   0.29239472    1.0050684    1440.1188 
+   11000            1  -0.39653934            0   0.29006665    1.0292186    1434.3828 
+   12000            1   -0.4120713            0   0.27453468    1.0746572    1435.1975 
+   13000            1   -0.3386777            0   0.34792828   0.99116095    1443.3109 
+   14000            1  -0.38168476            0   0.30492122    1.0158657    1454.8293 
+   15000            1  -0.36786388            0    0.3187421   0.98249851    1454.1673 
+   16000            1  -0.38467392            0   0.30193206   0.97651014    1451.8036 
+   17000            1  -0.38678777            0   0.29981822    1.0297448    1453.1853 
+   18000            1  -0.40749837            0   0.27910761    1.0259583    1456.1654 
+   19000            1  -0.39317662            0   0.29342936   0.96555072    1456.7105 
+   20000            1  -0.36484566            0   0.32176032    1.0426885    1457.6831 
+   21000            1  -0.38430258            0   0.30230341    1.0815524    1456.2821 
+   22000            1   -0.3805882            0   0.30601778     1.049364    1458.5992 
+   23000            1  -0.39141862            0   0.29518736    1.0058872    1460.1124 
+   24000            1  -0.34824412            0   0.33836186   0.93914121    1465.2528 
+   25000            1  -0.39287366            0   0.29373232    1.0841847    1460.6295 
+Loop time of 0.687728 on 8 procs for 25000 steps with 769 atoms
+
+Performance: 9422334.615 tau/day, 36351.600 timesteps/s
+99.9% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.022397   | 0.045563   | 0.085652   |  11.5 |  6.63
+Neigh   | 0.015902   | 0.024224   | 0.036126   |   5.3 |  3.52
+Comm    | 0.25445    | 0.2887     | 0.33644    |   5.4 | 41.98
+Output  | 0.00049651 | 0.00052282 | 0.00061368 |   0.0 |  0.08
+Modify  | 0.17803    | 0.22346    | 0.24508    |   5.0 | 32.49
+Other   |            | 0.1053     |            |       | 15.31
+
+Nlocal:    96.125 ave 136 max 73 min
+Histogram: 3 2 0 0 0 0 0 2 0 1
+Nghost:    26.875 ave 40 max 18 min
+Histogram: 2 2 0 0 1 1 0 0 0 2
+Neighs:    203.25 ave 352 max 132 min
+Histogram: 3 2 0 0 0 0 2 0 0 1
+
+Total # of neighbors = 1626
+Ave neighs/atom = 2.11443
+Neighbor list builds = 1632
+Dangerous builds = 1
+Total wall time: 0:00:00
