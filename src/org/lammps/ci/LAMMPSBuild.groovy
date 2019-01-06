@@ -9,6 +9,7 @@ import org.lammps.ci.build.Documentation
 import org.lammps.ci.build.Testing
 import org.lammps.ci.build.TestingOMP
 import org.lammps.ci.build.Regression
+import org.lammps.ci.build.Intel
 
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
@@ -35,6 +36,10 @@ def regular_build(build_name) {
             break
         case 'new-openmpi-clang':
             s = new OpenMPIClang(this)
+            break
+        case 'new-intel':
+            s = new Intel(this)
+            docker_image_name = 'lammps_testing:intel2018u3'
             break
         case 'new-build-docs':
             s = new Documentation(this)
