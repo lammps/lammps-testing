@@ -122,36 +122,43 @@ def pull_request(build_name) {
     def testing = false
 
     switch(build_name) {
-        case 'new-serial':
+        case 'new-serial-pr':
             s = new Serial(this)
             break
-        case 'new-shlib':
+        case 'new-cmake-serial-pr':
+            s = new SerialCMake(this)
+            break
+        case 'new-shlib-pr':
             s = new Shlib(this)
             break
-        case 'new-openmpi':
+        case 'new-openmpi-pr':
             s = new OpenMPI(this)
             break
-        case 'new-serial-clang':
+        case 'new-serial-clang-pr':
             s = new SerialClang(this)
             break
-        case 'new-shlib-clang':
+        case 'new-shlib-clang-pr':
             s = new ShlibClang(this)
             break
-        case 'new-openmpi-clang':
+        case 'new-openmpi-clang-pr':
             s = new OpenMPIClang(this)
             break
-        case 'new-build-docs':
+        case 'new-intel-pr':
+            s = new Intel(this)
+            docker_image_name = 'lammps_testing:intel2018u3'
+            break
+        case 'new-build-docs-pr':
             s = new Documentation(this)
             break
-        case 'new-testing':
+        case 'new-testing-pr':
             s = new Testing(this)
             testing = true
             break
-        case 'new-testing-omp':
+        case 'new-testing-omp-pr':
             s = new TestingOMP(this)
             testing = true
             break
-        case 'new-regression':
+        case 'new-regression-pr':
             s = new Regression(this)
             testing = true
             break
