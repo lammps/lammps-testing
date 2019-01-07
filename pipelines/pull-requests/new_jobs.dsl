@@ -6,15 +6,19 @@ scripts.each { name ->
     pipelineJob("lammps/pull-requests/${name}") {
         properties {
             githubProjectUrl("https://github.com/lammps/lammps/")
-            githubProjectProperty {
-                projectUrlStr("https://github.com/lammps/lammps")
-            }
         }
 
         triggers {
             githubPullRequests {
                 spec("* * * * *")
                 triggerMode('HEAVY_HOOKS')
+                repoProviders {
+                    githubPlugin {
+                        cacheConnection(true)
+                        manageHooks(true)
+                        repoPermission('ADMIN')
+                    }
+                }
                 events {
                     Open()
                     commitChanged()
@@ -41,15 +45,19 @@ cmake_scripts.each { name ->
     pipelineJob("lammps/pull-requests/cmake/${name}") {
         properties {
             githubProjectUrl("https://github.com/lammps/lammps/")
-            githubProjectProperty {
-                projectUrlStr("https://github.com/lammps/lammps")
-            }
         }
 
         triggers {
             githubPullRequests {
                 spec("* * * * *")
                 triggerMode('HEAVY_HOOKS')
+                repoProviders {
+                    githubPlugin {
+                        cacheConnection(true)
+                        manageHooks(true)
+                        repoPermission('ADMIN')
+                    }
+                }
                 events {
                     Open()
                     commitChanged()
