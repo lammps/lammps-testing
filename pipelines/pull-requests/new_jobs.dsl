@@ -4,6 +4,12 @@ def scripts = ['new-serial-pr']
 
 scripts.each { name ->
     pipelineJob("lammps/pull-requests/${name}") {
+        properties {
+            githubProjectProperty {
+                projectUrlStr("https://github.com/lammps/lammps")
+            }
+        }
+
         triggers {
             githubPullRequests {
                 spec("* * * * *")
@@ -32,6 +38,12 @@ def cmake_scripts = ['new-cmake-serial-pr']
 
 cmake_scripts.each { name ->
     pipelineJob("lammps/pull-requests/cmake/${name}") {
+        properties {
+            githubProjectProperty {
+                projectUrlStr("https://github.com/lammps/lammps")
+            }
+        }
+
         triggers {
             githubPullRequests {
                 spec("* * * * *")
