@@ -6,6 +6,7 @@ scripts.each { name ->
     pipelineJob("lammps/pull-requests/${name}") {
         triggers {
             githubPullRequests {
+                spec("* * * * *")
                 triggerMode('HEAVY_HOOKS')
                 events {
                     Open()
@@ -33,6 +34,7 @@ cmake_scripts.each { name ->
     pipelineJob("lammps/pull-requests/cmake/${name}") {
         triggers {
             githubPullRequests {
+                spec("* * * * *")
                 triggerMode('HEAVY_HOOKS')
                 events {
                     Open()
