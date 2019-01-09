@@ -55,13 +55,13 @@ pipelineJob("lammps/pull-requests/new-regression-pr") {
             }
             events {
                 labelsAdded {
-                    labels {
-                        label('full-regression-test')
+                    label {
+                        labels('full-regression-test')
                     }
                 }
                 labelsExist {
-                    labels {
-                        label('full-regression-test')
+                    label {
+                        labels('full-regression-test')
                     }
                 }
             }
@@ -96,13 +96,13 @@ pipelineJob("lammps/pull-requests/new-testing-pr") {
             }
             events {
                 labelsAdded {
-                    labels {
-                        label('test-for-regression')
+                    label {
+                        labels('test-for-regression')
                     }
                 }
                 labelsExist {
-                    labels {
-                        label('test-for-regression')
+                    label {
+                        labels('test-for-regression')
                     }
                 }
             }
