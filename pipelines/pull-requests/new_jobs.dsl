@@ -63,6 +63,7 @@ pipelineJob("lammps/pull-requests/new-regression-pr") {
                     label {
                         labels('full-regression-test')
                     }
+		    skip(false)
                 }
             }
         }
@@ -104,6 +105,7 @@ pipelineJob("lammps/pull-requests/new-testing-pr") {
                     label {
                         labels('test-for-regression')
                     }
+		    skip(false)
                 }
             }
         }
@@ -145,6 +147,7 @@ pipelineJob("lammps/pull-requests/new-testing-omp-pr") {
                     label {
                         labels('test-for-regression')
                     }
+		    skip(false)
                 }
             }
         }
