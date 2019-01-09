@@ -137,13 +137,13 @@ pipelineJob("lammps/pull-requests/new-testing-omp-pr") {
             }
             events {
                 labelsAdded {
-                    labels {
-                        label('test-for-regression')
+                    label {
+                        labels('test-for-regression')
                     }
                 }
                 labelsExist {
-                    labels {
-                        label('test-for-regression')
+                    label {
+                        labels('test-for-regression')
                     }
                 }
             }
