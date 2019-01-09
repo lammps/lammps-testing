@@ -11,6 +11,7 @@ import org.lammps.ci.build.TestingOMP
 import org.lammps.ci.build.Regression
 import org.lammps.ci.build.Intel
 import org.lammps.ci.build.SerialCMake
+import org.lammps.ci.build.KokkosOMP
 
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
@@ -51,6 +52,9 @@ def regular_build(build_name) {
         case 'new-testing':
             s = new Testing(this)
             testing = true
+            break
+        case 'new-kokkos-omp':
+            s = new KokkosOMP(this)
             break
         case 'new-testing-omp':
             s = new TestingOMP(this)
@@ -149,6 +153,9 @@ def pull_request(build_name) {
             break
         case 'new-build-docs-pr':
             s = new Documentation(this)
+            break
+        case 'new-kokkos-omp-pr':
+            s = new KokkosOMP(this)
             break
         case 'new-testing-pr':
             s = new Testing(this)
