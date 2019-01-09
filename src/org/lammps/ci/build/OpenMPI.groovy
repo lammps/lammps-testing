@@ -6,6 +6,7 @@ class OpenMPI extends LegacyBuild {
         compiler    = 'mpicxx'
         lammps_mode = LAMMPS_MODE.exe
         lammps_mach = 'mpi'
+        lammps_target = 'mpi'
         lammps_size = LAMMPS_SIZES.BIGBIG
 
         packages << 'yes-all'

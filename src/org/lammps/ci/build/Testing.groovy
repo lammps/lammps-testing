@@ -4,6 +4,7 @@ class Testing extends LegacyTesting {
     Testing(steps) {
         super('jenkins/testing', steps)
         build.lammps_mach = 'serial'
+        build.lammps_target = 'serial'
         build.lammps_size = LAMMPS_SIZES.SMALLSMALL
 
         build.packages << 'yes-all'

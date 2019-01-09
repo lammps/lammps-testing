@@ -5,6 +5,7 @@ class Shlib extends LegacyBuild {
         super('jenkins/shlib', steps)
         lammps_mode = LAMMPS_MODE.shlib
         lammps_mach = 'serial'
+        lammps_target = 'serial'
         lammps_size = LAMMPS_SIZES.SMALLBIG
 
         packages << 'yes-all'

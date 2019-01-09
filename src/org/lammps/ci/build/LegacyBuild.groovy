@@ -21,6 +21,7 @@ class LegacyBuild implements Serializable {
     def cxx_compiler = 'g++'
     def lammps_mode = LAMMPS_MODE.exe
     def lammps_mach = 'serial'
+    def lammps_target = 'serial'
     def lammps_size = LAMMPS_SIZES.SMALLBIG
     def packages = []
     def message = ''
@@ -103,6 +104,7 @@ class LegacyBuild implements Serializable {
         steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
         steps.env.COMP     = compiler
         steps.env.MACH     = "${lammps_mach}"
+        steps.env.TARGET   = "${lammps_target}"
         steps.env.MODE     = "${lammps_mode}"
         steps.env.LMPFLAGS = '-sf off'
         steps.env.LMP_INC  = "-I/usr/include/hdf5/serial -DLAMMPS_${lammps_size} -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized"
@@ -127,7 +129,7 @@ class LegacyBuild implements Serializable {
 
         steps.stage('Compiling') {
             steps.sh '''#!/bin/bash -l
-            make -j 8 -C lammps/src mode=${MODE} ${MACH} MACH=${MACH} CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
+            make -j 8 -C lammps/src mode=${MODE} ${TARGET} MACH=${MACH} CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
             '''
         }
 

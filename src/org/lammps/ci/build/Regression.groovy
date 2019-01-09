@@ -4,6 +4,7 @@ class Regression extends LegacyTesting {
     Regression(steps) {
         super('jenkins/regression', steps)
         build.lammps_mach = 'mpi'
+        build.lammps_target = 'mpi'
         build.lammps_size = LAMMPS_SIZES.SMALLBIG
         build.compiler = 'mpicxx'
 

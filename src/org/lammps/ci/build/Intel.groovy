@@ -8,6 +8,7 @@ class Intel extends LegacyBuild {
         cxx_compiler  = 'icpc'
         lammps_mode = LAMMPS_MODE.shexe
         lammps_mach = 'mpi'
+        lammps_target = 'mpi'
         lammps_size = LAMMPS_SIZES.SMALLBIG
 
         packages << 'yes-std'

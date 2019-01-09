@@ -5,6 +5,7 @@ class Serial extends LegacyBuild {
         super('jenkins/serial', steps)
         lammps_mode = LAMMPS_MODE.exe
         lammps_mach = 'serial'
+        lammps_target = 'serial'
         lammps_size = LAMMPS_SIZES.SMALLSMALL
 
         packages << 'yes-all'

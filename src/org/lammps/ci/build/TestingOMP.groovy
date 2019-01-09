@@ -4,6 +4,7 @@ class TestingOMP extends LegacyTesting {
     TestingOMP(steps) {
         super('jenkins/testing-omp', steps)
         build.lammps_mach = 'mpi'
+        build.lammps_target = 'mpi'
         build.lammps_size = LAMMPS_SIZES.SMALLBIG
         build.compiler = 'mpicxx -fopenmp'
 

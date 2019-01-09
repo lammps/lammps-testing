@@ -5,7 +5,8 @@ class KokkosOMP extends LegacyBuild {
         super('jenkins/kokkos-omp', steps)
         compiler    = 'mpicxx'
         lammps_mode = LAMMPS_MODE.exe
-        lammps_mach = 'kokkos_omp'
+        lammps_mach = 'mpi'
+        lammps_target = 'kokkos_omp'
         lammps_size = LAMMPS_SIZES.BIGBIG
 
         packages << 'yes-all'
