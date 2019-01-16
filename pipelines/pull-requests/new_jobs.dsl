@@ -1,6 +1,6 @@
 folder('lammps/pull-requests')
 
-def scripts = ['new-serial-pr', 'new-shlib-pr', 'new-openmpi-pr', 'new-build-docs-pr']
+def scripts = ['new-serial-pr', 'new-shlib-pr', 'new-openmpi-pr', 'new-build-docs-pr', 'new-kokkos-omp-pr']
 
 scripts.each { name ->
     pipelineJob("lammps/pull-requests/${name}") {
