@@ -5,9 +5,9 @@ class CMakeTesting extends CMakeTestingBuild {
         super('jenkins/cmake/testing', steps)
         cmake_options = ['-D CXX_COMPILER_LAUNCHER=ccache',
                          '-D CMAKE_CXX_FLAGS="-Wall -Wextra -Wno-unused-result"',
-                         '-D BUILD_LIB=on'
-                         '-D BUILD_SHARED_LIBS=on'
-                         '-D BUILD_OMP=on'
+                         '-D BUILD_LIB=on',
+                         '-D BUILD_SHARED_LIBS=on',
+                         '-D BUILD_OMP=on',
                          '-D PKG_ASPHERE=yes',
                          '-D PKG_BODY=yes=yes',
                          '-D PKG_CLASS2=yes',
