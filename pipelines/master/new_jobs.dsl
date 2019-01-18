@@ -21,7 +21,7 @@ scripts.each { name ->
 
 folder('lammps/master/cmake')
 
-def cmake_scripts = ['new-cmake-serial']
+def cmake_scripts = ['new-cmake-serial', 'new-cmake-testing']
 
 cmake_scripts.each { name ->
     pipelineJob("lammps/master/cmake/${name}") {
