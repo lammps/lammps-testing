@@ -12,6 +12,7 @@ import org.lammps.ci.build.Regression
 import org.lammps.ci.build.Intel
 import org.lammps.ci.build.SerialCMake
 import org.lammps.ci.build.KokkosOMP
+import org.lammps.ci.build.CMakeTesting
 
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
@@ -26,6 +27,10 @@ def regular_build(build_name) {
             break
         case 'new-cmake-serial':
             s = new SerialCMake(this)
+            break
+        case 'new-cmake-testing':
+            s = new CMakeTesting(this)
+            testing = true
             break
         case 'new-shlib':
             s = new Shlib(this)
@@ -131,6 +136,10 @@ def pull_request(build_name) {
             break
         case 'new-cmake-serial-pr':
             s = new SerialCMake(this)
+            break
+        case 'new-cmake-testing-pr':
+            s = new CMakeTesting(this)
+            testing = true
             break
         case 'new-shlib-pr':
             s = new Shlib(this)
