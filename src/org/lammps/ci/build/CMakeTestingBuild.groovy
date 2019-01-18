@@ -19,7 +19,6 @@ abstract class CMakeTestingBuild implements Serializable {
         this.name  = name
         this.steps = steps
 
-        this.lammps_mode = LAMMPS_MODE.shexe
         this.test_modes = new TestModes()
     }
 
