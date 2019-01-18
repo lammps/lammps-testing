@@ -15,8 +15,6 @@ abstract class CMakeTestingBuild implements Serializable {
     TestModes test_modes
     MPIMode mpi_mode = MPIMode.openmpi
 
-    def message = ''
-
     CMakeTestingBuild(name, steps) {
         this.name  = name
         this.steps = steps
