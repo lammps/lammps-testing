@@ -186,8 +186,8 @@ def pull_request(build_name) {
 
     stage('Checkout') {
         dir('lammps') {
-            branch_name = "origin-pull/pull/${env.GITHUB_PR_NUMBER}/merge"
-            refspec = "+refs/pull/${env.GITHUB_PR_NUMBER}/merge:refs/remotes/origin-pull/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}"
+            branch_name = "origin-pull/pull/${env.GITHUB_PR_NUMBER}/head"
+            refspec = "+refs/pull/${env.GITHUB_PR_NUMBER}/head:refs/remotes/origin-pull/pull/${env.GITHUB_PR_NUMBER}/head"
             checkout([$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]])
         }
 
@@ -198,7 +198,7 @@ def pull_request(build_name) {
         }
     }
 
-    gitHubPRStatus githubPRMessage('${GITHUB_PR_COND_REF} run started')
+    gitHubPRStatus githubPRMessage('head run started')
 
     def envImage = docker.image(docker_image_name)
 
@@ -223,7 +223,7 @@ def pull_request(build_name) {
 
     s.post_actions()
 
-    githubPRStatusPublisher statusMsg: githubPRMessage('${GITHUB_PR_COND_REF} run ended' + s.message), unstableAs: 'SUCCESS'
+    githubPRStatusPublisher statusMsg: githubPRMessage('head run ended' + s.message), unstableAs: 'SUCCESS'
 
     if (currentBuild.result == 'FAILURE') {
         slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!" + s.message
