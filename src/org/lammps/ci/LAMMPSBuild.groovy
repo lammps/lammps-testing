@@ -186,8 +186,8 @@ def pull_request(build_name) {
 
     stage('Checkout') {
         dir('lammps') {
-            branch_name = "origin-pull/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}"
-            refspec = "+refs/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}:refs/remotes/origin-pull/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}"
+            branch_name = "origin-pull/pull/${env.GITHUB_PR_NUMBER}/merge"
+            refspec = "+refs/pull/${env.GITHUB_PR_NUMBER}/merge:refs/remotes/origin-pull/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}"
             checkout([$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]])
         }
 
