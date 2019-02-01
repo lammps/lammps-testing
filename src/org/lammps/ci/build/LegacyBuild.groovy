@@ -80,7 +80,7 @@ class LegacyBuild implements Serializable {
 
             if('yes-voronoi' in packages) {
                 steps.sh '''#!/bin/bash -l
-                make -j 8 -C lammps/src lib-voronoi args="-b"
+                make -C lammps/src lib-voronoi args="-b"
                 '''
             }
 
