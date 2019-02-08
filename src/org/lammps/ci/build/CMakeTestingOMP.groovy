@@ -1,6 +1,6 @@
 package org.lammps.ci.build
 
-class CMakeTestingOMP extends CMakeTesting {
+class CMakeTestingOMP extends CMakeTestingBuild {
     CMakeTestingOMP(steps) {
         super('jenkins/cmake/testing-omp', steps)
         cmake_options = ['-D CXX_COMPILER_LAUNCHER=ccache',
