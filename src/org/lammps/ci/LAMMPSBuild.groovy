@@ -13,6 +13,7 @@ import org.lammps.ci.build.Intel
 import org.lammps.ci.build.SerialCMake
 import org.lammps.ci.build.KokkosOMP
 import org.lammps.ci.build.CMakeTesting
+import org.lammps.ci.build.CMakeTestingOMP
 
 def regular_build(build_name) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
@@ -63,6 +64,10 @@ def regular_build(build_name) {
             break
         case 'new-testing-omp':
             s = new TestingOMP(this)
+            testing = true
+            break
+        case 'new-cmake-testing-omp':
+            s = new CMakeTestingOMP(this)
             testing = true
             break
         case 'new-regression':
@@ -172,6 +177,10 @@ def pull_request(build_name) {
             break
         case 'new-testing-omp-pr':
             s = new TestingOMP(this)
+            testing = true
+            break
+        case 'new-cmake-testing-omp-pr':
+            s = new CMakeTestingOMP(this)
             testing = true
             break
         case 'new-regression-pr':
