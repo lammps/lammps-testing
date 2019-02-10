@@ -76,7 +76,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
             break
         default:
             currentBuild.result = 'FAILURE'
-            echo 'unknown build_name'
+            echo 'unknown build_name ' + build_name
             return
     }
 
