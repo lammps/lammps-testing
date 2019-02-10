@@ -15,7 +15,7 @@ import org.lammps.ci.build.KokkosOMP
 import org.lammps.ci.build.CMakeTesting
 import org.lammps.ci.build.CMakeTestingOMP
 
-def regular_build(build_name) {
+def regular_build(build_name, set_github_status=true, run_in_container=true, send_slack=true) {
     def docker_registry = 'http://glados.cst.temple.edu:5000'
     def docker_image_name = 'lammps_testing:ubuntu_latest'
     def project_url = 'https://github.com/lammps/lammps.git'
@@ -94,37 +94,57 @@ def regular_build(build_name) {
 
     def utils = new Utils()
 
-    utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'building...', 'PENDING')
+    if (set_github_status) {
+        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'building...', 'PENDING')
+    }
 
-    def envImage = docker.image(docker_image_name)
+    if (run_in_container) {
+        def envImage = docker.image(docker_image_name)
 
-    try {
-        docker.withRegistry(docker_registry) {
-            stage('Setting up build environment') {
-                // ensure image is current
-                envImage.pull()
+        try {
+            docker.withRegistry(docker_registry) {
+                stage('Setting up build environment') {
+                    // ensure image is current
+                    envImage.pull()
+                }
+
+                // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
+                docker.image(envImage.imageName()).inside {
+                    s.configure()
+                    s.build()
+                }
             }
 
-            // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
-            docker.image(envImage.imageName()).inside {
-                s.configure()
-                s.build()
-            }
+        } catch (err) {
+            echo "Caught: ${err}"
+            currentBuild.result = 'FAILURE'
         }
-
-    } catch (err) {
-        echo "Caught: ${err}"
-        currentBuild.result = 'FAILURE'
+    } else {
+        try {
+            s.configure()
+            s.build()
+        } catch (err) {
+            echo "Caught: ${err}"
+            currentBuild.result = 'FAILURE'
+        }
     }
 
     s.post_actions()
 
     if (currentBuild.result == 'FAILURE') {
-        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build failed!' + s.message, 'FAILURE')
-        slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!" + s.message
+        if (set_github_status) {
+            utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build failed!' + s.message, 'FAILURE')
+        }
+        if (send_slack) {
+            slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!" + s.message
+        }
     } else {
-        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build successful!' + s.message, 'SUCCESS')
-        slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!" + s.message
+        if (set_github_status) {
+            utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build successful!' + s.message, 'SUCCESS')
+        }
+        if (send_slack) {
+            slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!" + s.message
+        }
     }
 }
 
