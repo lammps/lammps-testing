@@ -7,6 +7,7 @@ class CMakeBuild implements Serializable {
     def compiler = 'g++'
     def c_compiler = 'gcc'
     def cxx_compiler = 'g++'
+    def python_executable = 'python'
     def cmake_options = []
     def message = ''
 
@@ -25,7 +26,7 @@ class CMakeBuild implements Serializable {
             steps.sh 'ccache -M 5G'
             steps.sh 'rm -rf build'
             steps.sh 'mkdir build'
-            steps.sh '#!/bin/bash -l\n cd build && cmake ' + cmake_options.join(' ') + ' ../lammps/cmake'
+            steps.sh '#!/bin/bash -l\n cd build && cmake ' + cmake_options.join(' ') + " -D PYTHON_EXECUTABLE=$(which ${python_executable}) ../lammps/cmake"
         }
     }
 
