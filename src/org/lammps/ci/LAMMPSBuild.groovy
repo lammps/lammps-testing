@@ -23,54 +23,54 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
     def testing = false
 
     switch(build_name) {
-        case 'new-serial':
+        case 'serial':
             s = new Serial(this)
             break
-        case 'new-cmake-serial':
+        case 'cmake-serial':
             s = new SerialCMake(this)
             break
-        case 'new-cmake-testing':
+        case 'cmake-testing':
             s = new CMakeTesting(this)
             testing = true
             break
-        case 'new-shlib':
+        case 'shlib':
             s = new Shlib(this)
             break
-        case 'new-openmpi':
+        case 'openmpi':
             s = new OpenMPI(this)
             break
-        case 'new-serial-clang':
+        case 'serial-clang':
             s = new SerialClang(this)
             break
-        case 'new-shlib-clang':
+        case 'shlib-clang':
             s = new ShlibClang(this)
             break
-        case 'new-openmpi-clang':
+        case 'openmpi-clang':
             s = new OpenMPIClang(this)
             break
-        case 'new-intel':
+        case 'intel':
             s = new Intel(this)
             docker_image_name = 'lammps_testing:intel2018u3'
             break
-        case 'new-build-docs':
+        case 'build-docs':
             s = new Documentation(this)
             break
-        case 'new-testing':
+        case 'testing':
             s = new Testing(this)
             testing = true
             break
-        case 'new-kokkos-omp':
+        case 'kokkos-omp':
             s = new KokkosOMP(this)
             break
-        case 'new-testing-omp':
+        case 'testing-omp':
             s = new TestingOMP(this)
             testing = true
             break
-        case 'new-cmake-testing-omp':
+        case 'cmake-testing-omp':
             s = new CMakeTestingOMP(this)
             testing = true
             break
-        case 'new-regression':
+        case 'regression':
             s = new Regression(this)
             testing = true
             break
@@ -156,54 +156,54 @@ def pull_request(build_name) {
     def testing = false
 
     switch(build_name) {
-        case 'new-serial-pr':
+        case 'serial-pr':
             s = new Serial(this)
             break
-        case 'new-cmake-serial-pr':
+        case 'cmake-serial-pr':
             s = new SerialCMake(this)
             break
-        case 'new-cmake-testing-pr':
+        case 'cmake-testing-pr':
             s = new CMakeTesting(this)
             testing = true
             break
-        case 'new-shlib-pr':
+        case 'shlib-pr':
             s = new Shlib(this)
             break
-        case 'new-openmpi-pr':
+        case 'openmpi-pr':
             s = new OpenMPI(this)
             break
-        case 'new-serial-clang-pr':
+        case 'serial-clang-pr':
             s = new SerialClang(this)
             break
-        case 'new-shlib-clang-pr':
+        case 'shlib-clang-pr':
             s = new ShlibClang(this)
             break
-        case 'new-openmpi-clang-pr':
+        case 'openmpi-clang-pr':
             s = new OpenMPIClang(this)
             break
-        case 'new-intel-pr':
+        case 'intel-pr':
             s = new Intel(this)
             docker_image_name = 'lammps_testing:intel2018u3'
             break
-        case 'new-build-docs-pr':
+        case 'build-docs-pr':
             s = new Documentation(this)
             break
-        case 'new-kokkos-omp-pr':
+        case 'kokkos-omp-pr':
             s = new KokkosOMP(this)
             break
-        case 'new-testing-pr':
+        case 'testing-pr':
             s = new Testing(this)
             testing = true
             break
-        case 'new-testing-omp-pr':
+        case 'testing-omp-pr':
             s = new TestingOMP(this)
             testing = true
             break
-        case 'new-cmake-testing-omp-pr':
+        case 'cmake-testing-omp-pr':
             s = new CMakeTestingOMP(this)
             testing = true
             break
-        case 'new-regression-pr':
+        case 'regression-pr':
             s = new Regression(this)
             testing = true
             break

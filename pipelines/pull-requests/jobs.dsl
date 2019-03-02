@@ -1,6 +1,6 @@
 folder('lammps/pull-requests')
 
-def scripts = ['new-serial-pr', 'new-shlib-pr', 'new-openmpi-pr', 'new-build-docs-pr', 'new-kokkos-omp-pr']
+def scripts = ['serial-pr', 'shlib-pr', 'openmpi-pr', 'build-docs-pr', 'kokkos-omp-pr']
 
 scripts.each { name ->
     pipelineJob("lammps/pull-requests/${name}") {
@@ -37,7 +37,7 @@ scripts.each { name ->
     }
 }
 
-pipelineJob("lammps/pull-requests/new-regression-pr") {
+pipelineJob("lammps/pull-requests/regression-pr") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }
@@ -79,7 +79,7 @@ pipelineJob("lammps/pull-requests/new-regression-pr") {
     }
 }
 
-pipelineJob("lammps/pull-requests/new-testing-pr") {
+pipelineJob("lammps/pull-requests/testing-pr") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }
@@ -121,7 +121,7 @@ pipelineJob("lammps/pull-requests/new-testing-pr") {
     }
 }
 
-pipelineJob("lammps/pull-requests/new-testing-omp-pr") {
+pipelineJob("lammps/pull-requests/testing-omp-pr") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }
@@ -165,7 +165,7 @@ pipelineJob("lammps/pull-requests/new-testing-omp-pr") {
 
 folder('lammps/pull-requests/cmake')
 
-def cmake_scripts = ['new-cmake-serial-pr']
+def cmake_scripts = ['cmake-serial-pr']
 
 cmake_scripts.each { name ->
     pipelineJob("lammps/pull-requests/cmake/${name}") {

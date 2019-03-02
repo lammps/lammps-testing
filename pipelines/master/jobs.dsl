@@ -1,6 +1,6 @@
 folder('lammps/master')
 
-def scripts = ['new-serial', 'new-shlib', 'new-openmpi', 'new-serial-clang', 'new-shlib-clang', 'new-openmpi-clang', 'new-build-docs', 'new-testing', 'new-testing-omp', 'new-regression', 'new-intel', 'new-kokkos-omp']
+def scripts = ['serial', 'shlib', 'openmpi', 'serial-clang', 'shlib-clang', 'openmpi-clang', 'build-docs', 'testing', 'testing-omp', 'regression', 'intel', 'kokkos-omp']
 
 scripts.each { name ->
     pipelineJob("lammps/master/${name}") {
@@ -21,7 +21,7 @@ scripts.each { name ->
 
 folder('lammps/master/cmake')
 
-def cmake_scripts = ['new-cmake-serial', 'new-cmake-testing', 'new-cmake-testing-omp']
+def cmake_scripts = ['cmake-serial', 'cmake-testing', 'cmake-testing-omp']
 
 cmake_scripts.each { name ->
     pipelineJob("lammps/master/cmake/${name}") {
