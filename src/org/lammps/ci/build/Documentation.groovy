@@ -31,6 +31,6 @@ class Documentation implements Serializable {
     }
 
     def post_actions() {
-        steps.recordIssues(tools: [steps.groovyScript('sphinx'), steps.groovyScript('spelling')])
+        steps.recordIssues(tools: [groovyScript('sphinx'), groovyScript('spelling')])
     }
 }
