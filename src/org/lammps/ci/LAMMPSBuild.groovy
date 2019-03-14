@@ -16,7 +16,7 @@ import org.lammps.ci.build.CMakeTesting
 import org.lammps.ci.build.CMakeTestingOMP
 
 def regular_build(build_name, set_github_status=true, run_in_container=true, send_slack=true) {
-    def docker_registry = 'http://glados.cst.temple.edu:5000'
+    def docker_registry = 'http://glados2.cst.temple.edu:5000'
     def docker_image_name = 'lammps_testing:ubuntu_latest'
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
@@ -149,7 +149,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
 }
 
 def pull_request(build_name) {
-    def docker_registry = 'http://glados.cst.temple.edu:5000'
+    def docker_registry = 'http://glados2.cst.temple.edu:5000'
     def docker_image_name = 'lammps_testing:ubuntu_latest'
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
