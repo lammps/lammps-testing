@@ -104,9 +104,7 @@ node {
                     timeout(15) {
                         sh '''
                         source pyenv/bin/activate
-                        cd python
-                        python install.py
-                        cd ..
+                        make -C src install-python
                         cd lammps-testing
                         env
                         python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py
