@@ -87,7 +87,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
         }
         if(testing){
             dir('lammps-testing') {
-                git branch: 'jenkins_shared_library', credentialsId: 'lammps-jenkins', url: testing_project_url
+                git branch: 'master', credentialsId: 'lammps-jenkins', url: testing_project_url
             }
         }
     }
