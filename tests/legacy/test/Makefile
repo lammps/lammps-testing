@@ -21,5 +21,5 @@ clean:
 	for dir in $(DIRS) lib_python lib_couple; do cd $$dir ; $(MAKE) $(MFLAGS) clean; cd ..; done
 	
 lib_python/lammps.py lib_python/liblammps.so : ../python/install.py ../python/lammps.py $(SHLIB)
-	python ../python/install.py lib_python
+	python ../python/install.py -m ../python/lammps.py -v ../src/version.h -d lib_python
 
