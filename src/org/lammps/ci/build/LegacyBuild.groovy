@@ -129,6 +129,7 @@ class LegacyBuild implements Serializable {
 
         steps.stage('Compiling') {
             steps.sh '''#!/bin/bash -l
+            touch lammps/src/liblammps.so
             make -j 8 -C lammps/src mode=${MODE} ${TARGET} MACH=${MACH} CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
             '''
         }
