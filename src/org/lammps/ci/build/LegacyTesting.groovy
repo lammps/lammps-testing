@@ -106,9 +106,7 @@ abstract class LegacyTesting implements Serializable {
         virtualenv pyenv
         source pyenv/bin/activate
         pip install nose
-        cd lammps/python
-        python install.py
-        cd ../..
+        make -C lammps/src install-python
         deactivate
         '''
 
