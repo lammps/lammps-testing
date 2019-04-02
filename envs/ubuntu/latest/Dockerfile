@@ -14,6 +14,7 @@ RUN add-apt-repository -y ppa:openkim-team/daily
 RUN apt-get update -y
 RUN apt-get -y install autopkgtest libkim-api-v2-dev libkim-api-v2-models
 RUN apt-get update -y && apt-get -y install libenchant-dev
+RUN apt-get update -y && apt-get -y install libgsl0-dev gsl-bin
 
 ENV PATH /usr/lib/ccache:$PATH
 
