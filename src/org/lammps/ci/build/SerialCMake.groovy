@@ -5,7 +5,7 @@ class SerialCMake extends CMakeBuild {
         super('jenkins/cmake/serial', steps)
         cmake_options = ['-C ../lammps/cmake/presets/all_on.cmake',
                          '-D CXX_COMPILER_LAUNCHER=ccache',
-                         '-D CMAKE_CXX_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-initialized"',
+                         '-D CMAKE_CXX_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"',
                          '-D PKG_USER-LB=off',
                          '-D PKG_LATTE=off',
                          '-D PKG_KIM=off',
