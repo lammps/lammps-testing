@@ -26,7 +26,7 @@ ENV MODULEPATH /etc/modulefiles:/usr/share/modulefiles:/usr/share/Modules/module
 ENV PATH /usr/lib/ccache:$PATH
 
 RUN groupadd -g 114 jenkins
-RUN useradd -u 106 -g 114 -ms /bin/bash jenkins
+RUN useradd -u 108 -g 114 -ms /bin/bash jenkins
 
 COPY z00_StdEnv.sh /etc/profile.d/z00_StdEnv.sh
 
