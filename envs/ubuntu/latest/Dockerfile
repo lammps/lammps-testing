@@ -12,6 +12,7 @@ RUN apt update && apt upgrade -y && apt install -y build-essential ccache gfortr
 RUN apt-get -y install software-properties-common --no-install-recommends
 RUN apt-get update -y && apt-get -y install libenchant-dev
 RUN apt-get update -y && apt-get -y install libgsl0-dev gsl-bin
+RUN apt-get update -y && apt-get -y install xxd
 
 ENV PATH /usr/lib/ccache:$PATH
 
