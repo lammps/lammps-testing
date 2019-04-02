@@ -20,7 +20,7 @@ class CMakeMinGWCrossBuild implements Serializable {
             steps.sh 'ccache -M 5G'
             steps.sh 'rm -rf ' + folder
             steps.sh 'mkdir ' + folder
-            steps.sh '#!/bin/bash -l\n cd ' + folder && 'mingw' + bitness + '-cmake ' + cmake_options.join(' ') + "../lammps/cmake"
+            steps.sh '#!/bin/bash -l\n cd ' + folder && 'mingw' + bitness + '-cmake ' + cmake_options.join(' ') + ' ../lammps/cmake'
         }
     }
 
