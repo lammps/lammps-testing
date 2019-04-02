@@ -219,6 +219,14 @@ def pull_request(build_name) {
             s = new Regression(this)
             testing = true
             break
+        case 'cmake-win32-serial':
+            s = new Win32CrossSerialCMake(this)
+            docker_image_name = 'lammps_testing:fedora_29_cross'
+            break
+        case 'cmake-win64-serial':
+            s = new Win64CrossSerialCMake(this)
+            docker_image_name = 'lammps_testing:fedora_29_cross'
+            break
         default:
             currentBuild.result = 'FAILURE'
             echo 'unknown build_name'
