@@ -14,6 +14,8 @@ import org.lammps.ci.build.SerialCMake
 import org.lammps.ci.build.KokkosOMP
 import org.lammps.ci.build.CMakeTesting
 import org.lammps.ci.build.CMakeTestingOMP
+import org.lammps.ci.build.Win32CrossSerialCMake
+import org.lammps.ci.build.Win64CrossSerialCMake
 
 def regular_build(build_name, set_github_status=true, run_in_container=true, send_slack=true) {
     def docker_registry = 'http://glados2.cst.temple.edu:5000'
@@ -73,6 +75,16 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
         case 'regression':
             s = new Regression(this)
             testing = true
+            break
+        case 'cmake-win32-serial':
+            s = new Win32CrossSerialCMake(this)
+            docker_image_name = 'lammps_testing:fedora_29_cross'
+            set_github_status = false
+            break
+        case 'cmake-win64-serial':
+            s = new Win64CrossSerialCMake(this)
+            docker_image_name = 'lammps_testing:fedora_29_cross'
+            set_github_status = false
             break
         default:
             currentBuild.result = 'FAILURE'
