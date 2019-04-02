@@ -5,6 +5,7 @@ class Win32CrossSerialCMake extends CMakeMinGWCrossBuild {
         super('jenkins/cmake/win32-serial', steps)
         bitness = '32'
         cmake_options = ['-C ../lammps/cmake/presets/mingw-cross.cmake',
+                         '-D LAMMPS_SIZES=smallsmall',
                          '-D CMAKE_CXX_FLAGS="-Wall -Wno-maybe-uninitialized"']
     }
 }
