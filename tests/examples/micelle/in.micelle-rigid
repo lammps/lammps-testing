@@ -28,7 +28,7 @@ fix		3 all adapt 1 pair soft a * * v_prefactor
 fix		4 all enforce2d
 
 thermo		50
-run		1000
+run		500
 
 unfix		3
 
@@ -58,7 +58,7 @@ pair_coeff	1 4 1.0 1.0 1.12246
 pair_coeff	2 3 1.0 0.88 1.12246
 pair_coeff	2 4 1.0 0.75 1.12246
 
-thermo		1000
+thermo		50
 
 #dump		1 all atom 2000 dump.micelle
 
@@ -78,9 +78,10 @@ fix		1 solvent nve
 fix		2 solvent temp/rescale 100 0.45 0.45 0.02 1.0
 fix		5 solute rigid molecule langevin 0.45 0.45 0.5 112211
 fix		4 all enforce2d
-run		20000
-unfix 5
+run		500
+unfix 2
 unfix 4
-fix		5 solute rigid/small molecule langevin 0.45 0.45 0.5 112211
+unfix 5
+fix		5 solute rigid/small molecule
 fix		4 all enforce2d
-run		20000
+run		500
