@@ -97,6 +97,12 @@ class LegacyBuild implements Serializable {
                 make -j 8 -C lammps/lib/qmmm -f Makefile.${MACH}
                 '''
             }
+
+            if('yes-user-smd' in packages) {
+                steps.sh '''#!/bin/bash -l
+                make -C lammps/src lib-smd args="-p /usr/include/eigen3"
+                '''
+            }
         }
     }
 
