@@ -99,7 +99,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
         }
         if(testing){
             dir('lammps-testing') {
-                git branch: 'master', credentialsId: 'lammps-jenkins', url: testing_project_url
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: testing_project_url]]])
             }
         }
     }
@@ -242,7 +242,7 @@ def pull_request(build_name) {
 
         if(testing) {
             dir('lammps-testing') {
-                git branch: 'master', credentialsId: 'lammps-jenkins', url: testing_project_url
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: testing_project_url]]])
             }
         }
     }
