@@ -28,7 +28,7 @@ fix		3 all adapt 1 pair soft a * * v_prefactor
 fix		4 all enforce2d
 
 thermo		50
-run		1000
+run		750
 
 unfix		3
 
@@ -69,4 +69,4 @@ thermo		50
 #dump_modify	3 pad 5 adiam 1 0.5 adiam 2 1.5 adiam 3 1.0 adiam 4 0.75
 
 reset_timestep	0
-run		1000
+run		750
