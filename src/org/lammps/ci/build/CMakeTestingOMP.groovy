@@ -54,5 +54,6 @@ class CMakeTestingOMP extends CMakeTestingBuild {
                          '-D PKG_USER-SMTBQ=yes',
                          '-D PKG_USER-OMP=yes']
         test_modes.omp = true
+        coverage = true
     }
 }
