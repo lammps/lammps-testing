@@ -53,5 +53,6 @@ class CMakeTesting extends CMakeTestingBuild {
                          '-D PKG_USER-TALLY=yes',
                          '-D PKG_USER-SMTBQ=yes',
                          '-D PKG_USER-OMP=yes']
+        coverage = true
     }
 }

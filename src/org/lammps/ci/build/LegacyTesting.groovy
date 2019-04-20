@@ -11,6 +11,7 @@ class TestModes {
     def serial = false
     def parallel = false
     def omp = false
+    def gpu = false
     def valgrind = false
 
     String toString() {
@@ -26,6 +27,10 @@ class TestModes {
 
         if(omp) {
             modes << 'omp'
+        }
+
+        if(gpu) {
+            modes << 'gpu'
         }
 
         if(valgrind) {

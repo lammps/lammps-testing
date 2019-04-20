@@ -11,6 +11,7 @@ abstract class CMakeTestingBuild implements Serializable {
     def cxx_compiler = 'g++'
     def cmake_options = []
     def message = ''
+    def coverage = false
 
     TestModes test_modes
     MPIMode mpi_mode = MPIMode.openmpi
@@ -70,7 +71,16 @@ abstract class CMakeTestingBuild implements Serializable {
             pip install nose
             deactivate
             '''
-            steps.sh '#!/bin/bash -l\n source pyenv/bin/activate && cd build && cmake ' + cmake_options.join(' ') + ' -D CMAKE_INSTALL_PREFIX=$VIRTUAL_ENV ../lammps/cmake'
+            def coverage_option = ''
+            if(coverage) {
+                steps.sh '''
+                source pyenv/bin/activate
+                pip install git+https://github.com/gcovr/gcovr.git
+                deactivate
+                '''
+                coverage_option = '-D ENABLE_COVERAGE=on '
+            }
+            steps.sh '#!/bin/bash -l\n source pyenv/bin/activate && cd build && cmake ' + coverage_option + cmake_options.join(' ') + ' -D CMAKE_INSTALL_PREFIX=$VIRTUAL_ENV ../lammps/cmake'
         }
     }
 
@@ -99,10 +109,21 @@ abstract class CMakeTestingBuild implements Serializable {
         cd ..
         deactivate
         '''
+
+        if(coverage) {
+            steps.sh '''#!/bin/bash -l
+            source pyenv/bin/activate
+            make -C build gen_coverage_xml
+            deactivate
+            '''
+        }
     }
 
     def collect_reports() {
         steps.junit 'lammps-testing/nosetests-*.xml'
+        if(coverage) {
+            steps.cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+        }
     }
 
     def post_actions() {
