@@ -54,6 +54,7 @@ class CMakeTestingGPU extends CMakeTestingBuild {
                          '-D PKG_GPU=on',
                          "-D GPU_API=${gpu_api}"]
         test_modes.gpu = true
+        steps.echo "Selected Test Modes: ${test_modes}"
         coverage = true
     }
 }
