@@ -146,5 +146,39 @@ if 'omp' in LAMMPS_TEST_MODES:
 if 'parallel' in LAMMPS_TEST_MODES:
     SkipTest(BalanceTestCase, "test_balance_bond_fast_parallel", "Crashes randomly")
 
+if 'gpu' in LAMMPS_TEST_MODES:
+    SkipTest(CombTestCase, "test_comb3_gpu", "requires newton pair on")
+    SkipTest(CombTestCase, "test_comb_Cu2O_elastic_gpu", "requires newton pair on")
+    SkipTest(CombTestCase, "test_comb_Cu_gpu", "requires newton pair on")
+    SkipTest(CombTestCase, "test_comb_HfO2_gpu", "requires newton pair on")
+    SkipTest(CombTestCase, "test_comb_Si_elastic_gpu", "requires newton pair on")
+    SkipTest(CombTestCase, "test_comb_Si_gpu", "requires newton pair on")
+
+    SkipTest(CrackTestCase, "test_crack_gpu", "Cannot use neigh_modify exclude with GPU neighbor builds")
+
+    SkipTest(DreidingTestCase, "test_dreiding_gpu", "requires newton pair on")
+
+    SkipTest(EllipseTestCase, "test_ellipse_gayberne_gpu", "CPU neighbor lists must be used for ellipsoid/sphere mix")
+
+    SkipTest(GcmcTestCase, "test_gcmc_co2_gpu", "Cannot use neigh_modify exclude with GPU neighbor builds")
+    SkipTest(GcmcTestCase, "test_gcmc_h2o_gpu", "Cannot use neigh_modify exclude with GPU neighbor builds")
+    SkipTest(GcmcTestCase, "test_gcmc_lj_gpu", "Cannot use neigh_modify exclude with GPU neighbor builds")
+
+    SkipTest(GranregionTestCase, "test_granregion_box_gpu", "Cannot use pair hybrid with GPU neighbor list builds")
+
+    SkipTest(MeamTestCase, "test_meam_gpu", "requires newton pair on")
+    SkipTest(MeamTestCase, "test_meam_shear_gpu", "requires newton pair on")
+
+    SkipTest(Nb3BTestCase, "test_nb3b_gpu", "requires newton pair on")
+
+    SkipTest(NemdTestCase, "test_nemd_gpu", "Cannot use package gpu neigh yes with triclinic box")
+
+    SkipTest(PythonTestCase, "test_pair_python_hybrid_gpu", "Cannot use pair hybrid with GPU neighbor list builds")
+    SkipTest(PythonTestCase, "test_pair_python_long_gpu", "Cannot use pair hybrid with GPU neighbor list builds")
+    SkipTest(PythonTestCase, "test_pair_python_spce_gpu", "Cannot use pair hybrid with GPU neighbor list builds")
+
+    SkipTest(QeqTestCase, "test_qeq_buck_gpu", "QEQ with 'newton pair off' not supported")
+    SkipTest(QeqTestCase, "test_qeq_reaxc_gpu", "requires newton pair on")
+
 if __name__ == '__main__':
     unittest.main()
