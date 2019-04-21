@@ -14,12 +14,14 @@ import org.lammps.ci.build.SerialCMake
 import org.lammps.ci.build.KokkosOMP
 import org.lammps.ci.build.CMakeTesting
 import org.lammps.ci.build.CMakeTestingOMP
+import org.lammps.ci.build.CMakeTestingGPU
 import org.lammps.ci.build.Win32CrossSerialCMake
 import org.lammps.ci.build.Win64CrossSerialCMake
 
 def regular_build(build_name, set_github_status=true, run_in_container=true, send_slack=true) {
     def docker_registry = 'http://glados2.cst.temple.edu:5000'
     def docker_image_name = 'lammps_testing:ubuntu_latest'
+    def docker_args = ''
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def testing = false
@@ -72,6 +74,13 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
             s = new CMakeTestingOMP(this)
             testing = true
             break
+        case 'cmake-testing-gpu-opencl':
+            s = new CMakeTestingGPU(this, 'opencl')
+            docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
+            docker_args = '--runtime=nvidia'
+            testing = true
+            set_github_status=false
+            break
         case 'regression':
             s = new Regression(this)
             testing = true
@@ -121,7 +130,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
                 }
 
                 // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
-                docker.image(envImage.imageName()).inside {
+                docker.image(envImage.imageName()).inside(docker_args) {
                     s.configure()
                     s.build()
                 }

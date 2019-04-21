@@ -105,6 +105,9 @@ abstract class CMakeTestingBuild implements Serializable {
         source pyenv/bin/activate
         cd lammps-testing
         export LD_LIBRARY_PATH=$VIRTUAL_ENV/lib64:$LD_LIBRARY_PATH
+        echo "-------------------------------------------------------------------------------------"
+        env | grep LAMMPS_
+        echo "-------------------------------------------------------------------------------------"
         python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py
         cd ..
         deactivate
