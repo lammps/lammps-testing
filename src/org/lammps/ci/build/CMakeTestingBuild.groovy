@@ -57,12 +57,11 @@ abstract class CMakeTestingBuild implements Serializable {
         steps.env.LAMMPS_DIR = steps.pwd() + '/lammps'
         steps.env.LAMMPS_MPI_MODE = "${mpi_mode}"
         steps.env.LAMMPS_BINARY = steps.pwd() + '/build/lmp'
-        steps.env.LAMMPS_TEST_MODES = "${test_modes}"
+        steps.env.LAMMPS_TEST_MODES = "${test_modes.toString()}"
         steps.env.LAMMPS_POTENTIALS = steps.env.LAMMPS_DIR + '/potentials'
 
 
         steps.stage('Configure') {
-            steps.echo "Configured Test Modes: ${test_modes}"
             steps.sh 'ccache -M 5G'
             steps.sh 'rm -rf build'
             steps.sh 'rm -rf pyenv'
