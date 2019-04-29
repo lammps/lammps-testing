@@ -81,6 +81,13 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
             testing = true
             set_github_status=false
             break
+        case 'cmake-testing-gpu-cuda':
+            s = new CMakeTestingGPU(this, 'cuda')
+            docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
+            docker_args = '--runtime=nvidia'
+            testing = true
+            set_github_status=false
+            break
         case 'regression':
             s = new Regression(this)
             testing = true
