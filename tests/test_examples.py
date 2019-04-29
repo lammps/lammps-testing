@@ -180,5 +180,28 @@ if 'gpu' in LAMMPS_TEST_MODES:
     SkipTest(QeqTestCase, "test_qeq_buck_gpu", "QEQ with 'newton pair off' not supported")
     SkipTest(QeqTestCase, "test_qeq_reaxc_gpu", "requires newton pair on")
 
+    SkipTest(RigidTestCase, "test_rigid_gpu", "Cannot use neigh_modify exclude with GPU neighbor builds")
+    SkipTest(RigidTestCase, "test_rigid_poems2_gpu", "Cannot use neigh_modify exclude with GPU neighbor builds")
+    SkipTest(RigidTestCase, "test_rigid_poems_gpu", "Cannot use neigh_modify exclude with GPU neighbor builds")
+    SkipTest(RigidTestCase, "test_rigid_tnr_gpu", "Cannot use neigh_modify exclude with GPU neighbor builds")
+
+    SkipTest(SnapTestCase, "test_snap_gpu", "requires newton pair on")
+    SkipTest(SnapTestCase, "test_snap_hybrid_WSNAP_HePair_gpu", "requires newton pair on")
+    SkipTest(SnapTestCase, "test_snap_Ta06A_gpu", "requires newton pair on")
+    SkipTest(SnapTestCase, "test_snap_W_2940_gpu", "requires newton pair on")
+
+    SkipTest(VashishtaTestCase, "test_vashishta_sio2_gpu", "Cannot use package gpu neigh yes with triclinic box")
+    SkipTest(VashishtaTestCase, "test_vashishta_table_inp_gpu", "Cannot use package gpu neigh yes with triclinic box")
+    SkipTest(VashishtaTestCase, "test_vashishta_table_sio2_gpu", "Cannot use package gpu neigh yes with triclinic box")
+    SkipTest(VashishtaTestCase, "test_vashishta_inp_gpu", "Cannot use package gpu neigh yes with triclinic box")
+
+    SkipTest(SrdTestCase, "test_srd_mixture_gpu", "requires newton pair on")
+    SkipTest(SrdTestCase, "test_srd_pure_gpu", "requires newton pair on")
+
+    SkipTest(StreitzTestCase, "test_streitz_ewald_gpu", "Cannot use pair hybrid with GPU neighbor list builds")
+    SkipTest(StreitzTestCase, "test_streitz_wolf_gpu", "Cannot use pair hybrid with GPU neighbor list builds")
+
+    SkipTest(VoronoiTestCase, "test_voronoi_gpu", "Cannot use package gpu neigh yes with triclinic box")
+
 if __name__ == '__main__':
     unittest.main()
