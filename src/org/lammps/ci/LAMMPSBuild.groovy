@@ -79,14 +79,12 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
             docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
             docker_args = '--runtime=nvidia'
             testing = true
-            set_github_status=false
             break
         case 'cmake-testing-gpu-cuda':
             s = new CMakeTestingGPU(this, 'cuda')
             docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
             docker_args = '--runtime=nvidia'
             testing = true
-            set_github_status=false
             break
         case 'regression':
             s = new Regression(this)
@@ -179,6 +177,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
 def pull_request(build_name) {
     def docker_registry = 'http://glados2.cst.temple.edu:5000'
     def docker_image_name = 'lammps_testing:ubuntu_latest'
+    def docker_args = ''
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def testing = false
@@ -231,6 +230,20 @@ def pull_request(build_name) {
             s = new CMakeTestingOMP(this)
             testing = true
             break
+        case 'cmake-testing-gpu-opencl-pr':
+            s = new CMakeTestingGPU(this, 'opencl')
+            docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
+            docker_args = '--runtime=nvidia'
+            testing = true
+            set_github_status=false
+            break
+        case 'cmake-testing-gpu-cuda-pr':
+            s = new CMakeTestingGPU(this, 'cuda')
+            docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
+            docker_args = '--runtime=nvidia'
+            testing = true
+            set_github_status=false
+            break
         case 'regression-pr':
             s = new Regression(this)
             testing = true
@@ -275,7 +288,7 @@ def pull_request(build_name) {
             }
 
             // use workaround (see https://issues.jenkins-ci.org/browse/JENKINS-34276)
-            docker.image(envImage.imageName()).inside {
+            docker.image(envImage.imageName()).inside(docker_args) {
                 s.configure()
                 s.build()
             }
