@@ -54,7 +54,7 @@ class CMakeTestingKokkosCUDA extends CMakeTestingBuild {
                          '-D PKG_USER-SMTBQ=yes',
                          '-D PKG_KOKKOS=yes',
                          '-D KOKKOS_ENABLE_CUDA=yes',
-                         '-D KOKKOS_ARCH=Kepler35']
+                         '-D KOKKOS_ARCH=Turing75']
         test_modes.kokkos_cuda = true
         coverage = true
     }
