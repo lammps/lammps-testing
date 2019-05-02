@@ -15,6 +15,7 @@ import org.lammps.ci.build.KokkosOMP
 import org.lammps.ci.build.CMakeTesting
 import org.lammps.ci.build.CMakeTestingOMP
 import org.lammps.ci.build.CMakeTestingGPU
+import org.lammps.ci.build.CMakeTestingKokkosCUDA
 import org.lammps.ci.build.Win32CrossSerialCMake
 import org.lammps.ci.build.Win64CrossSerialCMake
 
