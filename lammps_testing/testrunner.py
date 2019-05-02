@@ -51,7 +51,7 @@ class LAMMPSTestCase:
                 lammps_options += ["t", str(nthreads)]
             if force_cuda:
                 lammps_options += ["g", str(ngpus)]
-            lammps_options += ["-sf", "kk"]
+            lammps_options += ["-sf", "kk", "--pk", "kokkos newton on neigh half"]
 
         if force_gpu:
             lammps_options += ["-pk", "gpu", "1", "-sf", "gpu"]
