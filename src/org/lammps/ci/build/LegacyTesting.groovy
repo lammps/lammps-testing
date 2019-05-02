@@ -12,6 +12,7 @@ class TestModes {
     def parallel = false
     def omp = false
     def gpu = false
+    def kokkos_cuda = false
     def valgrind = false
 
     String toString() {
@@ -31,6 +32,10 @@ class TestModes {
 
         if(gpu) {
             modes << 'gpu'
+        }
+
+        if(kokkos_cuda) {
+            modes << 'kokkos_cuda'
         }
 
         if(valgrind) {

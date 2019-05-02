@@ -21,7 +21,7 @@ scripts.each { name ->
 
 folder('lammps/master/cmake')
 
-def cmake_scripts = ['cmake-serial', 'cmake-testing', 'cmake-testing-omp', 'cmake-testing-gpu-opencl', 'cmake-testing-gpu-cuda', 'cmake-win32-serial', 'cmake-win64-serial']
+def cmake_scripts = ['cmake-serial', 'cmake-testing', 'cmake-testing-omp', 'cmake-testing-gpu-opencl', 'cmake-testing-gpu-cuda', 'cmake-testing-kokkos-cuda', 'cmake-win32-serial', 'cmake-win64-serial']
 
 cmake_scripts.each { name ->
     pipelineJob("lammps/master/cmake/${name}") {
