@@ -202,6 +202,7 @@ if 'gpu' in LAMMPS_TEST_MODES:
     SkipTest(StreitzTestCase, "test_streitz_wolf_gpu", "Cannot use pair hybrid with GPU neighbor list builds")
 
     SkipTest(VoronoiTestCase, "test_voronoi_gpu", "Cannot use package gpu neigh yes with triclinic box")
+    SkipTest(ThreebodyTestCase, "test_threebody_gpu", "requires newton pair on")
 
 if __name__ == '__main__':
     unittest.main()
