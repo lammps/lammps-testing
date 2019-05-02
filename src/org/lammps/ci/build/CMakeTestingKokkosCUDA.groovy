@@ -1,7 +1,7 @@
 package org.lammps.ci.build
 
 class CMakeTestingKokkosCUDA extends CMakeTestingBuild {
-    CMakeTestingKokkos(steps) {
+    CMakeTestingKokkosCUDA(steps) {
         super("jenkins/cmake/testing-kokkos-cuda", steps)
         cxx_compiler = steps.pwd() + '/lammps/lib/kokkos/bin/nvcc_wrapper'
         cmake_options = ['-D CXX_COMPILER_LAUNCHER=ccache',
