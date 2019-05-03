@@ -204,5 +204,56 @@ if 'gpu' in LAMMPS_TEST_MODES:
     SkipTest(VoronoiTestCase, "test_voronoi_gpu", "Cannot use package gpu neigh yes with triclinic box")
     SkipTest(ThreebodyTestCase, "test_threebody_gpu", "requires newton pair on")
 
+if 'kokkos_cuda' in LAMMPS_TEST_MODES:
+    SkipTest(MinTestCase, "test_min_box_kokkos_cuda", "Cannot yet use minimize with Kokkos")
+    SkipTest(MinTestCase, "test_min_kokkos_cuda", "Cannot yet use minimize with Kokkos")
+
+    SkipTest(HugoniostatTestCase, "test_hugoniostat_kokkos_cuda", "Cannot yet use minimize with Kokkos")
+
+    SkipTest(BodyTestCase, "test_body_kokkos_cuda", "KOKKOS package requires a kokkos enabled atom_style")
+
+    SkipTest(EllipseTestCase, "test_ellipse_gayberne_kokkos_cuda", "KOKKOS package requires a kokkos enabled atom_style")
+    SkipTest(EllipseTestCase, "test_ellipse_resquared_kokkos_cuda", "KOKKOS package requires a kokkos enabled atom_style")
+
+    SkipTest(PeriTestCase, "test_peri_lps_kokkos_cuda", "KOKKOS package requires a kokkos enabled atom_style")
+    SkipTest(PeriTestCase, "test_peri_pmb_kokkos_cuda", "KOKKOS package requires a kokkos enabled atom_style")
+    SkipTest(PeriTestCase, "test_peri_ves_kokkos_cuda", "KOKKOS package requires a kokkos enabled atom_style")
+    SkipTest(PeriTestCase, "test_peri_eps_kokkos_cuda", "KOKKOS package requires a kokkos enabled atom_style")
+
+    SkipTest(GranregionTestCase, "test_granregion_box_kokkos_cuda", "Cannot yet use pair hybrid with Kokkos")
+    SkipTest(GranregionTestCase, "test_granregion_funnel_kokkos_cuda", "Cannot yet use fix pour with the KOKKOS package")
+    SkipTest(GranregionTestCase, "test_granregion_mixer_kokkos_cuda", "Cannot yet use fix pour with the KOKKOS package")
+
+    SkipTest(DipoleTestCase, "test_dipole_kokkos_cuda", "KOKKOS package requires a kokkos enabled atom_style")
+
+    SkipTest(Python, "test_pair_python_hybrid_kokkos_cuda", "Cannot yet use pair hybrid with Kokkos")
+
+    SkipTest(SnapTestCase, "test_snap_kokkos_cuda", "deadlock")
+    SkipTest(SnapTestCase, "test_snap_hybrid_WSNAP_HePair_kokkos_cuda", "deadlock")
+    SkipTest(SnapTestCase, "test_snap_Ta06A_kokkos_cuda", "deadlock")
+    SkipTest(SnapTestCase, "test_snap_W_2940_kokkos_cuda", "deadlock")
+
+    SkipTest(CombTestCase, "test_comb_Cu2O_elastic_kokkos_cuda", "Cannot yet use minimize with Kokkos")
+    SkipTest(CombTestCase, "test_comb_HfO2_kokkos_cuda", "Cannot yet use minimize with Kokkos")
+    SkipTest(CombTestCase, "test_comb_Si_elastic_kokkos_cuda", "Cannot yet use minimize with Kokkos")
+
+    SkipTest(IndentTestCase, "test_indent_min_kokkos_cuda", "Cannot yet use minimize with Kokkos")
+
+    SkipTest(DreidingTestCase, "test_dreiding_kokkos_cuda", "KOKKOS package only supports 'bin' neighbor lists")
+
+    SkipTest(VoronoiTestCase, "test_voronoi_2d_kokkos_cuda", "KOKKOS package only supports 'bin' neighbor lists")
+    SkipTest(VoronoiTestCase, "test_voronoi_data_kokkos_cuda", "KOKKOS package only supports 'bin' neighbor lists")
+
+    SkipTest(VashishtaTestCase, "test_vashishta_inp_kokkos_cuda", "KOKKOS package only supports 'bin' neighbor lists")
+
+    SkipTest(GcmcTestCase, "test_gcmc_h2o_kokkos_cuda", "Cannot yet use minimize with Kokkos")
+
+    SkipTest(Nb3BTestCase, "test_nb3b_kokkos_cuda", "Cannot yet use minimize with Kokkos")
+
+    SkipTest(PourTestCase, "test_pour_2d_kokkos_cuda", "Cannot yet use fix pour with the KOKKOS package")
+    SkipTest(PourTestCase, "test_pour_2d_molecule_kokkos_cuda", "Cannot yet use fix pour with the KOKKOS package")
+    SkipTest(PourTestCase, "test_pour_kokkos_cuda", "Cannot yet use fix pour with the KOKKOS package")
+
+
 if __name__ == '__main__':
     unittest.main()
