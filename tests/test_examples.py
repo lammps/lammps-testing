@@ -226,7 +226,7 @@ if 'kokkos_cuda' in LAMMPS_TEST_MODES:
 
     SkipTest(DipoleTestCase, "test_dipole_kokkos_cuda", "KOKKOS package requires a kokkos enabled atom_style")
 
-    SkipTest(Python, "test_pair_python_hybrid_kokkos_cuda", "Cannot yet use pair hybrid with Kokkos")
+    SkipTest(PythonTestCase, "test_pair_python_hybrid_kokkos_cuda", "Cannot yet use pair hybrid with Kokkos")
 
     SkipTest(SnapTestCase, "test_snap_kokkos_cuda", "deadlock")
     SkipTest(SnapTestCase, "test_snap_hybrid_WSNAP_HePair_kokkos_cuda", "deadlock")
