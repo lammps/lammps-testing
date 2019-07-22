@@ -1,4 +1,5 @@
-LAMMPS (4 Jan 2019)
+LAMMPS (18 Jun 2019)
+  using 1 OpenMP thread(s) per MPI task
 # Pour granular particles into chute container, then induce flow
 
 atom_style	sphere
@@ -87,20 +88,20 @@ Step Atoms KinEng c_1 Volume
    23000     3000     466.4491    34.257664         6600 
    24000     3000    330.46648    24.972266         6600 
    25000     3000    237.73843    18.513257         6600 
-Loop time of 3.20887 on 8 procs for 25000 steps with 3000 atoms
+Loop time of 3.42706 on 8 procs for 25000 steps with 3000 atoms
 
-Performance: 673134.600 tau/day, 7790.910 timesteps/s
-99.2% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 630277.446 tau/day, 7294.878 timesteps/s
+98.3% CPU use with 8 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.013627   | 0.69361    | 1.4116     |  81.7 | 21.62
-Neigh   | 0.033801   | 0.18786    | 0.34754    |  35.4 |  5.85
-Comm    | 0.63172    | 0.6624     | 0.69372    |   2.9 | 20.64
-Output  | 0.00072993 | 0.001624   | 0.0024444  |   2.0 |  0.05
-Modify  | 0.098852   | 0.34069    | 0.59239    |  41.0 | 10.62
-Other   |            | 1.323      |            |       | 41.22
+Pair    | 0.023362   | 0.8146     | 1.6492     |  87.6 | 23.77
+Neigh   | 0.042296   | 0.1937     | 0.35213    |  33.8 |  5.65
+Comm    | 0.3948     | 0.41648    | 0.43872    |   2.8 | 12.15
+Output  | 0.00086737 | 0.0019768  | 0.0029807  |   2.2 |  0.06
+Modify  | 0.13131    | 0.41917    | 0.71525    |  43.2 | 12.23
+Other   |            | 1.581      |            |       | 46.14
 
 Nlocal:    375 ave 744 max 13 min
 Histogram: 4 0 0 0 0 0 0 0 0 4
@@ -145,20 +146,20 @@ Step Atoms KinEng c_1 Volume
    48000     3000    16061.511    220.86227         6600 
    49000     3000    17689.918    244.80785         6600 
    50000     3000    19627.205    276.77792         6600 
-Loop time of 6.64027 on 8 procs for 25000 steps with 3000 atoms
+Loop time of 6.35794 on 8 procs for 25000 steps with 3000 atoms
 
-Performance: 325288.008 tau/day, 3764.908 timesteps/s
-98.6% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 339732.562 tau/day, 3932.090 timesteps/s
+98.2% CPU use with 8 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.0015205  | 1.6436     | 3.3685     | 128.1 | 24.75
-Neigh   | 0.007258   | 0.30039    | 0.59664    |  53.5 |  4.52
-Comm    | 1.1196     | 1.1643     | 1.2161     |   3.4 | 17.53
-Output  | 0.00099784 | 0.0033821  | 0.0056699  |   3.9 |  0.05
-Modify  | 0.0042501  | 0.55196    | 1.1051     |  73.7 |  8.31
-Other   |            | 2.977      |            |       | 44.83
+Pair    | 0.0031211  | 1.7852     | 3.5723     | 133.3 | 28.08
+Neigh   | 0.0067806  | 0.2795     | 0.55419    |  51.6 |  4.40
+Comm    | 0.56482    | 0.61369    | 0.66115    |   4.7 |  9.65
+Output  | 0.00099277 | 0.0035295  | 0.006047   |   4.2 |  0.06
+Modify  | 0.0086493  | 0.59355    | 1.1871     |  75.9 |  9.34
+Other   |            | 3.082      |            |       | 48.48
 
 Nlocal:    375 ave 761 max 0 min
 Histogram: 4 0 0 0 0 0 0 0 0 4

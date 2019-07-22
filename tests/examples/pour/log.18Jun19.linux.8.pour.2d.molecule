@@ -1,4 +1,5 @@
-LAMMPS (4 Jan 2019)
+LAMMPS (18 Jun 2019)
+  using 1 OpenMP thread(s) per MPI task
 # Pour 2d granular particles into container
 
 dimension	2
@@ -40,6 +41,7 @@ Read molecule object:
   0 dihedrals with max type 0
   0 impropers with max type 0
 fix             3 all rigid/small molecule mol object
+  create bodies CPU = 0.000100374 secs
 0 rigid bodies with 0 atoms
   2.23607 = max distance from body owner to body atom
 
@@ -87,9 +89,9 @@ Neighbor list info ...
 Per MPI rank memory allocation (min/avg/max) = 5.772 | 5.772 | 5.772 Mbytes
 Step Atoms KinEng c_1 Volume 
        0        0           -0            0         5000 
-    1000      130    259.24123 2.3773387e-30         5000 
-    2000      130    465.39775 9.4890825e-30         5000 
-    3000      130    736.55426 2.1364798e-29         5000 
+    1000      130    259.24123 2.9198022e-30         5000 
+    2000      130    465.39775 1.1655414e-29         5000 
+    3000      130    736.55426 2.624133e-29         5000 
     4000      260     1274.295 6.045774e-05         5000 
     5000      260    1855.4991 0.0021687846         5000 
     6000      260     1743.415    1.9678991         5000 
@@ -102,40 +104,40 @@ Step Atoms KinEng c_1 Volume
    13000      650    1687.7845    2.4723994         5000 
    14000      650    1534.5832    1.7381523         5000 
    15000      650    1517.5812    2.4425352         5000 
-   16000      780    1681.4276    3.5245463         5000 
-   17000      780    1660.4845    3.5652485         5000 
-   18000      780    1400.1788    4.1717202         5000 
-   19000      910    1525.4386    3.2537277         5000 
-   20000      910    1326.4257    3.5226039         5000 
-   21000      910    1125.4321    3.1564964         5000 
-   22000     1040    1262.0254     1.609763         5000 
-   23000     1040    1042.7009    3.1078738         5000 
-   24000     1040    1167.4716    1.4944259         5000 
-   25000     1170     1214.918    2.4500528         5000 
-Loop time of 1.19756 on 8 procs for 25000 steps with 1170 atoms
+   16000      780    1681.4276    3.5245458         5000 
+   17000      780    1660.4845    3.5652479         5000 
+   18000      780    1400.1791    4.1717025         5000 
+   19000      910    1525.4378    3.2537283         5000 
+   20000      910    1326.4245    3.5225255         5000 
+   21000      910    1125.4289    3.1563969         5000 
+   22000     1040    1262.2102    1.6093344         5000 
+   23000     1040    1038.6335    3.0932456         5000 
+   24000     1040    1162.8393    1.5352622         5000 
+   25000     1170    1212.3264    2.2843586         5000 
+Loop time of 1.49513 on 8 procs for 25000 steps with 1170 atoms
 
-Performance: 1803669.210 tau/day, 20875.801 timesteps/s
-99.9% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 1444692.038 tau/day, 16720.973 timesteps/s
+97.9% CPU use with 8 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.075254   | 0.13556    | 0.1985     |  15.3 | 11.32
-Neigh   | 0.0094253  | 0.028415   | 0.048996   |  10.9 |  2.37
-Comm    | 0.097148   | 0.13368    | 0.16203    |   5.4 | 11.16
-Output  | 0.00089017 | 0.00092492 | 0.001055   |   0.0 |  0.08
-Modify  | 0.6835     | 0.74852    | 0.80893    |   5.6 | 62.50
-Other   |            | 0.1504     |            |       | 12.56
+Pair    | 0.095021   | 0.17488    | 0.25999    |  17.3 | 11.70
+Neigh   | 0.012259   | 0.031891   | 0.053958   |  10.2 |  2.13
+Comm    | 0.12757    | 0.13984    | 0.15485    |   2.6 |  9.35
+Output  | 0.0011144  | 0.001214   | 0.0015502  |   0.4 |  0.08
+Modify  | 0.84538    | 0.9112     | 0.98279    |   6.0 | 60.94
+Other   |            | 0.2361     |            |       | 15.79
 
 Nlocal:    146.25 ave 265 max 33 min
 Histogram: 4 0 0 0 0 0 0 0 0 4
 Nghost:    29.125 ave 62 max 5 min
 Histogram: 3 0 1 0 1 1 0 0 0 2
-Neighs:    216.375 ave 416 max 27 min
+Neighs:    217 ave 416 max 27 min
 Histogram: 4 0 0 0 0 0 0 0 0 4
 
-Total # of neighbors = 1731
-Ave neighs/atom = 1.47949
+Total # of neighbors = 1736
+Ave neighs/atom = 1.48376
 Neighbor list builds = 1715
 Dangerous builds = 0
 Total wall time: 0:00:01

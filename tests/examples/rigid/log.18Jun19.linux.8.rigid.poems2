@@ -1,4 +1,5 @@
-LAMMPS (4 Jan 2019)
+LAMMPS (18 Jun 2019)
+  using 1 OpenMP thread(s) per MPI task
 # Simple rigid body system
 
 units		lj
@@ -11,6 +12,7 @@ read_data	data.rigid
   2 by 2 by 2 MPI processor grid
   reading atoms ...
   81 atoms
+  read_data CPU = 0.00106239 secs
 
 velocity 	all create 100.0 4928459
 
@@ -91,9 +93,9 @@ thermo		100
 timestep 	0.0001
 thermo		50
 run		10000
-WARNING: More than one fix poems (../fix_poems.cpp:363)
-WARNING: More than one fix poems (../fix_poems.cpp:363)
-WARNING: One or more atoms are time integrated more than once (../modify.cpp:283)
+WARNING: More than one fix poems (src/POEMS/fix_poems.cpp:363)
+WARNING: More than one fix poems (src/POEMS/fix_poems.cpp:363)
+WARNING: One or more atoms are time integrated more than once (src/modify.cpp:289)
 Neighbor list info ...
   update every 1 steps, delay 10 steps, check yes
   max neighbors/atom: 2000, page size: 100000
@@ -309,20 +311,20 @@ Step Temp E_pair E_mol TotEng Press
     9900    19660.928    122.15224            0    3763.0649   -2.9575759 
     9950    19048.026     235.5582            0    3762.9705   -1.4721485 
    10000    19024.582    239.77379            0    3762.8446    3.5328469 
-Loop time of 3.20858 on 8 procs for 10000 steps with 81 atoms
+Loop time of 3.67874 on 8 procs for 10000 steps with 81 atoms
 
-Performance: 26927.781 tau/day, 3116.641 timesteps/s
-99.9% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 23486.331 tau/day, 2718.325 timesteps/s
+99.2% CPU use with 8 MPI tasks x 1 OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.0039736  | 0.014264   | 0.033534   |   7.4 |  0.44
-Neigh   | 0.0054256  | 0.011968   | 0.024097   |   5.1 |  0.37
-Comm    | 0.18737    | 0.26702    | 0.38413    |  13.0 |  8.32
-Output  | 0.0051783  | 0.0054501  | 0.0060717  |   0.4 |  0.17
-Modify  | 2.7148     | 2.8775     | 2.9776     |   5.1 | 89.68
-Other   |            | 0.03236    |            |       |  1.01
+Pair    | 0.0057609  | 0.019045   | 0.046066   |   8.8 |  0.52
+Neigh   | 0.0055766  | 0.013288   | 0.028295   |   5.9 |  0.36
+Comm    | 0.14071    | 0.21528    | 0.26251    |   8.7 |  5.85
+Output  | 0.0069664  | 0.0073048  | 0.0086656  |   0.6 |  0.20
+Modify  | 3.3059     | 3.3996     | 3.5005     |   3.3 | 92.41
+Other   |            | 0.02422    |            |       |  0.66
 
 Nlocal:    10.125 ave 36 max 0 min
 Histogram: 5 0 0 1 0 0 0 0 1 1
