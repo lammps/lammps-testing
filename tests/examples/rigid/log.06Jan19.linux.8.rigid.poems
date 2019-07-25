@@ -1,5 +1,4 @@
-LAMMPS (18 Jun 2019)
-  using 1 OpenMP thread(s) per MPI task
+LAMMPS (4 Jan 2019)
 # Simple rigid body system
 
 units		lj
@@ -12,7 +11,6 @@ read_data	data.rigid
   2 by 2 by 2 MPI processor grid
   reading atoms ...
   81 atoms
-  read_data CPU = 0.00086236 secs
 
 velocity 	all create 100.0 4928459
 
@@ -307,20 +305,20 @@ Step Temp E_pair E_mol TotEng Press
     9900    20040.995    338.97958            0    3679.1454    17.419047 
     9950    16149.609    987.87172            0    3679.4732   -4.0737765 
    10000    18888.907    529.42343            0    3677.5746     2.385296 
-Loop time of 3.68735 on 8 procs for 10000 steps with 81 atoms
+Loop time of 3.12497 on 8 procs for 10000 steps with 81 atoms
 
-Performance: 23431.453 tau/day, 2711.974 timesteps/s
-99.0% CPU use with 8 MPI tasks x 1 OpenMP threads
+Performance: 27648.250 tau/day, 3200.029 timesteps/s
+99.9% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.0020792  | 0.026219   | 0.11396    |  22.4 |  0.71
-Neigh   | 0.0033882  | 0.017121   | 0.067435   |  15.7 |  0.46
-Comm    | 0.11657    | 0.21878    | 0.32846    |  14.4 |  5.93
-Output  | 0.0061927  | 0.0073286  | 0.0090179  |   0.9 |  0.20
-Modify  | 3.2857     | 3.3881     | 3.4996     |   3.8 | 91.88
-Other   |            | 0.02978    |            |       |  0.81
+Pair    | 0.0010573  | 0.018466   | 0.079469   |  18.9 |  0.59
+Neigh   | 0.0033002  | 0.014513   | 0.052606   |  13.3 |  0.46
+Comm    | 0.10675    | 0.24425    | 0.46365    |  22.8 |  7.82
+Output  | 0.0047623  | 0.0062513  | 0.0073846  |   0.9 |  0.20
+Modify  | 2.5514     | 2.8        | 2.9373     |   8.4 | 89.60
+Other   |            | 0.04147    |            |       |  1.33
 
 Nlocal:    10.125 ave 59 max 0 min
 Histogram: 5 1 1 0 0 0 0 0 0 1

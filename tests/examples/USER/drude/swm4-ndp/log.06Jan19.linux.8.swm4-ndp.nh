@@ -1,5 +1,4 @@
-LAMMPS (18 Jun 2019)
-  using 1 OpenMP thread(s) per MPI task
+LAMMPS (4 Jan 2019)
 units real
 boundary p p p
 
@@ -28,8 +27,6 @@ read_data data.swm4-ndp
   3 = max # of 1-3 neighbors
   3 = max # of 1-4 neighbors
   4 = max # of special neighbors
-  special bonds CPU = 0.00140762 secs
-  read_data CPU = 0.0128996 secs
 
 pair_coeff    1    1      0.210939     3.183950  # ODw ODw
 pair_coeff    *   2*      0.000000     0.0
@@ -58,7 +55,7 @@ velocity DRUDES create 1 12345
 
 delete_bonds ATOMS multi
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (src/kspace.cpp:321)
+  using 12-bit tables for long-range coulomb (../kspace.cpp:321)
   G vector (1/distance) = 0.217457
   grid = 10 10 10
   stencil order = 5
@@ -96,11 +93,10 @@ fix RIGID ATOMS rigid/npt/small molecule temp 300 ${TK} 100 iso ${PBAR} ${PBAR} 
 fix RIGID ATOMS rigid/npt/small molecule temp 300 300 100 iso ${PBAR} ${PBAR} 500
 fix RIGID ATOMS rigid/npt/small molecule temp 300 300 100 iso 1 ${PBAR} 500
 fix RIGID ATOMS rigid/npt/small molecule temp 300 300 100 iso 1 1 500
-  create bodies CPU = 0.00024271 secs
 500 rigid bodies with 2000 atoms
   0.832099 = max distance from body owner to body atom
 fix_modify RIGID temp TATOM press thermo_press
-WARNING: Temperature for fix modify is not for group all (src/RIGID/fix_rigid_nh_small.cpp:1338)
+WARNING: Temperature for fix modify is not for group all (../fix_rigid_nh_small.cpp:1338)
 fix NVT DRUDES nvt temp ${TDK} ${TDK} 100.0
 fix NVT DRUDES nvt temp 1 ${TDK} 100.0
 fix NVT DRUDES nvt temp 1 1 100.0
@@ -111,7 +107,7 @@ thermo 20
 
 run 20
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (src/kspace.cpp:321)
+  using 12-bit tables for long-range coulomb (../kspace.cpp:321)
   G vector (1/distance) = 0.217457
   grid = 10 10 10
   stencil order = 5
@@ -122,23 +118,23 @@ PPPM initialization ...
 Per MPI rank memory allocation (min/avg/max) = 15.58 | 15.89 | 15.96 Mbytes
 Step CPU TotEng KinEng PotEng E_bond E_angle E_vdwl E_coul E_long Press Volume Temp c_TEMP[1] c_TEMP[2] 
        0            0    4568.0415    903.41148      3664.63    623.46454            0    2890.2449    157955.66   -157804.74    244591.08        13824    202.18534    295.64644    14.858785 
-      20   0.50774813    3742.8027     5338.825   -1596.0223     567.2673            0    662.20795    155098.51      -157924    31679.848    13979.575      1194.84    1690.2344    201.66155 
-Loop time of 0.507813 on 8 procs for 20 steps with 2500 atoms
+      20   0.25570471    3742.8202     5338.828   -1596.0078    567.26788            0    662.20797    155098.52      -157924    31680.274    13979.575    1194.8407    1690.2355     201.6614 
+Loop time of 0.255785 on 8 procs for 20 steps with 2500 atoms
 
-Performance: 3.403 ns/day, 7.053 hours/ns, 39.385 timesteps/s
-98.3% CPU use with 8 MPI tasks x 1 OpenMP threads
+Performance: 6.756 ns/day, 3.553 hours/ns, 78.191 timesteps/s
+98.3% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.14793    | 0.1894     | 0.22186    |   5.1 | 37.30
-Bond    | 8.5831e-05 | 9.7007e-05 | 0.00012302 |   0.0 |  0.02
-Kspace  | 0.019478   | 0.053206   | 0.095056   |   9.9 | 10.48
-Neigh   | 0.012156   | 0.012271   | 0.012448   |   0.1 |  2.42
-Comm    | 0.030914   | 0.031934   | 0.032761   |   0.3 |  6.29
-Output  | 9.1553e-05 | 0.00013003 | 0.00019741 |   0.0 |  0.03
-Modify  | 0.21686    | 0.21858    | 0.22025    |   0.2 | 43.04
-Other   |            | 0.002201   |            |       |  0.43
+Pair    | 0.12109    | 0.13272    | 0.13908    |   1.8 | 51.89
+Bond    | 5.4672e-05 | 5.9783e-05 | 6.5615e-05 |   0.0 |  0.02
+Kspace  | 0.01205    | 0.018419   | 0.030091   |   4.8 |  7.20
+Neigh   | 0.0098117  | 0.009816   | 0.0098189  |   0.0 |  3.84
+Comm    | 0.013448   | 0.013578   | 0.013707   |   0.1 |  5.31
+Output  | 5.9536e-05 | 6.7641e-05 | 0.00010464 |   0.0 |  0.03
+Modify  | 0.080548   | 0.080682   | 0.080814   |   0.0 | 31.54
+Other   |            | 0.0004443  |            |       |  0.17
 
 Nlocal:    312.5 ave 326 max 292 min
 Histogram: 1 0 1 0 1 0 1 1 1 2
