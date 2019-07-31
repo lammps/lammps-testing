@@ -26,6 +26,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def testing = false
+    def shallow_clone = false
 
     switch(build_name) {
         case 'serial':
@@ -35,6 +36,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
             s = new Serial(this)
             docker_image_name = 'lammps_testing:centos_7'
             set_github_status = false
+            shallow_clone = true
             break
         case 'cmake-serial':
             s = new SerialCMake(this)
@@ -121,7 +123,11 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
 
     stage('Checkout') {
         dir('lammps') {
-            git branch: 'master', credentialsId: 'lammps-jenkins', url: project_url
+            if(shallow_clone) {
+              checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
+            } else {
+              git branch: 'master', credentialsId: 'lammps-jenkins', url: project_url
+            }
             git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
         }
         if(testing){
