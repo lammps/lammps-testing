@@ -285,3 +285,45 @@ pipelineJob("lammps/pull-requests/cmake/cmake-win64-serial") {
         }
     }
 }
+
+pipelineJob("lammps/pull-requests/serial-el7-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('el7')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('el7')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
