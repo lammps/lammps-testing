@@ -1,6 +1,6 @@
 folder('lammps/master')
 
-def scripts = ['serial', 'shlib', 'openmpi', 'serial-clang', 'shlib-clang', 'openmpi-clang', 'build-docs', 'testing', 'testing-omp', 'regression', 'intel', 'kokkos-omp']
+def scripts = ['serial', 'serial-el7', 'shlib', 'openmpi', 'serial-clang', 'shlib-clang', 'openmpi-clang', 'build-docs', 'testing', 'testing-omp', 'regression', 'intel', 'kokkos-omp']
 
 scripts.each { name ->
     pipelineJob("lammps/master/${name}") {
