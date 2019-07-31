@@ -202,7 +202,6 @@ def pull_request(build_name) {
     def project_url = 'https://github.com/lammps/lammps.git'
     def testing_project_url = 'https://github.com/lammps/lammps-testing.git'
     def testing = false
-    def shallow_clone = false
 
     switch(build_name) {
         case 'serial-pr':
@@ -211,7 +210,6 @@ def pull_request(build_name) {
         case 'serial-el7-pr':
             s = new Serial(this)
             docker_image_name = 'lammps_testing:centos_7'
-            shallow_clone = true
             break
         case 'cmake-serial-pr':
             s = new SerialCMake(this)
@@ -293,11 +291,7 @@ def pull_request(build_name) {
         dir('lammps') {
             branch_name = "origin-pull/pull/${env.GITHUB_PR_NUMBER}/head"
             refspec = "+refs/pull/${env.GITHUB_PR_NUMBER}/head:refs/remotes/origin-pull/pull/${env.GITHUB_PR_NUMBER}/head"
-            if(shallow_clone) {
-              checkout([$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]])
-            } else {
-              checkout([$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]])
-            }
+            checkout([$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]])
         }
 
         if(testing) {
