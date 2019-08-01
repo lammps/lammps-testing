@@ -7,12 +7,11 @@ class Shlib extends LegacyBuild {
         lammps_mach = 'serial'
         lammps_target = 'serial'
         lammps_size = LAMMPS_SIZES.SMALLBIG
+        lammps_except = '-DLAMMPS_EXCEPTIONS'
 
         packages << 'yes-all'
         packages << 'no-lib'
         packages << 'no-mpiio'
-        packages << 'no-user-omp'
-        packages << 'no-user-intel'
         packages << 'no-user-lb'
         packages << 'no-user-smd'
         packages << 'yes-user-molfile'

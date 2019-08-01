@@ -31,12 +31,11 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
 
     switch(build_name) {
         case 'serial':
-            s = new Serial(this)
+            s = new Serial('jenkins/serial/ubuntu', this)
             break
         case 'serial-el7':
-            s = new Serial(this)
+            s = new Serial('jenkins/serial/el7', this)
             docker_image_name = 'lammps_testing:centos_7'
-            set_github_status = false
             shallow_clone = true
             break
         case 'cmake-serial':
@@ -210,10 +209,10 @@ def pull_request(build_name) {
 
     switch(build_name) {
         case 'serial-pr':
-            s = new Serial(this)
+            s = new Serial('jenkins/serial/ubuntu', this)
             break
         case 'serial-el7-pr':
-            s = new Serial(this)
+            s = new Serial('jenkins/serial/el7', this)
             docker_image_name = 'lammps_testing:centos_7'
             break
         case 'cmake-serial-pr':
