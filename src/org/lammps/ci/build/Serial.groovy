@@ -1,8 +1,8 @@
 package org.lammps.ci.build
 
 class Serial extends LegacyBuild {
-    Serial(steps) {
-        super('jenkins/serial', steps)
+    Serial(name, steps) {
+        super(name, steps)
         lammps_mode = LAMMPS_MODE.exe
         lammps_mach = 'serial'
         lammps_target = 'serial'
