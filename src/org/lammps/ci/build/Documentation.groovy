@@ -10,6 +10,9 @@ class Documentation implements Serializable {
         this.steps = steps
     }
 
+    def pre_actions() {
+    }
+
     def configure() {
     }
 

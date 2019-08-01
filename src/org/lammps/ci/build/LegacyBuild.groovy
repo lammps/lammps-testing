@@ -106,6 +106,9 @@ class LegacyBuild implements Serializable {
         }
     }
 
+    def pre_actions() {
+    }
+
     def configure() {
         steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
         steps.env.COMP     = compiler

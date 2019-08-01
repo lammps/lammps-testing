@@ -18,6 +18,7 @@ import org.lammps.ci.build.CMakeTestingGPU
 import org.lammps.ci.build.CMakeTestingKokkosCUDA
 import org.lammps.ci.build.Win32CrossSerialCMake
 import org.lammps.ci.build.Win64CrossSerialCMake
+import org.lammps.ci.build.CoverityCMake
 
 def regular_build(build_name, set_github_status=true, run_in_container=true, send_slack=true) {
     def docker_registry = 'http://glados2.cst.temple.edu:5000'
@@ -50,6 +51,9 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
             break
         case 'openmpi':
             s = new OpenMPI(this)
+            break
+        case 'coverity-scan':
+            s = new CoverityCMake('jenkins/cmake/coverity', this)
             break
         case 'serial-clang':
             s = new SerialClang(this)
@@ -135,6 +139,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: testing_project_url]]])
             }
         }
+        s.pre_actions()
     }
 
     def utils = new Utils()

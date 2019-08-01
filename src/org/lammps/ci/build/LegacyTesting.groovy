@@ -92,6 +92,10 @@ abstract class LegacyTesting implements Serializable {
         return "No tests found"
     }
 
+    def pre_actions() {
+      build.pre_actions()
+    }
+
     protected def configure() {
         build.configure()
 

@@ -13,6 +13,9 @@ class CMakeMinGWCrossBuild implements Serializable {
         this.steps = steps
     }
 
+    def pre_actions() {
+    }
+
     def configure() {
         steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
         def folder = 'build' + bitness

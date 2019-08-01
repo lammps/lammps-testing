@@ -16,6 +16,9 @@ class CMakeBuild implements Serializable {
         this.steps = steps
     }
 
+    def pre_actions() {
+    }
+
     def configure() {
         steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
         steps.env.CC = c_compiler

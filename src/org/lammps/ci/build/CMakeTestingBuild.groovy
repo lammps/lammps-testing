@@ -47,6 +47,9 @@ abstract class CMakeTestingBuild implements Serializable {
         return "No tests found"
     }
 
+    def pre_actions() {
+    }
+
     protected def configure() {
         steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
         steps.env.CC = c_compiler
