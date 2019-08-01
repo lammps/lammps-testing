@@ -303,6 +303,7 @@ def pull_request(build_name) {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: testing_project_url]]])
             }
         }
+        s.pre_actions()
     }
 
     gitHubPRStatus githubPRMessage('head run started')
