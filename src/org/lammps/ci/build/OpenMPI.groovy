@@ -12,8 +12,6 @@ class OpenMPI extends LegacyBuild {
         packages << 'yes-all'
         packages << 'no-lib'
         packages << 'no-mpiio'
-        packages << 'no-user-omp'
-        packages << 'no-user-intel'
         packages << 'no-user-smd'
         packages << 'yes-user-molfile'
         packages << 'yes-compress'
