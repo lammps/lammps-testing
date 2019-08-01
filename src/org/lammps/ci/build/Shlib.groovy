@@ -1,8 +1,8 @@
 package org.lammps.ci.build
 
 class Shlib extends LegacyBuild {
-    Shlib(steps) {
-        super('jenkins/shlib', steps)
+    Shlib(name, steps) {
+        super(name, steps)
         lammps_mode = LAMMPS_MODE.shlib
         lammps_mach = 'serial'
         lammps_target = 'serial'

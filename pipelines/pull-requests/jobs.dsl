@@ -327,3 +327,87 @@ pipelineJob("lammps/pull-requests/serial-el7-pr") {
         }
     }
 }
+
+pipelineJob("lammps/pull-requests/shlib-el7-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('el7')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('el7')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/openmpi-el7-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('el7')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('el7')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}

@@ -33,10 +33,29 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
         case 'serial':
             s = new Serial('jenkins/serial/ubuntu', this)
             break
+        case 'shlib':
+            s = new Shlib('jenkins/shlib/ubuntu', this)
+            break
+        case 'openmpi':
+            s = new OpenMPI('jenkins/openmpi/ubuntu', this)
+            break
         case 'serial-el7':
             s = new Serial('jenkins/serial/el7', this)
             docker_image_name = 'lammps_testing:centos_7'
             shallow_clone = true
+            break
+        case 'shlib-el7':
+            s = new Shlib('jenkins/shlib/el7', this)
+            docker_image_name = 'lammps_testing:centos_7'
+            shallow_clone = true
+            break
+        case 'openmpi-el7':
+            s = new OpenMPI('jenkins/openmpi/el7', this)
+            docker_image_name = 'lammps_testing:centos_7'
+            shallow_clone = true
+            break
+        case 'coverity-scan':
+            s = new CoverityCMake('jenkins/cmake/coverity', this)
             break
         case 'cmake-serial':
             s = new SerialCMake(this)
@@ -44,15 +63,6 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
         case 'cmake-testing':
             s = new CMakeTesting(this)
             testing = true
-            break
-        case 'shlib':
-            s = new Shlib(this)
-            break
-        case 'openmpi':
-            s = new OpenMPI(this)
-            break
-        case 'coverity-scan':
-            s = new CoverityCMake('jenkins/cmake/coverity', this)
             break
         case 'serial-clang':
             s = new SerialClang(this)
@@ -211,8 +221,22 @@ def pull_request(build_name) {
         case 'serial-pr':
             s = new Serial('jenkins/serial/ubuntu', this)
             break
+        case 'shlib-pr':
+            s = new Shlib('jenkins/shlib/ubuntu', this)
+            break
+        case 'openmpi-pr':
+            s = new OpenMPI('jenkins/openmpi/ubuntu', this)
+            break
         case 'serial-el7-pr':
             s = new Serial('jenkins/serial/el7', this)
+            docker_image_name = 'lammps_testing:centos_7'
+            break
+        case 'shlib-el7-pr':
+            s = new Shlib('jenkins/shlib/el7', this)
+            docker_image_name = 'lammps_testing:centos_7'
+            break
+        case 'openmpi-el7-pr':
+            s = new OpenMPI('jenkins/openmpi/el7', this)
             docker_image_name = 'lammps_testing:centos_7'
             break
         case 'cmake-serial-pr':
@@ -221,12 +245,6 @@ def pull_request(build_name) {
         case 'cmake-testing-pr':
             s = new CMakeTesting(this)
             testing = true
-            break
-        case 'shlib-pr':
-            s = new Shlib(this)
-            break
-        case 'openmpi-pr':
-            s = new OpenMPI(this)
             break
         case 'serial-clang-pr':
             s = new SerialClang(this)
