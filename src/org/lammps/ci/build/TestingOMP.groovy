@@ -1,0 +1,62 @@
+package org.lammps.ci.build
+
+class TestingOMP extends LegacyTesting {
+    TestingOMP(steps) {
+        super('jenkins/testing-omp', steps)
+        build.lammps_mach = 'mpi'
+        build.lammps_target = 'mpi'
+        build.lammps_size = LAMMPS_SIZES.SMALLBIG
+        build.compiler = 'mpicxx -fopenmp'
+
+        build.packages << 'yes-asphere'
+        build.packages << 'yes-body'
+        build.packages << 'yes-class2'
+        build.packages << 'yes-colloid'
+        build.packages << 'yes-compress'
+        build.packages << 'yes-coreshell'
+        build.packages << 'yes-dipole'
+        build.packages << 'yes-fld'
+        build.packages << 'yes-granular'
+        build.packages << 'yes-kspace'
+        build.packages << 'yes-manybody'
+        build.packages << 'yes-mc'
+        build.packages << 'yes-misc'
+        build.packages << 'yes-molecule'
+        build.packages << 'yes-mpiio'
+        build.packages << 'yes-opt'
+        build.packages << 'yes-peri'
+        build.packages << 'yes-poems'
+        build.packages << 'yes-python'
+        build.packages << 'yes-qeq'
+        build.packages << 'yes-replica'
+        build.packages << 'yes-rigid'
+        build.packages << 'yes-shock'
+        build.packages << 'yes-snap'
+        build.packages << 'yes-srd'
+        build.packages << 'yes-voronoi'
+        build.packages << 'yes-xtc'
+        build.packages << 'yes-user-atc'
+        build.packages << 'yes-user-awpmd'
+        build.packages << 'yes-user-cg-cmm'
+        build.packages << 'yes-user-colvars'
+        build.packages << 'yes-user-diffraction'
+        build.packages << 'yes-user-dpd'
+        build.packages << 'yes-user-drude'
+        build.packages << 'yes-user-eff'
+        build.packages << 'yes-user-fep'
+        build.packages << 'yes-user-lb'
+        build.packages << 'yes-user-meamc'
+        build.packages << 'yes-user-misc'
+        build.packages << 'yes-user-molfile'
+        build.packages << 'yes-user-phonon'
+        build.packages << 'yes-user-qmmm'
+        build.packages << 'yes-user-qtb'
+        build.packages << 'yes-user-reaxc'
+        build.packages << 'yes-user-sph'
+        build.packages << 'yes-user-tally'
+        build.packages << 'yes-user-smtbq'
+        build.packages << 'yes-user-omp'
+
+        test_modes.omp = true
+    }
+}

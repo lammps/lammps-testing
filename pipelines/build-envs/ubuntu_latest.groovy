@@ -9,9 +9,9 @@ node {
     }
 
    
-    docker.withRegistry('https://registry.hub.docker.com', 'docker-registry-login') {
+    docker.withRegistry('http://glados2.cst.temple.edu:5000') {
         dir('envs/' + os + '/' + version + '/') {
-            def image_name = 'rbberger/lammps-testing:' + os + '_' + version
+            def image_name = 'lammps_testing:' + os + '_' + version
             
             stage 'Build'
             docker.build(image_name, '--pull=true --no-cache=true .')

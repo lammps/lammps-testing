@@ -1,0 +1,972 @@
+LAMMPS (4 Jan 2019)
+############################################################################
+# Input file for investigating twinning nucleation under uniaxial loading with basal plane vector analysis
+# Christopher Barrett, March 2013
+# This script requires a Mg pair potential file to be in the same directory.
+
+# fname is the file name.  It is necessary for loops to work correctly. (See jump command)
+variable fname index in.basal
+
+######################################
+# POTENTIAL VARIABLES
+# lattice parameters and the minimum energy per atom which should be obtained with the current pair potential and homogeneous lattice
+variable lx equal 3.181269601
+variable b equal sqrt(3)
+variable c equal sqrt(8/3)
+variable ly equal ${b}*${lx}
+variable ly equal 1.73205080756888*${lx}
+variable ly equal 1.73205080756888*3.181269601
+variable lz equal ${c}*${lx}
+variable lz equal 1.63299316185545*${lx}
+variable lz equal 1.63299316185545*3.181269601
+variable pairlocation index almg.liu
+variable pairstyle index eam/alloy/opt
+
+######################################
+# EQUILIBRATION/DEFORMATION VARIABLES
+# eqpress = 10 bar = 1 MPa
+# tstep (the timestep) is set to a default value of 0.001 (1 fs)
+# seed randomizes the velocity
+# srate is the rate of strain in 1/s
+# Ndump is the number of timesteps in between each dump of the atom coordinates
+variable tstep equal 0.001
+variable seed equal 95812384
+variable srate equal 1e9
+
+######################################
+# INITIALIZATION
+units 		metal
+dimension		3
+boundary		s	s	s
+atom_style		atomic
+
+######################################
+# ATOM BUILD
+atom_modify map array
+
+# lattice custom scale a1 "coordinates of a1" a2 "coordinates of a2" a3 "coordinates of a3" basis "atom1 coordinates" basis "atom2 coordinates" basis "atom3 coordinates" basis "atom4 coordinates" orient x "crystallagraphic orientation of x axis" orient y "crystallagraphic orientation of y axis" z "crystallagraphic orientation of z axis"
+lattice custom 3.181269601 a1 1 0 0 a2 0 1.732050808 0 a3 0 0 1.632993162 basis 0.0 0.0 0.0 basis 0.5 0.5 0 basis 0 0.3333333 0.5 basis 0.5 0.833333 0.5 orient x 0 1 1 orient y 1 0 0 orient z 0 1 -1
+Lattice spacing in x,y,z = 7.56966 3.18127 7.56966
+variable multiple equal 20
+variable mx equal "v_lx*v_multiple"
+variable my equal "v_ly*v_multiple"
+variable mz equal "v_lz*v_multiple"
+
+# the simulation region should be from 0 to a multiple of the periodic boundary in x, y and z.
+region		whole block 0 ${mz} 0 ${mx} 0 ${my} units box
+region		whole block 0 103.899830089032 0 ${mx} 0 ${my} units box
+region		whole block 0 103.899830089032 0 63.62539202 0 ${my} units box
+region		whole block 0 103.899830089032 0 63.62539202 0 110.202411630128 units box
+create_box		2 whole
+Created orthogonal box = (0 0 0) to (103.9 63.6254 110.202)
+  2 by 2 by 2 MPI processor grid
+create_atoms 1 box basis 1 1 basis 2 1 basis 3 1 basis 4 1
+Created 32823 atoms
+  Time spent = 0.00250195 secs
+
+region fixed1 block INF INF INF INF INF 10 units box
+region fixed2 block INF INF INF INF  100 INF units box
+group lower region fixed1
+3017 atoms in group lower
+group upper region fixed2
+3050 atoms in group upper
+group boundary union upper lower
+6067 atoms in group boundary
+group mobile subtract all boundary
+26756 atoms in group mobile
+
+variable natoms equal "count(all)"
+print "# of atoms are: ${natoms}"
+# of atoms are: 32823
+
+######################################
+# INTERATOMIC POTENTIAL
+pair_style	${pairstyle}
+pair_style	eam/alloy/opt
+pair_coeff	* * ${pairlocation} Mg Mg
+pair_coeff	* * almg.liu Mg Mg
+
+######################################
+# COMPUTES REQUIRED
+compute csym all centro/atom 12
+compute eng all pe/atom
+compute eatoms all reduce sum c_eng
+compute basal all basal/atom
+
+######################################
+# MINIMIZATION
+# Primarily adjusts the c/a ratio to value predicted by EAM potential
+reset_timestep	0
+thermo 1
+thermo_style custom step pe c_eatoms
+min_style cg
+minimize	1e-15 1e-15 1000 2000
+WARNING: Using 'neigh_modify every 1 delay 0 check yes' setting during minimization (../min.cpp:168)
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8.68
+  ghost atom cutoff = 8.68
+  binsize = 4.34, bins = 24 15 26
+  3 neighbor lists, perpetual/occasional/extra = 1 2 0
+  (1) pair eam/alloy/opt, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/3d/newton
+      bin: standard
+  (2) compute centro/atom, occasional
+      attributes: full, newton on
+      pair build: full/bin/atomonly
+      stencil: full/bin/3d
+      bin: standard
+  (3) compute basal/atom, occasional
+      attributes: full, newton on
+      pair build: full/bin/atomonly
+      stencil: full/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 6.969 | 6.97 | 6.971 Mbytes
+Step PotEng c_eatoms 
+       0   -47765.363   -47765.363 
+       1   -47777.259   -47777.259 
+       2    -47781.05    -47781.05 
+       3   -47782.753   -47782.753 
+       4     -47783.8     -47783.8 
+       5   -47784.848   -47784.848 
+       6   -47785.675   -47785.675 
+       7   -47786.435   -47786.435 
+       8   -47787.057   -47787.057 
+       9    -47787.63    -47787.63 
+      10   -47787.947   -47787.947 
+      11   -47788.245   -47788.245 
+      12   -47788.692   -47788.692 
+      13   -47788.882   -47788.882 
+      14   -47789.031   -47789.031 
+      15   -47789.302   -47789.302 
+      16   -47789.492   -47789.492 
+      17   -47789.615   -47789.615 
+      18   -47789.767   -47789.767 
+      19    -47789.91    -47789.91 
+      20   -47790.016   -47790.016 
+      21   -47790.115   -47790.115 
+      22   -47790.214   -47790.214 
+      23   -47790.297   -47790.297 
+      24   -47790.363   -47790.363 
+      25   -47790.422   -47790.422 
+      26   -47790.476   -47790.476 
+      27   -47790.522   -47790.522 
+      28   -47790.563   -47790.563 
+      29   -47790.599   -47790.599 
+      30   -47790.634   -47790.634 
+      31   -47790.672   -47790.672 
+      32   -47790.708   -47790.708 
+      33   -47790.749   -47790.749 
+      34   -47790.802   -47790.802 
+      35   -47790.865   -47790.865 
+      36   -47790.935   -47790.935 
+      37       -47791       -47791 
+      38   -47791.047   -47791.047 
+      39   -47791.089   -47791.089 
+      40   -47791.127   -47791.127 
+      41   -47791.152   -47791.152 
+      42   -47791.175   -47791.175 
+      43   -47791.193   -47791.193 
+      44   -47791.208   -47791.208 
+      45    -47791.22    -47791.22 
+      46   -47791.233   -47791.233 
+      47   -47791.244   -47791.244 
+      48   -47791.256   -47791.256 
+      49   -47791.267   -47791.267 
+      50   -47791.281   -47791.281 
+      51   -47791.296   -47791.296 
+      52   -47791.314   -47791.314 
+      53   -47791.332   -47791.332 
+      54   -47791.348   -47791.348 
+      55   -47791.363   -47791.363 
+      56   -47791.378   -47791.378 
+      57   -47791.392   -47791.392 
+      58   -47791.404   -47791.404 
+      59   -47791.419   -47791.419 
+      60   -47791.435   -47791.435 
+      61   -47791.453   -47791.453 
+      62   -47791.473   -47791.473 
+      63   -47791.489   -47791.489 
+      64   -47791.507   -47791.507 
+      65   -47791.535   -47791.535 
+      66   -47791.561   -47791.561 
+      67   -47791.584   -47791.584 
+      68   -47791.602   -47791.602 
+      69   -47791.623   -47791.623 
+      70   -47791.643   -47791.643 
+      71    -47791.67    -47791.67 
+      72     -47791.7     -47791.7 
+      73   -47791.742   -47791.742 
+      74   -47791.812   -47791.812 
+      75   -47791.916   -47791.916 
+      76   -47792.054   -47792.054 
+      77   -47792.182   -47792.182 
+      78   -47792.313   -47792.313 
+      79   -47792.456   -47792.456 
+      80   -47792.612   -47792.612 
+      81   -47792.758   -47792.758 
+      82   -47792.921   -47792.921 
+      83   -47793.087   -47793.087 
+      84   -47793.245   -47793.245 
+      85   -47793.412   -47793.412 
+      86    -47793.61    -47793.61 
+      87   -47793.845   -47793.845 
+      88   -47794.111   -47794.111 
+      89   -47794.411   -47794.411 
+      90   -47794.726   -47794.726 
+      91   -47795.057   -47795.057 
+      92   -47795.365   -47795.365 
+      93    -47795.66    -47795.66 
+      94    -47795.96    -47795.96 
+      95   -47796.251   -47796.251 
+      96   -47796.521   -47796.521 
+      97   -47796.773   -47796.773 
+      98   -47796.997   -47796.997 
+      99   -47797.183   -47797.183 
+     100    -47797.35    -47797.35 
+     101   -47797.505   -47797.505 
+     102   -47797.649   -47797.649 
+     103   -47797.784   -47797.784 
+     104   -47797.922   -47797.922 
+     105   -47798.056   -47798.056 
+     106   -47798.204   -47798.204 
+     107   -47798.367   -47798.367 
+     108   -47798.496   -47798.496 
+     109   -47798.606   -47798.606 
+     110   -47798.734   -47798.734 
+     111   -47798.834   -47798.834 
+     112   -47798.955   -47798.955 
+     113   -47799.074   -47799.074 
+     114   -47799.201   -47799.201 
+     115    -47799.33    -47799.33 
+     116   -47799.467   -47799.467 
+     117     -47799.6     -47799.6 
+     118   -47799.733   -47799.733 
+     119   -47799.881   -47799.881 
+     120   -47800.022   -47800.022 
+     121   -47800.158   -47800.158 
+     122   -47800.275   -47800.275 
+     123   -47800.394   -47800.394 
+     124   -47800.514   -47800.514 
+     125   -47800.631   -47800.631 
+     126   -47800.742   -47800.742 
+     127   -47800.846   -47800.846 
+     128   -47800.955   -47800.955 
+     129   -47801.065   -47801.065 
+     130   -47801.167   -47801.167 
+     131   -47801.269   -47801.269 
+     132    -47801.36    -47801.36 
+     133   -47801.451   -47801.451 
+     134    -47801.56    -47801.56 
+     135   -47801.661   -47801.661 
+     136   -47801.742   -47801.742 
+     137   -47801.842   -47801.842 
+     138   -47801.926   -47801.926 
+     139   -47802.011   -47802.011 
+     140   -47802.097   -47802.097 
+     141   -47802.179   -47802.179 
+     142    -47802.27    -47802.27 
+     143   -47802.371   -47802.371 
+     144   -47802.467   -47802.467 
+     145   -47802.563   -47802.563 
+     146   -47802.689   -47802.689 
+     147   -47802.816   -47802.816 
+     148   -47802.955   -47802.955 
+     149   -47803.106   -47803.106 
+     150   -47803.218   -47803.218 
+     151   -47803.344   -47803.344 
+     152   -47803.394   -47803.394 
+     153   -47803.458   -47803.458 
+     154   -47803.494   -47803.494 
+     155   -47803.547   -47803.547 
+     156   -47803.612   -47803.612 
+     157   -47803.675   -47803.675 
+     158   -47803.738   -47803.738 
+     159   -47803.794   -47803.794 
+     160   -47803.848   -47803.848 
+     161   -47803.906   -47803.906 
+     162   -47803.962   -47803.962 
+     163   -47804.018   -47804.018 
+     164   -47804.065   -47804.065 
+     165   -47804.104   -47804.104 
+     166   -47804.138   -47804.138 
+     167   -47804.157   -47804.157 
+     168   -47804.174   -47804.174 
+     169   -47804.183   -47804.183 
+     170   -47804.188   -47804.188 
+     171   -47804.193   -47804.193 
+     172   -47804.196   -47804.196 
+     173   -47804.199   -47804.199 
+     174   -47804.203   -47804.203 
+     175   -47804.206   -47804.206 
+     176   -47804.211   -47804.211 
+     177   -47804.216   -47804.216 
+     178   -47804.221   -47804.221 
+     179   -47804.224   -47804.224 
+     180   -47804.226   -47804.226 
+     181   -47804.227   -47804.227 
+     182   -47804.228   -47804.228 
+     183    -47804.23    -47804.23 
+     184   -47804.231   -47804.231 
+     185   -47804.232   -47804.232 
+     186   -47804.233   -47804.233 
+     187   -47804.233   -47804.233 
+     188   -47804.233   -47804.233 
+     189   -47804.234   -47804.234 
+     190   -47804.234   -47804.234 
+     191   -47804.235   -47804.235 
+     192   -47804.235   -47804.235 
+     193   -47804.236   -47804.236 
+     194   -47804.236   -47804.236 
+     195   -47804.236   -47804.236 
+     196   -47804.237   -47804.237 
+     197   -47804.237   -47804.237 
+     198   -47804.237   -47804.237 
+     199   -47804.237   -47804.237 
+     200   -47804.237   -47804.237 
+     201   -47804.238   -47804.238 
+     202   -47804.238   -47804.238 
+     203   -47804.238   -47804.238 
+     204   -47804.238   -47804.238 
+     205   -47804.238   -47804.238 
+     206   -47804.238   -47804.238 
+     207   -47804.238   -47804.238 
+     208   -47804.238   -47804.238 
+     209   -47804.239   -47804.239 
+     210   -47804.239   -47804.239 
+     211   -47804.239   -47804.239 
+     212   -47804.239   -47804.239 
+     213   -47804.239   -47804.239 
+     214   -47804.239   -47804.239 
+     215   -47804.239   -47804.239 
+     216   -47804.239   -47804.239 
+     217   -47804.239   -47804.239 
+     218   -47804.239   -47804.239 
+     219   -47804.239   -47804.239 
+     220   -47804.239   -47804.239 
+     221   -47804.239   -47804.239 
+     222   -47804.239   -47804.239 
+     223   -47804.239   -47804.239 
+     224   -47804.239   -47804.239 
+     225   -47804.239   -47804.239 
+     226   -47804.239   -47804.239 
+     227   -47804.239   -47804.239 
+     228   -47804.239   -47804.239 
+     229   -47804.239   -47804.239 
+     230   -47804.239   -47804.239 
+     231   -47804.239   -47804.239 
+     232    -47804.24    -47804.24 
+     233    -47804.24    -47804.24 
+     234    -47804.24    -47804.24 
+     235    -47804.24    -47804.24 
+     236    -47804.24    -47804.24 
+     237    -47804.24    -47804.24 
+     238    -47804.24    -47804.24 
+     239    -47804.24    -47804.24 
+     240    -47804.24    -47804.24 
+     241    -47804.24    -47804.24 
+     242    -47804.24    -47804.24 
+     243    -47804.24    -47804.24 
+     244    -47804.24    -47804.24 
+     245    -47804.24    -47804.24 
+     246    -47804.24    -47804.24 
+     247    -47804.24    -47804.24 
+     248    -47804.24    -47804.24 
+     249    -47804.24    -47804.24 
+     250    -47804.24    -47804.24 
+     251    -47804.24    -47804.24 
+     252    -47804.24    -47804.24 
+     253    -47804.24    -47804.24 
+     254    -47804.24    -47804.24 
+     255    -47804.24    -47804.24 
+     256    -47804.24    -47804.24 
+     257    -47804.24    -47804.24 
+     258    -47804.24    -47804.24 
+     259    -47804.24    -47804.24 
+     260    -47804.24    -47804.24 
+     261    -47804.24    -47804.24 
+     262    -47804.24    -47804.24 
+     263    -47804.24    -47804.24 
+     264    -47804.24    -47804.24 
+     265    -47804.24    -47804.24 
+     266    -47804.24    -47804.24 
+     267    -47804.24    -47804.24 
+     268    -47804.24    -47804.24 
+     269    -47804.24    -47804.24 
+     270    -47804.24    -47804.24 
+     271    -47804.24    -47804.24 
+     272    -47804.24    -47804.24 
+     273    -47804.24    -47804.24 
+     274    -47804.24    -47804.24 
+     275    -47804.24    -47804.24 
+     276    -47804.24    -47804.24 
+     277    -47804.24    -47804.24 
+     278    -47804.24    -47804.24 
+     279    -47804.24    -47804.24 
+     280    -47804.24    -47804.24 
+     281    -47804.24    -47804.24 
+     282    -47804.24    -47804.24 
+     283    -47804.24    -47804.24 
+     284    -47804.24    -47804.24 
+     285    -47804.24    -47804.24 
+     286    -47804.24    -47804.24 
+     287    -47804.24    -47804.24 
+     288    -47804.24    -47804.24 
+     289    -47804.24    -47804.24 
+     290    -47804.24    -47804.24 
+     291    -47804.24    -47804.24 
+     292    -47804.24    -47804.24 
+     293    -47804.24    -47804.24 
+     294    -47804.24    -47804.24 
+     295    -47804.24    -47804.24 
+     296    -47804.24    -47804.24 
+     297    -47804.24    -47804.24 
+     298    -47804.24    -47804.24 
+     299    -47804.24    -47804.24 
+     300    -47804.24    -47804.24 
+     301    -47804.24    -47804.24 
+     302    -47804.24    -47804.24 
+     303    -47804.24    -47804.24 
+     304    -47804.24    -47804.24 
+     305    -47804.24    -47804.24 
+     306    -47804.24    -47804.24 
+     307    -47804.24    -47804.24 
+     308    -47804.24    -47804.24 
+     309    -47804.24    -47804.24 
+     310    -47804.24    -47804.24 
+     311    -47804.24    -47804.24 
+     312    -47804.24    -47804.24 
+     313    -47804.24    -47804.24 
+     314    -47804.24    -47804.24 
+     315    -47804.24    -47804.24 
+     316    -47804.24    -47804.24 
+     317    -47804.24    -47804.24 
+     318    -47804.24    -47804.24 
+     319    -47804.24    -47804.24 
+     320    -47804.24    -47804.24 
+     321    -47804.24    -47804.24 
+     322    -47804.24    -47804.24 
+     323    -47804.24    -47804.24 
+     324    -47804.24    -47804.24 
+     325    -47804.24    -47804.24 
+     326    -47804.24    -47804.24 
+     327    -47804.24    -47804.24 
+     328    -47804.24    -47804.24 
+     329    -47804.24    -47804.24 
+     330    -47804.24    -47804.24 
+     331    -47804.24    -47804.24 
+     332    -47804.24    -47804.24 
+     333    -47804.24    -47804.24 
+     334    -47804.24    -47804.24 
+     335    -47804.24    -47804.24 
+     336    -47804.24    -47804.24 
+     337    -47804.24    -47804.24 
+     338    -47804.24    -47804.24 
+     339    -47804.24    -47804.24 
+     340    -47804.24    -47804.24 
+     341    -47804.24    -47804.24 
+     342    -47804.24    -47804.24 
+     343    -47804.24    -47804.24 
+     344    -47804.24    -47804.24 
+     345    -47804.24    -47804.24 
+     346    -47804.24    -47804.24 
+     347    -47804.24    -47804.24 
+     348    -47804.24    -47804.24 
+     349    -47804.24    -47804.24 
+     350    -47804.24    -47804.24 
+     351    -47804.24    -47804.24 
+     352    -47804.24    -47804.24 
+     353    -47804.24    -47804.24 
+     354    -47804.24    -47804.24 
+     355    -47804.24    -47804.24 
+     356    -47804.24    -47804.24 
+     357    -47804.24    -47804.24 
+     358    -47804.24    -47804.24 
+     359    -47804.24    -47804.24 
+     360    -47804.24    -47804.24 
+     361    -47804.24    -47804.24 
+     362    -47804.24    -47804.24 
+     363    -47804.24    -47804.24 
+     364    -47804.24    -47804.24 
+     365    -47804.24    -47804.24 
+     366    -47804.24    -47804.24 
+Loop time of 6.2388 on 8 procs for 366 steps with 32823 atoms
+
+98.6% CPU use with 8 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = energy tolerance
+  Energy initial, next-to-last, final = 
+        -47765.3632223     -47804.2397338     -47804.2397338
+  Force two-norm initial, final = 6.77696 2.60676e-05
+  Force max component initial, final = 0.218712 3.98932e-06
+  Final line search alpha, max atom move = 1 3.98932e-06
+  Iterations, force evaluations = 366 625
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 5.5966     | 5.6657     | 5.7339     |   1.9 | 90.81
+Neigh   | 0.09182    | 0.098455   | 0.10451    |   1.7 |  1.58
+Comm    | 0.27152    | 0.34462    | 0.41765    |   8.5 |  5.52
+Output  | 0.043338   | 0.043767   | 0.045802   |   0.4 |  0.70
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 0.08631    |            |       |  1.38
+
+Nlocal:    4102.88 ave 4240 max 3958 min
+Histogram: 1 1 2 0 0 0 1 0 1 2
+Nghost:    2921.12 ave 3043 max 2802 min
+Histogram: 3 1 0 0 0 0 0 0 2 2
+Neighs:    244312 ave 253004 max 235050 min
+Histogram: 1 2 1 0 0 0 0 2 0 2
+FullNghs:  0 ave 0 max 0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1954495
+Ave neighs/atom = 59.5465
+Neighbor list builds = 13
+Dangerous builds = 0
+variable eminimum equal "c_eatoms / count(all)"
+print "%%e(it,1)=${eminimum}"
+%%e(it,1)=-1.45642505967666
+
+######################################
+# EQUILIBRATION
+reset_timestep	0
+timestep ${tstep}
+timestep 0.001
+# atoms are given a random velocity based on a temperature of 100K.
+velocity all create 100 ${seed} mom yes rot no
+velocity all create 100 95812384 mom yes rot no
+
+# temperature and pressure are set to 100 and 0
+fix 1 all nve
+
+# Set thermo output
+thermo 100
+thermo_style custom step lx ly lz press pxx pyy pzz pe temp
+
+# Run for at least 2 picosecond (assuming 1 fs timestep)
+run 200
+Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
+Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
+       0    104.64275    65.714339    110.11226    598.47294    597.01768    597.81136    600.58977    -47804.24          100 
+     100    104.64275    65.714339    110.11226     410.2413    428.72132    361.69192    440.31067   -47600.368    51.958034 
+     200    104.64275    65.714339    110.11226    319.66305     356.1557    292.32688    310.50657   -47572.062    45.287327 
+Loop time of 1.76039 on 8 procs for 200 steps with 32823 atoms
+
+Performance: 9.816 ns/day, 2.445 hours/ns, 113.611 timesteps/s
+99.8% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.5021     | 1.5988     | 1.7064     |   6.4 | 90.82
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.036807   | 0.1444     | 0.24133    |  21.3 |  8.20
+Output  | 0.00019595 | 0.00020978 | 0.00023245 |   0.0 |  0.01
+Modify  | 0.0096827  | 0.010563   | 0.011681   |   0.8 |  0.60
+Other   |            | 0.006384   |            |       |  0.36
+
+Nlocal:    4102.88 ave 4232 max 4020 min
+Histogram: 1 2 1 2 0 0 0 0 0 2
+Nghost:    2921.62 ave 3029 max 2825 min
+Histogram: 1 1 0 1 3 0 0 0 0 2
+Neighs:    244312 ave 261745 max 231995 min
+Histogram: 1 0 4 0 1 0 0 1 0 1
+FullNghs:  0 ave 0 max 0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1954496
+Ave neighs/atom = 59.5465
+Neighbor list builds = 0
+Dangerous builds = 0
+
+# Loop to run until pressure is below the variable eqpress (defined at beginning of file)
+label loopeq
+variable eq loop 100
+run 250
+Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
+Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
+     200    104.85745    65.870291    110.35759    317.54578    353.79672    290.39067    308.44995   -47572.062    45.287327 
+     300    104.85745    65.870291    110.35759    39.147155    108.77502    -67.85052    76.516965   -47607.259    53.580796 
+     400    104.85745    65.870291    110.35759    9.4988762     77.05445   -140.12203    91.564205   -47584.488     48.21624 
+     450    104.85745    65.870291    110.35759   -89.400259   -71.056886   -183.61357   -13.530319   -47596.051        50.94 
+Loop time of 2.15427 on 8 procs for 250 steps with 32823 atoms
+
+Performance: 10.027 ns/day, 2.394 hours/ns, 116.049 timesteps/s
+99.7% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.8815     | 1.9843     | 2.083      |   6.6 | 92.11
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.048862   | 0.14817    | 0.25165    |  24.1 |  6.88
+Output  | 0.00029417 | 0.00031737 | 0.00036429 |   0.0 |  0.01
+Modify  | 0.012219   | 0.013284   | 0.014273   |   0.7 |  0.62
+Other   |            | 0.008172   |            |       |  0.38
+
+Nlocal:    4102.88 ave 4187 max 4015 min
+Histogram: 1 0 1 0 2 1 1 0 1 1
+Nghost:    2920.75 ave 2987 max 2859 min
+Histogram: 2 0 0 1 1 2 0 0 1 1
+Neighs:    242686 ave 251809 max 233243 min
+Histogram: 1 1 1 1 0 0 0 2 0 2
+FullNghs:  0 ave 0 max 0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1941492
+Ave neighs/atom = 59.1504
+Neighbor list builds = 0
+Dangerous builds = 0
+variable converge equal press
+if "${converge} <= 0" then "variable converge equal -press" else "variable converge equal press"
+variable converge equal -press
+if "${converge} <= 50" then "jump ${fname} breakeq"
+next eq
+jump ${fname} loopeq
+jump in.basal loopeq
+variable eq loop 100
+run 250
+Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
+Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
+     450    104.93751    65.816396    110.44649   -89.333241   -71.003618   -183.47593   -13.520177   -47596.051        50.94 
+     500    104.93751    65.816396    110.44649   -128.13777   -107.02073   -228.78358   -48.609004   -47598.293    51.468216 
+     600    104.93751    65.816396    110.44649   -153.68473   -114.96992   -298.29515   -47.789112   -47589.034    49.286859 
+     700    104.93751    65.816396    110.44649   -241.42667   -241.19265   -368.16332   -114.92404   -47588.405    49.138629 
+Loop time of 2.01971 on 8 procs for 250 steps with 32823 atoms
+
+Performance: 10.695 ns/day, 2.244 hours/ns, 123.780 timesteps/s
+99.7% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.8371     | 1.8931     | 1.9383     |   3.0 | 93.73
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.060961   | 0.10474    | 0.15949    |  13.0 |  5.19
+Output  | 0.00029307 | 0.00031854 | 0.0003657  |   0.0 |  0.02
+Modify  | 0.012242   | 0.013346   | 0.014304   |   0.7 |  0.66
+Other   |            | 0.008214   |            |       |  0.41
+
+Nlocal:    4102.88 ave 4214 max 3976 min
+Histogram: 1 0 1 1 1 0 1 1 1 1
+Nghost:    2923.38 ave 3008 max 2834 min
+Histogram: 2 0 2 0 0 0 0 1 1 2
+Neighs:    242674 ave 249776 max 234753 min
+Histogram: 2 1 1 0 0 0 0 0 1 3
+FullNghs:  0 ave 0 max 0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1941394
+Ave neighs/atom = 59.1474
+Neighbor list builds = 0
+Dangerous builds = 0
+variable converge equal press
+if "${converge} <= 0" then "variable converge equal -press" else "variable converge equal press"
+variable converge equal -press
+if "${converge} <= 50" then "jump ${fname} breakeq"
+next eq
+jump ${fname} loopeq
+jump in.basal loopeq
+variable eq loop 100
+run 250
+Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
+Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
+     700    105.05598    65.774424    110.51837   -241.15135    -240.9176   -367.74348   -114.79298   -47588.405    49.138629 
+     800    105.05598    65.774424    110.51837   -378.30436   -378.37883   -487.74529   -268.78896    -47596.14    50.961339 
+     900    105.07404    66.033127    110.48537   -357.57781   -344.37188   -492.95449   -235.40706     -47592.7    50.150809 
+     950    105.07404    66.033127    110.48537    -359.4805   -352.15471   -497.10825   -229.17854   -47594.848    50.656895 
+Loop time of 2.02785 on 8 procs for 250 steps with 32823 atoms
+
+Performance: 10.652 ns/day, 2.253 hours/ns, 123.283 timesteps/s
+99.3% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.8241     | 1.8863     | 1.9455     |   3.4 | 93.02
+Neigh   | 0.0070113  | 0.0074409  | 0.0078885  |   0.5 |  0.37
+Comm    | 0.054187   | 0.11234    | 0.1737     |  14.0 |  5.54
+Output  | 0.00028537 | 0.00030944 | 0.00035006 |   0.0 |  0.02
+Modify  | 0.012101   | 0.013377   | 0.014552   |   0.8 |  0.66
+Other   |            | 0.008076   |            |       |  0.40
+
+Nlocal:    4102.88 ave 4238 max 3960 min
+Histogram: 1 1 1 1 0 0 1 1 1 1
+Nghost:    2923 ave 3040 max 2808 min
+Histogram: 2 1 1 0 0 0 0 0 2 2
+Neighs:    242540 ave 250164 max 233729 min
+Histogram: 1 2 1 0 0 0 0 0 2 2
+FullNghs:  0 ave 0 max 0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1940322
+Ave neighs/atom = 59.1147
+Neighbor list builds = 1
+Dangerous builds = 0
+variable converge equal press
+if "${converge} <= 0" then "variable converge equal -press" else "variable converge equal press"
+variable converge equal -press
+if "${converge} <= 50" then "jump ${fname} breakeq"
+next eq
+jump ${fname} loopeq
+jump in.basal loopeq
+variable eq loop 100
+run 250
+Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
+Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
+     950    104.97662    66.158488     110.4855   -359.13189    -351.8132   -496.62617   -228.95629   -47594.848    50.656895 
+    1000    104.97662    66.158488     110.4855   -356.56598   -367.33164   -464.99703   -237.36926   -47589.171    49.319059 
+    1100    104.97662    66.158488     110.4855   -355.51464   -386.08447   -409.38325    -271.0762   -47592.485    50.099914 
+    1200    104.97322    66.139626    110.27684    -282.0605   -328.28835   -328.30869   -189.58446   -47594.758    50.635616 
+Loop time of 2.04532 on 8 procs for 250 steps with 32823 atoms
+
+Performance: 10.561 ns/day, 2.273 hours/ns, 122.230 timesteps/s
+99.2% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.8362     | 1.8982     | 1.9575     |   3.3 | 92.81
+Neigh   | 0.0069655  | 0.0074317  | 0.0079257  |   0.5 |  0.36
+Comm    | 0.05913    | 0.11753    | 0.17885    |  13.3 |  5.75
+Output  | 0.00029748 | 0.00032759 | 0.00037216 |   0.0 |  0.02
+Modify  | 0.012108   | 0.013365   | 0.014535   |   0.8 |  0.65
+Other   |            | 0.008491   |            |       |  0.42
+
+Nlocal:    4102.88 ave 4241 max 3954 min
+Histogram: 1 1 1 1 0 0 1 0 1 2
+Nghost:    2916.62 ave 3037 max 2790 min
+Histogram: 2 1 1 0 0 0 0 1 1 2
+Neighs:    242558 ave 251295 max 233335 min
+Histogram: 1 2 1 0 0 0 0 2 0 2
+FullNghs:  0 ave 0 max 0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1940463
+Ave neighs/atom = 59.119
+Neighbor list builds = 1
+Dangerous builds = 0
+variable converge equal press
+if "${converge} <= 0" then "variable converge equal -press" else "variable converge equal press"
+variable converge equal -press
+if "${converge} <= 50" then "jump ${fname} breakeq"
+next eq
+jump ${fname} loopeq
+jump in.basal loopeq
+variable eq loop 100
+run 250
+Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
+Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
+    1200    104.96284    66.109179    110.29485   -282.17223    -328.4184   -328.43874   -189.65956   -47594.758    50.635616 
+    1300    104.96284    66.109179    110.29485   -94.190914   -188.78286   -55.830474   -37.959405   -47593.372    50.309133 
+    1400    104.96284    66.109179    110.29485   -37.778014   -201.34289    162.26116   -74.252313   -47593.755    50.399144 
+    1450    104.96284    66.109179    110.29485   -30.195692   -202.11454    188.94189    -77.41443   -47591.803    49.939333 
+Loop time of 2.03557 on 8 procs for 250 steps with 32823 atoms
+
+Performance: 10.611 ns/day, 2.262 hours/ns, 122.816 timesteps/s
+99.7% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.824      | 1.8953     | 1.9607     |   4.3 | 93.11
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.052755   | 0.11878    | 0.18885    |  17.1 |  5.84
+Output  | 0.00028227 | 0.00030535 | 0.00034751 |   0.0 |  0.02
+Modify  | 0.011939   | 0.013212   | 0.014314   |   0.8 |  0.65
+Other   |            | 0.007935   |            |       |  0.39
+
+Nlocal:    4102.88 ave 4202 max 3969 min
+Histogram: 1 0 1 0 1 1 1 0 2 1
+Nghost:    2923.5 ave 2997 max 2815 min
+Histogram: 1 1 0 0 2 0 0 0 2 2
+Neighs:    242563 ave 250161 max 234194 min
+Histogram: 2 1 1 0 0 0 0 0 1 3
+FullNghs:  0 ave 0 max 0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1940501
+Ave neighs/atom = 59.1202
+Neighbor list builds = 0
+Dangerous builds = 0
+variable converge equal press
+if "${converge} <= 0" then "variable converge equal -press" else "variable converge equal press"
+variable converge equal -press
+if "${converge} <= 50" then "jump ${fname} breakeq"
+jump ${fname} breakeq
+jump in.basal breakeq
+
+# Store length for strain rate calculations
+variable tmp equal "lx"
+variable L0 equal ${tmp}
+variable L0 equal 104.96283536362
+print "Initial Length, L0: ${L0}"
+Initial Length, L0: 104.96283536362
+unfix 1
+
+######################################
+# DEFORMATION
+reset_timestep	0
+timestep ${tstep}
+timestep 0.001
+
+# Impose constant strain rate
+variable srate1 equal "v_srate / 1.0e10"
+velocity	upper set 0.0 NULL 0.0 units box
+velocity        lower set 0.0 NULL 0.0 units box
+
+fix 2 upper setforce 0.0 NULL 0.0
+fix 3 lower setforce 0.0 NULL 0.0
+fix 1 all nve
+
+# Output strain and stress info to file
+# for units metal, pressure is in [bars] = 100 [kPa] = 1/10000 [GPa]
+# p2 is in GPa
+variable strain equal "(lx - v_L0)/v_L0"
+variable p1 equal "v_strain"
+variable p2 equal "-pxz/10000"
+variable p3 equal "lx"
+variable p4 equal "temp"
+variable p5 equal "pe"
+variable p6 equal "ke"
+fix def1 all print 100 "${p1} ${p2} ${p3} ${p4} ${p5} ${p6}" file output.def1.txt screen no
+# Dump coordinates to file (for void size calculations)
+dump 		1 all custom 1000 output.dump.* id x y z c_basal[1] c_basal[2] c_basal[3]
+
+# Display thermo
+thermo_style	custom step v_strain pxz lx temp pe ke
+restart 50000 output.restart
+
+# run deformation for 100000 timesteps (10% strain assuming 1 fs timestep and 1e9/s strainrate)
+variable runtime equal 0
+label loop
+displace_atoms	all ramp x 0.0 ${srate1} z 10 100 units box
+displace_atoms	all ramp x 0.0 0.1 z 10 100 units box
+run		100
+Per MPI rank memory allocation (min/avg/max) = 9.352 | 9.543 | 9.735 Mbytes
+Step v_strain Pxz Lx Temp PotEng KinEng 
+       0 0.0013983619   -156.85219    105.10961    43.696559   -47591.767    185.38599 
+     100 0.0013983619   -144.67365    105.10961    43.829042    -47592.33    185.94806 
+Loop time of 0.809006 on 8 procs for 100 steps with 32823 atoms
+
+Performance: 10.680 ns/day, 2.247 hours/ns, 123.608 timesteps/s
+99.4% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.72382    | 0.75195    | 0.77965    |   2.5 | 92.95
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.019954   | 0.047022   | 0.07467    |  10.1 |  5.81
+Output  | 5.2543e-05 | 6.1522e-05 | 6.3451e-05 |   0.0 |  0.01
+Modify  | 0.0060164  | 0.0066862  | 0.0073295  |   0.6 |  0.83
+Other   |            | 0.003289   |            |       |  0.41
+
+Nlocal:    4102.88 ave 4245 max 3951 min
+Histogram: 1 1 1 1 0 0 1 0 1 2
+Nghost:    2923.88 ave 3051 max 2804 min
+Histogram: 2 1 1 0 0 0 0 1 1 2
+Neighs:    242670 ave 251430 max 233391 min
+Histogram: 1 2 0 1 0 0 0 2 0 2
+FullNghs:  0 ave 0 max 0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1941361
+Ave neighs/atom = 59.1464
+Neighbor list builds = 0
+Dangerous builds = 0
+variable runtime equal ${runtime}+100
+variable runtime equal 0+100
+if "${runtime} < 300" then "jump ${fname} loop"
+jump ${fname} loop
+jump in.basal loop
+displace_atoms	all ramp x 0.0 ${srate1} z 10 100 units box
+displace_atoms	all ramp x 0.0 0.1 z 10 100 units box
+run		100
+Per MPI rank memory allocation (min/avg/max) = 9.352 | 9.543 | 9.735 Mbytes
+Step v_strain Pxz Lx Temp PotEng KinEng 
+     100 0.0016983058   -334.91503    105.14109    43.829042   -47592.202    185.94806 
+     200 0.0016983058   -300.07195    105.14109    43.897454   -47592.492     186.2383 
+Loop time of 0.801596 on 8 procs for 100 steps with 32823 atoms
+
+Performance: 10.778 ns/day, 2.227 hours/ns, 124.751 timesteps/s
+99.7% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.71924    | 0.74647    | 0.77261    |   2.4 | 93.12
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.019616   | 0.045155   | 0.071913   |   9.5 |  5.63
+Output  | 5.0348e-05 | 5.1963e-05 | 5.2769e-05 |   0.0 |  0.01
+Modify  | 0.0059877  | 0.0066602  | 0.0073208  |   0.6 |  0.83
+Other   |            | 0.00326    |            |       |  0.41
+
+Nlocal:    4102.88 ave 4248 max 3948 min
+Histogram: 1 1 1 1 0 0 1 0 1 2
+Nghost:    2919.88 ave 3054 max 2797 min
+Histogram: 2 1 1 0 0 0 0 2 0 2
+Neighs:    242748 ave 251393 max 233289 min
+Histogram: 1 2 0 1 0 0 0 2 0 2
+FullNghs:  0 ave 0 max 0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1941981
+Ave neighs/atom = 59.1652
+Neighbor list builds = 0
+Dangerous builds = 0
+variable runtime equal ${runtime}+100
+variable runtime equal 100+100
+if "${runtime} < 300" then "jump ${fname} loop"
+jump ${fname} loop
+jump in.basal loop
+displace_atoms	all ramp x 0.0 ${srate1} z 10 100 units box
+displace_atoms	all ramp x 0.0 0.1 z 10 100 units box
+run		100
+Per MPI rank memory allocation (min/avg/max) = 9.352 | 9.543 | 9.735 Mbytes
+Step v_strain Pxz Lx Temp PotEng KinEng 
+     200 0.0029705078   -489.52893    105.27463    43.897454   -47592.283     186.2383 
+     300 0.0029705078   -456.40922    105.27463    44.193301   -47593.538    187.49346 
+Loop time of 0.815844 on 8 procs for 100 steps with 32823 atoms
+
+Performance: 10.590 ns/day, 2.266 hours/ns, 122.572 timesteps/s
+99.4% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.72702    | 0.75544    | 0.78516    |   2.7 | 92.60
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.020587   | 0.049916   | 0.078067   |  10.6 |  6.12
+Output  | 5.7986e-05 | 5.8644e-05 | 5.9415e-05 |   0.0 |  0.01
+Modify  | 0.0060735  | 0.0067945  | 0.0074638  |   0.6 |  0.83
+Other   |            | 0.00364    |            |       |  0.45
+
+Nlocal:    4102.88 ave 4248 max 3952 min
+Histogram: 1 1 1 1 0 0 1 0 1 2
+Nghost:    2924.38 ave 3052 max 2798 min
+Histogram: 2 1 1 0 0 0 0 1 1 2
+Neighs:    242836 ave 251404 max 233538 min
+Histogram: 1 2 0 1 0 0 0 2 0 2
+FullNghs:  0 ave 0 max 0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1942689
+Ave neighs/atom = 59.1868
+Neighbor list builds = 0
+Dangerous builds = 0
+variable runtime equal ${runtime}+100
+variable runtime equal 200+100
+if "${runtime} < 300" then "jump ${fname} loop"
+
+######################################
+# SIMULATION DONE
+print "All done"
+All done
+Total wall time: 0:00:20

@@ -1,0 +1,99 @@
+LAMMPS (4 Jan 2019)
+# 3d Lennard-Jones melt
+
+units		lj
+atom_style	atomic
+
+lattice		fcc 0.8442
+Lattice spacing in x,y,z = 1.6796 1.6796 1.6796
+region		box block 0 10 0 10 0 10
+create_box	1 box
+Created orthogonal box = (0 0 0) to (16.796 16.796 16.796)
+  2 by 2 by 2 MPI processor grid
+create_atoms	1 box
+Created 4000 atoms
+  Time spent = 0.000656199 secs
+mass		* 1.0
+
+velocity	all create 3.0 87287
+
+pair_style	python 2.5
+pair_coeff	* * py_pot.LJCutMelt lj
+
+# generate tabulated potential from python variant
+pair_write      1 1 2000 rsq 0.01 2.5 lj_1_1.table LJ
+Neighbor list info ...
+  update every 1 steps, delay 10 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 2.8
+  ghost atom cutoff = 2.8
+  binsize = 1.4, bins = 12 12 12
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair python, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/3d/newton
+      bin: standard
+
+pair_style      table linear 2000
+pair_coeff      1 1 lj_1_1.table LJ
+WARNING: 2 of 2000 force values in table are inconsistent with -dE/dr.
+  Should only be flagged at inflection points (../pair_table.cpp:481)
+
+neighbor	0.3 bin
+neigh_modify	every 20 delay 0 check no
+
+fix		1 all nve
+
+thermo		50
+run		250
+Neighbor list info ...
+  update every 20 steps, delay 0 steps, check no
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 2.8
+  ghost atom cutoff = 2.8
+  binsize = 1.4, bins = 12 12 12
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair table, perpetual
+      attributes: half, newton on
+      pair build: half/bin/atomonly/newton
+      stencil: half/bin/3d/newton
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 2.645 | 2.645 | 2.645 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       0            3   -6.7733629            0   -2.2744879   -3.7032813 
+      50    1.6651079   -4.7798978            0   -2.2828604      5.66804 
+     100    1.6596827   -4.7699102            0   -2.2810086     5.750398 
+     150     1.652142    -4.759192            0   -2.2815986    5.8305172 
+     200    1.6417558    -4.743397            0   -2.2813789    5.8744891 
+     250    1.6595806   -4.7693165            0   -2.2805679     5.775483 
+Loop time of 0.163977 on 8 procs for 250 steps with 4000 atoms
+
+Performance: 658630.677 tau/day, 1524.608 timesteps/s
+96.9% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.1079     | 0.11166    | 0.11607    |   0.8 | 68.09
+Neigh   | 0.011654   | 0.011783   | 0.011993   |   0.1 |  7.19
+Comm    | 0.033781   | 0.038274   | 0.04216    |   1.3 | 23.34
+Output  | 0.00011765 | 0.00013458 | 0.00016119 |   0.0 |  0.08
+Modify  | 0.0017233  | 0.0017487  | 0.0017811  |   0.0 |  1.07
+Other   |            | 0.0003801  |            |       |  0.23
+
+Nlocal:    500 ave 507 max 491 min
+Histogram: 1 0 1 1 0 0 2 1 1 1
+Nghost:    1812.75 ave 1828 max 1800 min
+Histogram: 1 0 2 1 1 1 0 1 0 1
+Neighs:    18972.8 ave 19622 max 18214 min
+Histogram: 1 1 0 1 1 1 0 0 1 2
+
+Total # of neighbors = 151782
+Ave neighs/atom = 37.9455
+Neighbor list builds = 12
+Dangerous builds not checked
+
+shell rm lj_1_1.table
+
+Total wall time: 0:00:00

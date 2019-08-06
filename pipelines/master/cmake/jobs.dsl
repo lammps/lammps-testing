@@ -4,8 +4,8 @@ def scripts = ['serial', 'openmpi', 'enable_all']
 
 def default_packages = [
 'ASPHERE', 'BODY', 'CLASS2', 'COLLOID', 'COMPRESS', 'CORESHELL', 'DIPOLE',
-'GRANULAR', 'KSPACE', 'MANYBODY', 'MC', 'MEAM', 'MISC', 'MOLECULE', 'PERI',
-'QEQ', 'REAX', 'REPLICA', 'RIGID', 'SHOCK', 'SNAP', 'SRD'
+'GRANULAR', 'KSPACE', 'MANYBODY', 'MC', 'MISC', 'MOLECULE', 'PERI',
+'QEQ', 'REPLICA', 'RIGID', 'SHOCK', 'SNAP', 'SRD'
 ]
 
 def other_packages = [

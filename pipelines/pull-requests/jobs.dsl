@@ -1,96 +1,413 @@
 folder('lammps/pull-requests')
 
-job('lammps/pull-requests/regression-pr') {
-    scm {
-        git {
-            branch('origin-pull/pull/${GITHUB_PR_NUMBER}/merge')
-            remote {
-                credentials('lammps-jenkins')
-                github('lammps/lammps')
-                name('origin-pull')
-                refspec('+refs/pull/${GITHUB_PR_NUMBER}/merge:refs/remotes/origin-pull/pull/${GITHUB_PR_NUMBER}/merge')
+def scripts = ['serial-pr', 'shlib-pr', 'openmpi-pr', 'build-docs-pr', 'kokkos-omp-pr']
+
+scripts.each { name ->
+    pipelineJob("lammps/pull-requests/${name}") {
+        properties {
+            githubProjectUrl("https://github.com/lammps/lammps/")
+        }
+
+        triggers {
+            githubPullRequests {
+                spec("* * * * *")
+                triggerMode('HEAVY_HOOKS')
+                repoProviders {
+                    githubPlugin {
+                        cacheConnection(true)
+                        manageHooks(true)
+                        repoPermission('ADMIN')
+                    }
+                }
+                events {
+                    Open()
+                    commitChanged()
+                }
             }
-            extensions {
-                cleanAfterCheckout()
+        }
+
+        concurrentBuild(false)
+
+        definition {
+            cps {
+                script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+                sandbox()
             }
         }
     }
+}
+
+pipelineJob("lammps/pull-requests/regression-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
 
     triggers {
-        gitHubPRTrigger {
+        githubPullRequests {
             spec("* * * * *")
             triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
             events {
-                gitHubPRLabelAddedEvent {
+                labelsAdded {
                     label {
                         labels('full-regression-test')
                     }
                 }
-            }
-        }
-        gitHubPushTrigger()
-    }
-
-    wrappers {
-        buildInDocker {
-            image('rbberger/lammps-testing:ubuntu_latest')
-        }
-        colorizeOutput()
-        timeout {
-            failBuild()
-            absolute(120)
-        }
-    }
-
-    steps {
-        gitHubPRStatusBuilder {
-            statusMessage {
-                content('${GITHUB_PR_COND_REF} run started')
-            }
-        }
-        shell(readFileFromWorkspace('pipelines/pull-requests/regression-pr.sh'))
-    }
-
-    publishers {
-        warnings(['GNU Make + GNU C Compiler (gcc)'], [:]) {
-            resolveRelativePaths()
-        }
-        junit {
-            testResults('lammps-testing/nosetests-*.xml')
-        }
-        analysisCollector {
-            warnings()
-        }
-        gitHubPRBuildStatusPublisher {
-            statusMsg {
-                content('${GITHUB_PR_COND_REF} run ended')
-            }
-            unstableAs('FAILURE')
-            buildMessage {
-                successMsg {
-                  content('${GITHUB_PR_COND_REF} build successful!')
-                }
-                failureMsg {
-                  content('${GITHUB_PR_COND_REF} build failed!')
+                labelsExist {
+                    label {
+                        labels('full-regression-test')
+                    }
+		    skip(false)
                 }
             }
-            statusVerifier {
-                buildStatus(null)
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/testing-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
             }
-            errorHandler {
+            events {
+                labelsAdded {
+                    label {
+                        labels('test-for-regression')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('test-for-regression')
+                    }
+		    skip(false)
+                }
             }
         }
-        slackNotifier {
-            includeTestSummary(true)
-            notifyAborted(true)
-            notifyBackToNormal(true)
-            notifyFailure(true)
-            notifyNotBuilt(true)
-            notifyRegression(true)
-            notifyRepeatedFailure(true)
-            notifySuccess(true)
-            notifyUnstable(true)
-            startNotification(false)
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/testing-omp-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('test-for-regression')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('test-for-regression')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+folder('lammps/pull-requests/cmake')
+
+def cmake_scripts = ['cmake-serial-pr']
+
+cmake_scripts.each { name ->
+    pipelineJob("lammps/pull-requests/cmake/${name}") {
+        properties {
+            githubProjectUrl("https://github.com/lammps/lammps/")
+        }
+
+        triggers {
+            githubPullRequests {
+                spec("* * * * *")
+                triggerMode('HEAVY_HOOKS')
+                repoProviders {
+                    githubPlugin {
+                        cacheConnection(true)
+                        manageHooks(true)
+                        repoPermission('ADMIN')
+                    }
+                }
+                events {
+                    Open()
+                    commitChanged()
+                }
+            }
+        }
+
+        concurrentBuild(false)
+
+        definition {
+            cps {
+                script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+                sandbox()
+            }
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/cmake/cmake-win32-serial") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('cross_compilation')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('cross_compilation')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/cmake/cmake-win64-serial") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('cross_compilation')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('cross_compilation')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/serial-el7-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('el7')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('el7')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/shlib-el7-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('el7')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('el7')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/openmpi-el7-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('el7')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('el7')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
         }
     }
 }

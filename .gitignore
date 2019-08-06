@@ -5,3 +5,4 @@ stdout.log
 stderr.log
 log.cite
 *~
+/bin/

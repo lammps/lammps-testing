@@ -137,7 +137,7 @@ min_same_rows = -1
 custom_file = "options"
 default_error_norm = "max"
 default_relative_error = False
-default_tolerance = 1.e-7
+default_tolerance = 1.e-6
 logread = [".","log"]
 
 #====================================================
