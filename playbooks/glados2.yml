@@ -1,5 +1,5 @@
 ---
- - hosts: atlas2.cst.temple.edu
+ - hosts: glados2.cst.temple.edu
    become: true
    gather_facts: false
    pre_tasks:
@@ -10,7 +10,6 @@
     - name: Gathering Facts
       setup:
    roles:
-    - build_server
+    - ci_firewall
     - docker_host
-    - nvidia_docker_host
-    - jenkins_node
+    - jenkins_server
