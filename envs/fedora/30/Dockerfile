@@ -1,4 +1,4 @@
-FROM fedora:27
+FROM fedora:30
 
 RUN dnf update -y && dnf groupinstall -y "Development tools"
 RUN dnf install -y openmpi openmpi-devel
@@ -20,12 +20,14 @@ RUN pip install --upgrade pip virtualenv
 RUN pip install gcovr
 
 RUN dnf update -y && dnf install -y texlive
+RUN dnf update -y && dnf install -y cmake
+RUN dnf update -y && dnf install -y ninja-build
 
 ENV MODULEPATH /etc/modulefiles:/usr/share/modulefiles:/usr/share/Modules/modulefiles
 ENV PATH /usr/lib/ccache:$PATH
 
 RUN groupadd -g 114 jenkins
-RUN useradd -u 106 -g 114 -ms /bin/bash jenkins
+RUN useradd -u 108 -g 114 -ms /bin/bash jenkins
 
 COPY z00_StdEnv.sh /etc/profile.d/z00_StdEnv.sh
 

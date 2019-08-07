@@ -21,6 +21,7 @@ RUN pip install gcovr
 
 RUN dnf update -y && dnf install -y texlive
 RUN dnf update -y && dnf install -y cmake
+RUN dnf update -y && dnf install -y ninja-build
 
 ENV MODULEPATH /etc/modulefiles:/usr/share/modulefiles:/usr/share/Modules/modulefiles
 ENV PATH /usr/lib/ccache:$PATH

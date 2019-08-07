@@ -1,4 +1,4 @@
-FROM fedora:29
+FROM fedora:30
 
 RUN dnf update -y
 RUN dnf install -y make python3 python3-virtualenv python3-nose python3-pip ccache git patch dos2unix openssh which wget Lmod texlive cmake gcc ninja-build
