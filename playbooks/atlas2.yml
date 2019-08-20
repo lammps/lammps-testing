@@ -1,0 +1,16 @@
+---
+ - hosts: atlas2.cst.temple.edu
+   become: true
+   gather_facts: false
+   pre_tasks:
+    - name: Install python2 for Ansible
+      raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)"
+      register: output
+      changed_when: output.stdout != ""
+    - name: Gathering Facts
+      setup:
+   roles:
+    - build_server
+    - docker_host
+    - nvidia_docker_host
+    - jenkins_node
