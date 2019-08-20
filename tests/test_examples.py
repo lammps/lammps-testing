@@ -228,10 +228,10 @@ if 'kokkos_cuda' in LAMMPS_TEST_MODES:
 
     SkipTest(PythonTestCase, "test_pair_python_hybrid_kokkos_cuda", "Cannot yet use pair hybrid with Kokkos")
 
-    SkipTest(SnapTestCase, "test_snap_kokkos_cuda", "deadlock")
-    SkipTest(SnapTestCase, "test_snap_hybrid_WSNAP_HePair_kokkos_cuda", "deadlock")
-    SkipTest(SnapTestCase, "test_snap_Ta06A_kokkos_cuda", "deadlock")
-    SkipTest(SnapTestCase, "test_snap_W_2940_kokkos_cuda", "deadlock")
+    #SkipTest(SnapTestCase, "test_snap_kokkos_cuda", "deadlock")
+    #SkipTest(SnapTestCase, "test_snap_hybrid_WSNAP_HePair_kokkos_cuda", "deadlock")
+    #SkipTest(SnapTestCase, "test_snap_Ta06A_kokkos_cuda", "deadlock")
+    #SkipTest(SnapTestCase, "test_snap_W_2940_kokkos_cuda", "deadlock")
 
     SkipTest(CombTestCase, "test_comb_Cu2O_elastic_kokkos_cuda", "Cannot yet use minimize with Kokkos")
     SkipTest(CombTestCase, "test_comb_HfO2_kokkos_cuda", "Cannot yet use minimize with Kokkos")
