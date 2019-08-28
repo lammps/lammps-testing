@@ -209,6 +209,47 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
     }
 }
 
+def container_build(build_name, docker_image_name, dockerfile, set_github_status=true, send_slack=true) {
+    def project_url = 'https://github.com/lammps/lammps.git'
+    def packages_project_url = 'https://github.com/lammps/lammps-packages.git'
+
+    stage('Checkout') {
+        dir('lammps') {
+            git branch: 'master', credentialsId: 'lammps-jenkins', url: project_url
+            git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        }
+        dir('lammps-packages') {
+            git branch: 'master', credentialsId: 'lammps-jenkins', url: packages_project_url
+        }
+    }
+
+    def utils = new Utils()
+
+    if (set_github_status) {
+        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'building...', 'PENDING')
+    }
+
+    stage('Build') {
+        result = docker.build(docker_image_name, "-f ${dockerfile} .')
+    }
+
+    if (currentBuild.result == 'FAILURE') {
+        if (set_github_status) {
+            utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build failed!' + s.message, 'FAILURE')
+        }
+        if (send_slack) {
+            slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!" + s.message
+        }
+    } else {
+        if (set_github_status) {
+            utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build successful!' + s.message, 'SUCCESS')
+        }
+        if (send_slack) {
+            slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!" + s.message
+        }
+    }
+}
+
 def pull_request(build_name) {
     def docker_registry = 'http://glados2.cst.temple.edu:5000'
     def docker_image_name = 'lammps_testing:ubuntu_latest'
