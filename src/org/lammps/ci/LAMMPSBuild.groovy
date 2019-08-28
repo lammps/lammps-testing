@@ -230,7 +230,7 @@ def container_build(build_name, docker_image_name, dockerfile, set_github_status
     }
 
     stage('Build') {
-        result = docker.build(docker_image_name, "-f ${dockerfile} .')
+        result = docker.build(docker_image_name, "-f ${dockerfile} .")
     }
 
     if (currentBuild.result == 'FAILURE') {
