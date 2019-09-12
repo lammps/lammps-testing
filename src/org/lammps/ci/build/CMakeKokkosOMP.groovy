@@ -35,7 +35,6 @@ class CMakeKokkosOMP extends CMakeBuild {
                          '-D PKG_SRD=yes',
                          '-D PKG_VORONOI=yes',
                          '-D DOWNLOAD_VORO=yes',
-                         '-D PKG_USER-ATC=yes',
                          '-D PKG_USER-AWPMD=yes',
                          '-D PKG_USER-COLVARS=yes',
                          '-D PKG_USER-DIFFRACTION=yes',
