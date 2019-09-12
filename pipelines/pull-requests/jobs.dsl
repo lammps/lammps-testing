@@ -411,3 +411,87 @@ pipelineJob("lammps/pull-requests/openmpi-el7-pr") {
         }
     }
 }
+
+pipelineJob("lammps/pull-requests/cmake/cmake-kokkos-omp-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('kokkos_package')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('kokkos_package')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/cmake/cmake-kokkos-cuda-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('kokkos_package')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('kokkos_package')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
