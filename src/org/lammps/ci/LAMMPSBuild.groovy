@@ -19,6 +19,8 @@ import org.lammps.ci.build.CMakeTestingKokkosCUDA
 import org.lammps.ci.build.Win32CrossSerialCMake
 import org.lammps.ci.build.Win64CrossSerialCMake
 import org.lammps.ci.build.CoverityCMake
+import org.lammps.ci.build.CMakeKokkosOMP
+import org.lammps.ci.build.CMakeKokkosCUDA
 
 def regular_build(build_name, set_github_status=true, run_in_container=true, send_slack=true) {
     def docker_registry = 'http://glados2.cst.temple.edu:5000'
@@ -59,6 +61,16 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
             break
         case 'cmake-serial':
             s = new SerialCMake(this)
+            break
+        case 'cmake-kokkos-omp':
+            s = new CMakeKokkosOMP(this)
+            set_github_status = false
+            break
+        case 'cmake-kokkos-cuda':
+            s = new CMakeTestingKokkosCUDA(this)
+            docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
+            docker_args = '--runtime=nvidia'
+            set_github_status = false
             break
         case 'cmake-testing':
             s = new CMakeTesting(this)
