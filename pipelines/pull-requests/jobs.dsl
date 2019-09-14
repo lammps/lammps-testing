@@ -165,7 +165,7 @@ pipelineJob("lammps/pull-requests/testing-omp-pr") {
 
 folder('lammps/pull-requests/cmake')
 
-def cmake_scripts = ['cmake-serial-pr']
+def cmake_scripts = ['cmake-serial-pr', 'cmake-kokkos-omp-pr', 'cmake-kokkos-cuda-pr']
 
 cmake_scripts.each { name ->
     pipelineJob("lammps/pull-requests/cmake/${name}") {
@@ -395,90 +395,6 @@ pipelineJob("lammps/pull-requests/openmpi-el7-pr") {
                 labelsExist {
                     label {
                         labels('el7')
-                    }
-		    skip(false)
-                }
-            }
-        }
-    }
-
-    concurrentBuild(false)
-
-    definition {
-        cps {
-            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
-            sandbox()
-        }
-    }
-}
-
-pipelineJob("lammps/pull-requests/cmake/cmake-kokkos-omp-pr") {
-    properties {
-        githubProjectUrl("https://github.com/lammps/lammps/")
-    }
-
-    triggers {
-        githubPullRequests {
-            spec("* * * * *")
-            triggerMode('HEAVY_HOOKS')
-            repoProviders {
-                githubPlugin {
-                    cacheConnection(true)
-                    manageHooks(true)
-                    repoPermission('ADMIN')
-                }
-            }
-            events {
-                labelsAdded {
-                    label {
-                        labels('kokkos_package')
-                    }
-                }
-                labelsExist {
-                    label {
-                        labels('kokkos_package')
-                    }
-		    skip(false)
-                }
-            }
-        }
-    }
-
-    concurrentBuild(false)
-
-    definition {
-        cps {
-            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
-            sandbox()
-        }
-    }
-}
-
-pipelineJob("lammps/pull-requests/cmake/cmake-kokkos-cuda-pr") {
-    properties {
-        githubProjectUrl("https://github.com/lammps/lammps/")
-    }
-
-    triggers {
-        githubPullRequests {
-            spec("* * * * *")
-            triggerMode('HEAVY_HOOKS')
-            repoProviders {
-                githubPlugin {
-                    cacheConnection(true)
-                    manageHooks(true)
-                    repoPermission('ADMIN')
-                }
-            }
-            events {
-                labelsAdded {
-                    label {
-                        labels('kokkos_package')
-                    }
-                }
-                labelsExist {
-                    label {
-                        labels('kokkos_package')
                     }
 		    skip(false)
                 }
