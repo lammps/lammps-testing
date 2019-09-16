@@ -66,7 +66,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
             s = new CMakeKokkosOMP(this)
             break
         case 'cmake-kokkos-cuda':
-            s = new CMakeTestingKokkosCUDA(this)
+            s = new CMakeKokkosCUDA(this)
             docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
             docker_args = '--runtime=nvidia'
             break
@@ -297,7 +297,7 @@ def pull_request(build_name) {
             s = new CMakeKokkosOMP(this)
             break
         case 'cmake-kokkos-cuda-pr':
-            s = new CMakeTestingKokkosCUDA(this)
+            s = new CMakeKokkosCUDA(this)
             docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
             docker_args = '--runtime=nvidia'
             break
