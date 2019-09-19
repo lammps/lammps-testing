@@ -7,6 +7,9 @@ class Serial extends LegacyBuild {
         lammps_mach = 'serial'
         lammps_target = 'serial'
         lammps_size = LAMMPS_SIZES.SMALLSMALL
+        if(name == 'jenkins/serial/el7') {
+            lammps_standard = LAMMPS_STANDARD.CXX98
+        }
 
         packages << 'yes-all'
         packages << 'no-lib'

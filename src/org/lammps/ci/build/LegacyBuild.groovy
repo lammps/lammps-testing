@@ -12,6 +12,13 @@ enum LAMMPS_SIZES {
     BIGBIG
 }
 
+enum LAMMPS_STANDARD {
+    CXX98,
+    CXX11,
+    CXX14,
+    CXX17
+}
+
 class LegacyBuild implements Serializable {
     protected def name
     protected def steps
@@ -23,6 +30,7 @@ class LegacyBuild implements Serializable {
     def lammps_mach = 'serial'
     def lammps_target = 'serial'
     def lammps_size = LAMMPS_SIZES.SMALLBIG
+    def lammps_standard = LAMMPS_STANDARD.CXX11
     def lammps_except = ''
     def packages = []
     def message = ''
@@ -117,7 +125,7 @@ class LegacyBuild implements Serializable {
         steps.env.TARGET   = "${lammps_target}"
         steps.env.MODE     = "${lammps_mode}"
         steps.env.LMPFLAGS = '-sf off'
-        steps.env.LMP_INC  = "-I/usr/include/hdf5/serial -DLAMMPS_${lammps_size} ${lammps_except} -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized"
+        steps.env.LMP_INC  = "-I/usr/include/hdf5/serial -DLAMMPS_${lammps_size} ${lammps_except} -DLAMMPS_${lammps_standard} -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized"
         steps.env.JPG_LIB  = '-L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -ljpeg -lpng -lz'
 
         if(lammps_mach != 'mpi') {
