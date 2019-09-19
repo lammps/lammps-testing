@@ -8,6 +8,11 @@ class OpenMPI extends LegacyBuild {
         lammps_mach = 'mpi'
         lammps_target = 'mpi'
         lammps_size = LAMMPS_SIZES.BIGBIG
+        if(name == 'jenkins/openmpi/el7') {
+            compiler = 'mpicxx -std=c++11'
+            cxx_compiler = 'mpicxx -std=c++11'
+        }
+
 
         packages << 'yes-all'
         packages << 'no-lib'
