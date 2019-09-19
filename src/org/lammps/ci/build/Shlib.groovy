@@ -8,10 +8,6 @@ class Shlib extends LegacyBuild {
         lammps_target = 'serial'
         lammps_size = LAMMPS_SIZES.SMALLBIG
         lammps_except = '-DLAMMPS_EXCEPTIONS'
-        if(name == 'jenkins/shlib/el7') {
-            compiler = 'g++ -std=c++11'
-            cxx_compiler = 'g++ -std=c++11'
-        }
 
         packages << 'yes-all'
         packages << 'no-lib'

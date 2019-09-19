@@ -133,6 +133,21 @@ class LegacyBuild implements Serializable {
             steps.env.JPG_LIB = "-L../../src/STUBS/ ${steps.env.JPG_LIB} -lmpi_stubs"
         }
 
+        switch(lammps_standard) {
+            case LAMMPS_STANDARD.CXX98:
+                steps.env.LMP_INC = "-std=c++98 " + steps.env.LMP_INC
+                break
+            case LAMMPS_STANDARD.CXX11:
+                steps.env.LMP_INC = "-std=c++11 " + steps.env.LMP_INC
+                break
+            case LAMMPS_STANDARD.CXX14:
+                steps.env.LMP_INC = "-std=c++14 " + steps.env.LMP_INC
+                break
+            case LAMMPS_STANDARD.CXX17:
+                steps.env.LMP_INC = "-std=c++17 " + steps.env.LMP_INC
+                break
+        }
+
         steps.env.CC = c_compiler
         steps.env.CXX = cxx_compiler
         steps.env.OMPI_CC = c_compiler
