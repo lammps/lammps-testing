@@ -62,7 +62,7 @@ class LegacyBuild implements Serializable {
             if('yes-user-colvars' in packages) {
                 steps.sh '''#!/bin/bash -l
                 make -C lammps/lib/colvars -f Makefile.${MACH} clean
-                make -j 8 -C lammps/lib/colvars -f Makefile.${MACH} CXX="${COMP}"
+                make -j 8 -C lammps/lib/colvars -f Makefile.${MACH} CXX="${COMP} -std=c++11"
                 '''
             }
 
