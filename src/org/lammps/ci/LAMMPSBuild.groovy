@@ -236,7 +236,7 @@ def container_build(build_name, docker_image_name, dockerfile, set_github_status
     def utils = new Utils()
 
     if (set_github_status) {
-        utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'building...', 'PENDING')
+        utils.setGitHubCommitStatus(project_url, build_name, git_commit, 'building...', 'PENDING')
     }
 
     stage('Build') {
@@ -245,17 +245,17 @@ def container_build(build_name, docker_image_name, dockerfile, set_github_status
 
     if (currentBuild.result == 'FAILURE') {
         if (set_github_status) {
-            utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build failed!' + s.message, 'FAILURE')
+            utils.setGitHubCommitStatus(project_url, build_name, git_commit, 'build failed!', 'FAILURE')
         }
         if (send_slack) {
-            slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!" + s.message
+            slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
         }
     } else {
         if (set_github_status) {
-            utils.setGitHubCommitStatus(project_url, s.name, git_commit, 'build successful!' + s.message, 'SUCCESS')
+            utils.setGitHubCommitStatus(project_url, build_name, git_commit, 'build successful!', 'SUCCESS')
         }
         if (send_slack) {
-            slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!" + s.message
+            slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
         }
     }
 }
