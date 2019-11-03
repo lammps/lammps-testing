@@ -16,7 +16,7 @@ class CoverityCMake implements Serializable {
     }
 
     def pre_actions() {
-    	steps.withCredentials([string(credentialsId: 'coverity-token', variable: 'COVERITY_TOKEN')]) {
+        steps.withCredentials([steps.string(credentialsId: 'coverity-token', variable: 'COVERITY_TOKEN')]) {
             steps.sh "wget https://scan.coverity.com/download/linux64 --post-data \"token=$COVERITY_TOKEN&project=LAMMPS&md5=1\" -O coverity_tool.md5"
             if(!steps.fileExists('coverity_tool.tgz')) {
               steps.sh "wget https://scan.coverity.com/download/linux64 --post-data \"token=$COVERITY_TOKEN&project=LAMMPS\" -O coverity_tool.tgz"
@@ -53,7 +53,8 @@ class CoverityCMake implements Serializable {
 
         steps.stage('Upload') {
             steps.sh 'cd build; tar czvf LAMMPS.tgz cov-int'
-            steps.withCredentials([string(credentialsId: 'coverity-token', variable: 'COVERITY_TOKEN')]) {
+            steps.archiveArtifacts 'build/LAMMPS.tgz'
+            steps.withCredentials([steps.string(credentialsId: 'coverity-token', variable: 'COVERITY_TOKEN')]) {
                 steps.sh "curl --form token=$COVERITY_TOKEN --form email=themechatronic@gmail.com  --form file=@build/LAMMPS.tgz --form version=\"${git_commit}\"   --form description=\"LAMMPS automated build\" https://scan.coverity.com/builds?project=LAMMPS"
             }
         }
