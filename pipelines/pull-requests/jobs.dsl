@@ -79,7 +79,7 @@ pipelineJob("lammps/pull-requests/regression-pr") {
     }
 }
 
-pipelineJob("lammps/pull-requests/cmake/cmake-testing-gpu-opencl-pr'") {
+pipelineJob("lammps/pull-requests/cmake/cmake-testing-gpu-opencl-pr") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }
