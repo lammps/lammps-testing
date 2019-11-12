@@ -1,0 +1,120 @@
+LAMMPS (30 Oct 2019)
+# Pour 2d granular particles into container
+
+dimension	2
+atom_style	sphere
+boundary	f fm p
+newton		off
+comm_modify	vel yes
+
+region		reg block 0 100 0 50 -0.5 0.5 units box
+create_box	1 reg
+Created orthogonal box = (0 0 -0.5) to (100 50 0.5)
+  4 by 2 by 1 MPI processor grid
+
+neighbor	0.2 bin
+neigh_modify	delay 0
+
+# IMPORTANT NOTE: these values of stiffness (4000) and timestep (0.001)
+# are used in this example file to produce a quick simulation and movie.
+# More appropriate values for realistic simulations would be
+# k = 4.0e5 and dt = 0.0001, as in bench/in.chute (if it were Hertzian).
+
+pair_style      gran/hertz/history 4000.0 NULL 100.0 NULL 0.5 0
+pair_coeff	* *
+
+timestep	0.001
+
+fix             1 all nve/sphere
+fix		2 all gravity 1.0 spherical 0.0 -180.0
+fix		xwalls all wall/gran hertz/history 4000.0 NULL 100.0 NULL 0 1 		xplane 0 100
+fix		ywalls all wall/gran hertz/history 4000.0 NULL 100.0 NULL 0 1 		yplane 0 NULL
+
+region          slab block 1.0 99.0 30 34.5 -0.5 0.5 units box
+fix             ins all pour 1000 1 4767548 vol 0.4 10 	        diam range 0.5 1.0 region slab
+Particle insertion: 224 every 3000 steps, 1000 by step 12001
+
+fix             3 all enforce2d
+
+compute		1 all erotate/sphere
+thermo_style	custom step atoms ke c_1 vol
+thermo		1000
+thermo_modify	lost ignore norm no
+compute_modify	thermo_temp dynamic/dof yes
+
+#dump		id all atom 250 dump.pour
+
+#dump		2 all image 500 image.*.jpg type type #		zoom 1.6 adiam 1.5
+#dump_modify	2 pad 5
+
+#dump		3 all movie 500 movie.mpg type type #		zoom 1.6 adiam 1.5
+#dump_modify	3 pad 5
+
+run		25000
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 1.2
+  ghost atom cutoff = 1.2
+  binsize = 0.6, bins = 167 84 2
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair gran/hertz/history, perpetual
+      attributes: half, newton off, size, history
+      pair build: half/size/bin/newtoff
+      stencil: half/bin/2d/newtoff
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 5.771 | 5.771 | 5.771 Mbytes
+Step Atoms KinEng c_1 Volume 
+       0        0           -0            0         5000 
+    1000      224    202.80417            0         5000 
+    2000      224    373.00249            0         5000 
+    3000      224    599.26757            0         5000 
+    4000      448    1078.4787            0         5000 
+    5000      448    1589.4845            0         5000 
+    6000      448    1743.8281    26.918824         5000 
+    7000      669    1818.5075    88.370238         5000 
+    8000      669    1850.1368    105.77613         5000 
+    9000      669    1757.9561    107.51791         5000 
+   10000      886    1795.4632    80.830513         5000 
+   11000      886     1641.776    66.984086         5000 
+   12000      886    1547.9581    60.168045         5000 
+   13000     1000    1465.7331    60.981483         5000 
+   14000     1000    1298.0062    43.595017         5000 
+   15000     1000    1134.8591    39.953896         5000 
+   16000     1000    827.78138    40.173988         5000 
+   17000     1000    568.33881    42.108457         5000 
+   18000     1000    366.20074    43.216466         5000 
+   19000     1000    188.84296    36.652006         5000 
+   20000     1000    44.141186    22.561677         5000 
+   21000     1000    26.938542    14.570749         5000 
+   22000     1000      19.5467    12.401608         5000 
+   23000     1000     16.90569    10.029894         5000 
+   24000     1000    15.711776    6.6464192         5000 
+   25000     1000    12.554156    4.8263291         5000 
+Loop time of 1.19606 on 8 procs for 25000 steps with 1000 atoms
+
+Performance: 1805934.685 tau/day, 20902.022 timesteps/s
+98.0% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0090861  | 0.18766    | 0.39876    |  40.9 | 15.69
+Neigh   | 0.013399   | 0.053746   | 0.099691   |  16.8 |  4.49
+Comm    | 0.091139   | 0.10756    | 0.13215    |   4.2 |  8.99
+Output  | 0.00076246 | 0.0011867  | 0.0015142  |   1.0 |  0.10
+Modify  | 0.067339   | 0.2135     | 0.37499    |  29.4 | 17.85
+Other   |            | 0.6324     |            |       | 52.87
+
+Nlocal:    125 ave 265 max 0 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+Nghost:    9.625 ave 26 max 0 min
+Histogram: 4 0 0 0 1 1 0 0 0 2
+Neighs:    302 ave 655 max 0 min
+Histogram: 4 0 0 0 0 0 0 0 2 2
+
+Total # of neighbors = 2416
+Ave neighs/atom = 2.416
+Neighbor list builds = 2156
+Dangerous builds = 0
+Total wall time: 0:00:01
