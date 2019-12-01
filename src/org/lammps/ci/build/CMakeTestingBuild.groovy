@@ -69,7 +69,7 @@ abstract class CMakeTestingBuild implements Serializable {
             steps.sh 'rm -rf build'
             steps.sh 'rm -rf pyenv'
             steps.sh 'mkdir build'
-            steps.sh 'virtualenv pyenv'
+            steps.sh 'virtualenv --python=$(which python3) pyenv'
             steps.sh '''
             source pyenv/bin/activate
             pip install nose
