@@ -110,14 +110,11 @@ abstract class LegacyTesting implements Serializable {
     }
 
     def build() {
+
         build.build()
 
-        if (steps.fileExists('pyenv') ) {
-            steps.sh 'rm -rf pyenv'
-        }
 
         steps.sh '''
-        virtualenv --python=$(which python3) pyenv
         source pyenv/bin/activate
         pip install nose
         make -C lammps/src install-python

@@ -157,13 +157,23 @@ class LegacyBuild implements Serializable {
     def build() {
         steps.sh 'ccache -M 5G'
 
+        if (steps.fileExists('pyenv') ) {
+            steps.sh 'rm -rf pyenv'
+        }
+
+        steps.sh '''
+        virtualenv --python=$(which python3) pyenv
+        '''
+
         enable_packages()
         build_libraries()
 
         steps.stage('Compiling') {
             steps.sh '''#!/bin/bash -l
+            source pyenv/bin/activate
             touch lammps/src/liblammps.so
             make -j 8 -C lammps/src mode=${MODE} ${TARGET} MACH=${MACH} CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
+            deactivate
             '''
         }
 
