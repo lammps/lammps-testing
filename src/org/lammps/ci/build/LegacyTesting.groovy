@@ -114,7 +114,7 @@ abstract class LegacyTesting implements Serializable {
         build.build()
 
 
-        steps.sh '''
+        steps.sh '''#!/bin/bash -l
         source pyenv/bin/activate
         pip install nose
         make -C lammps/src install-python
@@ -127,7 +127,7 @@ abstract class LegacyTesting implements Serializable {
     }
 
     def test() {
-        steps.sh '''
+        steps.sh '''#!/bin/bash -l
         source pyenv/bin/activate
         cd lammps-testing
         python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py
