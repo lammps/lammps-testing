@@ -21,13 +21,3 @@ ubuntu_cmake_serial: ${UBUNTU_CONTAINER}
 	-rm -rf build/cmake_serial
 	mkdir build/cmake_serial
 	cd build/cmake_serial && singularity run -B ${LAMMPS_DIR}:${LAMMPS_DIR} -B ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/CMakeSerial.sh
-
-#ubuntu_serial:
-#	-rm -rf ubuntu_serial
-#	mkdir ubuntu_serial
-#	docker run -ti --privileged -w=/home/jenkins -e LAMMPS_DIR -e LAMMPS_COMPILE_NPROC -u 0 -ti -v ${PWD}/ubuntu_serial:/home/jenkins -v ${LAMMPS_DIR}:${LAMMPS_DIR} -v ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/Serial.sh
-#
-#ubuntu_cmake_serial:
-#	-rm -rf cmake_serial
-#	mkdir cmake_serial
-#	docker run -ti --privileged -w=/home/jenkins -e LAMMPS_DIR -e LAMMPS_COMPILE_NPROC -u 0 -ti -v ${PWD}/ubuntu_cmake_serial:/home/jenkins -v ${LAMMPS_DIR}:${LAMMPS_DIR} -v ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/CMakeSerial.sh
