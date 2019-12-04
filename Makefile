@@ -17,15 +17,30 @@ ubuntu_serial: ${UBUNTU_CONTAINER}
 	mkdir -p build/$@
 	cd build/$@ && singularity run -B ${LAMMPS_DIR}:${LAMMPS_DIR} -B ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/Serial.sh
 
+ubuntu_serial_clang: ${UBUNTU_CONTAINER}
+	-rm -rf build/$@
+	mkdir -p build/$@
+	cd build/$@ && singularity run -B ${LAMMPS_DIR}:${LAMMPS_DIR} -B ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/SerialClang.sh
+
 ubuntu_shlib: ${UBUNTU_CONTAINER}
 	-rm -rf build/$@
 	mkdir -p build/$@
 	cd build/$@ && singularity run -B ${LAMMPS_DIR}:${LAMMPS_DIR} -B ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/Shlib.sh
 
+ubuntu_shlib_clang: ${UBUNTU_CONTAINER}
+	-rm -rf build/$@
+	mkdir -p build/$@
+	cd build/$@ && singularity run -B ${LAMMPS_DIR}:${LAMMPS_DIR} -B ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/ShlibClang.sh
+
 ubuntu_openmpi: ${UBUNTU_CONTAINER}
 	-rm -rf build/$@
 	mkdir -p build/$@
 	cd build/$@ && singularity run -B ${LAMMPS_DIR}:${LAMMPS_DIR} -B ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/OpenMPI.sh
+
+ubuntu_openmpi_clang: ${UBUNTU_CONTAINER}
+	-rm -rf build/$@
+	mkdir -p build/$@
+	cd build/$@ && singularity run -B ${LAMMPS_DIR}:${LAMMPS_DIR} -B ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/OpenMPIClang.sh
 
 ubuntu_cmake_serial: ${UBUNTU_CONTAINER}
 	-rm -rf build/$@

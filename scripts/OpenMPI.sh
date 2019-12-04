@@ -2,8 +2,6 @@
 SCRIPTDIR="$(dirname "$(realpath "$0")")"
 
 export LAMMPS_COMPILER=mpicxx
-export CC=gcc
-export CXX=g++
 
 export LAMMPS_MODE=exe
 export LAMMPS_MACH=mpi
