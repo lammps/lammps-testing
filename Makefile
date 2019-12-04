@@ -22,6 +22,11 @@ ubuntu_shlib: ${UBUNTU_CONTAINER}
 	mkdir -p build/$@
 	cd build/$@ && singularity run -B ${LAMMPS_DIR}:${LAMMPS_DIR} -B ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/Shlib.sh
 
+ubuntu_openmpi: ${UBUNTU_CONTAINER}
+	-rm -rf build/$@
+	mkdir -p build/$@
+	cd build/$@ && singularity run -B ${LAMMPS_DIR}:${LAMMPS_DIR} -B ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/OpenMPI.sh
+
 ubuntu_cmake_serial: ${UBUNTU_CONTAINER}
 	-rm -rf build/$@
 	mkdir build/$@

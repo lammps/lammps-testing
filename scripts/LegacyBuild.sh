@@ -33,6 +33,11 @@ then
     export LAMMPS_TARGET=serial
 fi
 
+if [ -z "$LAMMPS_COMPILER" ]
+then
+    export LAMMPS_COMPILER=g++
+fi
+
 if [ -z "$CC" ]
 then
     export CC=gcc
@@ -61,19 +66,19 @@ build_libraries() {
     if [[ "${LAMMPS_PACKAGES}" == *"yes-user-colvars"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} CXX="${CXX} -std=c++11"
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} CXX="${LAMMPS_COMPILER} -std=c++11"
     fi
 
     if [[ "${LAMMPS_PACKAGES}" == *"yes-poems"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} CC="${CC}" LINK="${CXX}"
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" LINK="${LAMMPS_COMPILER}"
     fi
 
     if [[ "${LAMMPS_PACKAGES}" == *"yes-user-awpmd"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} CC="${CC}" EXTRAMAKE=Makefile.lammps.installed
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" EXTRAMAKE=Makefile.lammps.installed
     fi
 
     if [[ "${LAMMPS_PACKAGES}" == *"yes-user-h5md"* ]]
@@ -151,5 +156,5 @@ enable_packages
 # Build
 build_libraries
 #
-make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/src mode=${LAMMPS_MODE} ${LAMMPS_TARGET} MACH=${LAMMPS_MACH} CC="${CXX}" LINK="${CXX}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
+make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/src mode=${LAMMPS_MODE} ${LAMMPS_TARGET} MACH=${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" LINK="${LAMMPS_COMPILER}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
 ccache -s
