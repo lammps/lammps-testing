@@ -31,7 +31,13 @@ From: ubuntu:18.04
         bzr-builddeb \
         gcc \
         g++ \
+        python-pip \
+        python3-pip \
+        virtualenv \
         python-virtualenv \
+        python3-virtualenv \
+        python3-setuptools \
+        python3-pkg-resources \
         texlive \
         bc \
         cmake \

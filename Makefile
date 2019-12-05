@@ -1,6 +1,6 @@
 # Requires LAMMPS_DIR and LAMMPS_COMPILE_NPROC env variables to be set
  
-.PHONY: containers ubuntu_serial ubuntu_shlib ubuntu_cmake_serial
+.PHONY: containers ubuntu_documentation ubuntu_serial ubuntu_shlib ubuntu_openmpi ubuntu_serial_clang ubuntu_shlib_clang ubuntu_openmpi_clang ubuntu_cmake_serial
 
 SCRIPTSDIR=${CURDIR}/scripts
 
@@ -11,6 +11,11 @@ containers: ${UBUNTU_CONTAINER}
 build/containers/%.sif: containers/singularity/%.def
 	mkdir -p build/containers
 	sudo singularity build $@ $<
+
+ubuntu_documentation: ${UBUNTU_CONTAINER}
+	-rm -rf build/$@
+	mkdir -p build/$@
+	cd build/$@ && singularity run -B ${LAMMPS_DIR}:${LAMMPS_DIR} -B ${SCRIPTSDIR}/:${SCRIPTSDIR}/ ../../${UBUNTU_CONTAINER} ${SCRIPTSDIR}/Documentation.sh
 
 ubuntu_serial: ${UBUNTU_CONTAINER}
 	-rm -rf build/$@

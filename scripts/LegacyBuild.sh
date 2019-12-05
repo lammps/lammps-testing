@@ -147,7 +147,7 @@ ccache -M 5G
 
 # Create copy of LAMMPS directory
 echo "Copy sources..."
-rsync -a --include='doc/***' --include='src/***' --include='lib/***' --exclude='*' ${LAMMPS_DIR}/ .
+rsync -a --include='src/***' --include='lib/***' --exclude='*' ${LAMMPS_DIR}/ .
 
 export LAMMPS_DIR=$PWD
 
