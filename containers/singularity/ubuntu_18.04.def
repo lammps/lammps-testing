@@ -53,4 +53,6 @@ From: ubuntu:18.04
         xxd \
         ninja-build \
         doxygen \
-        rsync
+        rsync \
+        wget \
+        curl
