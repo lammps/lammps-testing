@@ -176,15 +176,15 @@ def run_test(test,lmps,descriptor):
   new_flag = False
 
   # print test header
-  print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  print "dir =",os.getcwd()
-  print "test =",test
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+  print("dir =",os.getcwd())
+  print("test =",test)
   sys.stdout.flush()
   if (custom_flag):
-    print "descriptor =",descriptor
-    print "norm =",error_norm
-    print "tolerance =",tolerance
-    print "relative error =",relative_error
+    print("descriptor =",descriptor)
+    print("norm =",error_norm)
+    print("tolerance =",tolerance)
+    print("relative error =",relative_error)
     sys.stdout.flush()
 
   # check if gold standard exists, if not create it
@@ -192,7 +192,7 @@ def run_test(test,lmps,descriptor):
   gold_standard = glob("log.*"+system_name.lower()+"."+descriptor+"."+test)
   if (len(gold_standard) > 0):
     ref = (gold_standard)[0];
-    print "gold standard =",ref
+    print("gold standard =",ref)
     sys.stdout.flush()
   else:
     new_flag = True
@@ -227,7 +227,7 @@ def run_test(test,lmps,descriptor):
     return msg
   # compare columns
   not_same_rows.clear()
-  cols = range(len(bdict))
+  cols = list(range(len(bdict)))
   if (len(cdata) != len(bdata)):
     msg += "!!! data size "+str(len(cdata))+" does not match data "+str(len(bdata))+" in "+ref+"\n";
     msg += "!!! test "+test+" FAILED\n"
@@ -321,7 +321,7 @@ def error_check(file,stdout):
   text_file.close()
   num_lines = int(len(lines))
   # check for errors
-  for i in xrange(num_lines):
+  for i in range(num_lines):
     if "ERROR" in lines[i] or "exited on signal" in lines[i]:
       msg += lines[i]
 
@@ -330,7 +330,7 @@ def error_check(file,stdout):
   text_file.close()
   num_lines = int(len(lines))
   # check for errors
-  for i in xrange(num_lines):
+  for i in range(num_lines):
     if "ERROR" in lines[i] or "exited on signal" in lines[i]:
       msg += lines[i]
 
@@ -439,7 +439,7 @@ def init() :
 
   # parse input arguments
   if (len(sys.argv) < 4):
-    print usage
+    print(usage)
     sys.exit(1)
   default_descriptor = sys.argv[1]
   default_lmps = sys.argv[2]
@@ -558,17 +558,17 @@ def init() :
   #tests.sort()
 
   # print header
-  print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  print "start: ",date()
-  print "ntests:",ntests
-  print "default descriptor:",default_descriptor
-  print "default norm:",default_error_norm
-  print "default tolerance:",default_tolerance
-  print "default relative error:",default_relative_error
-  print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  print
-  print "subdirs =",dirs
-  print
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+  print("start: ",date())
+  print("ntests:",ntests)
+  print("default descriptor:",default_descriptor)
+  print("default norm:",default_error_norm)
+  print("default tolerance:",default_tolerance)
+  print("default relative error:",default_relative_error)
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+  print()
+  print("subdirs =",dirs)
+  print()
   sys.stdout.flush()
 
   return tests
@@ -582,7 +582,7 @@ if __name__ == '__main__':
   if logread[0] != ".": sys.path.append(logread[0])
   #strcmd = "from %s import %s as logreader" % (logread[1],logread[1])
   #exec strcmd
-  from log import log2 as logreader
+  from .log import log2 as logreader
 
   nfails = 0
   fail_list = []
@@ -599,23 +599,23 @@ if __name__ == '__main__':
     elif (warn_pattern.search(msg)) : 
       nwarnings += 1
       warn_list.append(test)
-    print msg
+    print(msg)
     sys.stdout.flush()
 
   # print out results
 
-  print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  print "end:",date()
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+  print("end:",date())
   if (nfails == 0):
-    print ntests,"tests passed"
-    print "*** no failures ***"
+    print(ntests,"tests passed")
+    print("*** no failures ***")
   else:
-    print "!!!",nfails,"of",ntests,"tests failed"
+    print("!!!",nfails,"of",ntests,"tests failed")
     for test in fail_list:
-      print test
+      print(test)
   if (nwarnings > 0):
-    print "\n!!! Warnings were generated in the following tests"
+    print("\n!!! Warnings were generated in the following tests")
     for test in warn_list:
-      print test
-  print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      print(test)
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
   sys.stdout.flush()
