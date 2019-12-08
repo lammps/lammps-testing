@@ -193,7 +193,7 @@ def run_test(test,lmps,descriptor):
   gold_standard = glob("log.*"+system_name.lower()+"."+descriptor+"."+test)
   if (len(gold_standard) > 0):
     ref = (gold_standard)[0];
-    print ("gold standard =",ref)
+    print("gold standard =",ref)
     sys.stdout.flush()
   else:
     new_flag = True
@@ -228,7 +228,7 @@ def run_test(test,lmps,descriptor):
     return msg
   # compare columns
   not_same_rows.clear()
-  cols = range(len(bdict))
+  cols = list(range(len(bdict)))
   if (len(cdata) != len(bdata)):
     msg += "!!! data size "+str(len(cdata))+" does not match data "+str(len(bdata))+" in "+ref+"\n";
     msg += "!!! test "+test+" FAILED\n"
@@ -583,7 +583,7 @@ if __name__ == '__main__':
   if logread[0] != ".": sys.path.append(logread[0])
   #strcmd = "from %s import %s as logreader" % (logread[1],logread[1])
   #exec strcmd
-  from log import log2 as logreader
+  from .log import log2 as logreader
 
   nfails = 0
   fail_list = []
