@@ -124,9 +124,11 @@ import re
 from operator import itemgetter
 from glob import glob
 import time
+from .log import log2 as logreader
 
 import shutil
 import platform
+import subprocess
 
 #====================================================
 ### global variables
@@ -209,7 +211,8 @@ def run_test(test,lmps,descriptor):
   if (os.path.isfile(log)): os.remove(log)
   if (os.path.isfile(stdout)): os.remove(stdout)
   # run the test
-  os.system(lmps+" -in "+input+" -log "+log+" >& "+stdout);
+  with open(stdout, 'w') as f:
+    subprocess.run("{} -in {} -log {}".format(lmps, input, log), shell=True, stdout=f, stderr=subprocess.STDOUT)
   # check if a log file was generated
   if (not os.path.isfile(log)) :
     msg += "!!! no "+log+"\n";
@@ -269,7 +272,8 @@ def add_test(test,lmps,descriptor):
   msg = "==== generating gold standard for test "+test+" ====\n"
   if (os.path.isfile(log)): os.remove(log)
   if (os.path.isfile(stdout)): os.remove(stdout)
-  os.system(lmps+" -in "+input+" -log "+log+" >& "+stdout);
+  with open(stdout, 'w') as f:
+    subprocess.run("{} -in {} -log {}".format(lmps, input, log), shell=True, stdout=f, stderr=subprocess.STDOUT)
   if (not os.path.isfile(log)) :
     msg += "!!! no "+log+"\n";
     msg += "!!! test "+test+" FAILED\n"
@@ -577,13 +581,12 @@ def init() :
 #====================================================
 ### main
 #====================================================
-if __name__ == '__main__':
+def main():
   tests = init()
 
   if logread[0] != ".": sys.path.append(logread[0])
   #strcmd = "from %s import %s as logreader" % (logread[1],logread[1])
   #exec strcmd
-  from .log import log2 as logreader
 
   nfails = 0
   fail_list = []
@@ -620,3 +623,6 @@ if __name__ == '__main__':
       print(test)
   print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
   sys.stdout.flush()
+
+if __name__ == '__main__':
+  main()
