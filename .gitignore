@@ -7,3 +7,5 @@ log.cite
 *~
 /bin/
 build
+dist
+LAMMPS_Testing_Utilities.egg-info/

@@ -66,36 +66,9 @@ def create_job_queues(tests, nprocesses):
 
     return queues
 
-
-parser = argparse.ArgumentParser(description='run nosetests in parallel and load balance using timning information')
-parser.add_argument('files', metavar='FILE', nargs='+', help='python module file(s) containing tests')
-parser.add_argument('-p', '--processes', type=int, help='number of parallel processes', default=1)
-parser.add_argument('-d', '--dry-run', action='store_true', help='do not run nosetests, but output schedule', default=False)
-
-args = parser.parse_args()
-
-# load tests
-
-tests = []
-
-for f in args.files:
-  tests += load_tests(f)
-
-timing_files = glob.glob('nosetests-*.xml')
-
-for tf in timing_files:
-    load_test_timing(tests, tf)
-
-queues = create_job_queues(tests, args.processes)
-
 def print_list(x):
     for elem in x:
         print(" - ", elem['classname'], elem['name'], elem['time'])
-
-for i, q in enumerate(queues):
-    print(i, len(q), sum([float(x['time']) for x in q]))
-    print_list(q)
-
 
 def run_nose(args):
     pid, tests = args
@@ -105,6 +78,36 @@ def run_nose(args):
     call = ['nosetests', '-v', '--with-xunit', '--xunit-file=' + xunitfile] + selected_tests
     subprocess.call(call)
 
-if not args.dry_run:
-    pool = Pool(processes=args.processes)
-    pool.map(run_nose, enumerate(queues))
+def main():
+    parser = argparse.ArgumentParser(description='run nosetests in parallel and load balance using timning information')
+    parser.add_argument('files', metavar='FILE', nargs='+', help='python module file(s) containing tests')
+    parser.add_argument('-p', '--processes', type=int, help='number of parallel processes', default=1)
+    parser.add_argument('-d', '--dry-run', action='store_true', help='do not run nosetests, but output schedule', default=False)
+
+    args = parser.parse_args()
+
+    # load tests
+
+    tests = []
+
+    for f in args.files:
+      tests += load_tests(f)
+
+    timing_files = glob.glob('nosetests-*.xml')
+
+    for tf in timing_files:
+        load_test_timing(tests, tf)
+
+    queues = create_job_queues(tests, args.processes)
+
+    for i, q in enumerate(queues):
+        print(i, len(q), sum([float(x['time']) for x in q]))
+        print_list(q)
+
+    if not args.dry_run:
+        pool = Pool(processes=args.processes)
+        pool.map(run_nose, enumerate(queues))
+
+
+if __name__ == "__main__":
+    main()

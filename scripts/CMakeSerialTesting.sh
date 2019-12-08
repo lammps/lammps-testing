@@ -55,4 +55,5 @@ export CMAKE_OPTIONS=(
                      -D PKG_USER-OMP=yes
                     )
 
-. $SCRIPTDIR/CMakeTestingBuild.sh
+. $SCRIPTDIR/CMakeBuild.sh
+. $SCRIPTDIR/RunTests.sh
