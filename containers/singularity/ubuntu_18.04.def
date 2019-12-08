@@ -56,3 +56,5 @@ From: ubuntu:18.04
         rsync \
         wget \
         curl
+    mv /bin/sh /bin/sh.orig
+    ln -s /bin/bash /bin/sh
