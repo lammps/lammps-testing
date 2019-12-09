@@ -24,7 +24,6 @@ LAMMPS_PACKAGES=(
                  yes-poems
                  yes-user-colvars
                  yes-user-awpmd
-                 yes-user-meamc
                  yes-user-h5md
                  yes-user-dpd
                  yes-user-reaxc
