@@ -9,12 +9,14 @@ then
     export LAMMPS_TEST_MODES="serial"
 fi
 
+# copy tests
+rsync -a $LAMMPS_TESTING_DIR/tests .
+
 source $LAMMPS_BUILD_DIR/pyenv/bin/activate
 
 # Install testing dependencies
 pip install nose
 pip install git+https://github.com/gcovr/gcovr.git
-
 
 # install lammps-testing package
 cd $LAMMPS_TESTING_DIR
@@ -26,3 +28,4 @@ export LAMMPS_BINARY=${VIRTUAL_ENV}/bin/lmp
 export LAMMPS_POTENTIALS="${VIRTUAL_ENV}/share/lammps/potentials"
 
 deactivate
+cd $WORKING_DIR
