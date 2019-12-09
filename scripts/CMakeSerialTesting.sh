@@ -1,5 +1,9 @@
 #!/bin/bash
+export WORKING_DIR=$PWD
 SCRIPTDIR="$(dirname "$(realpath "$0")")"
+
+# copy tests
+rsync -a $LAMMPS_TESTING_DIR/tests .
 
 export JOBNAME="jenkins/cmake/testing"
 export CMAKE_OPTIONS=(

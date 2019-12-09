@@ -20,6 +20,7 @@ pip install git+https://github.com/gcovr/gcovr.git
 cd $LAMMPS_TESTING_DIR
 python setup.py install
 
+cd $WORKING_DIR
 export LD_LIBRARY_PATH=$VIRTUAL_ENV/lib64:$VIRTUAL_ENV/lib:$LD_LIBRARY_PATH
 export LAMMPS_BINARY=${VIRTUAL_ENV}/bin/lmp
 export LAMMPS_POTENTIALS="${VIRTUAL_ENV}/share/lammps/potentials"
