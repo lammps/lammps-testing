@@ -9,14 +9,15 @@ then
     export LAMMPS_TEST_MODES="serial"
 fi
 
+if [ -z "$LAMMPS_TESTING_NPROC=" ]
+then
+    export LAMMPS_TESTING_NPROC=8
+fi
+
 # copy tests
 rsync -a $LAMMPS_TESTING_DIR/tests .
 
 source $LAMMPS_BUILD_DIR/pyenv/bin/activate
-
-# Install testing dependencies
-pip install nose
-pip install git+https://github.com/gcovr/gcovr.git
 
 # install lammps-testing package
 cd $LAMMPS_TESTING_DIR

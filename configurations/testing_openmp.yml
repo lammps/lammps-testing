@@ -1,0 +1,53 @@
+---
+name: regression
+mpi: yes
+openmp: yes
+compiler: mpicxx -fopenmp
+cc: gcc
+cxx: g++
+sizes: smallbig
+exceptions: no
+packages:
+ - ASPHERE
+ - BODY
+ - CLASS2
+ - COLLOID
+ - COMPRESS
+ - CORESHELL
+ - DIPOLE
+ - GRANULAR
+ - KSPACE
+ - MANYBODY
+ - MC
+ - MISC
+ - MOLECULE
+ - MPIIO
+ - OPT
+ - PERI
+ - POEMS
+ - PYTHON
+ - QEQ
+ - REPLICA
+ - RIGID
+ - SHOCK
+ - SNAP
+ - SPIN
+ - SRD
+ - VORONOI
+ - USER-ATC
+ - USER-AWPMD
+ - USER-BOCS
+ - USER-CGDNA
+ - USER-CGSDK
+ - USER-COLVARS
+ - USER-DIFFRACTION
+ - USER-DPD
+ - USER-DRUDE
+ - USER-EFF
+ - USER-FEP
+ - USER-LB
+ - USER-MEAMC
+ - USER-MESO
+ - USER-MISC
+ - USER-MOFFF
+ - USER-MOLFILE
