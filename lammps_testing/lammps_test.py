@@ -66,7 +66,7 @@ class Container:
         self.container_definition =  container_definition
 
     def build(self):
-        os.makedirs(os.path.basename(self.container), exist_ok=True)
+        os.makedirs(os.path.dirname(self.container), exist_ok=True)
         if os.path.exists(self.container) and file_is_newer(self.container_definition, self.container):
             print("Newer container definition found! Rebuilding container '{}'...".format(self.name))
             os.unlink(self.container)
