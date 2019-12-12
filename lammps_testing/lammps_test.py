@@ -4,6 +4,7 @@ import subprocess
 import sys
 import os
 import yaml
+from pathlib import Path
 
 DEFAULT_CONFIG="serial"
 DEFAULT_ENV="ubuntu_18.04"
@@ -84,19 +85,71 @@ class Container:
 
 class LAMMPSConfiguration(object):
     def __init__(self, filename, lammps_dir):
-        with open(filename, 'r') as f:
-            self._config = yaml.load(f, Loader=yaml.FullLoader)
-
+        self.filename = filename
         self.lammps_dir = lammps_dir
 
-    def __getattr__(self, name):
-        if name in self._config:
-            return self._config[name]
-        else:
-            return object.__getattr__(self, name)
+        # set defaults
+        self.mpi = False
+        self.openmp = False
+        self.shared = False
+        self.binary = True
+        self.library = False
+        self.compiler = 'g++'
+        self.cc = 'gcc'
+        self.cxx = 'g++'
+        self.sizes = 'smallbig'
+        self.exceptions = False
+        self.package_options = {}
+        self.packages = []
+        self.attributes_changed = set()
+
+        # load values from configuration file
+        with open(filename, 'r') as f:
+            loaded_dict = yaml.load(f, Loader=yaml.FullLoader)
+            
+            for k, v in loaded_dict.items():
+                setattr(self, k.lower(), v)
+                self.attributes_changed.add(k)
+
+    @property
+    def name(self):
+        return Path(self.filename).stem
 
     def __str__(self):
-        return str(self._config)
+        s =  "LAMMPS Configuration\n"
+        s += "--------------------\n"
+        s += "  MPI:         {}\n".format("yes" if self.mpi else "no")
+        s += "  OpenMP:      {}\n".format("yes" if self.openmp else "no")
+        s += "  Shared:      {}\n".format("yes" if self.shared else "no")
+        s += "  Binary:      {}\n".format("yes" if self.binary else "no")
+        s += "  Library:     {}\n".format("yes" if self.library else "no")
+        s += "  Compiler:    {}\n".format(self.compiler)
+        s += "  CC:          {}\n".format(self.cc)
+        s += "  CXX:         {}\n".format(self.cxx)
+        s += "  Sizes:       {}\n".format(self.sizes)
+        s += "  Exceptions:  {}\n".format("yes" if self.exceptions else "no")
+        s += "--------------------\n"
+        s += "  Packages:\n"
+        s += "--------------------\n"
+
+        for pkg in sorted(self.packages):
+            s += " - {}\n".format(pkg)
+
+        s += "--------------------\n"
+        s += "  Packages Options:\n"
+        s += "--------------------\n"
+
+        for pkg in sorted(self.package_options.keys()):
+            if pkg.upper() not in set([p.upper() for p in self.packages]):
+                s += " - {}: ignored since not enabled\n".format(pkg)
+                continue
+
+            s += " - {}:\n".format(pkg)
+            options = self.package_options[pkg]
+            for k in sorted(options.keys()):
+                s += "     {}: {}".format(k, options[k])
+
+        return s
 
 class LAMMPSBuild:
     def __init__(self, container, config, settings):
@@ -132,6 +185,19 @@ class CMakeBuild(LAMMPSBuild):
         if 'USER-PLUMED' in self.config.packages or 'user-plumed' in self.config.packages:
             options.append('-D DOWNLOAD_PLUMED=on')
 
+        if 'GPU' in self.config.packages or 'gpu' in self.config.packages:
+            if 'gpu' in self.config.package_options:
+                gpu_options = self.config.package_options['gpu']
+            elif 'GPU' in self.config.packages_options:
+                gpu_options = self.config.package_options['gpu']
+            else:
+                gpu_options = {'api': 'opencl'}
+
+            if gpu_options['api'] == 'cuda':
+                options.append('-D CMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs')
+
+            options.append('-D GPU_API={api}'.format(**gpu_options))
+
         if self.config.mpi:
             options.append('-D BUILD_MPI=on')
         else:
@@ -161,7 +227,7 @@ class CMakeBuild(LAMMPSBuild):
 
     def build(self):
         print("Building with CMake...")
-
+        print(self.config)
         options = self.build_options()
 
         assert(self.container.exists)
@@ -172,7 +238,6 @@ class CMakeBuild(LAMMPSBuild):
         build_env["CXX"] = self.config.cxx
         build_env["LAMMPS_CMAKE_OPTIONS"] = " ".join(options)
 
-        print("Building with Legacy...")
         print("Workdir:", self.working_dir)
         os.makedirs(self.working_dir, exist_ok=True)
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
@@ -203,6 +268,7 @@ class LegacyBuild(LAMMPSBuild):
         return s
 
     def build(self):
+        print(self.config)
         assert(self.container.exists)
         build_env = os.environ.copy()
         build_env["LAMMPS_MODE"] = self.mode
