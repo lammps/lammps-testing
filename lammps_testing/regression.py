@@ -322,7 +322,7 @@ def error_check(file,stdout):
   text_file.close()
   num_lines = int(len(lines))
   # check for errors
-  for i in xrange(num_lines):
+  for i in range(num_lines):
     if "ERROR" in lines[i] or "exited on signal" in lines[i]:
       msg += lines[i]
 
@@ -331,7 +331,7 @@ def error_check(file,stdout):
   text_file.close()
   num_lines = int(len(lines))
   # check for errors
-  for i in xrange(num_lines):
+  for i in range(num_lines):
     if "ERROR" in lines[i] or "exited on signal" in lines[i]:
       msg += lines[i]
 
