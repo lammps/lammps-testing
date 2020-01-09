@@ -92,6 +92,10 @@ abstract class LegacyTesting implements Serializable {
         return "No tests found"
     }
 
+    def pre_actions() {
+      build.pre_actions()
+    }
+
     protected def configure() {
         build.configure()
 
@@ -106,14 +110,11 @@ abstract class LegacyTesting implements Serializable {
     }
 
     def build() {
+
         build.build()
 
-        if (steps.fileExists('pyenv') ) {
-            steps.sh 'rm -rf pyenv'
-        }
 
-        steps.sh '''
-        virtualenv pyenv
+        steps.sh '''#!/bin/bash -l
         source pyenv/bin/activate
         pip install nose
         make -C lammps/src install-python
@@ -126,7 +127,7 @@ abstract class LegacyTesting implements Serializable {
     }
 
     def test() {
-        steps.sh '''
+        steps.sh '''#!/bin/bash -l
         source pyenv/bin/activate
         cd lammps-testing
         python run_tests.py --processes 8 tests/test_commands.py tests/test_examples.py

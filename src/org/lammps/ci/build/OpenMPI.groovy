@@ -1,8 +1,8 @@
 package org.lammps.ci.build
 
 class OpenMPI extends LegacyBuild {
-    OpenMPI(steps) {
-        super('jenkins/openmpi', steps)
+    OpenMPI(name, steps) {
+        super(name, steps)
         compiler    = 'mpicxx'
         lammps_mode = LAMMPS_MODE.exe
         lammps_mach = 'mpi'

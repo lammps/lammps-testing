@@ -2,7 +2,11 @@ folder('build-envs') {
   description('We use Docker images to set up our various build environments. These projects build the docker images and publish them on DockerHub.')
 }
 
-def scripts = ['fedora_29', 'fedora_29_cross', 'ubuntu_latest', 'ubuntu_18.04_cuda_10.0', 'centos_7']
+folder('build-envs/fedora') {
+  description('We use Docker images to set up our various build environments. These projects build the docker images and publish them on DockerHub.')
+}
+
+def scripts = ['fedora/29', 'fedora/29_cross', 'fedora/30', 'fedora/30_cross', 'ubuntu_latest', 'ubuntu_18.04_cuda_10.0', 'centos_7']
 
 scripts.each { name ->
     pipelineJob("build-envs/${name}") {

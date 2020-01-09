@@ -47,6 +47,9 @@ abstract class CMakeTestingBuild implements Serializable {
         return "No tests found"
     }
 
+    def pre_actions() {
+    }
+
     protected def configure() {
         steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
         steps.env.CC = c_compiler
@@ -66,15 +69,15 @@ abstract class CMakeTestingBuild implements Serializable {
             steps.sh 'rm -rf build'
             steps.sh 'rm -rf pyenv'
             steps.sh 'mkdir build'
-            steps.sh 'virtualenv pyenv'
-            steps.sh '''
+            steps.sh 'virtualenv --python=$(which python3) pyenv'
+            steps.sh '''#!/bin/bash -l
             source pyenv/bin/activate
             pip install nose
             deactivate
             '''
             def coverage_option = ''
             if(coverage) {
-                steps.sh '''
+                steps.sh '''#!/bin/bash -l
                 source pyenv/bin/activate
                 pip install git+https://github.com/gcovr/gcovr.git
                 deactivate
@@ -102,7 +105,7 @@ abstract class CMakeTestingBuild implements Serializable {
     }
 
     def test() {
-        steps.sh '''
+        steps.sh '''#!/bin/bash -l
         source pyenv/bin/activate
         cd lammps-testing
         export LD_LIBRARY_PATH=$VIRTUAL_ENV/lib64:$LD_LIBRARY_PATH

@@ -25,6 +25,7 @@ RUN mkdir -p /etc/OpenCL/vendors && \
 RUN apt install -y vim
 RUN apt install -y gdb
 RUN apt install -y valgrind
+RUN apt install -y ninja-build
 
 ENV PATH /usr/lib/ccache:$PATH
 

@@ -18,6 +18,9 @@ import org.lammps.ci.build.CMakeTestingGPU
 import org.lammps.ci.build.CMakeTestingKokkosCUDA
 import org.lammps.ci.build.Win32CrossSerialCMake
 import org.lammps.ci.build.Win64CrossSerialCMake
+import org.lammps.ci.build.CoverityCMake
+import org.lammps.ci.build.CMakeKokkosOMP
+import org.lammps.ci.build.CMakeKokkosCUDA
 
 def regular_build(build_name, set_github_status=true, run_in_container=true, send_slack=true) {
     def docker_registry = 'http://glados2.cst.temple.edu:5000'
@@ -32,23 +35,44 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
         case 'serial':
             s = new Serial('jenkins/serial/ubuntu', this)
             break
+        case 'shlib':
+            s = new Shlib('jenkins/shlib/ubuntu', this)
+            break
+        case 'openmpi':
+            s = new OpenMPI('jenkins/openmpi/ubuntu', this)
+            break
         case 'serial-el7':
             s = new Serial('jenkins/serial/el7', this)
             docker_image_name = 'lammps_testing:centos_7'
             shallow_clone = true
             break
+        case 'shlib-el7':
+            s = new Shlib('jenkins/shlib/el7', this)
+            docker_image_name = 'lammps_testing:centos_7'
+            shallow_clone = true
+            break
+        case 'openmpi-el7':
+            s = new OpenMPI('jenkins/openmpi/el7', this)
+            docker_image_name = 'lammps_testing:centos_7'
+            shallow_clone = true
+            break
+        case 'coverity-scan':
+            s = new CoverityCMake('jenkins/cmake/coverity', this)
+            break
         case 'cmake-serial':
             s = new SerialCMake(this)
+            break
+        case 'cmake-kokkos-omp':
+            s = new CMakeKokkosOMP(this)
+            break
+        case 'cmake-kokkos-cuda':
+            s = new CMakeKokkosCUDA(this)
+            docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
+            docker_args = '--runtime=nvidia'
             break
         case 'cmake-testing':
             s = new CMakeTesting(this)
             testing = true
-            break
-        case 'shlib':
-            s = new Shlib(this)
-            break
-        case 'openmpi':
-            s = new OpenMPI(this)
             break
         case 'serial-clang':
             s = new SerialClang(this)
@@ -134,6 +158,7 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: testing_project_url]]])
             }
         }
+        s.pre_actions()
     }
 
     def utils = new Utils()
@@ -194,6 +219,47 @@ def regular_build(build_name, set_github_status=true, run_in_container=true, sen
     }
 }
 
+def container_build(build_name, docker_image_name, dockerfile, set_github_status=true, send_slack=true) {
+    def project_url = 'https://github.com/lammps/lammps.git'
+    def packages_project_url = 'https://github.com/lammps/lammps-packages.git'
+
+    stage('Checkout') {
+        dir('lammps') {
+            git branch: 'master', credentialsId: 'lammps-jenkins', url: project_url
+            git_commit = sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
+        }
+        dir('lammps-packages') {
+            git branch: 'master', credentialsId: 'lammps-jenkins', url: packages_project_url
+        }
+    }
+
+    def utils = new Utils()
+
+    if (set_github_status) {
+        utils.setGitHubCommitStatus(project_url, build_name, git_commit, 'building...', 'PENDING')
+    }
+
+    stage('Build') {
+        result = docker.build(docker_image_name, "-f ${dockerfile} .")
+    }
+
+    if (currentBuild.result == 'FAILURE') {
+        if (set_github_status) {
+            utils.setGitHubCommitStatus(project_url, build_name, git_commit, 'build failed!', 'FAILURE')
+        }
+        if (send_slack) {
+            slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
+        }
+    } else {
+        if (set_github_status) {
+            utils.setGitHubCommitStatus(project_url, build_name, git_commit, 'build successful!', 'SUCCESS')
+        }
+        if (send_slack) {
+            slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
+        }
+    }
+}
+
 def pull_request(build_name) {
     def docker_registry = 'http://glados2.cst.temple.edu:5000'
     def docker_image_name = 'lammps_testing:ubuntu_latest'
@@ -206,22 +272,38 @@ def pull_request(build_name) {
         case 'serial-pr':
             s = new Serial('jenkins/serial/ubuntu', this)
             break
+        case 'shlib-pr':
+            s = new Shlib('jenkins/shlib/ubuntu', this)
+            break
+        case 'openmpi-pr':
+            s = new OpenMPI('jenkins/openmpi/ubuntu', this)
+            break
         case 'serial-el7-pr':
             s = new Serial('jenkins/serial/el7', this)
+            docker_image_name = 'lammps_testing:centos_7'
+            break
+        case 'shlib-el7-pr':
+            s = new Shlib('jenkins/shlib/el7', this)
+            docker_image_name = 'lammps_testing:centos_7'
+            break
+        case 'openmpi-el7-pr':
+            s = new OpenMPI('jenkins/openmpi/el7', this)
             docker_image_name = 'lammps_testing:centos_7'
             break
         case 'cmake-serial-pr':
             s = new SerialCMake(this)
             break
+        case 'cmake-kokkos-omp-pr':
+            s = new CMakeKokkosOMP(this)
+            break
+        case 'cmake-kokkos-cuda-pr':
+            s = new CMakeKokkosCUDA(this)
+            docker_image_name = 'lammps_testing:ubuntu_18.04_cuda_10.0'
+            docker_args = '--runtime=nvidia'
+            break
         case 'cmake-testing-pr':
             s = new CMakeTesting(this)
             testing = true
-            break
-        case 'shlib-pr':
-            s = new Shlib(this)
-            break
-        case 'openmpi-pr':
-            s = new OpenMPI(this)
             break
         case 'serial-clang-pr':
             s = new SerialClang(this)
@@ -298,6 +380,7 @@ def pull_request(build_name) {
                 checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout']], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: testing_project_url]]])
             }
         }
+        s.pre_actions()
     }
 
     gitHubPRStatus githubPRMessage('head run started')

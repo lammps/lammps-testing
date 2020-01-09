@@ -79,6 +79,48 @@ pipelineJob("lammps/pull-requests/regression-pr") {
     }
 }
 
+pipelineJob("lammps/pull-requests/cmake/cmake-testing-gpu-opencl-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('full-regression-test')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('full-regression-test')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
 pipelineJob("lammps/pull-requests/testing-pr") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
@@ -165,7 +207,7 @@ pipelineJob("lammps/pull-requests/testing-omp-pr") {
 
 folder('lammps/pull-requests/cmake')
 
-def cmake_scripts = ['cmake-serial-pr']
+def cmake_scripts = ['cmake-serial-pr', 'cmake-kokkos-omp-pr', 'cmake-kokkos-cuda-pr']
 
 cmake_scripts.each { name ->
     pipelineJob("lammps/pull-requests/cmake/${name}") {
@@ -287,6 +329,90 @@ pipelineJob("lammps/pull-requests/cmake/cmake-win64-serial") {
 }
 
 pipelineJob("lammps/pull-requests/serial-el7-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('el7')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('el7')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/shlib-el7-pr") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+    }
+
+    triggers {
+        githubPullRequests {
+            spec("* * * * *")
+            triggerMode('HEAVY_HOOKS')
+            repoProviders {
+                githubPlugin {
+                    cacheConnection(true)
+                    manageHooks(true)
+                    repoPermission('ADMIN')
+                }
+            }
+            events {
+                labelsAdded {
+                    label {
+                        labels('el7')
+                    }
+                }
+                labelsExist {
+                    label {
+                        labels('el7')
+                    }
+		    skip(false)
+                }
+            }
+        }
+    }
+
+    concurrentBuild(false)
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("lammps/pull-requests/openmpi-el7-pr") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }

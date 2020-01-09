@@ -12,6 +12,13 @@ enum LAMMPS_SIZES {
     BIGBIG
 }
 
+enum LAMMPS_STANDARD {
+    CXX98,
+    CXX11,
+    CXX14,
+    CXX17
+}
+
 class LegacyBuild implements Serializable {
     protected def name
     protected def steps
@@ -23,6 +30,7 @@ class LegacyBuild implements Serializable {
     def lammps_mach = 'serial'
     def lammps_target = 'serial'
     def lammps_size = LAMMPS_SIZES.SMALLBIG
+    def lammps_standard = LAMMPS_STANDARD.CXX11
     def lammps_except = ''
     def packages = []
     def message = ''
@@ -54,7 +62,7 @@ class LegacyBuild implements Serializable {
             if('yes-user-colvars' in packages) {
                 steps.sh '''#!/bin/bash -l
                 make -C lammps/lib/colvars -f Makefile.${MACH} clean
-                make -j 8 -C lammps/lib/colvars -f Makefile.${MACH} CXX="${COMP}"
+                make -j 8 -C lammps/lib/colvars -f Makefile.${MACH} CXX="${COMP} -std=c++11"
                 '''
             }
 
@@ -107,6 +115,9 @@ class LegacyBuild implements Serializable {
         }
     }
 
+    def pre_actions() {
+    }
+
     def configure() {
         steps.env.CCACHE_DIR = steps.pwd() + '/.ccache'
         steps.env.COMP     = compiler
@@ -114,12 +125,27 @@ class LegacyBuild implements Serializable {
         steps.env.TARGET   = "${lammps_target}"
         steps.env.MODE     = "${lammps_mode}"
         steps.env.LMPFLAGS = '-sf off'
-        steps.env.LMP_INC  = "-I/usr/include/hdf5/serial -DLAMMPS_${lammps_size} ${lammps_except} -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized"
+        steps.env.LMP_INC  = "-I/usr/include/hdf5/serial -DLAMMPS_${lammps_size} ${lammps_except} -DLAMMPS_${lammps_standard} -DFFT_KISSFFT -DLAMMPS_GZIP -DLAMMPS_PNG -DLAMMPS_JPEG -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized"
         steps.env.JPG_LIB  = '-L/usr/lib/x86_64-linux-gnu/hdf5/serial/ -ljpeg -lpng -lz'
 
         if(lammps_mach != 'mpi') {
             steps.env.LMP_INC = "-I../../src/STUBS ${steps.env.LMP_INC}"
             steps.env.JPG_LIB = "-L../../src/STUBS/ ${steps.env.JPG_LIB} -lmpi_stubs"
+        }
+
+        switch(lammps_standard) {
+            case LAMMPS_STANDARD.CXX98:
+                steps.env.LMP_INC = "-std=c++98 " + steps.env.LMP_INC
+                break
+            case LAMMPS_STANDARD.CXX11:
+                steps.env.LMP_INC = "-std=c++11 " + steps.env.LMP_INC
+                break
+            case LAMMPS_STANDARD.CXX14:
+                steps.env.LMP_INC = "-std=c++14 " + steps.env.LMP_INC
+                break
+            case LAMMPS_STANDARD.CXX17:
+                steps.env.LMP_INC = "-std=c++17 " + steps.env.LMP_INC
+                break
         }
 
         steps.env.CC = c_compiler
@@ -131,13 +157,23 @@ class LegacyBuild implements Serializable {
     def build() {
         steps.sh 'ccache -M 5G'
 
+        if (steps.fileExists('pyenv') ) {
+            steps.sh 'rm -rf pyenv'
+        }
+
+        steps.sh '''
+        virtualenv --python=$(which python3) pyenv
+        '''
+
         enable_packages()
         build_libraries()
 
         steps.stage('Compiling') {
             steps.sh '''#!/bin/bash -l
+            source pyenv/bin/activate
             touch lammps/src/liblammps.so
             make -j 8 -C lammps/src mode=${MODE} ${TARGET} MACH=${MACH} CC="${COMP}" LINK="${COMP}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
+            deactivate
             '''
         }
 

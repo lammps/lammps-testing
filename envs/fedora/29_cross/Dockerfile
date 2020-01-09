@@ -1,7 +1,7 @@
 FROM fedora:29
 
 RUN dnf update -y
-RUN dnf install -y make python3 python3-virtualenv python3-nose python3-pip ccache git patch dos2unix openssh which wget Lmod texlive cmake gcc
+RUN dnf install -y make python3 python3-virtualenv python3-nose python3-pip ccache git patch dos2unix openssh which wget Lmod texlive cmake gcc ninja-build
 RUN dnf install -y mingw32-nsis mingw32-gcc-c++ mingw32-gcc-gfortran mingw32-libjpeg-turbo-static mingw32-libpng-static mingw32-zlib-static mingw32-libgomp mingw32-winpthreads-static
 RUN dnf install -y mingw64-gcc-c++ mingw64-gcc-gfortran mingw64-libjpeg-turbo-static mingw64-libpng-static mingw64-zlib-static mingw64-libgomp mingw64-winpthreads-static
 

@@ -1,0 +1,78 @@
+---
+- name: Disable TCP timestamp responses
+  sysctl:
+    name: net.ipv4.tcp_timestamps
+    value: 0
+    state: present
+    sysctl_set: yes
+    reload: yes
+
+- name: Disable ICMP redirection
+  sysctl:
+    name: "{{ item }}"
+    value: 0
+    state: present
+    sysctl_set: yes
+    reload: yes
+  with_items:
+    - net.ipv4.conf.all.accept_redirects
+    - net.ipv4.conf.default.accept_redirects
+    - net.ipv4.conf.all.secure_redirects
+    - net.ipv4.conf.default.secure_redirects
+
+- name: Disable IP Source Routing
+  sysctl:
+    name: net.ipv4.conf.all.accept_source_route
+    value: 0
+    state: present
+    sysctl_set: yes
+    reload: yes
+
+- name: Install iptables-persistent service
+  package:
+    name: iptables-persistent
+    state: latest
+
+- name: copy iptables (IPv4) config
+  copy:
+    src: rules.v4
+    dest: /etc/iptables/rules.v4
+    owner: root
+    group: root
+    mode: "u=rw,g=,o="
+
+- name: copy iptables (IPv6) config
+  copy:
+    src: rules.v6
+    dest: /etc/iptables/rules.v6
+    owner: root
+    group: root
+    mode: "u=rw,g=,o="
+
+- name: enable iptables firewall
+  service:
+    name: netfilter-persistent
+    enabled: yes
+    state: restarted
+
+- name: disable anonymous root login
+  copy:
+    src: securetty
+    dest: /etc/securetty
+    owner: root
+    group: root
+    mode: "u=rw,g=,o="
+
+- name: copy sshd configuration
+  copy:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "u=rw,g=,o="
+
+- name: reload sshd daemon
+  service:
+    name: sshd
+    enabled: yes
+    state: restarted
