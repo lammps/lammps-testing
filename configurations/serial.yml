@@ -1,5 +1,4 @@
 ---
-name: serial
 mpi: no
 openmp: no
 compiler: g++

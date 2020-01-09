@@ -1,5 +1,4 @@
 ---
-name: serial_clang
 mpi: no
 openmp: no
 compiler: clang++

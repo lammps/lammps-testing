@@ -1,5 +1,4 @@
 ---
-name: openmp
 mpi: no
 openmp: yes
 compiler: g++ -fopenmp

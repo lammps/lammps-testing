@@ -1,5 +1,4 @@
 ---
-name: openmpi
 mpi: yes
 compiler: mpicxx
 cc: gcc

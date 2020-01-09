@@ -1,5 +1,4 @@
 ---
-name: regression
 mpi: yes
 openmp: no
 compiler: mpicxx
