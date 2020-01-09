@@ -78,8 +78,9 @@ class Regression extends LegacyTesting {
         steps.sh '''#!/bin/bash -l
         source pyenv/bin/activate
         rm *.out *.xml || true
-        python lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -v CORES 8" lammps-testing/tests/examples -exclude kim gcmc mscg nemd prd tad neb VISCOSITY ASPHERE USER/mgpt USER/dpd/dpdrx-shardlow balance accelerate USER/atc USER/quip USER/misc/grem USER/misc/i-pi USER/misc/pimd USER/cg-cmm 2>&1 |tee test0.out
-        python lammps-testing/lammps_testing/regression.py 8 "mpiexec -np 8 ${LAMMPS_BINARY} -partition 4x2 -v CORES 8" lammps-testing/tests/examples -only prd 2>&1 |tee test1.out
+        cd lammps-testing
+        python -m lammps_testing.regression 8 "mpiexec -np 8 ${LAMMPS_BINARY} -v CORES 8" tests/examples -exclude kim gcmc mscg nemd prd tad neb VISCOSITY ASPHERE USER/mgpt USER/dpd/dpdrx-shardlow balance accelerate USER/atc USER/quip USER/misc/grem USER/misc/i-pi USER/misc/pimd USER/cg-cmm 2>&1 |tee ../test0.out
+        python -m lammps_testing.regression 8 "mpiexec -np 8 ${LAMMPS_BINARY} -partition 4x2 -v CORES 8" tests/examples -only prd 2>&1 |tee ../test1.out
         deactivate
         '''
 
