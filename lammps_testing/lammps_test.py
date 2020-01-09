@@ -232,8 +232,8 @@ class CMakeBuild(LAMMPSBuild):
 
         assert(self.container.exists)
         build_env = os.environ.copy()
-        build_env["LAMMPS_C_FLAGS"]   = "-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
-        build_env["LAMMPS_CXX_FLAGS"] = "-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
+        build_env["LAMMPS_C_FLAGS"]   = "-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -Wreorder"
+        build_env["LAMMPS_CXX_FLAGS"] = "-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -Wreorder"
         build_env["CC"] = self.config.cc
         build_env["CXX"] = self.config.cxx
         build_env["LAMMPS_CMAKE_OPTIONS"] = " ".join(options)
