@@ -148,7 +148,7 @@ class log:
 
   # --------------------------------------------------------------------
   # read all thermo from all files
-  
+
   def read_all(self):
     self.read_header(self.flist[0])
     if self.nvec == 0: raise Exception("log file has no values")
@@ -159,7 +159,7 @@ class log:
     print()
 
     # sort entries by timestep, cull duplicates
-    
+
     self.data.sort(key=lambda x: x[0])
     self.cull()
     self.nlen = len(self.data)
@@ -356,7 +356,7 @@ class log:
 
       # split chunk into entries
       # parse each entry for numeric fields, append to data
-  
+
       if self.style == 1:
         sections = chunk.split("\n--")
         pat1 = re.compile("Step\s*(\S*)\s")

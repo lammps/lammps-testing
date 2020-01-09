@@ -11,6 +11,7 @@
 
 #   See the README file in the top-level LAMMPS directory.
 
+from __future__ import print_function
 
 #regression.py
 
@@ -176,15 +177,15 @@ def run_test(test,lmps,descriptor):
   new_flag = False
 
   # print test header
-  print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  print "dir =",os.getcwd()
-  print "test =",test
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+  print("dir =",os.getcwd())
+  print("test =",test)
   sys.stdout.flush()
   if (custom_flag):
-    print "descriptor =",descriptor
-    print "norm =",error_norm
-    print "tolerance =",tolerance
-    print "relative error =",relative_error
+    print("descriptor =",descriptor)
+    print("norm =",error_norm)
+    print("tolerance =",tolerance)
+    print("relative error =",relative_error)
     sys.stdout.flush()
 
   # check if gold standard exists, if not create it
@@ -192,7 +193,7 @@ def run_test(test,lmps,descriptor):
   gold_standard = glob("log.*"+system_name.lower()+"."+descriptor+"."+test)
   if (len(gold_standard) > 0):
     ref = (gold_standard)[0];
-    print "gold standard =",ref
+    print ("gold standard =",ref)
     sys.stdout.flush()
   else:
     new_flag = True
@@ -439,7 +440,7 @@ def init() :
 
   # parse input arguments
   if (len(sys.argv) < 4):
-    print usage
+    print(usage)
     sys.exit(1)
   default_descriptor = sys.argv[1]
   default_lmps = sys.argv[2]
@@ -558,17 +559,17 @@ def init() :
   #tests.sort()
 
   # print header
-  print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  print "start: ",date()
-  print "ntests:",ntests
-  print "default descriptor:",default_descriptor
-  print "default norm:",default_error_norm
-  print "default tolerance:",default_tolerance
-  print "default relative error:",default_relative_error
-  print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  print
-  print "subdirs =",dirs
-  print
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+  print("start: ",date())
+  print("ntests:",ntests)
+  print("default descriptor:",default_descriptor)
+  print("default norm:",default_error_norm)
+  print("default tolerance:",default_tolerance)
+  print("default relative error:",default_relative_error)
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+  print()
+  print("subdirs =",dirs)
+  print()
   sys.stdout.flush()
 
   return tests
@@ -599,23 +600,23 @@ if __name__ == '__main__':
     elif (warn_pattern.search(msg)) : 
       nwarnings += 1
       warn_list.append(test)
-    print msg
+    print(msg)
     sys.stdout.flush()
 
   # print out results
 
-  print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-  print "end:",date()
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+  print("end:",date())
   if (nfails == 0):
-    print ntests,"tests passed"
-    print "*** no failures ***"
+    print(ntests,"tests passed")
+    print("*** no failures ***")
   else:
-    print "!!!",nfails,"of",ntests,"tests failed"
+    print("!!!",nfails,"of",ntests,"tests failed")
     for test in fail_list:
-      print test
+      print(test)
   if (nwarnings > 0):
-    print "\n!!! Warnings were generated in the following tests"
+    print("\n!!! Warnings were generated in the following tests")
     for test in warn_list:
-      print test
-  print "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      print(test)
+  print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
   sys.stdout.flush()
