@@ -4,6 +4,8 @@ import subprocess
 import sys
 import os
 import yaml
+import glob
+from termcolor import colored
 from pathlib import Path
 
 DEFAULT_CONFIG="serial"
@@ -324,6 +326,22 @@ def get_container(name, settings):
     container_definition = os.path.join(settings.container_definition_dir, name + ".def")
     return Container(name, container, container_definition)
 
+def get_names(search_pattern):
+    names = []
+    for path in glob.glob(search_pattern):
+        base = os.path.basename(path)
+        name = os.path.splitext(base)[0]
+        names.append(name)
+    return names
+
+def get_containers(settings):
+    containers = get_names(os.path.join(settings.container_definition_dir, '*.def'))
+    return [get_container(c, settings) for c in sorted(containers)]
+
+def get_configurations(settings):
+    configurations = get_names(os.path.join(settings.configuration_dir, '*.yml'))
+    return [get_configuration(c, settings) for c in sorted(configurations)]
+
 def get_configuration(name, settings):
     configfile = os.path.join(settings.configuration_dir, name + ".yml")
     return LAMMPSConfiguration(configfile, settings.lammps_dir)
@@ -338,6 +356,23 @@ def get_lammps_runner(runner, builder, settings):
     if runner == 'testing':
         return TestRunner(builder, settings)
 
+def show(args, settings):
+    print()
+    print("Environments:")
+    for c in get_containers(settings):
+        if c.name == DEFAULT_ENV:
+            print(" - ", colored(c.name, attrs=['bold']), colored("[default]", attrs=['bold']))
+        else:
+            print(" - ", c.name)
+
+    print()
+    print("Configurations:")
+    for c in get_configurations(settings):
+        if c.name == DEFAULT_CONFIG:
+            print(" - ", colored(c.name, attrs=['bold']), colored("[default]", attrs=['bold']))
+        else:
+            print(" - ", c.name)
+    print()
 
 def buildenv(args, settings):
     c = get_container(args.env, settings)
@@ -363,6 +398,10 @@ def main():
     parser = argparse.ArgumentParser(prog='lammps_test')
     parser.add_argument('--env', default=s.default_env, help='name of container environment (default: {})'.format(DEFAULT_ENV))
     subparsers = parser.add_subparsers(help='sub-command help')
+
+    # create the parser for the "show" command
+    parser_show = subparsers.add_parser('show', help='show status of testing environment')
+    parser_show.set_defaults(func=show)
     
     # create the parser for the "buildenv" command
     parser_buildenv = subparsers.add_parser('buildenv', help='build container environment')

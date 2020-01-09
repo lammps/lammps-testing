@@ -19,6 +19,7 @@ setup(name='lammps_testing',
     },
     install_requires=[
         'nose',
-        'gcovr'
+        'gcovr',
+        'termcolor'
     ]
 )
