@@ -11,6 +11,7 @@
 
 #   See the README file in the top-level LAMMPS directory.
 
+from __future__ import print_function
 
 #regression.py
 
