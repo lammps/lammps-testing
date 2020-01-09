@@ -43,12 +43,17 @@ class LegacyBuild implements Serializable {
     protected def enable_packages() {
         steps.stage('Enable packages') {
             steps.sh '''#!/bin/bash -l
+            source pyenv/bin/activate
             make -C lammps/src purge
             make -C lammps/src clean-all
+            deactivate
             '''
 
             packages.each {
-                steps.sh "make -C lammps/src $it"
+                steps.sh """#!/bin/bash -l
+                source pyenv/bin/activate
+                make -C lammps/src $it
+                """
             }
         }
     }
