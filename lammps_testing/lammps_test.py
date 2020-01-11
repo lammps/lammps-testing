@@ -11,6 +11,10 @@ from pathlib import Path
 DEFAULT_CONFIG="serial"
 DEFAULT_ENV="ubuntu_18.04"
 
+LAMMPS_BUILDERS=('legacy', 'cmake')
+LAMMPS_BUILD_MODES=('exe', 'shlib', 'shexe')
+
+
 def file_is_newer(a, b):
     return os.stat(a).st_mtime > os.stat(b).st_mtime
 
@@ -24,18 +28,19 @@ class Settings:
             sys.exit(1)
         else:
             print("Using LAMMPS_DIR:        ", os.environ['LAMMPS_DIR'])
-        
+
         if 'LAMMPS_TESTING_DIR' not in os.environ:
             print("lammps_test requires the LAMMPS_DIR environment variable to be set!")
             sys.exit(1)
         else:
             print("Using LAMMPS_TESTING_DIR:", os.environ['LAMMPS_TESTING_DIR'])
-        
+
         if 'LAMMPS_CACHE_DIR' not in os.environ:
             print("lammps_test requires the LAMMPS_CACHE_DIR environment variable to be set!")
             sys.exit(1)
         else:
             print("Using LAMMPS_CACHE_DIR:  ", os.environ['LAMMPS_CACHE_DIR'])
+        print()
 
     @property
     def cache_dir(self):
@@ -108,7 +113,7 @@ class LAMMPSConfiguration(object):
         # load values from configuration file
         with open(filename, 'r') as f:
             loaded_dict = yaml.load(f, Loader=yaml.FullLoader)
-            
+
             for k, v in loaded_dict.items():
                 setattr(self, k.lower(), v)
                 self.attributes_changed.add(k)
@@ -163,6 +168,10 @@ class LAMMPSBuild:
     def working_dir(self):
         return os.path.join(self.settings.cache_dir, self.name)
 
+    @property
+    def exists(self):
+        return os.path.exists(self.working_dir)
+
     def build(self):
         pass
 
@@ -174,7 +183,7 @@ class CMakeBuild(LAMMPSBuild):
     @property
     def name(self):
         return "{}_cmake_{}_{}".format(self.container.name, self.config.name, self.mode)
-        
+
     def build_options(self):
         options=[]
 
@@ -344,7 +353,9 @@ def get_configurations(settings):
 
 def get_configuration(name, settings):
     configfile = os.path.join(settings.configuration_dir, name + ".yml")
-    return LAMMPSConfiguration(configfile, settings.lammps_dir)
+    if os.path.exists(configfile):
+        return LAMMPSConfiguration(configfile, settings.lammps_dir)
+    return None
 
 def get_lammps_build(builder, container, config, settings, mode='exe'):
     if builder == 'cmake':
@@ -356,22 +367,34 @@ def get_lammps_runner(runner, builder, settings):
     if runner == 'testing':
         return TestRunner(builder, settings)
 
+def build_status(value):
+    return "[X]" if value else "[ ]"
+
 def show(args, settings):
     print()
     print("Environments:")
-    for c in get_containers(settings):
+    containers = get_containers(settings)
+    for c in containers:
         if c.name == DEFAULT_ENV:
-            print(" - ", colored(c.name, attrs=['bold']), colored("[default]", attrs=['bold']))
+            print(build_status(c.exists), colored(c.name, attrs=['bold']), colored("[default]", attrs=['bold']))
         else:
-            print(" - ", c.name)
+            print(build_status(c.exists), c.name)
 
     print()
     print("Configurations:")
-    for c in get_configurations(settings):
-        if c.name == DEFAULT_CONFIG:
-            print(" - ", colored(c.name, attrs=['bold']), colored("[default]", attrs=['bold']))
+    for config in get_configurations(settings):
+        if config.name == DEFAULT_CONFIG:
+            print(" ", colored(config.name, attrs=['bold']), colored("[default]", attrs=['bold']))
         else:
-            print(" - ", c.name)
+            print(" ", config.name)
+        for container in containers:
+            print("    {0:<30}".format(container.name))
+            for builder in LAMMPS_BUILDERS:
+                print("      {0:<40} ".format(builder), end="")
+                for mode in LAMMPS_BUILD_MODES:
+                    b = get_lammps_build(builder, container, config, settings, mode)
+                    print(build_status(b.exists), mode, end=" ")
+                print()
     print()
 
 def buildenv(args, settings):
@@ -380,9 +403,20 @@ def buildenv(args, settings):
 
 def build(args, settings):
     c = get_container(args.env, settings)
-    config = get_configuration(args.config, settings)
-    builder = get_lammps_build(args.builder, c, config, settings, args.mode)
-    builder.build()
+
+    if c.exists:
+        config = get_configuration(args.config, settings)
+        if config:
+            builder = get_lammps_build(args.builder, c, config, settings, args.mode)
+            builder.build()
+        else:
+            print("Configuration does not exist!")
+            sys.exit(1)
+    else:
+        print("Missing container '{}'\n".format(c.name))
+        print("Build container environment first!\n")
+        print("Usage: lammps_test --env={} buildenv".format(c.name))
+        sys.exit(1)
 
 def runtests(args, settings):
     c = get_container(args.env, settings)
@@ -393,7 +427,7 @@ def runtests(args, settings):
 
 def main():
     s = Settings()
-    
+
     # create the top-level parser
     parser = argparse.ArgumentParser(prog='lammps_test')
     parser.add_argument('--env', default=s.default_env, help='name of container environment (default: {})'.format(DEFAULT_ENV))
@@ -402,15 +436,15 @@ def main():
     # create the parser for the "show" command
     parser_show = subparsers.add_parser('show', help='show status of testing environment')
     parser_show.set_defaults(func=show)
-    
+
     # create the parser for the "buildenv" command
     parser_buildenv = subparsers.add_parser('buildenv', help='build container environment')
     parser_buildenv.set_defaults(func=buildenv)
-    
+
     # create the parser for the "build" command
     parser_build = subparsers.add_parser('build', help='build LAMMPS using a predefined configuration')
-    parser_build.add_argument('--builder', choices=('legacy', 'cmake'), default='legacy', help='compilation builder')
-    parser_build.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
+    parser_build.add_argument('--builder', choices=LAMMPS_BUILDERS, default='legacy', help='compilation builder')
+    parser_build.add_argument('--mode', choices=LAMMPS_BUILD_MODES, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_build.add_argument('config', help='name of configuration file')
     parser_build.set_defaults(func=build)
 
@@ -421,9 +455,13 @@ def main():
     parser_runtests.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_runtests.add_argument('test', help='name of tests or testsuite')
     parser_runtests.set_defaults(func=runtests)
-    
+
+    #try:
     args = parser.parse_args()
     args.func(args, s)
+    #except Exception as e:
+    #    print(e)
+    #    parser.print_help()
 
 if __name__ == "__main__":
     main()
