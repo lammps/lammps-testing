@@ -1,4 +1,5 @@
-# LAMMPS testing
+# LAMMPS Testing
 
-The code and examples in this repository drive the regression testing on
-[ci.lammps.org](https://ci.lammps.org).
+This repository contains code and examples that drive the regression testing on
+[ci.lammps.org](https://ci.lammps.org). It's is run on hardware that is hosted
+at Temple University.

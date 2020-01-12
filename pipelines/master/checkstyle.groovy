@@ -1,4 +1,4 @@
-@Library('lammps_testing')
+@Library(value='lammps_testing', changelog=false)
 import org.lammps.ci.Utils
 
 def project_url = 'https://github.com/lammps/lammps.git'
