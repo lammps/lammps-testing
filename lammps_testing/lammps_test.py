@@ -30,7 +30,7 @@ class Settings:
             print("Using LAMMPS_DIR:        ", os.environ['LAMMPS_DIR'])
 
         if 'LAMMPS_TESTING_DIR' not in os.environ:
-            print("lammps_test requires the LAMMPS_DIR environment variable to be set!")
+            print("lammps_test requires the LAMMPS_TESTING_DIR environment variable to be set!")
             sys.exit(1)
         else:
             print("Using LAMMPS_TESTING_DIR:", os.environ['LAMMPS_TESTING_DIR'])

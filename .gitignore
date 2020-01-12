@@ -9,3 +9,4 @@ log.cite
 build
 dist
 LAMMPS_Testing_Utilities.egg-info/
+lammps_testing.egg-info/
