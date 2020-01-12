@@ -330,6 +330,32 @@ class TestRunner():
         run_tests_script = os.path.join(scripts_dir, 'RunTests.sh')
         subprocess.call(['singularity', 'run', '-B', '{lammps_dir}/:{lammps_dir}/'.format(lammps_dir=self.settings.lammps_dir), '-B', '{scripts_dir}/:{scripts_dir}/'.format(scripts_dir=scripts_dir), self.container.container, run_tests_script], env=build_env, cwd=self.working_dir)
 
+class LocalRunner():
+    def __init__(self, builder, settings):
+        self.builder = builder
+        self.container = builder.container
+        self.settings = settings
+
+    @property
+    def working_dir(self):
+        return os.getcwd()
+
+    @property
+    def lammps_build_dir(self):
+        return self.builder.working_dir
+
+    def run(self, args):
+        assert(self.container.exists)
+        print(self.lammps_build_dir)
+        assert(os.path.exists(self.lammps_build_dir))
+        print("LAMMPS Build:", self.builder.working_dir)
+        print("Workdir:", self.working_dir)
+        build_env = os.environ.copy()
+        build_env["LAMMPS_BUILD_DIR"] = self.lammps_build_dir
+        scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
+        run_tests_script = os.path.join(scripts_dir, 'Run.sh')
+        subprocess.call(['singularity', 'run', '-B', '{lammps_dir}/:{lammps_dir}/'.format(lammps_dir=self.settings.lammps_dir), '-B', '{scripts_dir}/:{scripts_dir}/'.format(scripts_dir=scripts_dir), self.container.container, run_tests_script, args], env=build_env, cwd=self.working_dir)
+
 def get_container(name, settings):
     container = os.path.join(settings.container_dir, name + ".sif")
     container_definition = os.path.join(settings.container_definition_dir, name + ".def")
@@ -366,6 +392,8 @@ def get_lammps_build(builder, container, config, settings, mode='exe'):
 def get_lammps_runner(runner, builder, settings):
     if runner == 'testing':
         return TestRunner(builder, settings)
+    elif runner == 'local':
+        return LocalRunner(builder, settings)
 
 def build_status(value):
     return "[X]" if value else "[ ]"
@@ -418,6 +446,13 @@ def build(args, settings):
         print("Usage: lammps_test --env={} buildenv".format(c.name))
         sys.exit(1)
 
+def run(args, settings):
+    c = get_container(args.env, settings)
+    config = get_configuration(args.config, settings)
+    builder = get_lammps_build(args.builder, c, config, settings, args.mode)
+    runner  = get_lammps_runner('local', builder, settings)
+    runner.run(args.args)
+
 def runtests(args, settings):
     c = get_container(args.env, settings)
     config = get_configuration(args.config, settings)
@@ -455,6 +490,14 @@ def main():
     parser_runtests.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_runtests.add_argument('test', help='name of tests or testsuite')
     parser_runtests.set_defaults(func=runtests)
+
+    # create the parser for the "run" command
+    parser_run = subparsers.add_parser('run', help='run LAMMPS in current working directory')
+    parser_run.add_argument('--builder', choices=('legacy', 'cmake'), default='legacy', help='compilation builder')
+    parser_run.add_argument('--config', default='serial', help='compilation configuration')
+    parser_run.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
+    parser_run.add_argument('args', help='arguments passed to LAMMPS binary')
+    parser_run.set_defaults(func=run)
 
     #try:
     args = parser.parse_args()
