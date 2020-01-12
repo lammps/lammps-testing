@@ -1,4 +1,4 @@
-@Library('lammps_testing')
+@Library('lammps_testing',changelog=false)
 import org.lammps.ci.LAMMPSBuild
 
 node('atlas2') {
