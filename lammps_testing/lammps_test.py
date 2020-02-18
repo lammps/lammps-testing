@@ -75,15 +75,15 @@ class Container:
     def build(self):
         os.makedirs(os.path.dirname(self.container), exist_ok=True)
         if os.path.exists(self.container) and file_is_newer(self.container_definition, self.container):
-            print("Newer container definition found! Rebuilding container '{}'...".format(self.name))
+            print(f"Newer container definition found! Rebuilding container '{self.name}'...")
             os.unlink(self.container)
         elif not os.path.exists(self.container):
-            print("Building container '{}'...".format(self.name))
+            print(f"Building container '{self.name}'...")
 
         if not os.path.exists(self.container):
             subprocess.call(['sudo', 'singularity', 'build', self.container, self.container_definition])
         else:
-            print("Container '{}' already exists and is up-to-date.".format(self.name))
+            print(f"Container '{self.name}' already exists and is up-to-date.")
 
     @property
     def exists(self):
@@ -130,17 +130,17 @@ class LAMMPSConfiguration(object):
         s += "  Shared:      {}\n".format("yes" if self.shared else "no")
         s += "  Binary:      {}\n".format("yes" if self.binary else "no")
         s += "  Library:     {}\n".format("yes" if self.library else "no")
-        s += "  Compiler:    {}\n".format(self.compiler)
-        s += "  CC:          {}\n".format(self.cc)
-        s += "  CXX:         {}\n".format(self.cxx)
-        s += "  Sizes:       {}\n".format(self.sizes)
+        s += f"  Compiler:    {self.compiler}\n"
+        s += f"  CC:          {self.cc}\n"
+        s += f"  CXX:         {self.cxx}\n"
+        s += f"  Sizes:       {self.sizes}\n"
         s += "  Exceptions:  {}\n".format("yes" if self.exceptions else "no")
         s += "--------------------\n"
         s += "  Packages:\n"
         s += "--------------------\n"
 
         for pkg in sorted(self.packages):
-            s += " - {}\n".format(pkg)
+            s += f" - {pkg}\n"
 
         s += "--------------------\n"
         s += "  Packages Options:\n"
@@ -148,13 +148,13 @@ class LAMMPSConfiguration(object):
 
         for pkg in sorted(self.package_options.keys()):
             if pkg.upper() not in set([p.upper() for p in self.packages]):
-                s += " - {}: ignored since not enabled\n".format(pkg)
+                s += f" - {pkg}: ignored since not enabled\n"
                 continue
 
-            s += " - {}:\n".format(pkg)
+            s += f" - {pkg}:\n"
             options = self.package_options[pkg]
             for k in sorted(options.keys()):
-                s += "     {}: {}".format(k, options[k])
+                s += f"     {k}: {options[k]}"
 
         return s
 
@@ -182,7 +182,7 @@ class CMakeBuild(LAMMPSBuild):
 
     @property
     def name(self):
-        return "{}_cmake_{}_{}".format(self.container.name, self.config.name, self.mode)
+        return f"{self.container.name}_cmake_{self.config.name}_{self.mode}"
 
     def build_options(self):
         options=[]
@@ -207,7 +207,7 @@ class CMakeBuild(LAMMPSBuild):
             if gpu_options['api'] == 'cuda':
                 options.append('-D CMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs')
 
-            options.append('-D GPU_API={api}'.format(**gpu_options))
+            options.append(f'-D GPU_API={gpu_options["api"]}')
 
         if self.config.mpi:
             options.append('-D BUILD_MPI=on')
@@ -231,7 +231,7 @@ class CMakeBuild(LAMMPSBuild):
             options.append('-D BUILD_SHARED_LIBS=on')
 
         for pkg in self.config.packages:
-            options.append('-D PKG_{}=on'.format(pkg.upper()))
+            options.append(f'-D PKG_{pkg.upper()}=on')
 
         return options
 
@@ -254,7 +254,7 @@ class CMakeBuild(LAMMPSBuild):
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
         cmake_build_script = os.path.join(scripts_dir, 'CMakeBuild.sh')
         #subprocess.call(['env'], env=build_env, cwd=self.working_dir)
-        subprocess.call(['singularity', 'run', '-B', '{lammps_dir}/:{lammps_dir}/'.format(lammps_dir=self.settings.lammps_dir), '-B', '{scripts_dir}/:{scripts_dir}/'.format(scripts_dir=scripts_dir), self.container.container, cmake_build_script], env=build_env, cwd=self.working_dir)
+        subprocess.call(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, cmake_build_script], env=build_env, cwd=self.working_dir)
 
 class LegacyBuild(LAMMPSBuild):
     def __init__(self, container, config, settings, mode='exe'):
@@ -270,12 +270,12 @@ class LegacyBuild(LAMMPSBuild):
 
     @property
     def name(self):
-        return "{}_legacy_{}_{}".format(self.container.name, self.config.name, self.mode)
+        return f"{self.container.name}_legacy_{self.config.name}_{self.mode}"
 
     def get_lammps_packages(self):
         s = "no-all"
         for pkg in self.config.packages:
-            s += ":yes-{}".format(pkg.lower())
+            s += f":yes-{pkg.lower()}"
         return s
 
     def build(self):
@@ -296,7 +296,7 @@ class LegacyBuild(LAMMPSBuild):
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
         legacy_build_script = os.path.join(scripts_dir, 'LegacyBuild.sh')
         #subprocess.call(['env'], env=build_env, cwd=self.working_dir)
-        subprocess.call(['singularity', 'run', '-B', '{lammps_dir}/:{lammps_dir}/'.format(lammps_dir=self.settings.lammps_dir), '-B', '{scripts_dir}/:{scripts_dir}/'.format(scripts_dir=scripts_dir), self.container.container, legacy_build_script], env=build_env, cwd=self.working_dir)
+        subprocess.call(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, legacy_build_script], env=build_env, cwd=self.working_dir)
 
 class TestRunner():
     def __init__(self, builder, settings):
@@ -328,7 +328,7 @@ class TestRunner():
         build_env["LAMMPS_TESTING_NPROC"] = "1"
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
         run_tests_script = os.path.join(scripts_dir, 'RunTests.sh')
-        subprocess.call(['singularity', 'run', '-B', '{lammps_dir}/:{lammps_dir}/'.format(lammps_dir=self.settings.lammps_dir), '-B', '{scripts_dir}/:{scripts_dir}/'.format(scripts_dir=scripts_dir), self.container.container, run_tests_script], env=build_env, cwd=self.working_dir)
+        subprocess.call(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, run_tests_script], env=build_env, cwd=self.working_dir)
 
 class LocalRunner():
     def __init__(self, builder, settings):
@@ -354,7 +354,7 @@ class LocalRunner():
         build_env["LAMMPS_BUILD_DIR"] = self.lammps_build_dir
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
         run_tests_script = os.path.join(scripts_dir, 'Run.sh')
-        subprocess.call(['singularity', 'run', '-B', '{lammps_dir}/:{lammps_dir}/'.format(lammps_dir=self.settings.lammps_dir), '-B', '{scripts_dir}/:{scripts_dir}/'.format(scripts_dir=scripts_dir), self.container.container, run_tests_script, args], env=build_env, cwd=self.working_dir)
+        subprocess.call(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, run_tests_script, args], env=build_env, cwd=self.working_dir)
 
 def get_container(name, settings):
     container = os.path.join(settings.container_dir, name + ".sif")
@@ -416,9 +416,9 @@ def show(args, settings):
         else:
             print(" ", config.name)
         for container in containers:
-            print("    {0:<30}".format(container.name))
+            print(f"    {container.name:<30}")
             for builder in LAMMPS_BUILDERS:
-                print("      {0:<40} ".format(builder), end="")
+                print(f"      {builder:<40} ", end="")
                 for mode in LAMMPS_BUILD_MODES:
                     b = get_lammps_build(builder, container, config, settings, mode)
                     print(build_status(b.exists), mode, end=" ")
@@ -441,9 +441,9 @@ def build(args, settings):
             print("Configuration does not exist!")
             sys.exit(1)
     else:
-        print("Missing container '{}'\n".format(c.name))
+        print(f"Missing container '{c.name}'\n")
         print("Build container environment first!\n")
-        print("Usage: lammps_test --env={} buildenv".format(c.name))
+        print(f"Usage: lammps_test --env={c.name} buildenv")
         sys.exit(1)
 
 def run(args, settings):
@@ -465,7 +465,7 @@ def main():
 
     # create the top-level parser
     parser = argparse.ArgumentParser(prog='lammps_test')
-    parser.add_argument('--env', default=s.default_env, help='name of container environment (default: {})'.format(DEFAULT_ENV))
+    parser.add_argument('--env', default=s.default_env, help=f'name of container environment (default: {DEFAULT_ENV})')
     subparsers = parser.add_subparsers(help='sub-command help')
 
     # create the parser for the "show" command
