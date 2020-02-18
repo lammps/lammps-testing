@@ -388,6 +388,16 @@ def get_configuration(name, settings):
         return LAMMPSConfiguration(configfile, settings.lammps_dir)
     return None
 
+def get_configurations_by_selector(selector, settings):
+    if 'all' in selector or 'ALL' in selector:
+        return get_configurations(settings)
+    return [get_configuration(c, settings) for c in sorted(selector)]
+
+def get_modes_by_selector(selector, settings):
+    if selector == 'all' or selector == 'ALL':
+        return LAMMPS_BUILD_MODES
+    return selector.split(',')
+
 def get_lammps_build(builder, container, config, settings, mode='exe'):
     if builder == 'cmake':
         return CMakeBuild(container, config, settings, mode)
@@ -449,10 +459,13 @@ def build(args, settings):
     c = get_container(args.env, settings)
 
     if c.exists:
-        config = get_configuration(args.config, settings)
-        if config:
-            builder = get_lammps_build(args.builder, c, config, settings, args.mode)
-            builder.build()
+        configurations = get_configurations_by_selector(args.config, settings)
+        modes = get_modes_by_selector(args.mode, settings)
+        if configurations:
+            for config in configurations:
+                for mode in modes:
+                    builder = get_lammps_build(args.builder, c, config, settings, mode)
+                    builder.build()
         else:
             print("Configuration does not exist!")
             sys.exit(1)
@@ -495,15 +508,15 @@ def main():
     # create the parser for the "build" command
     parser_build = subparsers.add_parser('build', help='build LAMMPS using a predefined configuration')
     parser_build.add_argument('--builder', choices=LAMMPS_BUILDERS, default='legacy', help='compilation builder')
-    parser_build.add_argument('--mode', choices=LAMMPS_BUILD_MODES, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
-    parser_build.add_argument('config', help='name of configuration file')
+    parser_build.add_argument('--mode', type=str, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both, all or any comma separated list)')
+    parser_build.add_argument('config', nargs='+', help='name of configuration file or all')
     parser_build.set_defaults(func=build)
 
     # create the parser for the "runtests" command
     parser_runtests = subparsers.add_parser('runtests', help='run LAMMPS test(s)')
     parser_runtests.add_argument('--builder', choices=('legacy', 'cmake'), default='legacy', help='compilation builder')
     parser_runtests.add_argument('--config', default='serial', help='compilation configuration')
-    parser_runtests.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
+    parser_runtests.add_argument('--mode', choices=LAMMPS_BUILD_MODES, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_runtests.add_argument('test', help='name of tests or testsuite')
     parser_runtests.set_defaults(func=runtests)
 
