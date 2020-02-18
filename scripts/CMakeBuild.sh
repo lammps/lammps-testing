@@ -20,6 +20,7 @@ virtualenv --python=$PYTHON pyenv
 
 source pyenv/bin/activate
 
+git -C ${LAMMPS_DIR} rev-parse HEAD > COMMIT
 
 cmake -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D CXX_COMPILER_LAUNCHER=ccache \

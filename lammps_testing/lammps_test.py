@@ -175,6 +175,11 @@ class LAMMPSBuild:
     def build(self):
         pass
 
+    @property
+    def commit(self):
+        with open(os.path.join(self.working_dir, 'COMMIT')) as f:
+            return f.read().strip()[:8]
+
 class CMakeBuild(LAMMPSBuild):
     def __init__(self, container, config, settings, mode='exe'):
         super().__init__(container, config, settings)
@@ -395,8 +400,13 @@ def get_lammps_runner(runner, builder, settings):
     elif runner == 'local':
         return LocalRunner(builder, settings)
 
-def build_status(value):
+def container_build_status(value):
     return "[X]" if value else "[ ]"
+
+def build_status(build):
+    if build.exists:
+        return f"[{build.commit:8s}]"
+    return "[        ]"
 
 def show(args, settings):
     print()
@@ -404,24 +414,30 @@ def show(args, settings):
     containers = get_containers(settings)
     for c in containers:
         if c.name == DEFAULT_ENV:
-            print(build_status(c.exists), colored(c.name, attrs=['bold']), colored("[default]", attrs=['bold']))
+            print(container_build_status(c.exists), colored(c.name, attrs=['bold']), colored("[default]", attrs=['bold']))
         else:
-            print(build_status(c.exists), c.name)
+            print(container_build_status(c.exists), c.name)
 
     print()
     print("Configurations:")
-    for config in get_configurations(settings):
-        if config.name == DEFAULT_CONFIG:
-            print(" ", colored(config.name, attrs=['bold']), colored("[default]", attrs=['bold']))
-        else:
-            print(" ", config.name)
+
+    for builder in LAMMPS_BUILDERS:
+        print()
+        print("#"*120)
+        print("#", f'{builder}'.center(116), "#")
+        print("#"*120)
         for container in containers:
-            print(f"    {container.name:<30}")
-            for builder in LAMMPS_BUILDERS:
-                print(f"      {builder:<40} ", end="")
+            print()
+            print(f' {container.name} '.center(120, "+"))
+            print()
+            for config in get_configurations(settings):
+                if config.name == DEFAULT_CONFIG:
+                    print(" ", colored(f"{config.name + ' [default]':<40}", attrs=['bold']), end="")
+                else:
+                    print(" ", f"{config.name:<40}", end="")
                 for mode in LAMMPS_BUILD_MODES:
                     b = get_lammps_build(builder, container, config, settings, mode)
-                    print(build_status(b.exists), mode, end=" ")
+                    print(build_status(b), mode, end=" ")
                 print()
     print()
 
