@@ -7,6 +7,9 @@ import yaml
 import glob
 from termcolor import colored
 from pathlib import Path
+import threading
+import time
+import logging
 
 DEFAULT_CONFIG="serial"
 DEFAULT_ENV="ubuntu_18.04"
@@ -14,6 +17,11 @@ DEFAULT_ENV="ubuntu_18.04"
 LAMMPS_BUILDERS=('legacy', 'cmake')
 LAMMPS_BUILD_MODES=('exe', 'shlib', 'shexe')
 
+logger = logging.getLogger('lammps_test')
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.ERROR)
+logger.addHandler(ch)
 
 def file_is_newer(a, b):
     return os.stat(a).st_mtime > os.stat(b).st_mtime
@@ -24,23 +32,22 @@ class Settings:
         self.default_env    = DEFAULT_ENV
 
         if 'LAMMPS_DIR' not in os.environ:
-            print("lammps_test requires the LAMMPS_DIR environment variable to be set!")
+            logger.error("lammps_test requires the LAMMPS_DIR environment variable to be set!")
             sys.exit(1)
         else:
-            print("Using LAMMPS_DIR:        ", os.environ['LAMMPS_DIR'])
+            logger.info("Using LAMMPS_DIR:        ", os.environ['LAMMPS_DIR'])
 
         if 'LAMMPS_TESTING_DIR' not in os.environ:
-            print("lammps_test requires the LAMMPS_TESTING_DIR environment variable to be set!")
+            logger.error("lammps_test requires the LAMMPS_TESTING_DIR environment variable to be set!")
             sys.exit(1)
         else:
-            print("Using LAMMPS_TESTING_DIR:", os.environ['LAMMPS_TESTING_DIR'])
+            logger.info("Using LAMMPS_TESTING_DIR:", os.environ['LAMMPS_TESTING_DIR'])
 
         if 'LAMMPS_CACHE_DIR' not in os.environ:
-            print("lammps_test requires the LAMMPS_CACHE_DIR environment variable to be set!")
+            logger.error("lammps_test requires the LAMMPS_CACHE_DIR environment variable to be set!")
             sys.exit(1)
         else:
-            print("Using LAMMPS_CACHE_DIR:  ", os.environ['LAMMPS_CACHE_DIR'])
-        print()
+            logger.info("Using LAMMPS_CACHE_DIR:  ", os.environ['LAMMPS_CACHE_DIR'])
 
     @property
     def cache_dir(self):
@@ -75,15 +82,15 @@ class Container:
     def build(self):
         os.makedirs(os.path.dirname(self.container), exist_ok=True)
         if os.path.exists(self.container) and file_is_newer(self.container_definition, self.container):
-            print(f"Newer container definition found! Rebuilding container '{self.name}'...")
+            logger.info(f"Newer container definition found! Rebuilding container '{self.name}'...")
             os.unlink(self.container)
         elif not os.path.exists(self.container):
-            print(f"Building container '{self.name}'...")
+            logger.info(f"Building container '{self.name}'...")
 
         if not os.path.exists(self.container):
             subprocess.call(['sudo', 'singularity', 'build', self.container, self.container_definition])
         else:
-            print(f"Container '{self.name}' already exists and is up-to-date.")
+            logger.info(f"Container '{self.name}' already exists and is up-to-date.")
 
     @property
     def exists(self):
@@ -169,6 +176,10 @@ class LAMMPSBuild:
         return os.path.join(self.settings.cache_dir, self.name)
 
     @property
+    def build_log(self):
+        return os.path.join(self.working_dir, 'build.log')
+
+    @property
     def exists(self):
         return os.path.exists(self.working_dir)
 
@@ -177,8 +188,44 @@ class LAMMPSBuild:
 
     @property
     def commit(self):
-        with open(os.path.join(self.working_dir, 'COMMIT')) as f:
-            return f.read().strip()[:8]
+        commit_file = os.path.join(self.working_dir, 'COMMIT')
+        if os.path.exists(commit_file):
+            with open(os.path.join(self.working_dir, 'COMMIT')) as f:
+                return f.read().strip()[:8]
+        return "TBD"
+
+    @property
+    def success(self):
+        lammps_binary = os.path.join(self.working_dir, 'pyenv', 'bin', 'lmp')
+        return os.path.exists(lammps_binary)
+
+    def run_command(self, command, env):
+        running = True
+
+        def heartbeat():
+            i = 0
+            while(running):
+                print('\r' + " "*120, end='')
+                print(f"\r⚙️  {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: Building" + '.'*i, end='')
+                time.sleep(1)
+                i = (i + 1) % 4
+
+        t = threading.Thread(target=heartbeat, daemon=True)
+        t.start()
+
+        with open(self.build_log, 'wb') as build_log:
+            subprocess.call(command, env=env, cwd=self.working_dir, stdout=build_log, stderr=subprocess.STDOUT)
+
+        running = False
+        t.join()
+        print('\r' + " "*120, end='\r')
+
+        if self.success:
+            print(f"\r✅ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: OK")
+        else:
+            print(f"\r❌ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: Failed")
+            print(f"   See build log at {self.build_log}")
+            
 
 class CMakeBuild(LAMMPSBuild):
     def __init__(self, container, config, settings, mode='exe'):
@@ -242,8 +289,8 @@ class CMakeBuild(LAMMPSBuild):
 
 
     def build(self):
-        print("Building with CMake...")
-        print(self.config)
+        logger.info("Building with CMake...")
+        logger.debug(self.config)
         options = self.build_options()
 
         assert(self.container.exists)
@@ -254,12 +301,11 @@ class CMakeBuild(LAMMPSBuild):
         build_env["CXX"] = self.config.cxx
         build_env["LAMMPS_CMAKE_OPTIONS"] = " ".join(options)
 
-        print("Workdir:", self.working_dir)
+        logger.debug(f"Workdir: {self.working_dir}")
         os.makedirs(self.working_dir, exist_ok=True)
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
         cmake_build_script = os.path.join(scripts_dir, 'CMakeBuild.sh')
-        #subprocess.call(['env'], env=build_env, cwd=self.working_dir)
-        subprocess.call(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, cmake_build_script], env=build_env, cwd=self.working_dir)
+        self.run_command(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, cmake_build_script], env=build_env)
 
 class LegacyBuild(LAMMPSBuild):
     def __init__(self, container, config, settings, mode='exe'):
@@ -284,7 +330,7 @@ class LegacyBuild(LAMMPSBuild):
         return s
 
     def build(self):
-        print(self.config)
+        logger.debug(self.config)
         assert(self.container.exists)
         build_env = os.environ.copy()
         build_env["LAMMPS_MODE"] = self.mode
@@ -295,13 +341,12 @@ class LegacyBuild(LAMMPSBuild):
         build_env["CXX"] = self.config.cxx
         build_env["LAMMPS_PACKAGES"] = self.get_lammps_packages()
 
-        print("Building with Legacy...")
-        print("Workdir:", self.working_dir)
+        logger.info("Building with Legacy...")
+        logger.info("Workdir:", self.working_dir)
         os.makedirs(self.working_dir, exist_ok=True)
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
         legacy_build_script = os.path.join(scripts_dir, 'LegacyBuild.sh')
-        #subprocess.call(['env'], env=build_env, cwd=self.working_dir)
-        subprocess.call(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, legacy_build_script], env=build_env, cwd=self.working_dir)
+        self.run_command(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, legacy_build_script], env=build_env)
 
 class TestRunner():
     def __init__(self, builder, settings):
@@ -324,8 +369,8 @@ class TestRunner():
     def run(self):
         assert(self.container.exists)
         assert(os.path.exists(self.lammps_build_dir))
-        print("LAMMPS Build:", self.builder.working_dir)
-        print("Workdir:", self.working_dir)
+        logger.info(f"LAMMPS Build: {self.builder.working_dir}")
+        logger.info(f"Workdir: {self.working_dir}")
         os.makedirs(self.working_dir, exist_ok=True)
         build_env = os.environ.copy()
         build_env["LAMMPS_BUILD_DIR"] = self.lammps_build_dir
@@ -386,7 +431,7 @@ def get_configuration(name, settings):
     configfile = os.path.join(settings.configuration_dir, name + ".yml")
     if os.path.exists(configfile):
         return LAMMPSConfiguration(configfile, settings.lammps_dir)
-    return None
+    raise FileNotFoundError(configfile)
 
 def get_configurations_by_selector(selector, settings):
     if 'all' in selector or 'ALL' in selector:
@@ -459,15 +504,16 @@ def build(args, settings):
     c = get_container(args.env, settings)
 
     if c.exists:
-        configurations = get_configurations_by_selector(args.config, settings)
-        modes = get_modes_by_selector(args.mode, settings)
-        if configurations:
+        try:
+            configurations = get_configurations_by_selector(args.config, settings)
+            modes = get_modes_by_selector(args.mode, settings)
             for config in configurations:
                 for mode in modes:
                     builder = get_lammps_build(args.builder, c, config, settings, mode)
                     builder.build()
-        else:
-            print("Configuration does not exist!")
+        except FileNotFoundError as e:
+            logger.error("Configuration does not exist!")
+            logger.error(e)
             sys.exit(1)
     else:
         print(f"Missing container '{c.name}'\n")
