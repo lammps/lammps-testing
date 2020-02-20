@@ -197,7 +197,8 @@ class LAMMPSBuild:
     @property
     def success(self):
         lammps_binary = os.path.join(self.working_dir, 'pyenv', 'bin', 'lmp')
-        return os.path.exists(lammps_binary)
+        lammps_shared_library = os.path.join(self.working_dir, 'pyenv', 'lib', 'liblammps.so')
+        return os.path.exists(lammps_binary) or os.path.exists(lammps_shared_library)
 
     def run_command(self, command, env):
         running = True
@@ -458,10 +459,13 @@ def get_lammps_runner(runner, builder, settings):
 def container_build_status(value):
     return "[X]" if value else "[ ]"
 
-def build_status(build):
+def build_status(build, title):
     if build.exists:
-        return f"[{build.commit:8s}]"
-    return "[        ]"
+        if build.success:
+            return f"✅ {title:5s} ({colored(build.commit, 'green'):8s})"
+        else:
+            return f"❌ {title:5s} ({colored(build.commit, 'red'):8s})"
+    return f"   {title:5s} (        )"
 
 def show(args, settings):
     print()
@@ -492,7 +496,8 @@ def show(args, settings):
                     print(" ", f"{config.name:<40}", end="")
                 for mode in LAMMPS_BUILD_MODES:
                     b = get_lammps_build(builder, container, config, settings, mode)
-                    print(build_status(b), mode, end=" ")
+                    print(build_status(b, mode), end=" ")
+
                 print()
     print()
 
