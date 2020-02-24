@@ -8,6 +8,11 @@ export LD_LIBRARY_PATH=$VIRTUAL_ENV/lib64:$VIRTUAL_ENV/lib:$LD_LIBRARY_PATH
 export LAMMPS_BINARY=${VIRTUAL_ENV}/bin/lmp
 export LAMMPS_POTENTIALS="${VIRTUAL_ENV}/share/lammps/potentials"
 
-$LAMMPS_BINARY $@
+if [ -z "$LAMMPS_LAUNCHER=" ]
+then
+    export LAMMPS_LAUNCHER=""
+fi
+
+${LAMMPS_LAUNCHER}${LAMMPS_BINARY} $@
 
 deactivate

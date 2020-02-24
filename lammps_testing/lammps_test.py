@@ -10,6 +10,8 @@ from pathlib import Path
 import threading
 import time
 import logging
+from datetime import datetime
+import platform
 
 DEFAULT_CONFIG="serial"
 DEFAULT_ENV="ubuntu_18.04"
@@ -226,7 +228,7 @@ class LAMMPSBuild:
         else:
             print(f"\r❌ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: Failed")
             print(f"   See build log at {self.build_log}")
-            
+
 
 class CMakeBuild(LAMMPSBuild):
     def __init__(self, container, config, settings, mode='exe'):
@@ -375,37 +377,56 @@ class TestRunner():
         os.makedirs(self.working_dir, exist_ok=True)
         build_env = os.environ.copy()
         build_env["LAMMPS_BUILD_DIR"] = self.lammps_build_dir
-        build_env["LAMMPS_TESTS"] = "tests/test_commands.py"
+        build_env["LAMMPS_TESTS"] = "tests/test_commands.py tests/test_examples.py"
         build_env["LAMMPS_TESTING_NPROC"] = "1"
+        build_env["LAMMPS_TEST_MODES"] = "omp"
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
         run_tests_script = os.path.join(scripts_dir, 'RunTests.sh')
         subprocess.call(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, run_tests_script], env=build_env, cwd=self.working_dir)
 
-class LocalRunner():
+class LocalRunner(object):
     def __init__(self, builder, settings):
         self.builder = builder
         self.container = builder.container
         self.settings = settings
-
-    @property
-    def working_dir(self):
-        return os.getcwd()
+        self.working_dir = os.getcwd()
 
     @property
     def lammps_build_dir(self):
         return self.builder.working_dir
 
-    def run(self, args):
+    def run_command(self, command, env, cwd, stdout=None):
+        if stdout:
+            subprocess.call(command, env=env, cwd=self.working_dir, stdout=stdout, stderr=subprocess.STDOUT)
+        else:
+            subprocess.call(command, env=env, cwd=self.working_dir)
+
+    @property
+    def build_env(self):
+        env = os.environ.copy()
+        env["LAMMPS_BUILD_DIR"] = self.lammps_build_dir
+        return env
+
+    def run(self, args, stdout=None):
         assert(self.container.exists)
         print(self.lammps_build_dir)
         assert(os.path.exists(self.lammps_build_dir))
         print("LAMMPS Build:", self.builder.working_dir)
         print("Workdir:", self.working_dir)
-        build_env = os.environ.copy()
-        build_env["LAMMPS_BUILD_DIR"] = self.lammps_build_dir
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
-        run_tests_script = os.path.join(scripts_dir, 'Run.sh')
-        subprocess.call(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, run_tests_script, args], env=build_env, cwd=self.working_dir)
+        run_script = os.path.join(scripts_dir, 'Run.sh')
+        self.run_command(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, run_script] + args, env=self.build_env, cwd=self.working_dir, stdout=stdout)
+
+class MPIRunner(LocalRunner):
+    def __init__(self, builder, settings, nprocs=1):
+        super().__init__(builder, settings)
+        self.nprocs = nprocs
+
+    @property
+    def build_env(self):
+        env = super().build_env
+        env["LAMMPS_LAUNCHER"] = f'mpirun -np {self.nprocs} '
+        return env
 
 def get_container(name, settings):
     container = os.path.join(settings.container_dir, name + ".sif")
@@ -455,6 +476,8 @@ def get_lammps_runner(runner, builder, settings):
         return TestRunner(builder, settings)
     elif runner == 'local':
         return LocalRunner(builder, settings)
+    elif runner == 'mpi':
+        return MPIRunner(builder, settings, nprocs=8)
 
 def container_build_status(value):
     return "[X]" if value else "[ ]"
@@ -540,6 +563,105 @@ def runtests(args, settings):
     runner  = get_lammps_runner('testing', builder, settings)
     runner.run()
 
+class LAMMPSSeries(object):
+    pass
+
+class LAMMPSRun(object):
+    pass
+
+class LogReader(object):
+    def __init__(self, f):
+        pass
+
+class RegressionTest(object):
+    def __init__(self, name, test_directory, descriptor, options=[]):
+        self.test_directory = test_directory
+        self.descriptor = descriptor
+        self.name = name
+        self.options = [str(x) for x in options]
+        self.input_script = f'in.{name}'
+        self.log_file     = f'log.{descriptor}.{name}'
+        self.stdout_file  = f'stdout.{descriptor}.{name}'
+
+
+    @property
+    def log_file_path(self):
+        return os.path.join(self.test_directory, self.log_file)
+
+    @property
+    def stdout_file_path(self):
+        return os.path.join(self.test_directory, self.stdout_file)
+
+    @property
+    def completed(self):
+        return os.path.exists(self.log_file_path) and os.path.exists(self.stdout_file_path)
+
+    def clean(self):
+        print("Removing log and stdout files...")
+        if os.path.exists(self.log_file_path):
+            os.remove(self.log_file_path)
+
+        if os.path.exists(self.stdout_file_path):
+            os.remove(self.stdout_file_path)
+
+    @property
+    def gold_standard_file_path(self):
+        system_name = platform.system().lower()
+        gold_files = glob.glob(os.path.join(self.test_directory, f'log.*{system_name}.{self.descriptor}.{self.name}'))
+        if len(gold_files) > 0:
+            return gold_files[0]
+        return None
+
+    def run(self, runner, is_reference=False):
+        self.clean()
+
+        with open(self.stdout_file_path, 'w') as f:
+            lammps_options = ['-in', self.input_script, '-log', self.log_file] + self.options
+            runner.working_directory = self.test_directory
+            runner.run(args=lammps_options, stdout=f)
+
+        if not os.path.exists(self.log_file_path):
+            raise TestFailed("no logfile")
+
+        print(self.log_file_path)
+
+        if is_reference:
+            today = datetime.now()
+            system_name = platform.system()
+            target_file = os.path.join(self.test_directory, f'log.{today:%d%b%y}.{system_name}.{self.descriptor}.{test}')
+            shutil.copyfile(self.log_file_path, target_file_path)
+
+    def verify(self, runner):
+        reference = self.gold_standard_file_path
+
+        if not reference or not os.path.exists(reference):
+            self.run(runner, is_reference=True)
+
+        reference = self.gold_standard_file_path
+        print("Reference:", reference)
+        assert(reference and os.path.exists(reference))
+
+        self.run(runner)
+
+def regression(args, settings):
+    # lammps_test regression --builder=cmake --config=regression tests/examples/pour/in.pour.2d.molecule
+    c = get_container(args.env, settings)
+    config = get_configuration(args.config, settings)
+    builder = get_lammps_build(args.builder, c, config, settings, args.mode)
+    runner  = get_lammps_runner('mpi', builder, settings)
+
+    test_directory = os.path.realpath(os.path.dirname(args.input_script))
+    input_script = os.path.basename(args.input_script)
+
+    assert(input_script.startswith("in."))
+    name = input_script[3:]
+
+    runner.working_dir = test_directory
+
+    test = RegressionTest(name, test_directory, descriptor="8", options=['-v', 'CORES', 8])
+    test.verify(runner)
+
+
 def main():
     s = Settings()
 
@@ -578,6 +700,14 @@ def main():
     parser_run.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_run.add_argument('args', help='arguments passed to LAMMPS binary')
     parser_run.set_defaults(func=run)
+
+    # create the parser for the "regression" command
+    parser_regression = subparsers.add_parser('regression', help='run regression test')
+    parser_regression.add_argument('--builder', choices=('legacy', 'cmake'), default='legacy', help='compilation builder')
+    parser_regression.add_argument('--config', default='serial', help='compilation configuration')
+    parser_regression.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
+    parser_regression.add_argument('input_script', help='input script that should be tested')
+    parser_regression.set_defaults(func=regression)
 
     #try:
     args = parser.parse_args()
