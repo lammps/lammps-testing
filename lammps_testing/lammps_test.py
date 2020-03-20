@@ -489,7 +489,7 @@ def build_status(build, title):
             return f"❌ {title:5s} ({colored(build.commit, 'red'):8s})"
     return f"   {title:5s} (        )"
 
-def show(args, settings):
+def status(args, settings):
     print()
     print("Environments:")
     containers = get_containers(settings)
@@ -817,9 +817,9 @@ def main():
     parser.add_argument('--env', default=s.default_env, help=f'name of container environment (default: {DEFAULT_ENV})')
     subparsers = parser.add_subparsers(help='sub-command help')
 
-    # create the parser for the "show" command
-    parser_show = subparsers.add_parser('show', help='show status of testing environment')
-    parser_show.set_defaults(func=show)
+    # create the parser for the "status" command
+    parser_status = subparsers.add_parser('status', help='show status of testing environment')
+    parser_status.set_defaults(func=status)
 
     # create the parser for the "buildenv" command
     parser_buildenv = subparsers.add_parser('buildenv', help='build container environment')
