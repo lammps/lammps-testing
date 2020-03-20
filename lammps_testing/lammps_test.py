@@ -9,6 +9,7 @@ from termcolor import colored
 from pathlib import Path
 import threading
 import time
+import re
 import logging
 from datetime import datetime
 import platform
@@ -208,8 +209,7 @@ class LAMMPSBuild:
         def heartbeat():
             i = 0
             while(running):
-                print('\r' + " "*120, end='')
-                print(f"\r⚙️  {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: Building" + '.'*i, end='')
+                sys.stdout.write(f"⚙️  {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: Building" + '.'*i + ' '*(3-i) + '\r')
                 time.sleep(1)
                 i = (i + 1) % 4
 
@@ -221,12 +221,11 @@ class LAMMPSBuild:
 
         running = False
         t.join()
-        print('\r' + " "*120, end='\r')
 
         if self.success:
-            print(f"\r✅ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: OK")
+            print(f"✅ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: OK          ")
         else:
-            print(f"\r❌ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: Failed")
+            print(f"❌ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: Failed      ")
             print(f"   See build log at {self.build_log}")
 
 
@@ -563,15 +562,92 @@ def runtests(args, settings):
     runner  = get_lammps_runner('testing', builder, settings)
     runner.run()
 
-class LAMMPSSeries(object):
-    pass
+class LammpsLog:
+  STYLE_DEFAULT = 0
+  STYLE_MULTI   = 1
 
-class LAMMPSRun(object):
-    pass
+  def __init__(self, filename):
+    alpha = re.compile('[a-df-zA-DF-Z]') # except e or E for floating-point numbers
+    kvpairs = re.compile('([a-zA-Z_0-9]+)\s+=\s*([0-9\.eE\-]+)')
+    style = LammpsLog.STYLE_DEFAULT
+    self.runs = []
+    self.errors = []
+    with open(filename, 'rt') as f:
+        in_thermo = False
+        for line in f:
+            if "ERROR" in line or "exited on signal" in line:
+                errors.append(line)
+            elif line.startswith('Step '):
+              in_thermo = True
+              keys = line.split()
+              current_run = {}
+              for k in keys:
+                current_run[k] = []
+            elif line.startswith('---------------- Step'):
+              if not in_thermo:
+                current_run = {'Step': [], 'CPU': []}
+              in_thermo = True
+              style = LammpsLog.STYLE_MULTI
+              str_step, str_cpu = line.strip('-\n').split('-----')
+              step = float(str_step.split()[1])
+              cpu  = float(str_cpu.split('=')[1].split()[0])
+              current_run["Step"].append(step)
+              current_run["CPU"].append(cpu)
+            elif line.startswith('Loop time of'):
+              in_thermo = False
+              self.runs.append(current_run)
+            elif in_thermo:
+              if style == LammpsLog.STYLE_DEFAULT:
+                if alpha.search(line):
+                  continue
 
-class LogReader(object):
-    def __init__(self, f):
-        pass
+                for k, v in zip(keys, map(float, line.split())):
+                  current_run[k].append(v)
+              elif style == LammpsLog.STYLE_MULTI:
+                if '=' not in line:
+                  continue
+
+                for k,v in kvpairs.findall(line):
+                  if k not in current_run:
+                    current_run[k] = [float(v)]
+                  else:
+                    current_run[k].append(float(v))
+
+
+def L1_norm(seq):
+    return sum([abs(x) for x in seq]) / len(seq)
+
+def L2_norm(seq):
+    return math.sqrt(sum([x*x for x in seq]) / len(seq))
+
+def Max_norm(seq):
+    return max([abs(x) for x in seq])
+
+def compare(a, b, tolerance, norm='max'):
+    if len(a) != len(b):
+        raise Exception("Cannot compare columns")
+
+    delta = [u - v for u, v in zip(a,b)]
+
+    not_same_rows = [i for i, x in enumerate(delta) if abs(x) > tolerance]
+    nsame_rows = len(a) - len(not_same_rows)
+
+    if norm == "L1":
+        norm_err = L1_norm(delta)
+        norm_a = L1_norm(a)
+        norm_b = L1_norm(b)
+    elif norm == "L2":
+        norm_err = L2_norm(delta)
+        norm_a = L2_norm(a)
+        norm_b = L2_norm(b)
+    elif norm == "max":
+        norm_err = Max_norm(delta)
+        norm_a = Max_norm(a)
+        norm_b = Max_norm(b)
+    else:
+        raise Exception("Invalid error norm")
+
+    return norm_a, norm_b, norm_err, nsame_rows
 
 class RegressionTest(object):
     def __init__(self, name, test_directory, descriptor, options=[]):
@@ -582,7 +658,6 @@ class RegressionTest(object):
         self.input_script = f'in.{name}'
         self.log_file     = f'log.{descriptor}.{name}'
         self.stdout_file  = f'stdout.{descriptor}.{name}'
-
 
     @property
     def log_file_path(self):
@@ -631,17 +706,89 @@ class RegressionTest(object):
             target_file = os.path.join(self.test_directory, f'log.{today:%d%b%y}.{system_name}.{self.descriptor}.{test}')
             shutil.copyfile(self.log_file_path, target_file_path)
 
-    def verify(self, runner):
-        reference = self.gold_standard_file_path
+    def verify(self, runner, norm='max', tolerance=1e-6, generate_plots=True):
+        reference_file_path = self.gold_standard_file_path
 
-        if not reference or not os.path.exists(reference):
+        if not reference_file_path or not os.path.exists(reference_file_path):
             self.run(runner, is_reference=True)
 
-        reference = self.gold_standard_file_path
-        print("Reference:", reference)
-        assert(reference and os.path.exists(reference))
+        reference_file_path = self.gold_standard_file_path
+        assert(reference_file_path and os.path.exists(reference_file_path))
 
         self.run(runner)
+
+        current_file_path = self.log_file_path
+        assert(current_file_path and os.path.exists(current_file_path))
+
+        print("Current:", current_file_path)
+        print("Reference:", reference_file_path)
+        failed = []
+        has_error = False
+
+        #try:
+        current_log   = LammpsLog(current_file_path)
+        reference_log = LammpsLog(reference_file_path)
+
+        if len(current_log.runs) != len(reference_log.runs):
+            raise Exception("Number of runs does not match between logs!")
+
+        for index, (run, ref_run) in enumerate(zip(current_log.runs, reference_log.runs)):
+            # sanity check, check for same data fields
+            if sorted(run.keys()) != sorted(ref_run.keys()):
+                raise Exception(f"Fields in run {index} do not match!")
+            for field in run.keys():
+                if field in ("CPU", "T/CPU", "S/CPU", "CPULeft"):
+                    continue
+                norm_current, norm_ref, norm_err, nsame_rows = compare(run[field], ref_run[field], tolerance, norm)
+                nrows = len(ref_run[field])
+
+                #if relative_error and norm > tolerance:
+                #    norm_err /= norm_ref
+                #    norm = 1.0
+
+                if norm_err < tolerance:
+                    print(f"✅ {field:<20}: norm_{norm}={norm_current}, reference_norm_{norm}={norm_ref}, norm_err_{norm}={norm_err}")
+                    if nsame_rows != nrows:
+                        print(f"   WARNING: Only {nsame_rows} out of {nrows} data points are identical")
+                else:
+                    print(f"❌ {field:<20}: norm_{norm}={norm_current}, reference_norm_{norm}={norm_ref}, norm_err_{norm}={norm_err} > {tolerance} !!!")
+                    print()
+
+                    if 'Step' in run:
+                        print(f"   {'Step':12} | {'Current':30} | {'Reference':30} | {'Delta':30}")
+                        print(f"   {'-'*12:12}-+-{'-'*30:30}-+-{'-'*30:30}-+-{'-'*30:30}")
+                        for step, a, b in zip([int(s) for s in run['Step']], run[field], ref_run[field]):
+                            print(f"   {step:12d} | {a:30} | {b:30} | {a-b:30}", end='')
+                            if (a-b) > tolerance:
+                                print(f" >= {tolerance} !!!")
+                            else:
+                                print()
+                    else:
+                        print(f"   {'Current':30} | {'Reference':30} | {'Delta':30}")
+                        print(f"   {'-'*30:30}-+-{'-'*30:30}-+-{'-'*30:30}")
+                        for step, a, b in zip(run[field], ref_run[field]):
+                            print(f"   {a:30} | {b:30} | {a-b:30}", end='')
+                            if (a-b) > tolerance:
+                                print(f" >= {tolerance} !!!")
+                            else:
+                                print()
+
+                    if generate_plots:
+                        import matplotlib
+                        matplotlib.use('Agg')
+                        import matplotlib.pyplot as plt
+                        fig, ax = plt.subplots()
+                        fig.suptitle(field)
+                        reference_line, = ax.plot(run['Step'], ref_run[field], label='Reference')
+                        current_line, = ax.plot(run['Step'], run[field], label='Current')
+                        ax.legend()
+                        plt.savefig(os.path.join(self.test_directory,f'{field}.png'))
+
+                    print()
+                    failed.append(field)
+        #except Exception as e:
+        #    print(e)
+        #    has_error = True
 
 def regression(args, settings):
     # lammps_test regression --builder=cmake --config=regression tests/examples/pour/in.pour.2d.molecule
@@ -659,7 +806,7 @@ def regression(args, settings):
     runner.working_dir = test_directory
 
     test = RegressionTest(name, test_directory, descriptor="8", options=['-v', 'CORES', 8])
-    test.verify(runner)
+    test.verify(runner, norm=args.norm, tolerance=args.tolerance)
 
 
 def main():
@@ -706,6 +853,8 @@ def main():
     parser_regression.add_argument('--builder', choices=('legacy', 'cmake'), default='legacy', help='compilation builder')
     parser_regression.add_argument('--config', default='serial', help='compilation configuration')
     parser_regression.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
+    parser_regression.add_argument('--tolerance', default=1e-6, help='')
+    parser_regression.add_argument('--norm', choices=('L1', 'L2', 'max'), default='max', help='')
     parser_regression.add_argument('input_script', help='input script that should be tested')
     parser_regression.set_defaults(func=regression)
 
