@@ -553,7 +553,7 @@ def run(args, settings):
     config = get_configuration(args.config, settings)
     builder = get_lammps_build(args.builder, c, config, settings, args.mode)
     runner  = get_lammps_runner('local', builder, settings)
-    runner.run(args.args)
+    runner.run(args.args.split())
 
 def runtests(args, settings):
     c = get_container(args.env, settings)
