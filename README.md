@@ -139,3 +139,23 @@ lammps_test --env=ubuntu_18.04_nvidia build --builder=cmake testing_gpu_cuda
 # build LAMMPS with 'testing_gpu_cuda' configuration using Legacy Make
 lammps_test --env=ubuntu_18.04_nvidia build --builder=legacy testing_gpu_cuda
 ```
+
+## Running LAMMPS
+
+```bash
+lammps_test run -in in.melt
+lammps_test --env=ubuntu_18.04_nvidia run --builder=cmake --config=testing_gpu_cuda -in in.melt
+```
+
+## Running LAMMPS run tests
+
+```bash
+lammps_test runtests commands
+lammps_test runtests examples
+```
+
+## Running LAMMPS regression testing
+
+```bash
+lammps_test regression --builder=cmake --config=regression tests/examples/granregion/in.granregion.box
+```
