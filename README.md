@@ -2,7 +2,7 @@
 
 This repository contains code and examples that drive the regression testing on
 [ci.lammps.org](https://ci.lammps.org). It's is run on hardware that is hosted
-Vat Temple University.
+at Temple University.
 
 The tools provided here can also be installed locally for testing on a workstation.
 
