@@ -808,6 +808,24 @@ def regression(args, settings):
     test = RegressionTest(name, test_directory, descriptor="8", options=['-v', 'CORES', 8])
     test.verify(runner, norm=args.norm, tolerance=args.tolerance)
 
+def checkstyle(args, settings):
+    files = glob.glob(os.path.join(settings.lammps_dir, 'src', '**/*.cpp'), recursive=True)
+    files.extend(glob.glob(os.path.join(settings.lammps_dir, 'src', '**/*.h'), recursive=True))
+    trailing_spaces = re.compile(r'\s+$')
+
+    for filename in files:
+        if 'lammps/src/USER-MGPT' in filename:
+            continue
+
+        try:
+            with open(filename, 'rt') as f:
+                for lineno, line in enumerate(f):
+                    if line == '\n':
+                        continue
+                    if trailing_spaces.match(line):
+                        print(f"{filename}:{lineno+1}:found trailing whitespaces")
+        except Exception as e:
+            print(f"{filename}:exception while reading file:{e}")
 
 def main():
     s = Settings()
@@ -820,6 +838,10 @@ def main():
     # create the parser for the "status" command
     parser_status = subparsers.add_parser('status', help='show status of testing environment')
     parser_status.set_defaults(func=status)
+
+    # create the parser for the "checkstyle" command
+    parser_checkstyle = subparsers.add_parser('checkstyle', help='check current checkout for code style issues')
+    parser_checkstyle.set_defaults(func=checkstyle)
 
     # create the parser for the "buildenv" command
     parser_buildenv = subparsers.add_parser('buildenv', help='build container environment')
