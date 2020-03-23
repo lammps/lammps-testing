@@ -776,7 +776,7 @@ class RegressionTest(object):
             target_file = os.path.join(self.test_directory, f'log.{today:%d%b%y}.{system_name}.{self.descriptor}.{test}')
             shutil.copyfile(self.log_file_path, target_file_path)
 
-    def verify(self, runner, norm='max', tolerance=1e-6, generate_plots=True):
+    def verify(self, runner, norm='max', tolerance=1e-6, generate_plots=False, verbose=False):
         reference_file_path = self.gold_standard_file_path
 
         if not reference_file_path or not os.path.exists(reference_file_path):
@@ -822,26 +822,29 @@ class RegressionTest(object):
                         print(f"   WARNING: Only {nsame_rows} out of {nrows} data points are identical")
                 else:
                     print(f"❌ {field:<20}: norm_{norm}={norm_current}, reference_norm_{norm}={norm_ref}, norm_err_{norm}={norm_err} > {tolerance} !!!")
-                    print()
 
-                    if 'Step' in run:
-                        print(f"   {'Step':12} | {'Current':30} | {'Reference':30} | {'Delta':30}")
-                        print(f"   {'-'*12:12}-+-{'-'*30:30}-+-{'-'*30:30}-+-{'-'*30:30}")
-                        for step, a, b in zip([int(s) for s in run['Step']], run[field], ref_run[field]):
-                            print(f"   {step:12d} | {a:30} | {b:30} | {a-b:30}", end='')
-                            if (a-b) > tolerance:
-                                print(f" >= {tolerance} !!!")
-                            else:
-                                print()
-                    else:
-                        print(f"   {'Current':30} | {'Reference':30} | {'Delta':30}")
-                        print(f"   {'-'*30:30}-+-{'-'*30:30}-+-{'-'*30:30}")
-                        for step, a, b in zip(run[field], ref_run[field]):
-                            print(f"   {a:30} | {b:30} | {a-b:30}", end='')
-                            if (a-b) > tolerance:
-                                print(f" >= {tolerance} !!!")
-                            else:
-                                print()
+                    if verbose:
+                        print()
+
+                        if 'Step' in run:
+                            print(f"   {'Step':12} | {'Current':30} | {'Reference':30} | {'Delta':30}")
+                            print(f"   {'-'*12:12}-+-{'-'*30:30}-+-{'-'*30:30}-+-{'-'*30:30}")
+                            for step, a, b in zip([int(s) for s in run['Step']], run[field], ref_run[field]):
+                                print(f"   {step:12d} | {a:30} | {b:30} | {a-b:30}", end='')
+                                if (a-b) > tolerance:
+                                    print(f" >= {tolerance} !!!")
+                                else:
+                                    print()
+                        else:
+                            print(f"   {'Current':30} | {'Reference':30} | {'Delta':30}")
+                            print(f"   {'-'*30:30}-+-{'-'*30:30}-+-{'-'*30:30}")
+                            for step, a, b in zip(run[field], ref_run[field]):
+                                print(f"   {a:30} | {b:30} | {a-b:30}", end='')
+                                if (a-b) > tolerance:
+                                    print(f" >= {tolerance} !!!")
+                                else:
+                                    print()
+                        print()
 
                     if generate_plots:
                         import matplotlib
@@ -854,7 +857,6 @@ class RegressionTest(object):
                         ax.legend()
                         plt.savefig(os.path.join(self.test_directory,f'{field}.png'))
 
-                    print()
                     failed.append(field)
         #except Exception as e:
         #    print(e)
@@ -876,7 +878,7 @@ def regression(args, settings):
     runner.working_dir = test_directory
 
     test = RegressionTest(name, test_directory, descriptor="8", options=['-v', 'CORES', 8])
-    test.verify(runner, norm=args.norm, tolerance=args.tolerance)
+    test.verify(runner, norm=args.norm, tolerance=args.tolerance, verbose=args.verbose, generate_plots=args.generate_plots)
 
 def checkstyle(args, settings):
     files = glob.glob(os.path.join(settings.lammps_dir, 'src', '**/*.cpp'), recursive=True)
@@ -963,6 +965,8 @@ def main():
     parser_regression.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_regression.add_argument('--tolerance', default=1e-6, help='')
     parser_regression.add_argument('--norm', choices=('L1', 'L2', 'max'), default='max', help='')
+    parser_regression.add_argument('-v', '--verbose', action='store_true', help='')
+    parser_regression.add_argument('-g', '--generate-plots', action='store_true', help='')
     parser_regression.add_argument('input_script', help='input script that should be tested')
     parser_regression.set_defaults(func=regression)
 
