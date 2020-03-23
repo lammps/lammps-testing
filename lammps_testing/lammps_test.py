@@ -13,6 +13,7 @@ import re
 import logging
 from datetime import datetime
 import platform
+import shutil
 
 DEFAULT_CONFIG="serial"
 DEFAULT_ENV="ubuntu_18.04"
@@ -94,6 +95,11 @@ class Container:
             subprocess.call(['sudo', 'singularity', 'build', self.container, self.container_definition])
         else:
             logger.info(f"Container '{self.name}' already exists and is up-to-date.")
+
+    def clean(self):
+        if self.exists:
+            logger.info(f"Deleting container '{self.name}'...")
+            os.unlink(self.container)
 
     @property
     def exists(self):
@@ -177,6 +183,11 @@ class LAMMPSBuild:
     @property
     def working_dir(self):
         return os.path.join(self.settings.cache_dir, self.name)
+
+    def clean(self):
+        if os.path.exists(self.working_dir):
+            print(f"Deleting {self.working_dir}...")
+            shutil.rmtree(self.working_dir)
 
     @property
     def build_log(self):
@@ -523,9 +534,44 @@ def status(args, settings):
                 print()
     print()
 
+def cleanall(args, settings):
+    if args.env == 'all':
+        containers = get_containers(settings)
+    else:
+        containers = [get_container(args.env, settings)]
+
+    for builder in LAMMPS_BUILDERS:
+        for container in containers:
+            for config in get_configurations(settings):
+                for mode in LAMMPS_BUILD_MODES:
+                    b = get_lammps_build(builder, container, config, settings, mode)
+                    b.clean()
+
+    for container in containers:
+        container.clean()
+
+def clean(args, settings):
+    c = get_container(args.env, settings)
+
+    try:
+        configurations = get_configurations_by_selector(args.config, settings)
+        modes = get_modes_by_selector(args.mode, settings)
+        for config in configurations:
+            for mode in modes:
+                builder = get_lammps_build(args.builder, c, config, settings, mode)
+                builder.clean()
+    except FileNotFoundError as e:
+        logger.error("Configuration does not exist!")
+        logger.error(e)
+        sys.exit(1)
+
 def buildenv(args, settings):
     c = get_container(args.env, settings)
     c.build()
+
+def cleanenv(args, settings):
+    c = get_container(args.env, settings)
+    c.clean()
 
 def build(args, settings):
     c = get_container(args.env, settings)
@@ -839,6 +885,13 @@ def main():
     parser_status = subparsers.add_parser('status', help='show status of testing environment')
     parser_status.set_defaults(func=status)
 
+    # create the parser for the "clean" command
+    parser_clean = subparsers.add_parser('clean', help='clean up cache directory')
+    parser_clean.add_argument('--builder', choices=LAMMPS_BUILDERS, default='legacy', help='compilation builder')
+    parser_clean.add_argument('--mode', type=str, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both, all or any comma separated list)')
+    parser_clean.add_argument('config', nargs='+', help='name of configuration file or all')
+    parser_clean.set_defaults(func=clean)
+
     # create the parser for the "checkstyle" command
     parser_checkstyle = subparsers.add_parser('checkstyle', help='check current checkout for code style issues')
     parser_checkstyle.set_defaults(func=checkstyle)
@@ -846,6 +899,14 @@ def main():
     # create the parser for the "buildenv" command
     parser_buildenv = subparsers.add_parser('buildenv', help='build container environment')
     parser_buildenv.set_defaults(func=buildenv)
+
+    # create the parser for the "cleanenv" command
+    parser_cleanenv = subparsers.add_parser('cleanenv', help='clean container environment')
+    parser_cleanenv.set_defaults(func=cleanenv)
+
+    # create the parser for the "cleanall" command
+    parser_cleanall = subparsers.add_parser('cleanall', help='clean container environment and all builds')
+    parser_cleanall.set_defaults(func=cleanall)
 
     # create the parser for the "build" command
     parser_build = subparsers.add_parser('build', help='build LAMMPS using a predefined configuration')
