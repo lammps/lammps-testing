@@ -15,8 +15,9 @@ from datetime import datetime
 import platform
 import shutil
 
-DEFAULT_CONFIG="serial"
-DEFAULT_ENV="ubuntu_18.04"
+DEFAULT_CONFIG='serial'
+DEFAULT_ENV='ubuntu_18.04'
+DEFAULT_BUILDER='cmake'
 
 LAMMPS_BUILDERS=('legacy', 'cmake')
 LAMMPS_BUILD_MODES=('exe', 'shlib', 'shexe')
@@ -380,8 +381,13 @@ class TestRunner():
         return self.builder.working_dir
 
     def run(self):
-        assert(self.container.exists)
-        assert(os.path.exists(self.lammps_build_dir))
+        if not self.container.exists:
+            logger.error(f"Container '{self.container.name}' is missing! Build with 'lammps_test --env={self.container.name} buildenv' first!")
+            sys.exit(-1)
+        if not self.builder.exists:
+            logger.error(f"LAMMPS build '{self.builder.name}' is missing! Build with 'lammps_test build' first!")
+            sys.exit(-1)
+
         logger.info(f"LAMMPS Build: {self.builder.working_dir}")
         logger.info(f"Workdir: {self.working_dir}")
         os.makedirs(self.working_dir, exist_ok=True)
@@ -418,9 +424,13 @@ class LocalRunner(object):
         return env
 
     def run(self, args, stdout=None):
-        assert(self.container.exists)
+        if not self.container.exists:
+            logger.error(f"Container '{self.container.name}' is missing! Build with 'lammps_test --env={self.container.name} buildenv' first!")
+            sys.exit(-1)
+        if not self.builder.exists:
+            logger.error(f"LAMMPS build '{self.builder.name}' is missing! Build with 'lammps_test build' first!")
+            sys.exit(-1)
         print(self.lammps_build_dir)
-        assert(os.path.exists(self.lammps_build_dir))
         print("LAMMPS Build:", self.builder.working_dir)
         print("Workdir:", self.working_dir)
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
@@ -512,27 +522,41 @@ def status(args, settings):
 
     print()
     print("Configurations:")
+    configurations = get_configurations(settings)
 
     for builder in LAMMPS_BUILDERS:
         print()
-        print("#"*120)
-        print("#", f'{builder}'.center(116), "#")
-        print("#"*120)
+        print(f' {builder} '.center(120, "#"))
         for container in containers:
-            print()
-            print(f' {container.name} '.center(120, "+"))
-            print()
-            for config in get_configurations(settings):
-                if config.name == DEFAULT_CONFIG:
-                    print(" ", colored(f"{config.name + ' [default]':<40}", attrs=['bold']), end="")
-                else:
-                    print(" ", f"{config.name:<40}", end="")
-                for mode in LAMMPS_BUILD_MODES:
-                    b = get_lammps_build(builder, container, config, settings, mode)
-                    print(build_status(b, mode), end=" ")
+            show_configs = set()
 
+            for config in configurations:
+                for mode in LAMMPS_BUILD_MODES:
+                    build = get_lammps_build(builder, container, config, settings, mode)
+                    if build.exists:
+                        show_configs.add(config)
+
+            if args.verbose or len(show_configs) > 0:
                 print()
+                print(f' {container.name} '.center(120, "+"))
+                print()
+
+                for config in configurations:
+                    if not args.verbose and (config not in show_configs):
+                        continue
+
+                    if config.name == DEFAULT_CONFIG:
+                        print(" ", colored(f"{config.name + ' [default]':<40}", attrs=['bold']), end="")
+                    else:
+                        print(" ", f"{config.name:<40}", end="")
+                    for mode in LAMMPS_BUILD_MODES:
+                        b = get_lammps_build(builder, container, config, settings, mode)
+                        print(build_status(b, mode), end=" ")
+
+                    print()
     print()
+    if not args.verbose:
+        print("To see all possible configurations, use the -v option.")
 
 def cleanall(args, settings):
     if args.env == 'all':
@@ -883,11 +907,12 @@ def main():
 
     # create the parser for the "status" command
     parser_status = subparsers.add_parser('status', help='show status of testing environment')
+    parser_status.add_argument('-v', '--verbose', action='store_true', help='show verbose output')
     parser_status.set_defaults(func=status)
 
     # create the parser for the "clean" command
     parser_clean = subparsers.add_parser('clean', help='clean up cache directory')
-    parser_clean.add_argument('--builder', choices=LAMMPS_BUILDERS, default='legacy', help='compilation builder')
+    parser_clean.add_argument('--builder', choices=LAMMPS_BUILDERS, default=DEFAULT_BUILDER, help='compilation builder')
     parser_clean.add_argument('--mode', type=str, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both, all or any comma separated list)')
     parser_clean.add_argument('config', nargs='+', help='name of configuration file or all')
     parser_clean.set_defaults(func=clean)
@@ -910,14 +935,14 @@ def main():
 
     # create the parser for the "build" command
     parser_build = subparsers.add_parser('build', help='build LAMMPS using a predefined configuration')
-    parser_build.add_argument('--builder', choices=LAMMPS_BUILDERS, default='legacy', help='compilation builder')
+    parser_build.add_argument('--builder', choices=LAMMPS_BUILDERS, default=DEFAULT_BUILDER, help='compilation builder')
     parser_build.add_argument('--mode', type=str, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both, all or any comma separated list)')
     parser_build.add_argument('config', nargs='+', help='name of configuration file or all')
     parser_build.set_defaults(func=build)
 
     # create the parser for the "runtests" command
     parser_runtests = subparsers.add_parser('runtests', help='run LAMMPS test(s)')
-    parser_runtests.add_argument('--builder', choices=('legacy', 'cmake'), default='legacy', help='compilation builder')
+    parser_runtests.add_argument('--builder', choices=('legacy', 'cmake'), default=DEFAULT_BUILDER, help='compilation builder')
     parser_runtests.add_argument('--config', default='serial', help='compilation configuration')
     parser_runtests.add_argument('--mode', choices=LAMMPS_BUILD_MODES, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_runtests.add_argument('test', help='name of tests or testsuite')
@@ -925,7 +950,7 @@ def main():
 
     # create the parser for the "run" command
     parser_run = subparsers.add_parser('run', help='run LAMMPS in current working directory')
-    parser_run.add_argument('--builder', choices=('legacy', 'cmake'), default='legacy', help='compilation builder')
+    parser_run.add_argument('--builder', choices=('legacy', 'cmake'), default=DEFAULT_BUILDER, help='compilation builder')
     parser_run.add_argument('--config', default='serial', help='compilation configuration')
     parser_run.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_run.add_argument('args', help='arguments passed to LAMMPS binary')
@@ -933,7 +958,7 @@ def main():
 
     # create the parser for the "regression" command
     parser_regression = subparsers.add_parser('regression', help='run regression test')
-    parser_regression.add_argument('--builder', choices=('legacy', 'cmake'), default='legacy', help='compilation builder')
+    parser_regression.add_argument('--builder', choices=('legacy', 'cmake'), default=DEFAULT_BUILDER, help='compilation builder')
     parser_regression.add_argument('--config', default='serial', help='compilation configuration')
     parser_regression.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_regression.add_argument('--tolerance', default=1e-6, help='')
