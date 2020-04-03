@@ -22,6 +22,8 @@ source pyenv/bin/activate
 
 git -C ${LAMMPS_DIR} rev-parse HEAD > COMMIT
 
+set -x
+
 cmake -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
