@@ -107,6 +107,7 @@ abstract class LegacyTesting implements Serializable {
         steps.env.LAMMPS_BINARY = steps.env.LAMMPS_DIR + '/src/lmp_' + steps.env.MACH
         steps.env.LAMMPS_TEST_MODES = "${test_modes}"
         steps.env.LAMMPS_POTENTIALS = steps.env.LAMMPS_DIR + '/potentials'
+        steps.env.LD_LIBRARY_PATH = steps.env.LD_LIBRARY_PATH + ':' + steps.env.LAMMPS_DIR + '/src'
     }
 
     def build() {
