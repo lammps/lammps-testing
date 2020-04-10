@@ -53,7 +53,9 @@ class CMakeKokkosCUDA extends CMakeBuild {
                          '-D PKG_USER-TALLY=yes',
                          '-D PKG_USER-SMTBQ=yes',
                          '-D PKG_KOKKOS=yes',
-                         '-D KOKKOS_ENABLE_CUDA=yes',
-                         '-D KOKKOS_ARCH=Turing75']
+                         '-D Kokkos_ENABLE_SERIAL=yes',
+                         '-D Kokkos_ENABLE_CUDA=yes',
+                         '-D Kokkos_ARCH_BDW=yes',
+                         '-D KOKKOS_ARCH_Turing75=yes']
     }
 }
