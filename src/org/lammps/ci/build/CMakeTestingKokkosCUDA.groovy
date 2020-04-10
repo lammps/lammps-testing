@@ -56,7 +56,7 @@ class CMakeTestingKokkosCUDA extends CMakeTestingBuild {
                          '-D Kokkos_ENABLE_SERIAL=yes',
                          '-D Kokkos_ENABLE_CUDA=yes',
                          '-D Kokkos_ARCH_BDW=yes',
-                         '-D KOKKOS_ARCH_Turing75=yes']
+                         '-D Kokkos_ARCH_TURING75=yes']
         test_modes.kokkos_cuda = true
         coverage = true
     }
