@@ -155,6 +155,7 @@ ccache -M 5G
 # Create copy of LAMMPS directory
 echo "Copy sources..."
 
+git -C ${LAMMPS_DIR} checkout ${LAMMPS_COMMIT}
 git -C ${LAMMPS_DIR} rev-parse HEAD > COMMIT
 
 rsync -a --include='src/***' --include='lib/***' --include='potentials/***' --include='python/***' --exclude='*' ${LAMMPS_DIR}/ .

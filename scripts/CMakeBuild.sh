@@ -20,6 +20,7 @@ virtualenv --python=$PYTHON pyenv
 
 source pyenv/bin/activate
 
+git -C ${LAMMPS_DIR} checkout ${LAMMPS_COMMIT}
 git -C ${LAMMPS_DIR} rev-parse HEAD > COMMIT
 
 set -x

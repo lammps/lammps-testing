@@ -1,19 +1,22 @@
 #!/usr/bin/python
 import argparse
+import glob
+import logging
+import math
+import os
+import platform
+import re
+import shutil
 import subprocess
 import sys
-import os
-import yaml
-import glob
-from termcolor import colored
-from pathlib import Path
 import threading
 import time
-import re
-import logging
 from datetime import datetime
-import platform
-import shutil
+from pathlib import Path
+
+import yaml
+
+from termcolor import colored
 
 DEFAULT_CONFIG='serial'
 DEFAULT_ENV='ubuntu_18.04'
@@ -40,19 +43,19 @@ class Settings:
             logger.error("lammps_test requires the LAMMPS_DIR environment variable to be set!")
             sys.exit(1)
         else:
-            logger.info("Using LAMMPS_DIR:        ", os.environ['LAMMPS_DIR'])
+            logger.info(f"Using LAMMPS_DIR:        {os.environ['LAMMPS_DIR']}")
 
         if 'LAMMPS_TESTING_DIR' not in os.environ:
             logger.error("lammps_test requires the LAMMPS_TESTING_DIR environment variable to be set!")
             sys.exit(1)
         else:
-            logger.info("Using LAMMPS_TESTING_DIR:", os.environ['LAMMPS_TESTING_DIR'])
+            logger.info(f"Using LAMMPS_TESTING_DIR: {os.environ['LAMMPS_TESTING_DIR']}")
 
         if 'LAMMPS_CACHE_DIR' not in os.environ:
             logger.error("lammps_test requires the LAMMPS_CACHE_DIR environment variable to be set!")
             sys.exit(1)
         else:
-            logger.info("Using LAMMPS_CACHE_DIR:  ", os.environ['LAMMPS_CACHE_DIR'])
+            logger.info(f"Using LAMMPS_CACHE_DIR:  {os.environ['LAMMPS_CACHE_DIR']}")
 
     @property
     def cache_dir(self):
@@ -176,14 +179,19 @@ class LAMMPSConfiguration(object):
         return s
 
 class LAMMPSBuild:
-    def __init__(self, container, config, settings):
+    def __init__(self, container, config, settings, commit):
         self.container = container
         self.config = config
         self.settings = settings
+        self.commit = commit
+
+    @property
+    def name(self):
+        raise NotImplementedError()
 
     @property
     def working_dir(self):
-        return os.path.join(self.settings.cache_dir, self.name)
+        return os.path.join(self.settings.cache_dir, f"builds_{self.commit}", self.name)
 
     def clean(self):
         if os.path.exists(self.working_dir):
@@ -202,14 +210,6 @@ class LAMMPSBuild:
         pass
 
     @property
-    def commit(self):
-        commit_file = os.path.join(self.working_dir, 'COMMIT')
-        if os.path.exists(commit_file):
-            with open(os.path.join(self.working_dir, 'COMMIT')) as f:
-                return f.read().strip()[:8]
-        return "TBD"
-
-    @property
     def success(self):
         lammps_binary = os.path.join(self.working_dir, 'pyenv', 'bin', 'lmp')
         lammps_shared_library = os.path.join(self.working_dir, 'pyenv', 'lib', 'liblammps.so')
@@ -221,7 +221,7 @@ class LAMMPSBuild:
         def heartbeat():
             i = 0
             while(running):
-                sys.stdout.write(f"⚙️  {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: Building" + '.'*i + ' '*(3-i) + '\r')
+                sys.stdout.write(f"⚙️  {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit[:8]}    Status: Building" + '.'*i + ' '*(3-i) + '\r')
                 time.sleep(1)
                 i = (i + 1) % 4
 
@@ -235,15 +235,15 @@ class LAMMPSBuild:
         t.join()
 
         if self.success:
-            print(f"✅ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: OK          ")
+            print(f"✅ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit[:8]}    Status: OK          ")
         else:
-            print(f"❌ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit}    Status: Failed      ")
+            print(f"❌ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit[:8]}    Status: Failed      ")
             print(f"   See build log at {self.build_log}")
 
 
 class CMakeBuild(LAMMPSBuild):
-    def __init__(self, container, config, settings, mode='exe'):
-        super().__init__(container, config, settings)
+    def __init__(self, container, config, settings, commit, mode='exe'):
+        super().__init__(container, config, settings, commit)
         self.mode = mode
 
     @property
@@ -309,6 +309,7 @@ class CMakeBuild(LAMMPSBuild):
 
         assert(self.container.exists)
         build_env = os.environ.copy()
+        build_env["LAMMPS_COMMIT"] = self.commit
         build_env["LAMMPS_C_FLAGS"]   = "-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -Wreorder"
         build_env["LAMMPS_CXX_FLAGS"] = "-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -Wreorder"
         build_env["CC"] = self.config.cc
@@ -322,8 +323,8 @@ class CMakeBuild(LAMMPSBuild):
         self.run_command(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, cmake_build_script], env=build_env)
 
 class LegacyBuild(LAMMPSBuild):
-    def __init__(self, container, config, settings, mode='exe'):
-        super().__init__(container, config, settings)
+    def __init__(self, container, config, settings, commit, mode='exe'):
+        super().__init__(container, config, settings, commit)
         self.mode = mode
 
         if config.mpi:
@@ -347,6 +348,7 @@ class LegacyBuild(LAMMPSBuild):
         logger.debug(self.config)
         assert(self.container.exists)
         build_env = os.environ.copy()
+        build_env["LAMMPS_COMMIT"] = self.commit
         build_env["LAMMPS_MODE"] = self.mode
         build_env["LAMMPS_MACH"] = self.mach
         build_env["LAMMPS_TARGET"] = self.target
@@ -356,7 +358,7 @@ class LegacyBuild(LAMMPSBuild):
         build_env["LAMMPS_PACKAGES"] = self.get_lammps_packages()
 
         logger.info("Building with Legacy...")
-        logger.info("Workdir:", self.working_dir)
+        logger.info(f"Workdir: {self.working_dir}")
         os.makedirs(self.working_dir, exist_ok=True)
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
         legacy_build_script = os.path.join(scripts_dir, 'LegacyBuild.sh')
@@ -453,6 +455,9 @@ def get_container(name, settings):
     container_definition = os.path.join(settings.container_definition_dir, name + ".def")
     return Container(name, container, container_definition)
 
+def get_lammps_commit(commit, settings):
+    return subprocess.check_output(['git', 'rev-parse', commit], cwd=settings.lammps_dir).decode().strip()
+
 def get_names(search_pattern):
     names = []
     for path in glob.glob(search_pattern):
@@ -468,6 +473,10 @@ def get_containers(settings):
 def get_configurations(settings):
     configurations = get_names(os.path.join(settings.configuration_dir, '*.yml'))
     return [get_configuration(c, settings) for c in sorted(configurations)]
+
+def get_commits(settings):
+    commits = get_names(os.path.join(settings.cache_dir, 'builds_*'))
+    return [c[7:] for c in sorted(commits)]
 
 def get_configuration(name, settings):
     configfile = os.path.join(settings.configuration_dir, name + ".yml")
@@ -485,11 +494,11 @@ def get_modes_by_selector(selector, settings):
         return LAMMPS_BUILD_MODES
     return selector.split(',')
 
-def get_lammps_build(builder, container, config, settings, mode='exe'):
+def get_lammps_build(builder, container, config, settings, commit, mode='exe'):
     if builder == 'cmake':
-        return CMakeBuild(container, config, settings, mode)
+        return CMakeBuild(container, config, settings, commit, mode)
     elif builder == 'legacy':
-        return LegacyBuild(container, config, settings, mode)
+        return LegacyBuild(container, config, settings, commit, mode)
 
 def get_lammps_runner(runner, builder, settings):
     if runner == 'testing':
@@ -505,9 +514,9 @@ def container_build_status(value):
 def build_status(build, title):
     if build.exists:
         if build.success:
-            return f"✅ {title:5s} ({colored(build.commit, 'green'):8s})"
+            return f"✅ {title:5s} ({colored(build.commit[:8], 'green'):8s})"
         else:
-            return f"❌ {title:5s} ({colored(build.commit, 'red'):8s})"
+            return f"❌ {title:5s} ({colored(build.commit[:8], 'red'):8s})"
     return f"   {title:5s} (        )"
 
 def status(args, settings):
@@ -521,6 +530,12 @@ def status(args, settings):
             print(container_build_status(c.exists), c.name)
 
     print()
+    print("Commits:")
+    commits = get_commits(settings)
+    for c in commits:
+        print("-", c)
+
+    print()
     print("Configurations:")
     configurations = get_configurations(settings)
 
@@ -532,26 +547,28 @@ def status(args, settings):
 
             for config in configurations:
                 for mode in LAMMPS_BUILD_MODES:
-                    build = get_lammps_build(builder, container, config, settings, mode)
-                    if build.exists:
-                        show_configs.add(config)
+                    for commit in commits:
+                        build = get_lammps_build(builder, container, config, settings, commit, mode)
+                        if build.exists:
+                            show_configs.add(config)
 
             if args.verbose or len(show_configs) > 0:
                 print()
                 print(f' {container.name} '.center(120, "+"))
                 print()
 
-                for config in configurations:
-                    if not args.verbose and (config not in show_configs):
-                        continue
+                for commit in commits:
+                    for config in configurations:
+                        if not args.verbose and (config not in show_configs):
+                            continue
 
-                    if config.name == DEFAULT_CONFIG:
-                        print(" ", colored(f"{config.name + ' [default]':<40}", attrs=['bold']), end="")
-                    else:
-                        print(" ", f"{config.name:<40}", end="")
-                    for mode in LAMMPS_BUILD_MODES:
-                        b = get_lammps_build(builder, container, config, settings, mode)
-                        print(build_status(b, mode), end=" ")
+                        if config.name == DEFAULT_CONFIG:
+                            print(" ", colored(f"{config.name + ' [default]':<40}", attrs=['bold']), end="")
+                        else:
+                            print(" ", f"{config.name:<40}", end="")
+                        for mode in LAMMPS_BUILD_MODES:
+                                b = get_lammps_build(builder, container, config, settings, commit, mode)
+                                print(build_status(b, mode), end=" ")
 
                     print()
     print()
@@ -604,9 +621,10 @@ def build(args, settings):
         try:
             configurations = get_configurations_by_selector(args.config, settings)
             modes = get_modes_by_selector(args.mode, settings)
+            commit = get_lammps_commit(args.commit, settings)
             for config in configurations:
                 for mode in modes:
-                    builder = get_lammps_build(args.builder, c, config, settings, mode)
+                    builder = get_lammps_build(args.builder, c, config, settings, commit, mode)
                     builder.build()
         except FileNotFoundError as e:
             logger.error("Configuration does not exist!")
@@ -633,55 +651,55 @@ def runtests(args, settings):
     runner.run()
 
 class LammpsLog:
-  STYLE_DEFAULT = 0
-  STYLE_MULTI   = 1
+    STYLE_DEFAULT = 0
+    STYLE_MULTI   = 1
 
-  def __init__(self, filename):
-    alpha = re.compile('[a-df-zA-DF-Z]') # except e or E for floating-point numbers
-    kvpairs = re.compile('([a-zA-Z_0-9]+)\s+=\s*([0-9\.eE\-]+)')
-    style = LammpsLog.STYLE_DEFAULT
-    self.runs = []
-    self.errors = []
-    with open(filename, 'rt') as f:
-        in_thermo = False
-        for line in f:
-            if "ERROR" in line or "exited on signal" in line:
-                errors.append(line)
-            elif line.startswith('Step '):
-              in_thermo = True
-              keys = line.split()
-              current_run = {}
-              for k in keys:
-                current_run[k] = []
-            elif line.startswith('---------------- Step'):
-              if not in_thermo:
-                current_run = {'Step': [], 'CPU': []}
-              in_thermo = True
-              style = LammpsLog.STYLE_MULTI
-              str_step, str_cpu = line.strip('-\n').split('-----')
-              step = float(str_step.split()[1])
-              cpu  = float(str_cpu.split('=')[1].split()[0])
-              current_run["Step"].append(step)
-              current_run["CPU"].append(cpu)
-            elif line.startswith('Loop time of'):
-              in_thermo = False
-              self.runs.append(current_run)
-            elif in_thermo:
-              if style == LammpsLog.STYLE_DEFAULT:
-                if alpha.search(line):
-                  continue
+    def __init__(self, filename):
+        alpha = re.compile(r'[a-df-zA-DF-Z]') # except e or E for floating-point numbers
+        kvpairs = re.compile(r'([a-zA-Z_0-9]+)\s+=\s*([0-9\.eE\-]+)')
+        style = LammpsLog.STYLE_DEFAULT
+        self.runs = []
+        self.errors = []
+        with open(filename, 'rt') as f:
+            in_thermo = False
+            for line in f:
+                if "ERROR" in line or "exited on signal" in line:
+                    self.errors.append(line)
+                elif line.startswith('Step '):
+                    in_thermo = True
+                    keys = line.split()
+                    current_run = {}
+                    for k in keys:
+                        current_run[k] = []
+                elif line.startswith('---------------- Step'):
+                    if not in_thermo:
+                       current_run = {'Step': [], 'CPU': []}
+                    in_thermo = True
+                    style = LammpsLog.STYLE_MULTI
+                    str_step, str_cpu = line.strip('-\n').split('-----')
+                    step = float(str_step.split()[1])
+                    cpu  = float(str_cpu.split('=')[1].split()[0])
+                    current_run["Step"].append(step)
+                    current_run["CPU"].append(cpu)
+                elif line.startswith('Loop time of'):
+                    in_thermo = False
+                    self.runs.append(current_run)
+                elif in_thermo:
+                    if style == LammpsLog.STYLE_DEFAULT:
+                        if alpha.search(line):
+                            continue
 
-                for k, v in zip(keys, map(float, line.split())):
-                  current_run[k].append(v)
-              elif style == LammpsLog.STYLE_MULTI:
-                if '=' not in line:
-                  continue
+                        for k, v in zip(keys, map(float, line.split())):
+                            current_run[k].append(v)
+                    elif style == LammpsLog.STYLE_MULTI:
+                        if '=' not in line:
+                            continue
 
-                for k,v in kvpairs.findall(line):
-                  if k not in current_run:
-                    current_run[k] = [float(v)]
-                  else:
-                    current_run[k].append(float(v))
+                        for k,v in kvpairs.findall(line):
+                            if k not in current_run:
+                                current_run[k] = [float(v)]
+                            else:
+                                current_run[k].append(float(v))
 
 
 def L1_norm(seq):
@@ -766,14 +784,14 @@ class RegressionTest(object):
             runner.run(args=lammps_options, stdout=f)
 
         if not os.path.exists(self.log_file_path):
-            raise TestFailed("no logfile")
+            raise FileNotFoundError(self.log_file_path)
 
         print(self.log_file_path)
 
         if is_reference:
             today = datetime.now()
             system_name = platform.system()
-            target_file = os.path.join(self.test_directory, f'log.{today:%d%b%y}.{system_name}.{self.descriptor}.{test}')
+            target_file_path = os.path.join(self.test_directory, f'log.{today:%d%b%y}.{system_name}.{self.descriptor}.{test}')
             shutil.copyfile(self.log_file_path, target_file_path)
 
     def verify(self, runner, norm='max', tolerance=1e-6, generate_plots=False, verbose=False):
@@ -866,7 +884,8 @@ def regression(args, settings):
     # lammps_test regression --builder=cmake --config=regression tests/examples/pour/in.pour.2d.molecule
     c = get_container(args.env, settings)
     config = get_configuration(args.config, settings)
-    builder = get_lammps_build(args.builder, c, config, settings, args.mode)
+    commit = get_lammps_commit(args.commit, settings)
+    builder = get_lammps_build(args.builder, c, config, settings, commit, args.mode)
     runner  = get_lammps_runner('mpi', builder, settings)
 
     test_directory = os.path.realpath(os.path.dirname(args.input_script))
@@ -939,6 +958,7 @@ def main():
     parser_build = subparsers.add_parser('build', help='build LAMMPS using a predefined configuration')
     parser_build.add_argument('--builder', choices=LAMMPS_BUILDERS, default=DEFAULT_BUILDER, help='compilation builder')
     parser_build.add_argument('--mode', type=str, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both, all or any comma separated list)')
+    parser_build.add_argument('--commit', type=str, default='HEAD', help='name of commit (SHA or equivalent)')
     parser_build.add_argument('config', nargs='+', help='name of configuration file or all')
     parser_build.set_defaults(func=build)
 
@@ -962,6 +982,7 @@ def main():
     parser_regression = subparsers.add_parser('regression', help='run regression test')
     parser_regression.add_argument('--builder', choices=('legacy', 'cmake'), default=DEFAULT_BUILDER, help='compilation builder')
     parser_regression.add_argument('--config', default='serial', help='compilation configuration')
+    parser_regression.add_argument('--commit', type=str, default='HEAD', help='name of commit (SHA or equivalent)')
     parser_regression.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_regression.add_argument('--tolerance', default=1e-6, help='')
     parser_regression.add_argument('--norm', choices=('L1', 'L2', 'max'), default='max', help='')
