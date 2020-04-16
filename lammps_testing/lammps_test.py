@@ -23,7 +23,7 @@ DEFAULT_ENV='ubuntu_18.04'
 DEFAULT_BUILDER='cmake'
 
 LAMMPS_BUILDERS=('legacy', 'cmake')
-LAMMPS_BUILD_MODES=('exe', 'shlib', 'shexe')
+LAMMPS_BUILD_MODES=('static', 'shared')
 
 logger = logging.getLogger('lammps_test')
 logger.setLevel(logging.DEBUG)
@@ -285,15 +285,9 @@ class CMakeBuild(LAMMPSBuild):
         else:
             options.append('-D BUILD_OMP=off')
 
-        if self.mode == 'exe':
-            options.append('-D BUILD_EXE=on')
-        elif self.mode == 'shlib':
-            options.append('-D BUILD_EXE=off')
-            options.append('-D BUILD_LIB=on')
-            options.append('-D BUILD_SHARED_LIBS=on')
-        elif self.mode == 'shexe':
-            options.append('-D BUILD_EXE=on')
-            options.append('-D BUILD_LIB=on')
+        if self.mode == 'static':
+            options.append('-D BUILD_SHARED_LIBS=off')
+        elif self.mode == 'shared':
             options.append('-D BUILD_SHARED_LIBS=on')
 
         for pkg in self.config.packages:
