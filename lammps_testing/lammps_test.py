@@ -21,6 +21,7 @@ from termcolor import colored
 DEFAULT_CONFIG='serial'
 DEFAULT_ENV='ubuntu_18.04'
 DEFAULT_BUILDER='cmake'
+DEFAULT_MODE='static'
 
 LAMMPS_BUILDERS=('legacy', 'cmake')
 LAMMPS_BUILD_MODES=('static', 'shared')
@@ -242,13 +243,15 @@ class LAMMPSBuild:
 
 
 class CMakeBuild(LAMMPSBuild):
-    def __init__(self, container, config, settings, commit, mode='exe'):
+    def __init__(self, container, config, settings, commit, mode=DEFAULT_MODE):
         super().__init__(container, config, settings, commit)
         self.mode = mode
 
     @property
     def name(self):
-        return f"{self.container.name}_cmake_{self.config.name}_{self.mode}"
+        if self.container:
+            return f"{self.container.name}_cmake_{self.config.name}_{self.mode}"
+        return f"local_cmake_{self.config.name}_{self.mode}"
 
     def build_options(self):
         options=[]
@@ -301,7 +304,6 @@ class CMakeBuild(LAMMPSBuild):
         logger.debug(self.config)
         options = self.build_options()
 
-        assert(self.container.exists)
         build_env = os.environ.copy()
         build_env["LAMMPS_COMMIT"] = self.commit
         build_env["LAMMPS_C_FLAGS"]   = "-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -Wreorder"
@@ -314,7 +316,11 @@ class CMakeBuild(LAMMPSBuild):
         os.makedirs(self.working_dir, exist_ok=True)
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
         cmake_build_script = os.path.join(scripts_dir, 'CMakeBuild.sh')
-        self.run_command(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, cmake_build_script], env=build_env)
+
+        if self.container:
+            self.run_command(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, cmake_build_script], env=build_env)
+        else:
+            self.run_command([cmake_build_script], env=build_env)
 
 class LegacyBuild(LAMMPSBuild):
     def __init__(self, container, config, settings, commit, mode='exe'):
@@ -330,7 +336,9 @@ class LegacyBuild(LAMMPSBuild):
 
     @property
     def name(self):
-        return f"{self.container.name}_legacy_{self.config.name}_{self.mode}"
+        if self.container:
+            return f"{self.container.name}_legacy_{self.config.name}_{self.mode}"
+        return f"local_legacy_{self.config.name}_{self.mode}"
 
     def get_lammps_packages(self):
         s = "no-all"
@@ -340,7 +348,6 @@ class LegacyBuild(LAMMPSBuild):
 
     def build(self):
         logger.debug(self.config)
-        assert(self.container.exists)
         build_env = os.environ.copy()
         build_env["LAMMPS_COMMIT"] = self.commit
         build_env["LAMMPS_MODE"] = self.mode
@@ -356,7 +363,11 @@ class LegacyBuild(LAMMPSBuild):
         os.makedirs(self.working_dir, exist_ok=True)
         scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
         legacy_build_script = os.path.join(scripts_dir, 'LegacyBuild.sh')
-        self.run_command(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, legacy_build_script], env=build_env)
+
+        if self.container:
+            self.run_command(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, legacy_build_script], env=build_env)
+        else:
+            self.run_command([legacy_build_script], env=build_env)
 
 class TestRunner():
     def __init__(self, builder, settings):
@@ -445,6 +456,8 @@ class MPIRunner(LocalRunner):
         return env
 
 def get_container(name, settings):
+    if name == 'local':
+        return None
     container = os.path.join(settings.container_dir, name + ".sif")
     container_definition = os.path.join(settings.container_definition_dir, name + ".def")
     return Container(name, container, container_definition)
@@ -517,11 +530,14 @@ def status(args, settings):
     print()
     print("Environments:")
     containers = get_containers(settings)
+    print(container_build_status(True), "local")
     for c in containers:
         if c.name == DEFAULT_ENV:
             print(container_build_status(c.exists), colored(c.name, attrs=['bold']), colored("[default]", attrs=['bold']))
         else:
             print(container_build_status(c.exists), c.name)
+
+    containers = [None] + containers
 
     print()
     print("Commits:")
@@ -547,9 +563,14 @@ def status(args, settings):
                             show_configs.add(config)
 
             if args.verbose or len(show_configs) > 0:
-                print()
-                print(f' {container.name} '.center(120, "+"))
-                print()
+                if container:
+                    print()
+                    print(f' {container.name} '.center(120, "+"))
+                    print()
+                else:
+                    print()
+                    print(f' local '.center(120, "+"))
+                    print()
 
                 for commit in commits:
                     for config in configurations:
@@ -611,23 +632,23 @@ def cleanenv(args, settings):
 def build(args, settings):
     c = get_container(args.env, settings)
 
-    if c.exists:
-        try:
-            configurations = get_configurations_by_selector(args.config, settings)
-            modes = get_modes_by_selector(args.mode, settings)
-            commit = get_lammps_commit(args.commit, settings)
-            for config in configurations:
-                for mode in modes:
-                    builder = get_lammps_build(args.builder, c, config, settings, commit, mode)
-                    builder.build()
-        except FileNotFoundError as e:
-            logger.error("Configuration does not exist!")
-            logger.error(e)
-            sys.exit(1)
-    else:
+    if c and not c.exists:
         print(f"Missing container '{c.name}'\n")
         print("Build container environment first!\n")
         print(f"Usage: lammps_test --env={c.name} buildenv")
+        sys.exit(1)
+
+    try:
+        configurations = get_configurations_by_selector(args.config, settings)
+        modes = get_modes_by_selector(args.mode, settings)
+        commit = get_lammps_commit(args.commit, settings)
+        for config in configurations:
+            for mode in modes:
+                builder = get_lammps_build(args.builder, c, config, settings, commit, mode)
+                builder.build()
+    except FileNotFoundError as e:
+        logger.error("Configuration does not exist!")
+        logger.error(e)
         sys.exit(1)
 
 def run(args, settings):
@@ -928,7 +949,7 @@ def main():
     # create the parser for the "clean" command
     parser_clean = subparsers.add_parser('clean', help='clean up cache directory')
     parser_clean.add_argument('--builder', choices=LAMMPS_BUILDERS, default=DEFAULT_BUILDER, help='compilation builder')
-    parser_clean.add_argument('--mode', type=str, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both, all or any comma separated list)')
+    parser_clean.add_argument('--mode', type=str, default=DEFAULT_MODE, help='compilation mode (static, shared, all or any comma separated list)')
     parser_clean.add_argument('config', nargs='+', help='name of configuration file or all')
     parser_clean.set_defaults(func=clean)
 
@@ -951,7 +972,7 @@ def main():
     # create the parser for the "build" command
     parser_build = subparsers.add_parser('build', help='build LAMMPS using a predefined configuration')
     parser_build.add_argument('--builder', choices=LAMMPS_BUILDERS, default=DEFAULT_BUILDER, help='compilation builder')
-    parser_build.add_argument('--mode', type=str, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both, all or any comma separated list)')
+    parser_build.add_argument('--mode', type=str, default=DEFAULT_MODE, help='compilation mode (static, shared, all or any comma separated list)')
     parser_build.add_argument('--commit', type=str, default='HEAD', help='name of commit (SHA or equivalent)')
     parser_build.add_argument('config', nargs='+', help='name of configuration file or all')
     parser_build.set_defaults(func=build)
@@ -960,15 +981,15 @@ def main():
     parser_runtests = subparsers.add_parser('runtests', help='run LAMMPS test(s)')
     parser_runtests.add_argument('--builder', choices=('legacy', 'cmake'), default=DEFAULT_BUILDER, help='compilation builder')
     parser_runtests.add_argument('--config', default='serial', help='compilation configuration')
-    parser_runtests.add_argument('--mode', choices=LAMMPS_BUILD_MODES, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
+    parser_runtests.add_argument('--mode', type=str, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both, all or any comma separated list)')
     parser_runtests.add_argument('test', help='name of tests or testsuite')
     parser_runtests.set_defaults(func=runtests)
 
     # create the parser for the "run" command
     parser_run = subparsers.add_parser('run', help='run LAMMPS in current working directory')
-    parser_run.add_argument('--builder', choices=('legacy', 'cmake'), default=DEFAULT_BUILDER, help='compilation builder')
-    parser_run.add_argument('--config', default='serial', help='compilation configuration')
-    parser_run.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
+    parser_run.add_argument('--builder', choices=LAMMPS_BUILDERS, default=DEFAULT_BUILDER, help='compilation builder')
+    parser_run.add_argument('--config', default=DEFAULT_CONFIG, help='compilation configuration')
+    parser_run.add_argument('--mode', choices=LAMMPS_BUILD_MODES, default=DEFAULT_MODE, help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
     parser_run.add_argument('args', help='arguments passed to LAMMPS binary')
     parser_run.set_defaults(func=run)
 
