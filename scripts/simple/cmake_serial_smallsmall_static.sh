@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 exists()
 {
   command -v "$1" >/dev/null 2>&1
