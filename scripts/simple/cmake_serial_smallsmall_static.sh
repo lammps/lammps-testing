@@ -1,4 +1,6 @@
 #!/bin/bash
+set -e
+
 LAMMPS_COMPILE_NPROC=8
 LAMMPS_CXX_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
 LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
