@@ -15,8 +15,6 @@ LAMMPS_COMPILE_NPROC=8
 LAMMPS_CXX_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
 LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
 
-export CC=mpicc
-export CXX=mpicxx
 export CCACHE_DIR="$PWD/.ccache"
 export PYTHON=$(which python3)
 
@@ -30,8 +28,6 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
       -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
-      -D CMAKE_C_COMPILER="$CC" \
-      -D CMAKE_CXX_COMPILER="$CXX" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \
