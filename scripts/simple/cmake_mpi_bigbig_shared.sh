@@ -1,6 +1,4 @@
 #!/bin/bash
-set -e
-
 LAMMPS_COMPILE_NPROC=8
 LAMMPS_CXX_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
 LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
@@ -82,13 +80,13 @@ cmake -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D PKG_USER-YAFF=on \
       -D PKG_MPIIO=on \
       -D PKG_USER-LB=on \
-      ${LAMMPS_DIR}/cmake
+      ${LAMMPS_DIR}/cmake || exit 1
 
 # Build
-make -j ${LAMMPS_COMPILE_NPROC}
+make -j ${LAMMPS_COMPILE_NPROC} || exit 1
 
 # Install
-make install
+make install || exit 1
 deactivate
 
 ccache -s
