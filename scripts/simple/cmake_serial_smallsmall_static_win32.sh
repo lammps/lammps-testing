@@ -15,7 +15,7 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/mingw-cross.cmake \
       -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
       -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
       -D BUILD_MPI=off \
-      -D BUILD_OMP=on \
+      -D BUILD_OMP=off \
       -D BUILD_SHARED_LIBS=off \
       -D LAMMPS_SIZES=SMALLSMALL \
       -D LAMMPS_EXCEPTIONS=off \
