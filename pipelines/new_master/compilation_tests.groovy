@@ -13,13 +13,13 @@ node('atlas2') {
     stage('Build') {
         parallel(
             "ubuntu": {
-                build job: 'ubuntu', parameters: [string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT), string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE)]
+                build job: 'ubuntu_compilation_tests', parameters: [string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT), string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE)]
             },
             "centos7": {
-                build job: 'centos7', parameters: [string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT), string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE)]
+                build job: 'centos7_compilation_tests', parameters: [string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT), string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE)]
             },
             "windows": {
-                build job: 'windows', parameters: [string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT), string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE)]
+                build job: 'windows_compilation_tests', parameters: [string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT), string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE)]
             }
         )
     }
