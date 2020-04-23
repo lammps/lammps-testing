@@ -11,7 +11,7 @@ def container_image = 'lammps_testing:ubuntu_latest'
 
 def jobs = scripts.collectEntries {
     ["${it}": {
-        build job: "${it}",
+        build job: "ubuntu/${it}",
             parameters: [
                 string(name: 'GIT_COMMIT', value: params.GIT_COMMIT), 
                 string(name: 'WORKSPACE_PARENT', value: params.WORKSPACE_PARENT), 

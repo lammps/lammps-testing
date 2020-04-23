@@ -21,68 +21,62 @@ pipelineJob("lammps/dev/master/compilation_tests") {
     }
 }
 
-pipelineJob("lammps/dev/master/ubuntu") {
-    parameters {
-        stringParam('GIT_COMMIT')
-        stringParam('WORKSPACE_PARENT')
-    }
+def workspace = hudson.model.Executor.currentExecutor().getCurrentWorkspace()
+def scripts = workspace.child('scripts/simple')
 
-    definition {
-        cpsScm {
-            scm {
-                git {
-                    branch('lammps_test')
-                    remote {
-                        github('lammps/lammps-testing')
-                        credentials('lammps-jenkins')
+def containers = ['ubuntu', 'centos7', 'windows']
+
+containers.each { container ->
+    pipelineJob("lammps/dev/master/${container}_compilation_tests") {
+        parameters {
+            stringParam('GIT_COMMIT')
+            stringParam('WORKSPACE_PARENT')
+        }
+
+        definition {
+            cpsScm {
+                scm {
+                    git {
+                        branch('lammps_test')
+                        remote {
+                            github('lammps/lammps-testing')
+                            credentials('lammps-jenkins')
+                        }
                     }
                 }
+                scriptPath("pipelines/new_master/${container}.groovy")
             }
-            scriptPath('pipelines/new_master/ubuntu.groovy')
         }
     }
-}
 
-pipelineJob("lammps/dev/master/centos7") {
-    parameters {
-        stringParam('GIT_COMMIT')
-        stringParam('WORKSPACE_PARENT')
-    }
+    folder("lammps/dev/master/${container}")
 
-    definition {
-        cpsScm {
-            scm {
-                git {
-                    branch('lammps_test')
-                    remote {
-                        github('lammps/lammps-testing')
-                        credentials('lammps-jenkins')
+    def container_scripts = scripts.child(container).list()
+
+    container_scripts.each { script_name ->
+	def name = script_name.getBaseName()
+        pipelineJob("lammps/dev/master/${container}/${name}") {
+            parameters {
+                stringParam('GIT_COMMIT')
+                stringParam('WORKSPACE_PARENT')
+                stringParam('CONTAINER_NAME', "${container}")
+                stringParam('CONTAINER_IMAGE', 'lammps_testing:ubuntu_latest')
+            }
+
+            definition {
+                cpsScm {
+                    scm {
+                        git {
+                            branch('lammps_test')
+                            remote {
+                                github('lammps/lammps-testing')
+                                credentials('lammps-jenkins')
+                            }
+                        }
                     }
+                    scriptPath("pipelines/new_master/build.groovy")
                 }
             }
-            scriptPath('pipelines/new_master/centos7.groovy')
-        }
-    }
-}
-
-pipelineJob("lammps/dev/master/windows") {
-    parameters {
-        stringParam('GIT_COMMIT')
-        stringParam('WORKSPACE_PARENT')
-    }
-
-    definition {
-        cpsScm {
-            scm {
-                git {
-                    branch('lammps_test')
-                    remote {
-                        github('lammps/lammps-testing')
-                        credentials('lammps-jenkins')
-                    }
-                }
-            }
-            scriptPath('pipelines/new_master/windows.groovy')
         }
     }
 }

@@ -9,7 +9,7 @@ def container_image = 'lammps_testing:fedora_29_cross'
 
 def jobs = scripts.collectEntries {
     ["${it}": {
-        build job: "${it}",
+        build job: "windows/${it}",
             parameters: [
                 string(name: 'GIT_COMMIT', value: params.GIT_COMMIT), 
                 string(name: 'WORKSPACE_PARENT', value: params.WORKSPACE_PARENT), 
