@@ -9,20 +9,8 @@ pipelineJob("dev/master/compilation_tests") {
     }
 
     definition {
-        cpsScm {
-            scm {
-                git {
-                    branch('lammps_test')
-                    remote {
-                        github('lammps/lammps-testing')
-                        credentials('lammps-jenkins')
-                    }
-                    extensions {
-                        ignoreNotifyCommit()
-                    }
-                }
-            }
-            scriptPath('pipelines/new_master/compilation_tests.groovy')
+        cps {
+            script(readFileFromWorkspace('pipelines/new_master/compilation_tests.groovy'))
         }
     }
 }
@@ -45,17 +33,8 @@ configurations.each { yaml_file ->
         }
 
         definition {
-            cpsScm {
-                scm {
-                    git {
-                        branch('lammps_test')
-                        remote {
-                            github('lammps/lammps-testing')
-                            credentials('lammps-jenkins')
-                        }
-                    }
-                }
-                scriptPath("pipelines/new_master/container.groovy")
+            cps {
+                script(readFileFromWorkspace('pipelines/new_master/container.groovy'))
             }
         }
     }
@@ -72,17 +51,8 @@ configurations.each { yaml_file ->
             }
 
             definition {
-                cpsScm {
-                    scm {
-                        git {
-                            branch('lammps_test')
-                            remote {
-                                github('lammps/lammps-testing')
-                                credentials('lammps-jenkins')
-                            }
-                        }
-                    }
-                    scriptPath("pipelines/new_master/build.groovy")
+                cps {
+                    script(readFileFromWorkspace('pipelines/new_master/build.groovy'))
                 }
             }
         }
