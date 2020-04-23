@@ -1,0 +1,1 @@
+../common/cmake_mpi_bigbig_shared.sh

@@ -1,0 +1,1 @@
+../common/cmake_serial_smallsmall_static.sh
