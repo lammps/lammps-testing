@@ -15,6 +15,18 @@ pipelineJob("dev/master/compilation_tests") {
     }
 }
 
+pipelineJob("dev/master/build-docs") {
+    triggers {
+        githubPush()
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/new_master/build-docs.groovy'))
+        }
+    }
+}
+
 def workspace = SEED_JOB.getWorkspace()
 def scripts = workspace.child('scripts/simple')
 def configurations = scripts.list('*.yml')
