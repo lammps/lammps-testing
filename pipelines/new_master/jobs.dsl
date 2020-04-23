@@ -59,10 +59,7 @@ configurations.each { yaml_file ->
 
     folder("dev/master/${container}")
 
-    def container_scripts = scripts.child(container).list()
-
-    container_scripts.each { script_name ->
-	def name = script_name.getBaseName()
+    config.builds.each { name ->
         pipelineJob("dev/master/${container}/${name}") {
             parameters {
                 stringParam('GIT_COMMIT')
