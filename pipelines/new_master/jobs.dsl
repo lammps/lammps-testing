@@ -1,3 +1,6 @@
+@Grab('org.yaml:snakeyaml:1.17')
+import org.yaml.snakeyaml.Yaml
+
 folder('dev/master')
 
 pipelineJob("dev/master/compilation_tests") {
@@ -21,16 +24,21 @@ pipelineJob("dev/master/compilation_tests") {
     }
 }
 
-def workspace = hudson.model.Executor.currentExecutor().getCurrentWorkspace()
+def workspace = SEED_JOB.getWorkspace()
 def scripts = workspace.child('scripts/simple')
+def configurations = scripts.list('*.yml')
 
-def containers = ['ubuntu', 'centos7', 'windows']
+configurations.each { yaml_file ->
+    def config = new Yaml().load(yaml_file.readToString())
+    def container = yaml_file.getBaseName()
 
-containers.each { container ->
     pipelineJob("dev/master/${container}_compilation_tests") {
         parameters {
             stringParam('GIT_COMMIT')
             stringParam('WORKSPACE_PARENT')
+            stringParam('CONTAINER_NAME', container)
+            stringParam('CONTAINER_DISPLAY_NAME', config.display_name)
+            stringParam('CONTAINER_BUILDS', config.builds.join(','))
         }
 
         definition {
@@ -44,7 +52,7 @@ containers.each { container ->
                         }
                     }
                 }
-                scriptPath("pipelines/new_master/${container}.groovy")
+                scriptPath("pipelines/new_master/container.groovy")
             }
         }
     }
@@ -59,8 +67,8 @@ containers.each { container ->
             parameters {
                 stringParam('GIT_COMMIT')
                 stringParam('WORKSPACE_PARENT')
-                stringParam('CONTAINER_NAME', "${container}")
-                stringParam('CONTAINER_IMAGE', 'lammps_testing:ubuntu_latest')
+                stringParam('CONTAINER_NAME', container)
+                stringParam('CONTAINER_IMAGE', config.container_image)
             }
 
             definition {

@@ -19,7 +19,7 @@ node('atlas2') {
                 timeout(time: 2, unit: 'HOURS') {
                     ansiColor('xterm') {
                         sh """#!/bin/bash -l
-                        \$LAMMPS_TESTING_DIR/scripts/simple/${params.CONTAINER_NAME}/${build_script}
+                        \$LAMMPS_TESTING_DIR/scripts/simple/builds/${build_script}
                         """
                     }
                 }
