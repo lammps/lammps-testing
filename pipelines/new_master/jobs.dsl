@@ -1,6 +1,6 @@
-folder('lammps/dev/master')
+folder('dev/master')
 
-pipelineJob("lammps/dev/master/compilation_tests") {
+pipelineJob("dev/master/compilation_tests") {
     triggers {
         githubPush()
     }
@@ -27,7 +27,7 @@ def scripts = workspace.child('scripts/simple')
 def containers = ['ubuntu', 'centos7', 'windows']
 
 containers.each { container ->
-    pipelineJob("lammps/dev/master/${container}_compilation_tests") {
+    pipelineJob("dev/master/${container}_compilation_tests") {
         parameters {
             stringParam('GIT_COMMIT')
             stringParam('WORKSPACE_PARENT')
@@ -49,13 +49,13 @@ containers.each { container ->
         }
     }
 
-    folder("lammps/dev/master/${container}")
+    folder("dev/master/${container}")
 
     def container_scripts = scripts.child(container).list()
 
     container_scripts.each { script_name ->
 	def name = script_name.getBaseName()
-        pipelineJob("lammps/dev/master/${container}/${name}") {
+        pipelineJob("dev/master/${container}/${name}") {
             parameters {
                 stringParam('GIT_COMMIT')
                 stringParam('WORKSPACE_PARENT')
