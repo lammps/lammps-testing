@@ -4,8 +4,12 @@ import org.yaml.snakeyaml.Yaml
 folder('dev/master')
 
 pipelineJob("dev/master/compilation_tests") {
-    triggers {
-        githubPush()
+    properties {
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
     }
 
     definition {
@@ -16,8 +20,12 @@ pipelineJob("dev/master/compilation_tests") {
 }
 
 pipelineJob("dev/master/build-docs") {
-    triggers {
-        githubPush()
+    properties {
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
     }
 
     definition {
