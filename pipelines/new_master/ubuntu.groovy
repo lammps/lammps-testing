@@ -1,4 +1,14 @@
+import hudson.FilePath
+
+def testing_dir = new FilePath(params.WORKSPACE_PARENT, 'lammps-testing')
+def scripts_dir = testing_dir.child('scripts/simple')
+def container_scripts = scripts_dir.child('ubuntu').list()
+
 echo 'Running builds on Ubuntu'
+
+container_scripts.each { container ->
+    echo "Building ${container}!"
+}
 
 def scripts = [
     'cmake_mpi_smallbig_shared', 
