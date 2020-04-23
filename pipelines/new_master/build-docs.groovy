@@ -19,23 +19,23 @@ node('atlas2') {
 
         docker.image(envImage.imageName()).inside(docker_args) {
             timeout(time: 2, unit: 'HOURS') {
-                steps.stage('Generate HTML') {
-                    steps.sh 'make -C lammps/doc -j 8 html'
-                    steps.sh 'cd lammps/doc/html; tar cvzf ../lammps-docs.tar.gz *'
-                    steps.archiveArtifacts 'lammps/doc/lammps-docs.tar.gz'
+                stage('Generate HTML') {
+                    sh 'make -C lammps/doc -j 8 html'
+                    sh 'cd lammps/doc/html; tar cvzf ../lammps-docs.tar.gz *'
+                    archiveArtifacts 'lammps/doc/lammps-docs.tar.gz'
                 }
 
-                steps.stage('Generate PDF') {
-                    steps.sh 'make -C lammps/doc pdf'
-                    steps.archiveArtifacts 'lammps/doc/Manual.pdf'
+                stage('Generate PDF') {
+                    sh 'make -C lammps/doc pdf'
+                    archiveArtifacts 'lammps/doc/Manual.pdf'
                 }
 
-                steps.stage('Check Spelling') {
-                    steps.sh 'make -C lammps/doc -j 8 spelling'
+                stage('Check Spelling') {
+                    sh 'make -C lammps/doc -j 8 spelling'
                 }
             }
         }
     }
 
-    recordIssues filters: [excludeCategory('RemovedInSphinx20Warning|UserWarning'), excludeMessage('Duplicate declaration.*')], tools: [groovyScript('sphinx'), groovyScript('spelling')]
+    warnings canComputeNew: false, canResolveRelativePaths: false, canRunOnFailed: true, categoriesPattern: 'RemovedInSphinx20Warning|UserWarning', consoleParsers: [[parserName: 'Sphinx Spelling Check'],[parserName: 'Sphinx Documentation Build']], defaultEncoding: '', excludePattern: '', failedTotalAll: '1', healthy: '0', includePattern: '', messagesPattern: 'Duplicate declaration.*', unHealthy: '1', unstableTotalAll: '1'
 }
