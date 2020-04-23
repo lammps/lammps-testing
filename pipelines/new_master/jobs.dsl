@@ -17,6 +17,9 @@ pipelineJob("dev/master/compilation_tests") {
                         github('lammps/lammps-testing')
                         credentials('lammps-jenkins')
                     }
+                    extensions {
+                        ignoreNotifyCommit()
+                    }
                 }
             }
             scriptPath('pipelines/new_master/compilation_tests.groovy')
