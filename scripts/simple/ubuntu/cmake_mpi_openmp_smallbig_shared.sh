@@ -1,1 +1,0 @@
-../common/cmake_mpi_openmp_smallbig_shared.sh
