@@ -27,7 +27,7 @@ node('atlas2') {
         }
     }
 
-    warnings consoleParsers: [[parserName: 'GNU Make + GNU C Compiler (gcc)']]
+    recordIssues(tools: [gcc()])
 
     if (currentBuild.result == 'FAILURE') {
         slackSend channel: 'new-testing', color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
