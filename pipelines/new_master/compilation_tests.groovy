@@ -31,8 +31,8 @@ def get_configuration(yaml_file) {
     def name = yaml_file.name.take(yaml_file.name.lastIndexOf('.'))
     def config  = readYaml(file: yaml_file.path)
     return ["${name}": {
-        "display_name": config.display_name.toString()
-        "builds": config.builds.collect { it.toString() }
+        "display_name": config.display_name.toString(),
+        "builds": config.builds.collect({ it.toString() })
     }]
 }
 
