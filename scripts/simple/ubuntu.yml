@@ -5,3 +5,5 @@ builds:
  - cmake_mpi_smallbig_shared
  - cmake_mpi_bigbig_shared
  - cmake_mpi_openmp_smallbig_shared
+ - legacy_mpi_bigbig_shared
+ - legacy_serial_smallsmall_static
