@@ -18,8 +18,11 @@ node('atlas2') {
 
     def configurations = yaml_files.collectEntries { yaml_file -> get_configuration(yaml_file)  }
 
-    configurations.each { container, config ->
-        stage("${container}") {
+    for(container in configurations){
+        def name   = container.key
+        def config = container.value
+
+        stage("${name}") {
             echo "Running ${config.display_name}"
 
             def jobs = [:]
@@ -33,6 +36,8 @@ node('atlas2') {
                             ]
                 }
             }
+
+            echo "${jobs}"
 
             parallel jobs
         }
