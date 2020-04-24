@@ -18,7 +18,7 @@ node('atlas2') {
 
     configurations.each { container, config ->
         jobs[container] = config.builds.collectEntries { build ->
-            ["${build}": launch_build(container, build)]
+            ["${build}": launch_build(container, build, commit.GIT_COMMIT, env.WORKSPACE)]
         }
 
         stage(container) {
@@ -37,10 +37,8 @@ def get_configuration(yaml_file) {
     ]]
 }
 
-def launch_build(container, build) {
+def launch_build(container, build, commit, workspace) {
     return {
-        node('atlas2') {
-            build job: "${container}/${build}", parameters: [ string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT), string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE) ]
-        }
+        build job: "${container}/${build}", parameters: [ string(name: 'GIT_COMMIT', value: commit), string(name: 'WORKSPACE_PARENT', value: workspace) ]
     }
 }
