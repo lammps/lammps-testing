@@ -13,7 +13,7 @@ node('atlas2') {
     def configurations = yaml_files.collectEntries { yaml_file ->
       [
         "name": yaml_file.name.take(yaml_file.name.lastIndexOf('.')),
-        "config": readYaml file: yaml_file.path
+        "config": readYaml(file: yaml_file.path)
       ]
     }
 
