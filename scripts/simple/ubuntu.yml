@@ -1,5 +1,5 @@
-display_name: 'Ubuntu'
-container_image: 'lammps_testing:ubuntu_latest'
+display_name: 'Ubuntu 18.04'
+container_image: 'lammps_testing:ubuntu_18.04'
 builds:
  - cmake_serial_smallsmall_static
  - cmake_mpi_smallbig_shared
