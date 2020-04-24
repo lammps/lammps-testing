@@ -32,11 +32,13 @@ node('atlas2') {
 
 def launch_build(container, build) {
     return {
-        echo "Building ${container}/${build}"
-        build job: "${container}/${build}",
-            parameters: [
-                string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT),
-                string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE),
-                ]
+        node('atlas2') {
+            echo "Building ${container}/${build}"
+            build job: "${container}/${build}",
+                parameters: [
+                    string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT),
+                    string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE),
+                    ]
+        }
     }
 }
