@@ -19,17 +19,19 @@ node('atlas2') {
     def configurations = yaml_files.collectEntries { yaml_file -> get_configuration(yaml_file)  }
 
     configurations.each { container, config ->
-        stage(container) {
+        stage("${container}") {
             echo "Running ${config.display_name}"
 
-            def jobs = config.builds.collectEntries { build ->
-                ["${build}": {
+            def jobs = [:]
+
+            for (build in config.builds) {
+                jobs["${build}"] = {
                     build job: "${container}/${build}",
                         parameters: [
                             string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT),
                             string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE),
                             ]
-                }]
+                }
             }
 
             parallel jobs
