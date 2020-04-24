@@ -1,6 +1,6 @@
 node {
     def os = 'ubuntu'
-    def version = 18.04
+    def version = '18.04'
     
     stage('Checkout') {
         checkout([$class: 'GitSCM', userRemoteConfigs: [[url: 'https://github.com/lammps/lammps-testing.git', credentialsId: 'lammps-jenkins']],
