@@ -11,19 +11,17 @@ node('atlas2') {
 
     def yaml_files = findFiles glob: 'lammps-testing/scripts/simple/*.yml'
     def configurations = yaml_files.collectEntries { yaml_file ->
-      [
-        "name": yaml_file.name.take(yaml_file.name.lastIndexOf('.')),
-        "config": readYaml(file: yaml_file.path)
-      ]
+        def name = yaml_file.name.take(yaml_file.name.lastIndexOf('.'))
+        return ["${name}": readYaml(file: yaml_file.path)]
     }
 
-    configurations.each { container ->
-        stage(container.name) {
-            echo "Running ${container.config.display_name}"
+    configurations.each { container, config ->
+        stage(container) {
+            echo "Running ${config.display_name}"
 
-            def jobs = container.config.builds.collectEntries { build
+            def jobs = config.builds.collectEntries { build
                 ["${build}": {
-                    build job: "${container.name}/${build}",
+                    build job: "${container}/${build}",
                         parameters: [
                             string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT),
                             string(name: 'WORKSPACE_PARENT', value: env.WORKSPACE),
