@@ -11,10 +11,6 @@ node('atlas2') {
 
     def yaml_files = findFiles glob: 'lammps-testing/scripts/simple/*.yml'
 
-    def get_configuration = { yaml_file ->
-        def name = yaml_file.name.take(yaml_file.name.lastIndexOf('.'))
-        return ["${name}": readYaml(file: yaml_file.path)]
-    }
 
     def configurations = yaml_files.collectEntries { yaml_file -> get_configuration(yaml_file)  }
 
@@ -30,9 +26,18 @@ node('atlas2') {
     }
 }
 
+@NonCPS
+def get_configuration(yaml_file) {
+    def name = yaml_file.name.take(yaml_file.name.lastIndexOf('.'))
+    def config  = readYaml(file: yaml_file.path)
+    return ["${name}": {
+        "display_name": config.display_name.toString()
+        "builds": config.builds.collect { it.toString() }
+    }]
+}
+
 def launch_build(container, build) {
     return {
-        echo "Building ${container}/${build}"
         build job: "${container}/${build}",
             parameters: [
                 string(name: 'GIT_COMMIT', value: commit.GIT_COMMIT),
