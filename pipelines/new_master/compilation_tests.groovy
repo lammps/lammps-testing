@@ -19,7 +19,7 @@ node('atlas2') {
         stage(container) {
             echo "Running ${config.display_name}"
 
-            def jobs = config.builds.collectEntries { build
+            def jobs = config.builds.collectEntries { build ->
                 ["${build}": {
                     build job: "${container}/${build}",
                         parameters: [
