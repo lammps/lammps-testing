@@ -43,22 +43,6 @@ configurations.each { yaml_file ->
     def config = new Yaml().load(yaml_file.readToString())
     def container = yaml_file.getBaseName()
 
-    pipelineJob("dev/master/${container}_compilation_tests") {
-        parameters {
-            stringParam('GIT_COMMIT')
-            stringParam('WORKSPACE_PARENT')
-            stringParam('CONTAINER_NAME', container)
-            stringParam('CONTAINER_DISPLAY_NAME', config.display_name)
-            stringParam('CONTAINER_BUILDS', config.builds.join(','))
-        }
-
-        definition {
-            cps {
-                script(readFileFromWorkspace('pipelines/new_master/container.groovy'))
-            }
-        }
-    }
-
     folder("dev/master/${container}")
 
     config.builds.each { name ->
