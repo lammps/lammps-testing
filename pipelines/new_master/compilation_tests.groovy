@@ -11,7 +11,7 @@ node('atlas2') {
 
     def yaml_files = findFiles glob: 'lammps-testing/scripts/simple/*.yml'
 
-    def get_configuration(yaml_file) {
+    def get_configuration = { yaml_file ->
         def name = yaml_file.name.take(yaml_file.name.lastIndexOf('.'))
         return ["${name}": readYaml(file: yaml_file.path)]
     }
