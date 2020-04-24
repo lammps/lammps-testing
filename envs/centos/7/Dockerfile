@@ -42,6 +42,7 @@ RUN pip3.6 install --upgrade pip virtualenv
 RUN yum install -y cmake
 RUN yum install -y cmake3
 RUN yum install -y ninja-build
+RUN yum install -y rsync
 
 ENV PATH /usr/lib/ccache:$PATH
 ENV MODULEPATH /etc/modulefiles:/usr/share/modulefiles:/usr/share/Modules/modulefiles
