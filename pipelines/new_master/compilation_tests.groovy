@@ -18,10 +18,10 @@ node('atlas2') {
 
     configurations.each { container, config ->
         jobs[container] = config.builds.collectEntries { build ->
-            ["${build}": launch_build(container, build, commit.GIT_COMMIT, env.WORKSPACE)]
+            ["${build}": launch_build("${container}/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
         }
 
-        stage(container) {
+        stage(config.display_name) {
             echo "Running ${config.display_name}"
             parallel jobs[container]
         }
@@ -37,8 +37,8 @@ def get_configuration(yaml_file) {
     ]]
 }
 
-def launch_build(container, build, commit, workspace) {
+def launch_build(job_name, commit, workspace) {
     return {
-        build job: "${container}/${build}", parameters: [ string(name: 'GIT_COMMIT', value: commit), string(name: 'WORKSPACE_PARENT', value: workspace) ]
+        build job: job_name, parameters: [ string(name: 'GIT_COMMIT', value: commit), string(name: 'WORKSPACE_PARENT', value: workspace) ]
     }
 }
