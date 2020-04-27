@@ -1,4 +1,14 @@
+@Library(value='lammps_testing', changelog=false)
+import org.lammps.ci.Utils
+
+def project_url = 'https://github.com/lammps/lammps.git'
+def set_github_status = true
+def send_slack = true
+
 node('atlas2') {
+    def utils = new Utils()
+
+
     stage('Checkout') {
         dir('lammps') {
             commit = checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps']]])
@@ -7,6 +17,10 @@ node('atlas2') {
         dir('lammps-testing') {
             checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/lammps_test']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps-testing']]]
         }
+    }
+
+    if (set_github_status) {
+        utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'building...', 'PENDING')
     }
 
     def yaml_files = findFiles glob: 'lammps-testing/scripts/simple/*.yml'
@@ -24,6 +38,22 @@ node('atlas2') {
         stage(config.display_name) {
             echo "Running ${config.display_name}"
             parallel jobs[container]
+        }
+    }
+
+    if (currentBuild.result == 'FAILURE') {
+        if (set_github_status) {
+            utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'build failed!', 'FAILURE')
+        }
+        if (send_slack) {
+            slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
+        }
+    } else {
+        if (set_github_status) {
+            utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'build successful!', 'SUCCESS')
+        }
+        if (send_slack) {
+            slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
         }
     }
 }
