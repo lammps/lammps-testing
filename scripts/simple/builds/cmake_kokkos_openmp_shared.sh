@@ -43,7 +43,7 @@ ${CMAKE_COMMAND} \
       -C ${LAMMPS_DIR}/cmake/presets/clang.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/kokkos-openmp.cmake \
-      -D CXX_COMPILER_LAUNCHER=ccache \
+      -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
       -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \

@@ -41,7 +41,7 @@ cd ${BUILD}
 # Configure
 ${CMAKE_COMMAND} -G Ninja \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
-      -D CXX_COMPILER_LAUNCHER=ccache \
+      -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
       -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
