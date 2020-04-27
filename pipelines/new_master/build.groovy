@@ -1,6 +1,4 @@
 node('atlas2') {
-    cleanWs()
-
     env.LAMMPS_DIR = "${params.WORKSPACE_PARENT}/lammps"
     env.LAMMPS_TESTING_DIR = "${params.WORKSPACE_PARENT}/lammps-testing"
 
