@@ -1,6 +1,45 @@
 folder('lammps/pull-requests')
 
-def scripts = ['serial-pr', 'shlib-pr', 'openmpi-pr', 'build-docs-pr', 'kokkos-omp-pr']
+def disabled_scripts = ['serial-pr', 'shlib-pr', 'openmpi-pr', 'kokkos-omp-pr']
+
+disabled_scripts.each { name ->
+    pipelineJob("lammps/pull-requests/${name}") {
+        properties {
+            githubProjectUrl("https://github.com/lammps/lammps/")
+        }
+
+        disabled()
+
+        triggers {
+            githubPullRequests {
+                spec("* * * * *")
+                triggerMode('HEAVY_HOOKS')
+                repoProviders {
+                    githubPlugin {
+                        cacheConnection(true)
+                        manageHooks(true)
+                        repoPermission('ADMIN')
+                    }
+                }
+                events {
+                    Open()
+                    commitChanged()
+                }
+            }
+        }
+
+        concurrentBuild(false)
+
+        definition {
+            cps {
+                script(readFileFromWorkspace('pipelines/pull-requests/pr.groovy'))
+                sandbox()
+            }
+        }
+    }
+}
+
+def scripts = ['build-docs-pr']
 
 scripts.each { name ->
     pipelineJob("lammps/pull-requests/${name}") {
@@ -83,6 +122,8 @@ pipelineJob("lammps/pull-requests/cmake/cmake-testing-gpu-opencl-pr") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }
+
+    disabled()
 
     triggers {
         githubPullRequests {
@@ -215,6 +256,8 @@ cmake_scripts.each { name ->
             githubProjectUrl("https://github.com/lammps/lammps/")
         }
 
+        disabled()
+
         triggers {
             githubPullRequests {
                 spec("* * * * *")
@@ -248,6 +291,8 @@ pipelineJob("lammps/pull-requests/cmake/cmake-win32-serial") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }
+
+    disabled()
 
     triggers {
         githubPullRequests {
@@ -291,6 +336,8 @@ pipelineJob("lammps/pull-requests/cmake/cmake-win64-serial") {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }
 
+    disabled()
+
     triggers {
         githubPullRequests {
             spec("* * * * *")
@@ -332,6 +379,8 @@ pipelineJob("lammps/pull-requests/serial-el7-pr") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }
+
+    disabled()
 
     triggers {
         githubPullRequests {
@@ -375,6 +424,8 @@ pipelineJob("lammps/pull-requests/shlib-el7-pr") {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }
 
+    disabled()
+
     triggers {
         githubPullRequests {
             spec("* * * * *")
@@ -416,6 +467,8 @@ pipelineJob("lammps/pull-requests/openmpi-el7-pr") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
     }
+
+    disabled()
 
     triggers {
         githubPullRequests {
