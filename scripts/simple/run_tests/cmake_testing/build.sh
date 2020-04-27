@@ -28,6 +28,11 @@ cd $LAMMPS_TESTING_DIR
 python setup.py install
 cd $WORKING_DIR
 
+# Create build directory
+if [ -d "build" ]; then
+    rm -rf build
+fi
+
 mkdir -p build
 cd build
 
