@@ -64,4 +64,26 @@ configurations.each { yaml_file ->
             }
         }
     }
+
+    if(config.containsKey('runtests')){
+        folder("dev/master/${container}/runtests")
+
+        config.runtests.each { name ->
+            pipelineJob("dev/master/${container}/runtests/${name}") {
+                parameters {
+                    stringParam('GIT_COMMIT')
+                    stringParam('WORKSPACE_PARENT')
+                    stringParam('CONTAINER_NAME', container)
+                    stringParam('CONTAINER_IMAGE', config.container_image)
+                }
+
+                definition {
+                    cps {
+                        script(readFileFromWorkspace('pipelines/new_master/runtests.groovy'))
+                        sandbox()
+                    }
+                }
+            }
+        }
+    }
 }
