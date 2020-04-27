@@ -20,6 +20,23 @@ pipelineJob("dev/master/compilation_tests") {
     }
 }
 
+pipelineJob("dev/master/run_tests") {
+    properties {
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/new_master/run_tests.groovy'))
+            sandbox()
+        }
+    }
+}
+
 pipelineJob("dev/master/build-docs") {
     properties {
         pipelineTriggers {
@@ -79,7 +96,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/new_master/run_tests.groovy'))
+                        script(readFileFromWorkspace('pipelines/new_master/run.groovy'))
                         sandbox()
                     }
                 }
