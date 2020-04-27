@@ -1,6 +1,27 @@
 folder('lammps/master')
 
-def scripts = ['serial', 'serial-el7', 'shlib-el7', 'openmpi-el7', 'shlib', 'openmpi', 'serial-clang', 'shlib-clang', 'openmpi-clang', 'build-docs', 'testing', 'testing-omp', 'regression', 'intel', 'kokkos-omp']
+def disabled_scripts = ['serial', 'serial-el7', 'shlib-el7', 'openmpi-el7', 'shlib', 'openmpi', 'serial-clang', 'shlib-clang', 'openmpi-clang']
+
+disabled_scripts.each { name ->
+    pipelineJob("lammps/master/${name}") {
+        triggers {
+            githubPush()
+        }
+
+        disabled()
+
+        concurrentBuild(false)
+
+        definition {
+            cps {
+                script(readFileFromWorkspace('pipelines/master/master.groovy'))
+                sandbox()
+            }
+        }
+    }
+}
+
+def scripts = ['build-docs', 'testing', 'testing-omp', 'regression', 'intel', 'kokkos-omp']
 
 scripts.each { name ->
     pipelineJob("lammps/master/${name}") {
@@ -30,6 +51,7 @@ cmake_scripts.each { name ->
         }
 
         concurrentBuild(false)
+        disabled()
 
         definition {
             cps {
@@ -46,6 +68,7 @@ pipelineJob("lammps/master/cmake/coverity-scan") {
     }
 
     concurrentBuild(false)
+    disabled()
 
     definition {
         cps {
