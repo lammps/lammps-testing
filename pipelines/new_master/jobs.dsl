@@ -65,11 +65,11 @@ configurations.each { yaml_file ->
         }
     }
 
-    if(config.containsKey('runtests')){
-        folder("dev/master/${container}/runtests")
+    if(config.containsKey('run_tests')){
+        folder("dev/master/${container}/run_tests")
 
-        config.runtests.each { name ->
-            pipelineJob("dev/master/${container}/runtests/${name}") {
+        config.run_tests.each { name ->
+            pipelineJob("dev/master/${container}/run_tests/${name}") {
                 parameters {
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
@@ -79,7 +79,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/new_master/runtests.groovy'))
+                        script(readFileFromWorkspace('pipelines/new_master/run_tests.groovy'))
                         sandbox()
                     }
                 }

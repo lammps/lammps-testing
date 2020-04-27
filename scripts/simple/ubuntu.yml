@@ -8,5 +8,5 @@ builds:
  - legacy_mpi_bigbig_shared
  - legacy_serial_smallsmall_static
 
-runtests:
+run_tests:
  - cmake_testing

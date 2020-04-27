@@ -17,13 +17,13 @@ node('atlas2') {
             timeout(time: 2, unit: 'HOURS') {
                 stage('Build') {
                     sh """#!/bin/bash -l
-                    \$LAMMPS_TESTING_DIR/scripts/simple/runtests/${build_script}
+                    \$LAMMPS_TESTING_DIR/scripts/simple/run_tests/${build_script}
                     """
                 }
 
                 stage('Testing') {
                     sh """#!/bin/bash -l
-                    \$LAMMPS_TESTING_DIR/scripts/simple/runtests/${test_script}
+                    \$LAMMPS_TESTING_DIR/scripts/simple/run_tests/${test_script}
                     """
                 }
             }

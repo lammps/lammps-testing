@@ -35,9 +35,9 @@ node('atlas2') {
 
     try {
         configurations.each { container, config ->
-            if(config.runtests.length > 0) {
-                jobs[container] = config.runtests.collectEntries { build ->
-                    ["${build}": launch_build("${container}/runtests/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
+            if(config.run_tests.length > 0) {
+                jobs[container] = config.run_tests.collectEntries { build ->
+                    ["${build}": launch_build("${container}/run_tests/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
                 }
 
                 stage(config.display_name) {
@@ -74,7 +74,7 @@ def get_configuration(yaml_file) {
 
     def display_name = name
     def builds = []
-    def runtests  = []
+    def run_tests  = []
 
     if(config.containsKey('display_name')) {
         display_name = config.display_name.toString()
@@ -84,14 +84,14 @@ def get_configuration(yaml_file) {
         builds = config.builds.collect({ it.toString() })
     }
 
-    if(config.containsKey('runtests')) {
-        builds = config.runtests.collect({ it.toString() })
+    if(config.containsKey('run_tests')) {
+        run_tests = config.run_tests.collect({ it.toString() })
     }
 
     return ["${name}": [
         "display_name": display_name,
         "builds": builds,
-        "runtests": runtests
+        "run_tests": run_tests
     ]]
 }
 
