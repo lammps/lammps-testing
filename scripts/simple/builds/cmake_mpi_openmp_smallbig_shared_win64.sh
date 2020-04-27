@@ -10,6 +10,14 @@ export CCACHE_DIR="$PWD/.ccache"
 # Set up environment
 ccache -M 5G
 
+# Create build directory
+if [ -d "build" ]; then
+    rm -rf build
+fi
+
+mkdir -p build
+cd build
+
 # Configure
 ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/mingw-cross.cmake \
       -D CXX_COMPILER_LAUNCHER=ccache \

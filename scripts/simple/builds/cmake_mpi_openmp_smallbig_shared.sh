@@ -23,6 +23,14 @@ ccache -M 5G
 virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
 
+# Create build directory
+if [ -d "build" ]; then
+    rm -rf build
+fi
+
+mkdir -p build
+cd build
+
 # Configure
 ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D CXX_COMPILER_LAUNCHER=ccache \

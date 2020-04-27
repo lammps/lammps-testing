@@ -155,7 +155,7 @@ ccache -M 5G
 echo "Copy sources..."
 
 mkdir -p lammps
-rsync -a --include='src/***' --include='lib/***' --include='potentials/***' --include='python/***' --exclude='*' ${LAMMPS_DIR}/ lammps/
+rsync -a --delete --include='src/***' --include='lib/***' --include='potentials/***' --include='python/***' --exclude='*' ${LAMMPS_DIR}/ lammps/
 
 export LAMMPS_DIR=$PWD
 
