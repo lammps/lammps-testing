@@ -1,4 +1,11 @@
 #!/bin/bash -x
+if [ -z "${LAMMPS_DIR}" ]
+then
+        echo "Must set LAMMPS_DIR environment variable"
+        exit 1
+fi
+BUILD=build-$(basename $0 .sh)
+
 exists()
 {
   command -v "$1" >/dev/null 2>&1
@@ -12,8 +19,8 @@ else
 fi
 
 LAMMPS_COMPILE_NPROC=${LAMMPS_COMPILE_NPROC-8}
-LAMMPS_CXX_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result"
-LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result"
+LAMMPS_CXX_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
+LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
 
 export CCACHE_DIR="$PWD/.ccache"
 export PYTHON=$(which python3)
@@ -23,11 +30,20 @@ ccache -M 5G
 virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
 
+# Create build directory
+if [ -d "${BUILD}" ]; then
+    rm -rf ${BUILD}
+fi
+
+mkdir -p ${BUILD}
+cd ${BUILD}
+
 # Configure
 ${CMAKE_COMMAND} \
       -C ${LAMMPS_DIR}/cmake/presets/minimal.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/kokkos-cuda.cmake \
       -D CXX_COMPILER_LAUNCHER=ccache \
+      -D CUDA_COMPILER_LAUNCHER=ccache \
       -D CMAKE_CXX_COMPILER=${LAMMPS_DIR}/lib/kokkos/bin/nvcc_wrapper \
       -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
       -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
