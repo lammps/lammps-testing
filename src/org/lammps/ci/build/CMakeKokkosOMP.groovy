@@ -53,6 +53,8 @@ class CMakeKokkosOMP extends CMakeBuild {
                          '-D PKG_USER-TALLY=yes',
                          '-D PKG_USER-SMTBQ=yes',
                          '-D PKG_KOKKOS=yes',
-                         '-D KOKKOS_ENABLE_OPENMP=yes']
+                         '-D Kokkos_ENABLE_SERIAL=yes',
+                         '-D Kokkos_ENABLE_OPENMP=yes',
+                         '-D Kokkos_ARCH_BDW=yes']
     }
 }

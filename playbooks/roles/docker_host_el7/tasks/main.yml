@@ -1,0 +1,26 @@
+---
+ - name: install prerequisites
+   yum:
+     name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+     state: latest
+
+ - name: Add Docker’s Repo
+   shell: "yum-config-manager  --add-repo https://download.docker.com/linux/centos/docker-ce.repo"
+
+ - name: Install packages for Docker
+   yum:
+     name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+     state: latest
+     update_cache: yes
+
+ - name: Restart docker service
+   service:
+     name: docker
+     state: restarted
+     enabled: true
