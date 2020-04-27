@@ -1,6 +1,6 @@
 node {
     def os = 'fedora'
-    def version = '29_cross'
+    def version = '30_cross'
 
     stage('Checkout') {
         checkout([$class: 'GitSCM', branches: [[name: '*/master']], userRemoteConfigs: [[url: 'https://github.com/lammps/lammps-testing.git', credentialsId: 'lammps-jenkins']],
@@ -14,7 +14,7 @@ node {
             def image_name = 'lammps_testing:' + os + '_' + version
 
             stage 'Build'
-            docker.build(image_name)
+            docker.build(image_name, '--pull=true --no-cache=true .')
 
             stage 'Publish'
             def image = docker.image(image_name)
