@@ -7,10 +7,6 @@ rsync -a --delete $LAMMPS_TESTING_DIR/tests .
 
 source pyenv/bin/activate
 
-# install lammps-testing package
-cd $LAMMPS_TESTING_DIR
-python setup.py install
-cd $WORKING_DIR
 
 
 

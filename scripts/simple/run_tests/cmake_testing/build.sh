@@ -23,6 +23,11 @@ ccache -M 5G
 virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
 
+# install lammps-testing package
+cd $LAMMPS_TESTING_DIR
+python setup.py install
+cd $WORKING_DIR
+
 mkdir -p build
 cd build
 
