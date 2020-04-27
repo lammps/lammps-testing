@@ -31,6 +31,7 @@ pipelineJob("dev/pull_requests/compilation_tests") {
     definition {
         cps {
             script(readFileFromWorkspace('pipelines/new_pull_requests/compilation_tests.groovy'))
+            sandbox()
         }
     }
 }
@@ -73,6 +74,7 @@ configurations.each { yaml_file ->
             definition {
                 cps {
                     script(readFileFromWorkspace('pipelines/new_master/build.groovy'))
+                    sandbox()
                 }
             }
         }

@@ -32,30 +32,35 @@ node('atlas2') {
 
     def jobs = [:]
 
-    configurations.each { container, config ->
-        jobs[container] = config.builds.collectEntries { build ->
-            ["${build}": launch_build("${container}/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
-        }
+    try {
+        configurations.each { container, config ->
+            jobs[container] = config.builds.collectEntries { build ->
+                ["${build}": launch_build("${container}/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
+            }
 
-        stage(config.display_name) {
-            echo "Running ${config.display_name}"
-            parallel jobs[container]
+            stage(config.display_name) {
+                echo "Running ${config.display_name}"
+                parallel jobs[container]
+            }
         }
-    }
-
-    if (currentBuild.result == 'FAILURE') {
-        if (set_github_status) {
-            utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'build failed!', 'FAILURE')
-        }
-        if (send_slack) {
-            slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
-        }
-    } else {
-        if (set_github_status) {
-            utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'build successful!', 'SUCCESS')
-        }
-        if (send_slack) {
-            slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
+    } catch (err) {
+        echo "Caught: ${err}"
+        currentBuild.result = 'FAILURE'
+    } finally {
+        if (currentBuild.result == 'FAILURE') {
+            if (set_github_status) {
+                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'build failed!', 'FAILURE')
+            }
+            if (send_slack) {
+                slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
+            }
+        } else {
+            if (set_github_status) {
+                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'build successful!', 'SUCCESS')
+            }
+            if (send_slack) {
+                slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
+            }
         }
     }
 }
