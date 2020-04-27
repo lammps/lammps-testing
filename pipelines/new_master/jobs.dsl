@@ -15,6 +15,7 @@ pipelineJob("dev/master/compilation_tests") {
     definition {
         cps {
             script(readFileFromWorkspace('pipelines/new_master/compilation_tests.groovy'))
+            sandbox()
         }
     }
 }
@@ -31,6 +32,7 @@ pipelineJob("dev/master/build-docs") {
     definition {
         cps {
             script(readFileFromWorkspace('pipelines/new_master/build-docs.groovy'))
+            sandbox()
         }
     }
 }
@@ -57,6 +59,7 @@ configurations.each { yaml_file ->
             definition {
                 cps {
                     script(readFileFromWorkspace('pipelines/new_master/build.groovy'))
+                    sandbox()
                 }
             }
         }
