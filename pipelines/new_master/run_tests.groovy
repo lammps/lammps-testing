@@ -35,7 +35,7 @@ node('atlas2') {
 
     try {
         configurations.each { container, config ->
-            if(config.run_tests.length > 0) {
+            if(config.run_tests.size() > 0) {
                 jobs[container] = config.run_tests.collectEntries { build ->
                     ["${build}": launch_build("${container}/run_tests/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
                 }
