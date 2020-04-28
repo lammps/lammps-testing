@@ -27,7 +27,9 @@ source pyenv/bin/activate
 # install lammps-testing package
 cd $LAMMPS_TESTING_DIR
 # avoid multiple parallel jobs writing in the same temporary directories
-python setup.py egg_info --egg-base $WORKING_DIR/python_build build --build-base $WORKING_DIR/python_build/build bdist --dist-dir $WORKING_DIR/python_build/dist install
+PYTHON_BUILD_DIR=$WORKING_DIR/python_build
+mkdir -p $PYTHON_BUILD_DIR
+python setup.py egg_info --egg-base $PYTHON_BUILD_DIR build --build-base $PYTHON_BUILD_DIR/build bdist --dist-dir $PYTHON_BUILD_DIR/dist install || exit 1
 cd $WORKING_DIR
 
 # Create build directory
