@@ -14,7 +14,7 @@ node('atlas2') {
     }
 
     stage('Build') {
-        sh "singularity build --fakeroot ${container_file} ${container_definition}"
+        sh "singularity build --fakeroot ${container_file} lammps/${container_definition}"
     }
 
     stage('Publish') {
