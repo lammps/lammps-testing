@@ -4,7 +4,10 @@ import org.yaml.snakeyaml.Yaml
 folder('dev/master')
 
 pipelineJob("dev/master/compilation_tests") {
+    quietPeriod(120)
+
     properties {
+        disableConcurrentBuilds()
         pipelineTriggers {
             triggers {
                 githubPush()
@@ -21,7 +24,10 @@ pipelineJob("dev/master/compilation_tests") {
 }
 
 pipelineJob("dev/master/run_tests") {
+    quietPeriod(120)
+
     properties {
+        disableConcurrentBuilds()
         pipelineTriggers {
             triggers {
                 githubPush()
@@ -38,6 +44,8 @@ pipelineJob("dev/master/run_tests") {
 }
 
 pipelineJob("dev/master/build-docs") {
+    quietPeriod(120)
+
     properties {
         pipelineTriggers {
             triggers {
@@ -100,6 +108,31 @@ configurations.each { yaml_file ->
                         sandbox()
                     }
                 }
+            }
+        }
+    }
+}
+
+folder('dev/containers')
+
+def container_definitions = ['ubuntu18.04', 'ubuntu18.04_gpu', 'centos7', 'fedora30_mingw']
+
+container_definitions.each { name ->
+    pipelineJob("dev/containers/${name}") {
+        triggers {
+            githubPush()
+        }
+
+        parameters {
+            stringParam('CONTAINER_NAME', name)
+        }
+
+        concurrentBuild(false)
+
+        definition {
+            cps {
+                script(readFileFromWorkspace('pipelines/new_master/singularity_container.groovy'))
+                sandbox()
             }
         }
     }
