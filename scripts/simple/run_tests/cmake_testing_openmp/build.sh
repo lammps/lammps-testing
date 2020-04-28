@@ -53,7 +53,7 @@ cd build
 
 # Configure
 ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
-      -D CXX_COMPILER_LAUNCHER=ccache \
+      -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
       -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
@@ -119,13 +119,13 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D PKG_USER-LB=on \
       -D PKG_VORONOI=on \
       -D PKG_USER-ATC=on \
-      -D USER-PHONON=on \
-      -D USER-QTB=on \
-      -D USER-REAXC=on \
-      -D USER-SPH=on \
-      -D USER-TALLY=on \
-      -D USER-SMTBQ=on \
-      -D USER-OMP=on \
+      -D PKG_USER-PHONON=on \
+      -D PKG_USER-QTB=on \
+      -D PKG_USER-REAXC=on \
+      -D PKG_USER-SPH=on \
+      -D PKG_USER-TALLY=on \
+      -D PKG_USER-SMTBQ=on \
+      -D PKG_USER-OMP=on \
       ${LAMMPS_DIR}/cmake || exit 1
 
 # Build
