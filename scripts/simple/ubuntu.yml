@@ -9,5 +9,6 @@ builds:
  - legacy_serial_smallsmall_static
 
 run_tests:
+ - cmake_testing_serial
  - cmake_testing_mpi
  - cmake_testing_openmp
