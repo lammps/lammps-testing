@@ -7,14 +7,14 @@ def container_file = "${currentBuild.projectName}.sif"
 
 
 node('atlas2') {
+    cleanWs()
+
     stage('Checkout') {
-        dir('lammps') {
-            commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PathRestriction', includedRegions: "${container_definition}"], [$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps']]])
-        }
+        checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'PathRestriction', includedRegions: "${container_definition}"], [$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
     }
 
     stage('Build') {
-        sh "singularity build --force --fakeroot ${container_file} lammps/${container_definition}"
+        sh "singularity build --force --fakeroot ${container_file} ${container_definition}"
     }
 
     stage('Publish') {
