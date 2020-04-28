@@ -17,6 +17,7 @@ LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitializ
 
 export CCACHE_DIR="$PWD/.ccache"
 export PYTHON=$(which python3)
+export WORKING_DIR=$PWD
 
 # Set up environment
 ccache -M 5G
@@ -25,7 +26,8 @@ source pyenv/bin/activate
 
 # install lammps-testing package
 cd $LAMMPS_TESTING_DIR
-python setup.py install
+# avoid multiple parallel jobs writing in the same temporary directories
+python setup.py egg_info --egg-base $WORKING_DIR/python_build build --build-base $WORKING_DIR/python_build/build bdist --dist-dir $WORKING_DIR/python_build/dist install
 cd $WORKING_DIR
 
 # Create build directory
