@@ -115,8 +115,6 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D PKG_USER-TALLY=on \
       -D PKG_USER-UEF=on \
       -D PKG_USER-YAFF=on \
-      -D PKG_MPIIO=on \
-      -D PKG_USER-LB=on \
       -D PKG_VORONOI=on \
       -D PKG_USER-ATC=on \
       ${LAMMPS_DIR}/cmake || exit 1
