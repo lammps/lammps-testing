@@ -21,6 +21,11 @@ export WORKING_DIR=$PWD
 
 # Set up environment
 ccache -M 5G
+
+if [ -d "pyenv" ]
+    rm -rf pyenv
+fi
+
 virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
 
@@ -28,8 +33,14 @@ source pyenv/bin/activate
 cd $LAMMPS_TESTING_DIR
 # avoid multiple parallel jobs writing in the same temporary directories
 PYTHON_BUILD_DIR=$WORKING_DIR/python_build
+
+if [ -d "$PYTHON_BUILD_DIR" ]
+    rm -rf $PYTHON_BUILD_DIR
+fi
+
 mkdir -p $PYTHON_BUILD_DIR
-python setup.py egg_info --egg-base $PYTHON_BUILD_DIR build --build-base $PYTHON_BUILD_DIR/build bdist --dist-dir $PYTHON_BUILD_DIR/dist install || exit 1
+python setup.py egg_info --egg-base $PYTHON_BUILD_DIR build --build-base $PYTHON_BUILD_DIR/build install || exit 1
+
 cd $WORKING_DIR
 
 # Create build directory
