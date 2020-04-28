@@ -115,24 +115,38 @@ configurations.each { yaml_file ->
 
 folder('dev/containers')
 
-def container_definitions = ['ubuntu18.04', 'ubuntu18.04_gpu', 'centos7', 'fedora30_mingw']
+def container_folder = workspace.child('containers/singularity')
+def container_definitions = container_folder.list('*.def')
 
-container_definitions.each { name ->
+container_definitions.each { definition_file ->
+    def name = definition_file.getBaseName()
+
     pipelineJob("dev/containers/${name}") {
         triggers {
             githubPush()
         }
 
-        parameters {
-            stringParam('CONTAINER_NAME', name)
-        }
-
         concurrentBuild(false)
 
         definition {
-            cps {
-                script(readFileFromWorkspace('pipelines/new_master/singularity_container.groovy'))
-                sandbox()
+            cpsScm {
+                scm {
+                    git {
+                        remote {
+                            github('lammps/lammps-testing')
+                            credentials('lammps-jenkins')
+                        }
+
+                        branches('lammps_test')
+
+                        configure { gitScm ->
+                            gitScm / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
+                              includedRegions("pipelines/new_master/singularity_container.groovy\ncontainers/singularity/${name}.def")
+                          }
+                        }
+                    }
+                }
+                scriptPath("pipelines/new_master/singularity_container.groovy")
             }
         }
     }

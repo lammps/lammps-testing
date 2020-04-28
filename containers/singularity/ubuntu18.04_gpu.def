@@ -1,0 +1,2 @@
+BootStrap: library
+From: lammps/default/lammps_development:ubuntu18.04_gpu
