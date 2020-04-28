@@ -1,5 +1,6 @@
 display_name: 'Windows cross compilation on Fedora'
 container_image: 'lammps_testing:fedora_30_cross'
+singularity_image: 'fedora30_mingw'
 builds:
  - cmake_mpi_openmp_smallbig_shared_win64
  - cmake_serial_smallsmall_static_win32
