@@ -22,7 +22,7 @@ export WORKING_DIR=$PWD
 # Set up environment
 ccache -M 5G
 
-if [ -d "pyenv" ]
+if [ -d "pyenv" ]; then
     rm -rf pyenv
 fi
 
@@ -34,7 +34,7 @@ cd $LAMMPS_TESTING_DIR
 # avoid multiple parallel jobs writing in the same temporary directories
 PYTHON_BUILD_DIR=$WORKING_DIR/python_build
 
-if [ -d "$PYTHON_BUILD_DIR" ]
+if [ -d "$PYTHON_BUILD_DIR" ]; then
     rm -rf $PYTHON_BUILD_DIR
 fi
 
