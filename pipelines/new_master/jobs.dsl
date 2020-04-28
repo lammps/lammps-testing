@@ -20,6 +20,23 @@ pipelineJob("dev/master/compilation_tests") {
     }
 }
 
+pipelineJob("dev/master/run_tests") {
+    properties {
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/new_master/run_tests.groovy'))
+            sandbox()
+        }
+    }
+}
+
 pipelineJob("dev/master/build-docs") {
     properties {
         pipelineTriggers {
@@ -60,6 +77,28 @@ configurations.each { yaml_file ->
                 cps {
                     script(readFileFromWorkspace('pipelines/new_master/build.groovy'))
                     sandbox()
+                }
+            }
+        }
+    }
+
+    if(config.containsKey('run_tests')){
+        folder("dev/master/${container}/run_tests")
+
+        config.run_tests.each { name ->
+            pipelineJob("dev/master/${container}/run_tests/${name}") {
+                parameters {
+                    stringParam('GIT_COMMIT')
+                    stringParam('WORKSPACE_PARENT')
+                    stringParam('CONTAINER_NAME', container)
+                    stringParam('CONTAINER_IMAGE', config.container_image)
+                }
+
+                definition {
+                    cps {
+                        script(readFileFromWorkspace('pipelines/new_master/run.groovy'))
+                        sandbox()
+                    }
                 }
             }
         }
