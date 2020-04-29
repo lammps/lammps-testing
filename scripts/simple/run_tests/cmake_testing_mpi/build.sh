@@ -28,6 +28,7 @@ fi
 
 virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
+pip install --upgrade pip setuptools
 
 # install lammps-testing package
 cd $LAMMPS_TESTING_DIR
