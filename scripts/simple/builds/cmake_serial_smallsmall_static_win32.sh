@@ -20,6 +20,7 @@ cd build
 
 # Configure
 ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/mingw-cross.cmake \
+      -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
       -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
       -D BUILD_MPI=off \
