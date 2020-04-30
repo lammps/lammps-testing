@@ -6,18 +6,27 @@ at Temple University.
 
 The tools provided here can also be installed locally for testing on a workstation.
 
+## Prerequisites
+
+* Singularity (https://sylabs.io/guides/3.5/user-guide/)
+
 ## Installation
 
 ```bash
+# regular install
 python setup.py install
+
+# for development install
+python setup.py develop
 ```
 
 ## Configuration
 
 ```bash
+# Example configuration in ~/.bashrc
 export LAMMPS_DIR=$HOME/GitHub/lammps/lammps
 export LAMMPS_TESTING_DIR=$HOME/GitHub/lammps/lammps-testing
-export LAMMPS_CACHE_DIR=$HOME/GitHub/lammps/lammps-testing/build
+export LAMMPS_CACHE_DIR=$HOME/GitHub/lammps/cache
 export LAMMPS_COMPILE_NPROC=24
 ```
 
@@ -32,130 +41,100 @@ Directory storing compiled binaries and containers
 
 ## Overview
 
-`lammps_test` is a utility to build LAMMPS in different configurations with
-both Make and CMake on various containerized platforms and perform both runtime
-tests and regression testing.
+`lammps_test` is a utility to compile LAMMPS in different configurations on
+various environments using containers and perform both run tests
+and regression testing.
 
-It does so by maintaining directory structure of builds based on the current
-Git checkout of LAMMPS located in `LAMMPS_DIR`.
-
-To see the currently available environments and configurations, as well as
-their build status, use the `lammps_test status` command:
-
-```bash
-lammps_test status
-````
-
-## Build environments
+## Containers
 
 To make builds reproducable, `lammps_test` uses Singularity containers for
 building all binaries. Singularity must be installed and the current user must
-have sudo rights to build containers.
+have `sudo` rights to build containers.
 
-Before any compilations can happen you need to create the necessary container.
+Container definitions are located in `containers/singularity/`, built
+containers are stored in `$LAMMPS_CACHE_DIR/containers/`.
 
-```bash
-# build default environment
-lammps_test buildenv
-
-# build NVIDIA build environment
-lammps_test --env=ubuntu_18.04_nvidia buildenv
-```
-
-## LAMMPS Configurations
-
-Configurations define what features should be enabled in a LAMMPS build. They
-are defined by YAML files stored in the `configurations` folder. The following is a
-simple configuration file.
-
-```yaml
----
-mpi: no
-openmp: no
-compiler: g++
-cc: gcc
-cxx: g++
-sizes: smallsmall
-exceptions: no
-packages:
- - MOLECULE
-```
-
-If this file is called `configurations/simple.yml`,
-you can select this configuration as `simple` inside of `lammps_test`.
-
-## Building LAMMPS
-
-To build LAMMPS using a configuration in an environment you can use the `lammps_test build` command.
-It is followed by one ore more configuration names. You can also build all configurations using `ALL`
-
-During a build, `lammps_test` will perform an out-of-source build of LAMMPS
-based on the current commit of the LAMMPS Git repository located in
-`LAMMPS_DIR`. This build will be located in a subdirectory of
-`LAMMPS_CACHE_DIR`.
+While you can create containers in any way you want using the `singularity`
+command-line, there is a utility command for building one or more containers
+with `lammps_test`:
 
 ```bash
-# build LAMMPS with simple configuration
-lammps_test build simple
+# builds all container definitions at once
+lammps_test build_container ALL
 
-# build LAMMPS with serial configuration
-lammps_test build serial
+# only build ubuntu18.04 container
+lammps_test build_container ubuntu18.04
 
-# build LAMMPS with serial and openmpi configuration
-lammps_test build serial openmpi
-
-# build LAMMPS in all configurations
-lammps_test build ALL
+# build multiple containers
+lammps_test build_container ubuntu18.04 centos7 fedora30_mingw
 ```
 
-Once completed, you can always verify the current state of your testing system using `lammps_test status`
+## Compilation Tests
 
-## LAMMPS Builders
+The compilation tests done by the LAMMPS Jenkins server executes several bash
+scripts on multiple containers. Each environment that should be tested defines
+a YAML file in the `scripts/simple/` folder. Currently it has 3 definitions:
 
-`lammps_test` allows you to choose between two builders: `legacy` and `cmake`.
-By default it uses the `legacy` builder, which uses the original Makefiles of
-LAMMPS. Each builder uses the LAMMPS configuration specified by the YAML file
-and transforms it into the appropiate commands to create the specified build.
+* ubuntu.yml
+* centos.yml
+* windows.yml
+
+Each of these environment defines a list of `builds` and the used
+`singularity_image`. The names of the builds correspond to bash scripts located
+in `scripts/simple/builds/<BUILD_NAME>.sh`.
+
+These build scripts assume the necessary environment variables described above
+are defined and will compile LAMMPS in the current working directory.
+`lammps_test compilation` is a wrapper command that create the necessary
+working directory inside of the `$LAMMPS_CACHE_DIR` folder, and then launches
+these scripts inside the correct container.
+
+
+You can build all compilation tests at once as follows:
 
 ```bash
-# build LAMMPS with serial configuration using CMake
-lammps_test build --builder=cmake serial
-
-# build LAMMPS with serial configuration using Legacy Make
-lammps_test build --builder=legacy serial
+# this will launch all ubuntu, centos and windows compilation tests
+lammps_test compilation
 ```
 
-If you want to build in a different environment, add the `--env` option before
-the `build` command:
+To limit the compilation tests to a single environment use the `--config` option:
 
 ```bash
-#################################################################
-# using the NVIDIA environment
-##################################################################
-
-# build LAMMPS with 'testing_gpu_cuda' configuration using CMake
-lammps_test --env=ubuntu_18.04_nvidia build --builder=cmake testing_gpu_cuda
-
-# build LAMMPS with 'testing_gpu_cuda' configuration using Legacy Make
-lammps_test --env=ubuntu_18.04_nvidia build --builder=legacy testing_gpu_cuda
+# only run ubuntu compilation tests
+lammps_test compilation --config ubuntu
 ```
 
-## Running LAMMPS
+If only a few builds in an environment should be run specify the builds with `--builds`:
+
 
 ```bash
-lammps_test run "-in in.melt"
-lammps_test --env=ubuntu_18.04_nvidia run --builder=cmake --config=testing_gpu_cuda "-in in.melt"
+# only run 'cmake_mpi_smallbig_shared' compilation test on ubuntu
+lammps_test compilation --config ubuntu --builds cmake_mpi_smallbig_shared
+
+# run two compilations tests on ubuntu
+lammps_test compilation --config ubuntu --builds cmake_serial_smallsmall_static cmake_mpi_smallbig_shared
 ```
 
-## Running LAMMPS run tests
+## Build directories
+Each build will create its own working directory based on the current Git SHA
+of the `LAMMPS_DIR` checkout.
 
+It will be located in: `$LAMMPS_CACHE_DIR/builds_<CURENT_LAMMPS_SHA>/<CONFIG_NAME>/<BUILD_NAME>`
+
+### Example:
 ```bash
-lammps_test runtests commands
-lammps_test runtests examples
+lammps_test compilation --config ubuntu --builds cmake_mpi_smallbig_shared
 ```
 
-## Running LAMMPS regression testing
+will create the folder:
+`$LAMMPS_CACHE_DIR/builds_<CURENT_LAMMPS_SHA>/ubuntu/cmake_mpi_smallbig_shared`
 
+To modify this behaviour and use the same build directory, independent of the current SHA, use the `--ignore-commit` option:
+
+### Example:
 ```bash
-lammps_test regression --builder=cmake --config=regression tests/examples/granregion/in.granregion.box
+lammps_test compilation --config ubuntu --builds cmake_mpi_smallbig_shared --ignore-commit
 ```
+
+will create the folder:
+`$LAMMPS_CACHE_DIR/builds/ubuntu/cmake_mpi_smallbig_shared`
