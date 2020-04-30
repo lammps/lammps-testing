@@ -1,14 +1,23 @@
 #!/bin/bash -x
-# static
-# shared
 if [ -z "${LAMMPS_DIR}" ]
 then
-        echo "Must set LAMMPS_DIR environment variable"
-        exit 1
+    echo "Must set LAMMPS_DIR environment variable"
+    exit 1
 fi
-BUILD=build-$(basename $0 .sh)
+
+if [ -z "${LAMMPS_CI_RUNNER}" ]
+then
+    # local testing
+    BUILD=build-$(basename $0 .sh)
+else
+    # when running lammps_test or inside jenkins
+    BUILD=build
+fi
+
 LAMMPS_COMPILE_NPROC=${LAMMPS_COMPILE_NPROC-8}
 
+# static
+# shared
 if [ -z "$LAMMPS_MODE" ]
 then
     export LAMMPS_MODE=static

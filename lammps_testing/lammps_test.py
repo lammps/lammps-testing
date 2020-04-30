@@ -106,7 +106,9 @@ class Container:
             logger.info(f"Container '{self.name}' already exists and is up-to-date.")
 
     def exec(self, options=[], command=[], cwd="."):
-        return subprocess.call(['singularity', 'exec'] + options + [self.container, command], cwd=cwd)
+        test_env = os.environ.copy()
+        test_env["LAMMPS_CI_RUNNER"] = "lammps_test"
+        return subprocess.call(['singularity', 'exec'] + options + [self.container, command], cwd=cwd, env=test_env)
 
     def clean(self):
         if self.exists:

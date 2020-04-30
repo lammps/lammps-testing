@@ -1,10 +1,18 @@
 #!/bin/bash -x
 if [ -z "${LAMMPS_DIR}" ]
 then
-        echo "Must set LAMMPS_DIR environment variable"
-        exit 1
+    echo "Must set LAMMPS_DIR environment variable"
+    exit 1
 fi
-BUILD=build-$(basename $0 .sh)
+
+if [ -z "${LAMMPS_CI_RUNNER}" ]
+then
+    # local testing
+    BUILD=build-$(basename $0 .sh)
+else
+    # when running lammps_test or inside jenkins
+    BUILD=build
+fi
 
 CMAKE_COMMAND=mingw32-cmake
 
