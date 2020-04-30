@@ -4,6 +4,9 @@
 |cmake_kokkos_mpi_openmp_clang_shared    | ubuntu18.04     | clang    | smallbig   | yes |  yes   |   yes      | shared  | includes many packages |
 |                                        | fedora32_mingw  |          |            |     |        |            |         |                        |
 |----------------------------------------+-----------------+----------+------------+-----+--------+------------+---------+------------------------|
+|cmake_mpi_openmp_smallbig_shared        | centos7         | gcc      | smallbig   | yes |  yes   |   no       | shared  |                        |
+|                                        | fedora32_mingw  |          |            |     |        |            |         |                        |
+|----------------------------------------+-----------------+----------+------------+-----+--------+------------+---------+------------------------|
 |cmake_mpi_openmp_bigbig_static          | centos7         | gcc      | bigbig     | yes |  yes   |   no       | static  | uses ninja-build       |
 |                                        | ubuntu18.04     |          |            |     |        |            |         |                        |
 |----------------------------------------+-----------------+----------+------------+-----+--------+------------+---------+------------------------|
