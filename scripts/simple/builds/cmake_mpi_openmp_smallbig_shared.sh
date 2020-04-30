@@ -19,8 +19,6 @@ else
 fi
 
 LAMMPS_COMPILE_NPROC=${LAMMPS_COMPILE_NPROC-8}
-LAMMPS_CXX_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -O"
-LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -O"
 
 export CCACHE_DIR="$PWD/.ccache"
 export PYTHON=$(which python3)
@@ -41,9 +39,7 @@ cd ${BUILD}
 # Configure
 ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
-      -D CMAKE_CUDA_COMPILER_LAUNCHER=ccache \
-      -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
-      -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
+      -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \

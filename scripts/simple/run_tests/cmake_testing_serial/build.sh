@@ -17,15 +17,30 @@ LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitializ
 
 export CCACHE_DIR="$PWD/.ccache"
 export PYTHON=$(which python3)
+export WORKING_DIR=$PWD
 
 # Set up environment
 ccache -M 5G
+
+if [ -d "pyenv" ]; then
+    rm -rf pyenv
+fi
+
 virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
 
 # install lammps-testing package
 cd $LAMMPS_TESTING_DIR
-python setup.py install
+# avoid multiple parallel jobs writing in the same temporary directories
+PYTHON_BUILD_DIR=$WORKING_DIR/python_build
+
+if [ -d "$PYTHON_BUILD_DIR" ]; then
+    rm -rf $PYTHON_BUILD_DIR
+fi
+
+mkdir -p $PYTHON_BUILD_DIR
+python setup.py egg_info --egg-base $PYTHON_BUILD_DIR build --build-base $PYTHON_BUILD_DIR/build install || exit 1
+
 cd $WORKING_DIR
 
 # Create build directory
@@ -43,10 +58,10 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D ENABLE_COVERAGE=on \
-      -D BUILD_MPI=on \
+      -D BUILD_MPI=off \
       -D BUILD_OMP=off \
       -D BUILD_SHARED_LIBS=on \
-      -D LAMMPS_SIZES=SMALLBIG \
+      -D LAMMPS_SIZES=SMALLSMALL \
       -D LAMMPS_EXCEPTIONS=on \
       -D PKG_ASPHERE=on \
       -D PKG_BODY=on \
@@ -100,8 +115,6 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D PKG_USER-TALLY=on \
       -D PKG_USER-UEF=on \
       -D PKG_USER-YAFF=on \
-      -D PKG_MPIIO=on \
-      -D PKG_USER-LB=on \
       -D PKG_VORONOI=on \
       -D PKG_USER-ATC=on \
       ${LAMMPS_DIR}/cmake || exit 1

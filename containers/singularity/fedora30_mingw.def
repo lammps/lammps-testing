@@ -1,0 +1,2 @@
+BootStrap: library
+From: lammps/default/lammps_development:fedora30_mingw

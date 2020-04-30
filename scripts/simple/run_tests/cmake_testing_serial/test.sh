@@ -20,6 +20,6 @@ export LAMMPS_TESTING_NPROC=8
 
 lammps_run_tests --processes ${LAMMPS_TESTING_NPROC} tests/test_commands.py tests/test_examples.py
 
-make -C build gen_coverage_xml
+gcovr -s -x -r ${LAMMPS_DIR}/src --object-directory=${PWD}/build -o build/coverage.xml
 
 deactivate

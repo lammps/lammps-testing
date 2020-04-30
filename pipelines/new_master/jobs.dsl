@@ -4,7 +4,10 @@ import org.yaml.snakeyaml.Yaml
 folder('dev/master')
 
 pipelineJob("dev/master/compilation_tests") {
+    quietPeriod(120)
+
     properties {
+        disableConcurrentBuilds()
         pipelineTriggers {
             triggers {
                 githubPush()
@@ -21,7 +24,10 @@ pipelineJob("dev/master/compilation_tests") {
 }
 
 pipelineJob("dev/master/run_tests") {
+    quietPeriod(120)
+
     properties {
+        disableConcurrentBuilds()
         pipelineTriggers {
             triggers {
                 githubPush()
@@ -38,6 +44,8 @@ pipelineJob("dev/master/run_tests") {
 }
 
 pipelineJob("dev/master/build-docs") {
+    quietPeriod(120)
+
     properties {
         pipelineTriggers {
             triggers {
@@ -91,7 +99,7 @@ configurations.each { yaml_file ->
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
                     stringParam('CONTAINER_NAME', container)
-                    stringParam('CONTAINER_IMAGE', config.container_image)
+                    stringParam('CONTAINER_IMAGE', config.singularity_image)
                 }
 
                 definition {
@@ -100,6 +108,45 @@ configurations.each { yaml_file ->
                         sandbox()
                     }
                 }
+            }
+        }
+    }
+}
+
+folder('dev/containers')
+
+def container_folder = workspace.child('containers/singularity')
+def container_definitions = container_folder.list('*.def')
+
+container_definitions.each { definition_file ->
+    def name = definition_file.getBaseName()
+
+    pipelineJob("dev/containers/${name}") {
+        triggers {
+            githubPush()
+        }
+
+        concurrentBuild(false)
+
+        definition {
+            cpsScm {
+                scm {
+                    git {
+                        remote {
+                            github('lammps/lammps-testing')
+                            credentials('lammps-jenkins')
+                        }
+
+                        branches('lammps_test')
+
+                        configure { gitScm ->
+                            gitScm / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
+                              includedRegions("pipelines/new_master/singularity_container.groovy\ncontainers/singularity/${name}.def")
+                          }
+                        }
+                    }
+                }
+                scriptPath("pipelines/new_master/singularity_container.groovy")
             }
         }
     }

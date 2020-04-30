@@ -1,5 +1,6 @@
 display_name: 'Ubuntu 18.04'
 container_image: 'lammps_testing:ubuntu_18.04'
+singularity_image: 'ubuntu18.04'
 builds:
  - cmake_kokkos_mpi_openmp_clang_shared
  - cmake_mpi_openmp_bigbig_static
@@ -7,4 +8,6 @@ builds:
  - legacy_serial_smallsmall_static
 
 run_tests:
- - cmake_testing
+ - cmake_testing_serial
+ - cmake_testing_mpi
+ - cmake_testing_openmp
