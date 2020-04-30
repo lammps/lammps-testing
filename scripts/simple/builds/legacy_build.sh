@@ -1,6 +1,14 @@
-#!/bin/bash
+#!/bin/bash -x
 # static
 # shared
+if [ -z "${LAMMPS_DIR}" ]
+then
+        echo "Must set LAMMPS_DIR environment variable"
+        exit 1
+fi
+BUILD=build-$(basename $0 .sh)
+LAMMPS_COMPILE_NPROC=${LAMMPS_COMPILE_NPROC-8}
+
 if [ -z "$LAMMPS_MODE" ]
 then
     export LAMMPS_MODE=static
@@ -52,7 +60,6 @@ if [ -z "$LAMMPS_PACKAGES_ARRAY" ]
 then
     IFS=':' read -a LAMMPS_PACKAGES_ARRAY <<< "${LAMMPS_PACKAGES}"
 fi
-
 
 enable_packages() {
     echo "Enable packages..."
@@ -154,21 +161,23 @@ ccache -M 5G
 # Create copy of LAMMPS directory
 echo "Copy sources..."
 
-mkdir -p lammps
-rsync -a --delete --include='src/***' --include='lib/***' --include='potentials/***' --include='python/***' --exclude='*' ${LAMMPS_DIR}/ lammps/
+mkdir -p ${BUILD}/lammps
+rsync -a --delete --include='src/***' --include='lib/***' --include='potentials/***' --include='python/***' --exclude='*' ${LAMMPS_DIR}/ ${BUILD}/lammps/
 
-export LAMMPS_DIR=$PWD
+export LAMMPS_DIR=${BUILD}/lammps
 
 virtualenv --python=$PYTHON pyenv
 
 source pyenv/bin/activate
 
+build_libraries
+
+rm -f ${LAMMPS_DIR}/src/Makefile.package ${LAMMPS_DIR}/src/Makefile.package.settings
+
 enable_packages
 
 # Build
-build_libraries
-
-make -j 8 -C ${LAMMPS_DIR}/src mode=${LAMMPS_MODE} ${LAMMPS_TARGET} MACH=${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" LINK="${LAMMPS_COMPILER}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
+make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/src mode=${LAMMPS_MODE} ${LAMMPS_TARGET} MACH=${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" LINK="${LAMMPS_COMPILER}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
 
 if [[ ("${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-python"*) ]]
 then

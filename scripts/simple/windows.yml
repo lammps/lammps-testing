@@ -1,5 +1,7 @@
-display_name: 'Windows cross compilation on Fedora'
-container_image: 'lammps_testing:fedora_30_cross'
+display_name: 'Fedora Linux and MinGW Cross-compile'
+container_image: 'lammps_testing:fedora_32_cross'
 builds:
+ - cmake_kokkos_mpi_openmp_clang_shared
+ - cmake_serial_smallsmall_static
  - cmake_mpi_openmp_smallbig_shared_win64
  - cmake_serial_smallsmall_static_win32

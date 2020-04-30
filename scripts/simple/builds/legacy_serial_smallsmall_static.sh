@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 SCRIPTDIR="$(dirname "$(realpath "$0")")"
 
 export LAMMPS_MODE=static
@@ -10,8 +10,6 @@ LAMMPS_PACKAGES=(
                  yes-all
                  no-lib
                  no-mpiio
-                 no-user-omp
-                 no-user-intel
                  no-user-lb
                  no-user-smd
                  yes-user-molfile

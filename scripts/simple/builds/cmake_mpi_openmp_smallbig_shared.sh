@@ -19,8 +19,8 @@ else
 fi
 
 LAMMPS_COMPILE_NPROC=${LAMMPS_COMPILE_NPROC-8}
-LAMMPS_CXX_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
-LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized"
+LAMMPS_CXX_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -O"
+LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -O"
 
 export CCACHE_DIR="$PWD/.ccache"
 export PYTHON=$(which python3)
@@ -50,9 +50,6 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -D BUILD_SHARED_LIBS=on \
       -D LAMMPS_SIZES=SMALLBIG \
       -D LAMMPS_EXCEPTIONS=on \
-      -D PKG_GPU=on \
-      -D GPU_API=cuda \
-      -D GPU_ARCH=sm_50 \
       -D PKG_VORONOI=on \
       -D PKG_USER-OMP=on \
       -D PKG_USER-INTEL=on \

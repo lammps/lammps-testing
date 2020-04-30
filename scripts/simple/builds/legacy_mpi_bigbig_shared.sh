@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 SCRIPTDIR="$(dirname "$(realpath "$0")")"
 
 export LAMMPS_COMPILER=mpicxx
