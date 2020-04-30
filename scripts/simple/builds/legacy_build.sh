@@ -56,17 +56,12 @@ then
     export CXX=g++
 fi
 
-if [ -z "$LAMMPS_PACKAGES_ARRAY" ]
-then
-    IFS=':' read -a LAMMPS_PACKAGES_ARRAY <<< "${LAMMPS_PACKAGES}"
-fi
-
 enable_packages() {
     echo "Enable packages..."
     make -C ${LAMMPS_DIR}/src purge
     make -C ${LAMMPS_DIR}/src clean-all
 
-    for PKG in "${LAMMPS_PACKAGES_ARRAY[@]}"
+    for PKG in "${LAMMPS_PACKAGES[@]}"
     do
         make -C ${LAMMPS_DIR}/src $PKG
     done
@@ -76,48 +71,48 @@ build_libraries() {
     echo "Build libraries..."
     make -C ${LAMMPS_DIR}/src/STUBS clean
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-colvars"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-colvars"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} CXX="${LAMMPS_COMPILER} -std=c++11"
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-poems"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-poems"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" LINK="${LAMMPS_COMPILER}"
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-awpmd"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-awpmd"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" EXTRAMAKE=Makefile.lammps.installed
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-h5md"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-h5md"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/h5md -f Makefile.h5cc clean
         make -j 8 -C ${LAMMPS_DIR}/lib/h5md -f Makefile.h5cc
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-voronoi"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-voronoi"* ]]
     then
         make -C ${LAMMPS_DIR}/src lib-voronoi args="-b"
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-atc"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-atc"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} EXTRAMAKE="Makefile.lammps.installed"
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-qmmm"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-qmmm"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/qmmm -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/qmmm -f Makefile.${LAMMPS_MACH}
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-smd"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-smd"* ]]
     then
         make -C ${LAMMPS_DIR}/src lib-smd args="-p /usr/include/eigen3"
     fi
