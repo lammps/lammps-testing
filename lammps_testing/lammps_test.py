@@ -13,18 +13,11 @@ import threading
 import time
 from datetime import datetime
 from pathlib import Path
+from collections import namedtuple
 
 import yaml
 
 from termcolor import colored
-
-DEFAULT_CONFIG='serial'
-DEFAULT_ENV='ubuntu_18.04'
-DEFAULT_BUILDER='cmake'
-DEFAULT_MODE='static'
-
-LAMMPS_BUILDERS=('legacy', 'cmake')
-LAMMPS_BUILD_MODES=('static', 'shared')
 
 logger = logging.getLogger('lammps_test')
 logger.setLevel(logging.DEBUG)
@@ -37,9 +30,6 @@ def file_is_newer(a, b):
 
 class Settings:
     def __init__(self):
-        self.default_config = DEFAULT_CONFIG
-        self.default_env    = DEFAULT_ENV
-
         if 'LAMMPS_DIR' not in os.environ:
             logger.error("lammps_test requires the LAMMPS_DIR environment variable to be set!")
             sys.exit(1)
@@ -72,7 +62,15 @@ class Settings:
 
     @property
     def configuration_dir(self):
-        return os.path.join(os.environ['LAMMPS_TESTING_DIR'], 'configurations')
+        return os.path.join(os.environ['LAMMPS_TESTING_DIR'], 'scripts', 'simple')
+
+    @property
+    def build_scripts_dir(self):
+        return os.path.join(self.configuration_dir, 'builds')
+
+    @property
+    def run_tests_scripts_dir(self):
+        return os.path.join(self.configuration_dir, 'run_tests')
 
     @property
     def lammps_dir(self):
@@ -81,6 +79,12 @@ class Settings:
     @property
     def lammps_testing_dir(self):
         return os.environ['LAMMPS_TESTING_DIR']
+
+    @property
+    def current_lammps_commit(self):
+        return subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=self.lammps_dir).decode().strip()
+
+
 
 class Container:
     def __init__(self, name, container, container_definition):
@@ -101,6 +105,9 @@ class Container:
         else:
             logger.info(f"Container '{self.name}' already exists and is up-to-date.")
 
+    def exec(self, options=[], command=[], cwd="."):
+        return subprocess.call(['singularity', 'exec'] + options + [self.container, command], cwd=cwd)
+
     def clean(self):
         if self.exists:
             logger.info(f"Deleting container '{self.name}'...")
@@ -110,264 +117,6 @@ class Container:
     def exists(self):
         return os.path.exists(self.container)
 
-
-class LAMMPSConfiguration(object):
-    def __init__(self, filename, lammps_dir):
-        self.filename = filename
-        self.lammps_dir = lammps_dir
-
-        # set defaults
-        self.mpi = False
-        self.openmp = False
-        self.shared = False
-        self.binary = True
-        self.library = False
-        self.compiler = 'g++'
-        self.cc = 'gcc'
-        self.cxx = 'g++'
-        self.sizes = 'smallbig'
-        self.exceptions = False
-        self.package_options = {}
-        self.packages = []
-        self.attributes_changed = set()
-
-        # load values from configuration file
-        with open(filename, 'r') as f:
-            loaded_dict = yaml.load(f, Loader=yaml.FullLoader)
-
-            for k, v in loaded_dict.items():
-                setattr(self, k.lower(), v)
-                self.attributes_changed.add(k)
-
-    @property
-    def name(self):
-        return Path(self.filename).stem
-
-    def __str__(self):
-        s =  "LAMMPS Configuration\n"
-        s += "--------------------\n"
-        s += "  MPI:         {}\n".format("yes" if self.mpi else "no")
-        s += "  OpenMP:      {}\n".format("yes" if self.openmp else "no")
-        s += "  Shared:      {}\n".format("yes" if self.shared else "no")
-        s += "  Binary:      {}\n".format("yes" if self.binary else "no")
-        s += "  Library:     {}\n".format("yes" if self.library else "no")
-        s += f"  Compiler:    {self.compiler}\n"
-        s += f"  CC:          {self.cc}\n"
-        s += f"  CXX:         {self.cxx}\n"
-        s += f"  Sizes:       {self.sizes}\n"
-        s += "  Exceptions:  {}\n".format("yes" if self.exceptions else "no")
-        s += "--------------------\n"
-        s += "  Packages:\n"
-        s += "--------------------\n"
-
-        for pkg in sorted(self.packages):
-            s += f" - {pkg}\n"
-
-        s += "--------------------\n"
-        s += "  Packages Options:\n"
-        s += "--------------------\n"
-
-        for pkg in sorted(self.package_options.keys()):
-            if pkg.upper() not in set([p.upper() for p in self.packages]):
-                s += f" - {pkg}: ignored since not enabled\n"
-                continue
-
-            s += f" - {pkg}:\n"
-            options = self.package_options[pkg]
-            for k in sorted(options.keys()):
-                s += f"     {k}: {options[k]}"
-
-        return s
-
-class LAMMPSBuild:
-    def __init__(self, container, config, settings, commit):
-        self.container = container
-        self.config = config
-        self.settings = settings
-        self.commit = commit
-
-    @property
-    def name(self):
-        raise NotImplementedError()
-
-    @property
-    def working_dir(self):
-        return os.path.join(self.settings.cache_dir, f"builds_{self.commit}", self.name)
-
-    def clean(self):
-        if os.path.exists(self.working_dir):
-            print(f"Deleting {self.working_dir}...")
-            shutil.rmtree(self.working_dir)
-
-    @property
-    def build_log(self):
-        return os.path.join(self.working_dir, 'build.log')
-
-    @property
-    def exists(self):
-        return os.path.exists(self.working_dir)
-
-    def build(self):
-        pass
-
-    @property
-    def success(self):
-        lammps_binary = os.path.join(self.working_dir, 'pyenv', 'bin', 'lmp')
-        lammps_shared_library = os.path.join(self.working_dir, 'pyenv', 'lib', 'liblammps.so')
-        return os.path.exists(lammps_binary) or os.path.exists(lammps_shared_library)
-
-    def run_command(self, command, env):
-        running = True
-
-        def heartbeat():
-            i = 0
-            while(running):
-                sys.stdout.write(f"⚙️  {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit[:8]}    Status: Building" + '.'*i + ' '*(3-i) + '\r')
-                time.sleep(1)
-                i = (i + 1) % 4
-
-        t = threading.Thread(target=heartbeat, daemon=True)
-        t.start()
-
-        with open(self.build_log, 'wb') as build_log:
-            subprocess.call(command, env=env, cwd=self.working_dir, stdout=build_log, stderr=subprocess.STDOUT)
-
-        running = False
-        t.join()
-
-        if self.success:
-            print(f"✅ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit[:8]}    Status: OK          ")
-        else:
-            print(f"❌ {colored(self.name, attrs=['bold']):<60}    Commit: {self.commit[:8]}    Status: Failed      ")
-            print(f"   See build log at {self.build_log}")
-
-
-class CMakeBuild(LAMMPSBuild):
-    def __init__(self, container, config, settings, commit, mode=DEFAULT_MODE):
-        super().__init__(container, config, settings, commit)
-        self.mode = mode
-
-    @property
-    def name(self):
-        if self.container:
-            return f"{self.container.name}_cmake_{self.config.name}_{self.mode}"
-        return f"local_cmake_{self.config.name}_{self.mode}"
-
-    def build_options(self):
-        options=[]
-
-        if 'VORONOI' in self.config.packages or 'voronoi' in self.config.packages:
-            options.append('-D DOWNLOAD_VORO=on')
-
-        if 'MSCG' in self.config.packages or 'mscg' in self.config.packages:
-            options.append('-D DOWNLOAD_MSCG=on')
-
-        if 'USER-PLUMED' in self.config.packages or 'user-plumed' in self.config.packages:
-            options.append('-D DOWNLOAD_PLUMED=on')
-
-        if 'GPU' in self.config.packages or 'gpu' in self.config.packages:
-            if 'gpu' in self.config.package_options:
-                gpu_options = self.config.package_options['gpu']
-            elif 'GPU' in self.config.packages_options:
-                gpu_options = self.config.package_options['gpu']
-            else:
-                gpu_options = {'api': 'opencl'}
-
-            if gpu_options['api'] == 'cuda':
-                options.append('-D CMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs')
-
-            options.append(f'-D GPU_API={gpu_options["api"]}')
-
-        if self.config.mpi:
-            options.append('-D BUILD_MPI=on')
-        else:
-            options.append('-D BUILD_MPI=off')
-
-        if self.config.openmp:
-            options.append('-D BUILD_OMP=on')
-        else:
-            options.append('-D BUILD_OMP=off')
-
-        if self.mode == 'static':
-            options.append('-D BUILD_SHARED_LIBS=off')
-        elif self.mode == 'shared':
-            options.append('-D BUILD_SHARED_LIBS=on')
-
-        for pkg in self.config.packages:
-            options.append(f'-D PKG_{pkg.upper()}=on')
-
-        return options
-
-
-    def build(self):
-        logger.info("Building with CMake...")
-        logger.debug(self.config)
-        options = self.build_options()
-
-        build_env = os.environ.copy()
-        build_env["LAMMPS_COMMIT"] = self.commit
-        build_env["LAMMPS_C_FLAGS"]   = "-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -Wreorder"
-        build_env["LAMMPS_CXX_FLAGS"] = "-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized -Wreorder"
-        build_env["CC"] = self.config.cc
-        build_env["CXX"] = self.config.cxx
-        build_env["LAMMPS_CMAKE_OPTIONS"] = " ".join(options)
-
-        logger.debug(f"Workdir: {self.working_dir}")
-        os.makedirs(self.working_dir, exist_ok=True)
-        scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
-        cmake_build_script = os.path.join(scripts_dir, 'CMakeBuild.sh')
-
-        if self.container:
-            self.run_command(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, cmake_build_script], env=build_env)
-        else:
-            self.run_command([cmake_build_script], env=build_env)
-
-class LegacyBuild(LAMMPSBuild):
-    def __init__(self, container, config, settings, commit, mode='exe'):
-        super().__init__(container, config, settings, commit)
-        self.mode = mode
-
-        if config.mpi:
-            self.mach = "mpi"
-            self.target = "mpi"
-        else:
-            self.mach = "serial"
-            self.target = "serial"
-
-    @property
-    def name(self):
-        if self.container:
-            return f"{self.container.name}_legacy_{self.config.name}_{self.mode}"
-        return f"local_legacy_{self.config.name}_{self.mode}"
-
-    def get_lammps_packages(self):
-        s = "no-all"
-        for pkg in self.config.packages:
-            s += f":yes-{pkg.lower()}"
-        return s
-
-    def build(self):
-        logger.debug(self.config)
-        build_env = os.environ.copy()
-        build_env["LAMMPS_COMMIT"] = self.commit
-        build_env["LAMMPS_MODE"] = self.mode
-        build_env["LAMMPS_MACH"] = self.mach
-        build_env["LAMMPS_TARGET"] = self.target
-        build_env["LAMMPS_COMPILER"] = self.config.compiler
-        build_env["CC"] = self.config.cc
-        build_env["CXX"] = self.config.cxx
-        build_env["LAMMPS_PACKAGES"] = self.get_lammps_packages()
-
-        logger.info("Building with Legacy...")
-        logger.info(f"Workdir: {self.working_dir}")
-        os.makedirs(self.working_dir, exist_ok=True)
-        scripts_dir = os.path.join(self.settings.lammps_testing_dir, 'scripts')
-        legacy_build_script = os.path.join(scripts_dir, 'LegacyBuild.sh')
-
-        if self.container:
-            self.run_command(['singularity', 'run', '-B', f'{self.settings.lammps_dir}/:{self.settings.lammps_dir}/', '-B', f'{scripts_dir}/:{scripts_dir}/', self.container.container, legacy_build_script], env=build_env)
-        else:
-            self.run_command([legacy_build_script], env=build_env)
 
 class TestRunner():
     def __init__(self, builder, settings):
@@ -389,7 +138,7 @@ class TestRunner():
 
     def run(self):
         if not self.container.exists:
-            logger.error(f"Container '{self.container.name}' is missing! Build with 'lammps_test --env={self.container.name} buildenv' first!")
+            logger.error(f"Container '{self.container.name}' is missing! Build with 'lammps_test build_container {self.container.name}' first!")
             sys.exit(-1)
         if not self.builder.exists:
             logger.error(f"LAMMPS build '{self.builder.name}' is missing! Build with 'lammps_test build' first!")
@@ -432,7 +181,7 @@ class LocalRunner(object):
 
     def run(self, args, stdout=None):
         if not self.container.exists:
-            logger.error(f"Container '{self.container.name}' is missing! Build with 'lammps_test --env={self.container.name} buildenv' first!")
+            logger.error(f"Container '{self.container.name}' is missing! Build with 'lammps_test build_container {self.container.name}' first!")
             sys.exit(-1)
         if not self.builder.exists:
             logger.error(f"LAMMPS build '{self.builder.name}' is missing! Build with 'lammps_test build' first!")
@@ -477,6 +226,11 @@ def get_containers(settings):
     containers = get_names(os.path.join(settings.container_definition_dir, '*.def'))
     return [get_container(c, settings) for c in sorted(containers)]
 
+def get_containers_by_selector(selector, settings):
+    if 'all' in selector or 'ALL' in selector:
+        return get_containers(settings)
+    return [get_container(c, settings) for c in sorted(selector)]
+
 def get_configurations(settings):
     configurations = get_names(os.path.join(settings.configuration_dir, '*.yml'))
     return [get_configuration(c, settings) for c in sorted(configurations)]
@@ -488,18 +242,15 @@ def get_commits(settings):
 def get_configuration(name, settings):
     configfile = os.path.join(settings.configuration_dir, name + ".yml")
     if os.path.exists(configfile):
-        return LAMMPSConfiguration(configfile, settings.lammps_dir)
+        with open(configfile) as f:
+            config = yaml.full_load(f)
+            return namedtuple("Configuration", ['name'] + list(config.keys()))(name, *config.values())
     raise FileNotFoundError(configfile)
 
 def get_configurations_by_selector(selector, settings):
     if 'all' in selector or 'ALL' in selector:
         return get_configurations(settings)
     return [get_configuration(c, settings) for c in sorted(selector)]
-
-def get_modes_by_selector(selector, settings):
-    if selector == 'all' or selector == 'ALL':
-        return LAMMPS_BUILD_MODES
-    return selector.split(',')
 
 def get_lammps_build(builder, container, config, settings, commit, mode='exe'):
     if builder == 'cmake':
@@ -540,55 +291,26 @@ def status(args, settings):
     containers = [None] + containers
 
     print()
-    print("Commits:")
-    commits = get_commits(settings)
-    for c in commits:
-        print("-", c)
-
-    print()
     print("Configurations:")
     configurations = get_configurations(settings)
 
-    for builder in LAMMPS_BUILDERS:
+    for config in configurations:
         print()
-        print(f' {builder} '.center(120, "#"))
-        for container in containers:
-            show_configs = set()
+        print(f' {config.name} '.center(120, "+"))
+        print()
 
-            for config in configurations:
-                for mode in LAMMPS_BUILD_MODES:
-                    for commit in commits:
-                        build = get_lammps_build(builder, container, config, settings, commit, mode)
-                        if build.exists:
-                            show_configs.add(config)
+        print("Builds:")
 
-            if args.verbose or len(show_configs) > 0:
-                if container:
-                    print()
-                    print(f' {container.name} '.center(120, "+"))
-                    print()
-                else:
-                    print()
-                    print(f' local '.center(120, "+"))
-                    print()
+        for build in config.builds:
+            print(" ", f"{build:<40}")
 
-                for commit in commits:
-                    for config in configurations:
-                        if not args.verbose and (config not in show_configs):
-                            continue
 
-                        if config.name == DEFAULT_CONFIG:
-                            print(" ", colored(f"{config.name + ' [default]':<40}", attrs=['bold']), end="")
-                        else:
-                            print(" ", f"{config.name:<40}", end="")
-                        for mode in LAMMPS_BUILD_MODES:
-                                b = get_lammps_build(builder, container, config, settings, commit, mode)
-                                print(build_status(b, mode), end=" ")
+        if hasattr(config, 'run_tests'):
+            print()
+            print("Run Tests:")
 
-                    print()
-    print()
-    if not args.verbose:
-        print("To see all possible configurations, use the -v option.")
+            for run in config.run_tests:
+                print(" ", f"{run:<40}")
 
 def cleanall(args, settings):
     if args.env == 'all':
@@ -621,31 +343,38 @@ def clean(args, settings):
         logger.error(e)
         sys.exit(1)
 
-def buildenv(args, settings):
-    c = get_container(args.env, settings)
-    c.build()
+def build_container(args, settings):
+    for c in get_containers_by_selector(args.images, settings):
+        c.build()
 
-def cleanenv(args, settings):
-    c = get_container(args.env, settings)
-    c.clean()
+def clean_container(args, settings):
+    for c in get_containers_by_selector(args.images, settings):
+        c.clean()
 
-def build(args, settings):
-    c = get_container(args.env, settings)
-
-    if c and not c.exists:
-        print(f"Missing container '{c.name}'\n")
+def ensure_container_exists(container):
+    if not container.exists:
+        print(f"Missing container '{self.name}'\n")
         print("Build container environment first!\n")
-        print(f"Usage: lammps_test --env={c.name} buildenv")
+        print(f"Usage: lammps_test buildenv --env={self.name}")
         sys.exit(1)
 
+def build(args, settings):
     try:
         configurations = get_configurations_by_selector(args.config, settings)
-        modes = get_modes_by_selector(args.mode, settings)
-        commit = get_lammps_commit(args.commit, settings)
+
         for config in configurations:
-            for mode in modes:
-                builder = get_lammps_build(args.builder, c, config, settings, commit, mode)
-                builder.build()
+            if args.builds == 'ALL':
+                builds = config.builds
+            else:
+                builds = [b for b in config.builds if b in args.builds]
+
+            c = get_container(config.singularity_image, settings)
+
+            ensure_container_exists(c)
+
+            for build in builds:
+                b = LAMMPSBuild(build, config, settings)
+
     except FileNotFoundError as e:
         logger.error("Configuration does not exist!")
         logger.error(e)
@@ -933,12 +662,66 @@ def checkstyle(args, settings):
         except Exception as e:
             print(f"{filename}:exception while reading file:{e}")
 
+class CompilationTest(object):
+    def __init__(self, container, settings, ignore_lammps_commit=False):
+        self.container = container
+        self.settings = settings
+        self.ignore_lammps_commit = ignore_lammps_commit
+
+    @property
+    def build_base_dir(self):
+        if self.ignore_lammps_commit:
+            return os.path.join(self.settings.cache_dir, f'builds')
+        return os.path.join(self.settings.cache_dir, f'builds_{self.settings.current_lammps_commit}')
+
+    def get_build_dir(self, build_name):
+        return os.path.join(self.build_base_dir, self.container.name, build_name)
+
+    def get_build_script(self, build_name):
+        return os.path.join(self.settings.build_scripts_dir, f"{build_name}.sh")
+
+    def build(self, build_name):
+        workdir = self.get_build_dir(build_name)
+        build_script = self.get_build_script(build_name)
+
+        os.makedirs(workdir, exist_ok=True)
+        LAMMPS_DIR = self.settings.lammps_dir
+        BUILD_SCRIPTS_DIR = self.settings.build_scripts_dir
+        return self.container.exec(options=['-B', f'{LAMMPS_DIR}/:{LAMMPS_DIR}/', '-B', f'{BUILD_SCRIPTS_DIR}/:{BUILD_SCRIPTS_DIR}/'],
+                                   command=build_script,
+                                   cwd=workdir) == 0
+
+def compilation_test(args, settings):
+    selected_config = args.config
+    selected_builds = args.builds
+    configurations = get_configurations(settings)
+
+    for config in configurations:
+        if 'ALL' not in selected_config and config.name not in selected_config:
+            continue
+
+        container = get_container(config.singularity_image, settings)
+
+        if not container.exists:
+            logger.error(f"Can not find container: {container}")
+            sys.exit(1)
+
+        compTest = CompilationTest(container, settings, args.ignore_commit)
+
+        for build_name in config.builds:
+            if 'ALL' not in selected_builds and build_name not in selected_builds:
+                continue
+
+            if not compTest.build(build_name):
+                print(f"Compilation of '{build_name}' on '{container.name}' FAILED!")
+                sys.exit(1)
+
+
 def main():
     s = Settings()
 
     # create the top-level parser
     parser = argparse.ArgumentParser(prog='lammps_test')
-    parser.add_argument('--env', default=s.default_env, help=f'name of container environment (default: {DEFAULT_ENV})')
     subparsers = parser.add_subparsers(help='sub-command help')
 
     # create the parser for the "status" command
@@ -946,65 +729,43 @@ def main():
     parser_status.add_argument('-v', '--verbose', action='store_true', help='show verbose output')
     parser_status.set_defaults(func=status)
 
-    # create the parser for the "clean" command
-    parser_clean = subparsers.add_parser('clean', help='clean up cache directory')
-    parser_clean.add_argument('--builder', choices=LAMMPS_BUILDERS, default=DEFAULT_BUILDER, help='compilation builder')
-    parser_clean.add_argument('--mode', type=str, default=DEFAULT_MODE, help='compilation mode (static, shared, all or any comma separated list)')
-    parser_clean.add_argument('config', nargs='+', help='name of configuration file or all')
-    parser_clean.set_defaults(func=clean)
-
     # create the parser for the "checkstyle" command
-    parser_checkstyle = subparsers.add_parser('checkstyle', help='check current checkout for code style issues')
-    parser_checkstyle.set_defaults(func=checkstyle)
+    #parser_checkstyle = subparsers.add_parser('checkstyle', help='check current checkout for code style issues')
+    #parser_checkstyle.set_defaults(func=checkstyle)
 
-    # create the parser for the "buildenv" command
-    parser_buildenv = subparsers.add_parser('buildenv', help='build container environment')
-    parser_buildenv.set_defaults(func=buildenv)
+    # create the parser for the "build_container" command
+    parser_build_container = subparsers.add_parser('build_container', help='build container image(s)')
+    parser_build_container.add_argument('images', metavar='image_name', nargs='+', help='container image names')
+    parser_build_container.set_defaults(func=build_container)
 
-    # create the parser for the "cleanenv" command
-    parser_cleanenv = subparsers.add_parser('cleanenv', help='clean container environment')
-    parser_cleanenv.set_defaults(func=cleanenv)
+    # create the parser for the "clean_container" command
+    parser_clean_container = subparsers.add_parser('clean_container', help='clean container image(s)')
+    parser_clean_container.add_argument('images', metavar='image_name', nargs='+', help='container image names')
+    parser_clean_container.set_defaults(func=clean_container)
 
     # create the parser for the "cleanall" command
-    parser_cleanall = subparsers.add_parser('cleanall', help='clean container environment and all builds')
-    parser_cleanall.set_defaults(func=cleanall)
+    #parser_cleanall = subparsers.add_parser('cleanall', help='clean container environment and all builds')
+    #parser_cleanall.set_defaults(func=cleanall)
 
-    # create the parser for the "build" command
-    parser_build = subparsers.add_parser('build', help='build LAMMPS using a predefined configuration')
-    parser_build.add_argument('--builder', choices=LAMMPS_BUILDERS, default=DEFAULT_BUILDER, help='compilation builder')
-    parser_build.add_argument('--mode', type=str, default=DEFAULT_MODE, help='compilation mode (static, shared, all or any comma separated list)')
-    parser_build.add_argument('--commit', type=str, default='HEAD', help='name of commit (SHA or equivalent)')
-    parser_build.add_argument('config', nargs='+', help='name of configuration file or all')
-    parser_build.set_defaults(func=build)
-
-    # create the parser for the "runtests" command
-    parser_runtests = subparsers.add_parser('runtests', help='run LAMMPS test(s)')
-    parser_runtests.add_argument('--builder', choices=('legacy', 'cmake'), default=DEFAULT_BUILDER, help='compilation builder')
-    parser_runtests.add_argument('--config', default='serial', help='compilation configuration')
-    parser_runtests.add_argument('--mode', type=str, default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both, all or any comma separated list)')
-    parser_runtests.add_argument('test', help='name of tests or testsuite')
-    parser_runtests.set_defaults(func=runtests)
-
-    # create the parser for the "run" command
-    parser_run = subparsers.add_parser('run', help='run LAMMPS in current working directory')
-    parser_run.add_argument('--builder', choices=LAMMPS_BUILDERS, default=DEFAULT_BUILDER, help='compilation builder')
-    parser_run.add_argument('--config', default=DEFAULT_CONFIG, help='compilation configuration')
-    parser_run.add_argument('--mode', choices=LAMMPS_BUILD_MODES, default=DEFAULT_MODE, help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
-    parser_run.add_argument('args', help='arguments passed to LAMMPS binary')
-    parser_run.set_defaults(func=run)
+    # create the parser for the "compilation" command
+    parser_compilation_test = subparsers.add_parser('compilation', help='run compilation tests')
+    parser_compilation_test.add_argument('--builds', metavar='build', nargs='+', default=['ALL'], help='comma separated list of builds that should run')
+    parser_compilation_test.add_argument('--config', metavar='config', nargs='+', default=['ALL'], help='name of configuration')
+    parser_compilation_test.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
+    parser_compilation_test.set_defaults(func=compilation_test)
 
     # create the parser for the "regression" command
-    parser_regression = subparsers.add_parser('regression', help='run regression test')
-    parser_regression.add_argument('--builder', choices=('legacy', 'cmake'), default=DEFAULT_BUILDER, help='compilation builder')
-    parser_regression.add_argument('--config', default='serial', help='compilation configuration')
-    parser_regression.add_argument('--commit', type=str, default='HEAD', help='name of commit (SHA or equivalent)')
-    parser_regression.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
-    parser_regression.add_argument('--tolerance', default=1e-6, help='')
-    parser_regression.add_argument('--norm', choices=('L1', 'L2', 'max'), default='max', help='')
-    parser_regression.add_argument('-v', '--verbose', action='store_true', help='')
-    parser_regression.add_argument('-g', '--generate-plots', action='store_true', help='')
-    parser_regression.add_argument('input_script', help='input script that should be tested')
-    parser_regression.set_defaults(func=regression)
+    #parser_regression = subparsers.add_parser('regression', help='run regression test')
+    #parser_regression.add_argument('--builder', choices=('legacy', 'cmake'), default=DEFAULT_BUILDER, help='compilation builder')
+    #parser_regression.add_argument('--config', default='serial', help='compilation configuration')
+    #parser_regression.add_argument('--commit', type=str, default='HEAD', help='name of commit (SHA or equivalent)')
+    #parser_regression.add_argument('--mode', choices=('exe', 'shlib', 'shexe'), default='exe', help='compilation mode (exe = binary, shlib = shared library, shexe = both)')
+    #parser_regression.add_argument('--tolerance', default=1e-6, help='')
+    #parser_regression.add_argument('--norm', choices=('L1', 'L2', 'max'), default='max', help='')
+    #parser_regression.add_argument('-v', '--verbose', action='store_true', help='')
+    #parser_regression.add_argument('-g', '--generate-plots', action='store_true', help='')
+    #parser_regression.add_argument('input_script', help='input script that should be tested')
+    #parser_regression.set_defaults(func=regression)
 
     #try:
     args = parser.parse_args()
