@@ -4,5 +4,7 @@ singularity_image: 'fedora32_mingw'
 builds:
  - cmake_kokkos_mpi_openmp_clang_shared
  - cmake_serial_smallsmall_static
+ - cmake_mpi_smallbig_shared
  - cmake_mpi_openmp_smallbig_shared_win64
  - cmake_serial_smallsmall_static_win32
+ - legacy_mpi_bigbig_shared

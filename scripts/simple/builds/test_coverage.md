@@ -4,7 +4,7 @@
 |cmake_kokkos_mpi_openmp_clang_shared    | ubuntu18.04     | clang    | smallbig   | yes |  yes   |   yes      | shared  | includes many packages |
 |                                        | fedora32_mingw  |          |            |     |        |            |         |                        |
 |----------------------------------------+-----------------+----------+------------+-----+--------+------------+---------+------------------------|
-|cmake_mpi_openmp_smallbig_shared        | centos7         | gcc      | smallbig   | yes |  yes   |   no       | shared  |                        |
+|cmake_mpi_smallbig_shared               | centos7         | gcc      | smallbig   | yes |  no    |   no       | shared  |                        |
 |                                        | fedora32_mingw  |          |            |     |        |            |         |                        |
 |----------------------------------------+-----------------+----------+------------+-----+--------+------------+---------+------------------------|
 |cmake_mpi_openmp_bigbig_static          | centos7         | gcc      | bigbig     | yes |  yes   |   no       | static  | uses ninja-build       |
@@ -22,4 +22,10 @@
 |cmake_mpi_openmp_smallbig_shared_cuda   | ubuntu18.04_gpu | gcc      | smallbig   | yes |  yes   |   yes      | shared  | includes GPU with CUDA |
 |----------------------------------------+-----------------+----------+------------+-----+--------+------------+---------+------------------------|
 |cmake_serial_bigbig_static_hip          | ubuntu18.04_gpu | gcc      | bigbig     | no  |  no    |   no       | static  | includes GPU with HIP  |
+|----------------------------------------+-----------------+----------+------------+-----+--------+------------+---------+------------------------|
+|legacy_mpi_bigbig_shared                | ubuntu18.04     | gcc      | bigbig     | yes |  no    |   no       | shared  |                        |
+|                                        | fedora32_mingw  |          |            |     |        |            |         |                        |
+|----------------------------------------+-----------------+----------+------------+-----+--------+------------+---------+------------------------|
+|legacy_serial_openmp_smallsmall_static  | centos7         | gcc      | smallsmall | no  |  yes   |   yes      | static  |                        |
+|                                        | ubuntu18.04     |          |            |     |        |            |         |                        |
 +----------------------------------------+-----------------+----------+------------+-----+--------+------------+---------+------------------------+
