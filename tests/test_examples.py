@@ -247,6 +247,8 @@ if 'kokkos_cuda' in LAMMPS_TEST_MODES:
     SkipTest(VashishtaTestCase, "test_vashishta_inp_kokkos_cuda", "KOKKOS package only supports 'bin' neighbor lists")
 
     SkipTest(GcmcTestCase, "test_gcmc_h2o_kokkos_cuda", "Cannot yet use minimize with Kokkos")
+    SkipTest(GcmcTestCase, "test_gcmc_h2o_parallel", "fix gcmc does currently not support full_energy option with molecules on more than 1 MPI process.")
+    SkipTest(GcmcTestCase, "test_gcmc_co2_parallel", "fix gcmc does currently not support full_energy option with molecules on more than 1 MPI process.")
 
     SkipTest(Nb3BTestCase, "test_nb3b_kokkos_cuda", "Cannot yet use minimize with Kokkos")
 
