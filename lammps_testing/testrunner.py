@@ -72,10 +72,6 @@ class LAMMPSTestCase:
 
         with open(outfile_path, "w+") as outfile, open(errfile_path, "w+") as errfile:
             retcode = call(mpi_options + exe + lammps_options, cwd=self.cwd, stdout=outfile, stderr=errfile)
-            #outfile.seek(0)
-            #errfile.seek(0)
-            #out = outfile.read()
-            #err = errfile.read()
 
         end_time = datetime.now()
         duration = end_time - start_time
