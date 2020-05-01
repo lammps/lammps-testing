@@ -1,5 +1,5 @@
 display_name: 'Ubuntu 18.04 GPU'
-container_image: 'lammps_testing:ubuntu_18.04_gpu'
+container_image: 'ubuntu18.04_gpu'
 builds:
  - cmake_kokkos_cuda_bigbig_static
  - cmake_mpi_openmp_smallbig_shared_cuda
