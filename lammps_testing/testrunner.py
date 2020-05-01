@@ -80,7 +80,7 @@ class LAMMPSTestCase:
         end_time = datetime.now()
         duration = end_time - start_time
 
-        print(f"Completed in: f{duration.total_seconds()} seconds")
+        print(f"Completed in: {duration.total_seconds()} seconds")
 
         # output for JUnit attachment plugin
         print(f"[[ATTACHMENT|{outfile_path}]]")
