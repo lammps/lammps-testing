@@ -16,7 +16,7 @@ export LAMMPS_BINARY=${VIRTUAL_ENV}/bin/lmp
 export LAMMPS_POTENTIALS="${VIRTUAL_ENV}/share/lammps/potentials"
 export LAMMPS_MPI_MODE="openmpi"
 export LAMMPS_TEST_MODES="parallel"
-export LAMMPS_TESTING_NPROC=8
+export LAMMPS_TESTING_NPROC=2
 
 lammps_run_tests --processes ${LAMMPS_TESTING_NPROC} tests/test_commands.py tests/test_examples.py
 
