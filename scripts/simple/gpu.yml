@@ -2,5 +2,5 @@ display_name: 'Ubuntu 18.04 GPU'
 container_image: 'ubuntu18.04_gpu'
 builds:
  - cmake_kokkos_cuda_bigbig_static
- - cmake_mpi_openmp_smallbig_shared_cuda
+ - cmake_gpu_cuda_mpi_openmp_smallbig_shared
  - cmake_serial_bigbig_static_hip
