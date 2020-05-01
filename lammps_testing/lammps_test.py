@@ -106,7 +106,9 @@ class Container:
             logger.info(f"Container '{self.name}' already exists and is up-to-date.")
 
     def exec(self, options=[], command=[], cwd="."):
-        return subprocess.call(['singularity', 'exec'] + options + [self.container, command], cwd=cwd)
+        test_env = os.environ.copy()
+        test_env["LAMMPS_CI_RUNNER"] = "lammps_test"
+        return subprocess.call(['singularity', 'exec'] + options + [self.container, command], cwd=cwd, env=test_env)
 
     def clean(self):
         if self.exists:
@@ -283,10 +285,7 @@ def status(args, settings):
     containers = get_containers(settings)
     print(container_build_status(True), "local")
     for c in containers:
-        if c.name == DEFAULT_ENV:
-            print(container_build_status(c.exists), colored(c.name, attrs=['bold']), colored("[default]", attrs=['bold']))
-        else:
-            print(container_build_status(c.exists), c.name)
+        print(container_build_status(c.exists), c.name)
 
     containers = [None] + containers
 
@@ -368,7 +367,7 @@ def build(args, settings):
             else:
                 builds = [b for b in config.builds if b in args.builds]
 
-            c = get_container(config.singularity_image, settings)
+            c = get_container(config.container_image, settings)
 
             ensure_container_exists(c)
 
@@ -700,7 +699,7 @@ def compilation_test(args, settings):
         if 'ALL' not in selected_config and config.name not in selected_config:
             continue
 
-        container = get_container(config.singularity_image, settings)
+        container = get_container(config.container_image, settings)
 
         if not container.exists:
             logger.error(f"Can not find container: {container}")

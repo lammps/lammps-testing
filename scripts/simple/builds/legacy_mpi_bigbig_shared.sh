@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 SCRIPTDIR="$(dirname "$(realpath "$0")")"
 
 export LAMMPS_COMPILER=mpicxx
@@ -7,6 +7,7 @@ export LAMMPS_MODE=shared
 export LAMMPS_MACH=mpi
 export LAMMPS_TARGET=mpi
 export LAMMPS_SIZES=BIGBIG
+export LAMMPS_FLAGS="-O3 -g"
 
 LAMMPS_PACKAGES=(
                  yes-all

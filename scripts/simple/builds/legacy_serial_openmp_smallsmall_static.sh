@@ -1,17 +1,17 @@
-#!/bin/bash
+#!/bin/bash -x
 SCRIPTDIR="$(dirname "$(realpath "$0")")"
 
 export LAMMPS_MODE=static
 export LAMMPS_MACH=serial
 export LAMMPS_TARGET=serial
 export LAMMPS_SIZES=SMALLSMALL
+export LAMMPS_FLAGS="-O2 -g -fopenmp"
+export LAMMPS_EXCEPT="-DLAMMPS_EXCEPTIONS"
 
 LAMMPS_PACKAGES=(
                  yes-all
                  no-lib
                  no-mpiio
-                 no-user-omp
-                 no-user-intel
                  no-user-lb
                  no-user-smd
                  yes-user-molfile

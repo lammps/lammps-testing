@@ -1,4 +1,21 @@
-#!/bin/bash
+#!/bin/bash -x
+if [ -z "${LAMMPS_DIR}" ]
+then
+    echo "Must set LAMMPS_DIR environment variable"
+    exit 1
+fi
+
+if [ -z "${LAMMPS_CI_RUNNER}" ]
+then
+    # local testing
+    BUILD=build-$(basename $0 .sh)
+else
+    # when running lammps_test or inside jenkins
+    BUILD=build
+fi
+
+LAMMPS_COMPILE_NPROC=${LAMMPS_COMPILE_NPROC-8}
+
 # static
 # shared
 if [ -z "$LAMMPS_MODE" ]
@@ -48,20 +65,14 @@ then
     export CXX=g++
 fi
 
-if [ -z "$LAMMPS_PACKAGES_ARRAY" ]
-then
-    IFS=':' read -a LAMMPS_PACKAGES_ARRAY <<< "${LAMMPS_PACKAGES}"
-fi
-
-
 enable_packages() {
     echo "Enable packages..."
     make -C ${LAMMPS_DIR}/src purge
     make -C ${LAMMPS_DIR}/src clean-all
 
-    for PKG in "${LAMMPS_PACKAGES_ARRAY[@]}"
+    for PKG in "${LAMMPS_PACKAGES[@]}"
     do
-        make -C ${LAMMPS_DIR}/src $PKG
+        make -C ${LAMMPS_DIR}/src $PKG || exit 1
     done
 }
 
@@ -69,50 +80,50 @@ build_libraries() {
     echo "Build libraries..."
     make -C ${LAMMPS_DIR}/src/STUBS clean
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-colvars"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-colvars"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} CXX="${LAMMPS_COMPILER} -std=c++11"
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} CXX="${LAMMPS_COMPILER} -std=c++11" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-poems"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-poems"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" LINK="${LAMMPS_COMPILER}"
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" LINK="${LAMMPS_COMPILER}" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-awpmd"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-awpmd"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" EXTRAMAKE=Makefile.lammps.installed
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" EXTRAMAKE=Makefile.lammps.installed || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-h5md"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-h5md"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/h5md -f Makefile.h5cc clean
-        make -j 8 -C ${LAMMPS_DIR}/lib/h5md -f Makefile.h5cc
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/h5md -f Makefile.h5cc || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-voronoi"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-voronoi"* ]]
     then
-        make -C ${LAMMPS_DIR}/src lib-voronoi args="-b"
+        make -C ${LAMMPS_DIR}/src lib-voronoi args="-b" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-atc"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-atc"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} EXTRAMAKE="Makefile.lammps.installed"
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} EXTRAMAKE="Makefile.lammps.installed" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-qmmm"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-qmmm"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/qmmm -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/qmmm -f Makefile.${LAMMPS_MACH}
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/qmmm -f Makefile.${LAMMPS_MACH} || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-user-smd"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-smd"* ]]
     then
-        make -C ${LAMMPS_DIR}/src lib-smd args="-p /usr/include/eigen3"
+        make -C ${LAMMPS_DIR}/src lib-smd args="-p /usr/include/eigen3" || exit 1
     fi
 }
 
@@ -154,25 +165,27 @@ ccache -M 5G
 # Create copy of LAMMPS directory
 echo "Copy sources..."
 
-mkdir -p lammps
-rsync -a --delete --include='src/***' --include='lib/***' --include='potentials/***' --include='python/***' --exclude='*' ${LAMMPS_DIR}/ lammps/
+mkdir -p ${BUILD}/lammps
+rsync -a --delete --include='src/***' --include='lib/***' --include='potentials/***' --include='python/***' --exclude='*' ${LAMMPS_DIR}/ ${BUILD}/lammps/
 
-export LAMMPS_DIR=$PWD
+export LAMMPS_DIR=${BUILD}/lammps
 
 virtualenv --python=$PYTHON pyenv
 
 source pyenv/bin/activate
 
+build_libraries
+
+rm -f ${LAMMPS_DIR}/src/Makefile.package ${LAMMPS_DIR}/src/Makefile.package.settings
+
 enable_packages
 
 # Build
-build_libraries
-
-make -j 8 -C ${LAMMPS_DIR}/src mode=${LAMMPS_MODE} ${LAMMPS_TARGET} MACH=${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" LINK="${LAMMPS_COMPILER}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" LMPFLAGS="${LMPFLAGS}"
+make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/src mode=${LAMMPS_MODE} ${LAMMPS_TARGET} MACH=${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" LINK="${LAMMPS_COMPILER}" LMP_INC="${LMP_INC}" JPG_LIB="${JPG_LIB}" CCFLAGS="${LAMMPS_FLAGS}" LINKFLAGS="${LAMMPS_FLAGS}" LMPFLAGS="${LMPFLAGS}" || exit 1
 
 if [[ ("${LAMMPS_PACKAGES_ARRAY[@]}" == *"yes-python"*) ]]
 then
-    make -C ${LAMMPS_DIR}/src install-python
+    make -C ${LAMMPS_DIR}/src install-python || exit 1
 fi
 
 deactivate

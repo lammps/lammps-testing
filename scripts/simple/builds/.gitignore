@@ -1,0 +1,6 @@
+/*~
+/build*
+/pyenv
+*.sif
+.*.swp
+/.ccache

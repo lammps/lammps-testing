@@ -44,27 +44,29 @@ fi
 mkdir -p ${BUILD}
 cd ${BUILD}
 
-# need to set this to avoid picking up parallel HDF5 and NetCDF on centos/fedora
-export HDF5_ROOT=/usr
-export NETCDF_ROOT=/usr
+# needed for linker during build to find libcuda.so.1
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LIBRARY_PATH}
 
 # Configure
-${CMAKE_COMMAND} \
-      -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
+${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
-      -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result" \
+      -D CMAKE_CUDA_COMPILER_LAUNCHER=ccache \
+      -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
-      -D BUILD_MPI=off \
+      -D CMAKE_LIBRARY_PATH=$LIBRARY_PATH \
+      -D BUILD_MPI=on \
       -D BUILD_OMP=off \
-      -D BUILD_SHARED_LIBS=off \
-      -D LAMMPS_SIZES=SMALLSMALL \
+      -D BUILD_SHARED_LIBS=on \
+      -D LAMMPS_SIZES=SMALLBIG \
       -D LAMMPS_EXCEPTIONS=off \
-      -D PKG_MESSAGE=on \
       -D PKG_USER-INTEL=on \
+      -D PKG_MPIIO=on \
+      -D PKG_USER-ATC=on \
       -D PKG_USER-AWPMD=on \
       -D PKG_USER-BOCS=on \
       -D PKG_USER-EFF=on \
       -D PKG_USER-H5MD=on \
+      -D PKG_USER-LB=on \
       -D PKG_USER-MANIFOLD=on \
       -D PKG_USER-MOLFILE=on \
       -D PKG_USER-NETCDF=on \
@@ -73,13 +75,16 @@ ${CMAKE_COMMAND} \
       -D PKG_USER-SDPD=on \
       -D PKG_USER-SMTBQ=on \
       -D PKG_USER-TALLY=on \
+      -D PKG_GPU=on \
+      -D GPU_API=cuda \
       ${LAMMPS_DIR}/cmake || exit 1
 
 # Build
 cmake --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
 
 # Install
-make install || exit 1
+# running install target repeats the compilation with Kokkos enabled
+# cmake --build . --target  install || exit 1
 deactivate
 
 ccache -s
