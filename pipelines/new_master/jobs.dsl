@@ -99,7 +99,7 @@ configurations.each { yaml_file ->
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
                     stringParam('CONTAINER_NAME', container)
-                    stringParam('CONTAINER_IMAGE', config.singularity_image)
+                    stringParam('CONTAINER_IMAGE', config.container_image)
                 }
 
                 definition {
@@ -122,10 +122,6 @@ container_definitions.each { definition_file ->
     def name = definition_file.getBaseName()
 
     pipelineJob("dev/containers/${name}") {
-        triggers {
-            githubPush()
-        }
-
         concurrentBuild(false)
 
         definition {
@@ -138,12 +134,6 @@ container_definitions.each { definition_file ->
                         }
 
                         branches('lammps_test')
-
-                        configure { gitScm ->
-                            gitScm / 'extensions' << 'hudson.plugins.git.extensions.impl.PathRestriction' {
-                              includedRegions("pipelines/new_master/singularity_container.groovy\ncontainers/singularity/${name}.def")
-                          }
-                        }
                     }
                 }
                 scriptPath("pipelines/new_master/singularity_container.groovy")
