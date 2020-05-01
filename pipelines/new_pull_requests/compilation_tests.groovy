@@ -31,6 +31,7 @@ node('atlas2') {
     def configurations = yaml_files.collectEntries { yaml_file -> get_configuration(yaml_file)  }
 
     def jobs = [:]
+    def err = null
 
     try {
         configurations.each { container, config ->
@@ -43,8 +44,8 @@ node('atlas2') {
                 parallel jobs[container]
             }
         }
-    } catch (err) {
-        echo "Caught: ${err}"
+    } catch (caughtErr) {
+        err = caughtErr
         currentBuild.result = 'FAILURE'
     } finally {
         if (currentBuild.result == 'FAILURE') {
@@ -61,6 +62,10 @@ node('atlas2') {
             if (send_slack) {
                 slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
             }
+        }
+
+        if(err) {
+            throw err
         }
     }
 }
