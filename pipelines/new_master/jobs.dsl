@@ -99,7 +99,7 @@ configurations.each { yaml_file ->
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
                     stringParam('CONTAINER_NAME', container)
-                    stringParam('CONTAINER_IMAGE', config.singularity_image)
+                    stringParam('CONTAINER_IMAGE', config.container_image)
                 }
 
                 definition {

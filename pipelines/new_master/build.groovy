@@ -1,26 +1,20 @@
 node('atlas2') {
     env.LAMMPS_DIR = "${params.WORKSPACE_PARENT}/lammps"
     env.LAMMPS_TESTING_DIR = "${params.WORKSPACE_PARENT}/lammps-testing"
+    env.LAMMPS_CONTAINER_DIR = "/home/jenkins/containers"
 
-    def docker_registry = 'http://glados2.cst.temple.edu:5000'
-    def docker_image_name = "${params.CONTAINER_IMAGE}"
-    def docker_args = "-v ${params.WORKSPACE_PARENT}:${params.WORKSPACE_PARENT}"
+    def container = "${params.CONTAINER_IMAGE}"
+    def container_args = "--nv -B ${params.WORKSPACE_PARENT}:${params.WORKSPACE_PARENT}"
 
-    def envImage = docker.image(docker_image_name)
     def build_script = "${currentBuild.projectName}.sh"
 
-    stage('Build') {
-        docker.withRegistry(docker_registry) {
-            envImage.pull()
+    def launch_container = "singularity exec ${container_args} \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
-            docker.image(envImage.imageName()).inside(docker_args) {
-                timeout(time: 2, unit: 'HOURS') {
-                    ansiColor('xterm') {
-                        sh """#!/bin/bash -l
-                        \$LAMMPS_TESTING_DIR/scripts/simple/builds/${build_script}
-                        """
-                    }
-                }
+    timeout(time: 2, unit: 'HOURS') {
+        stage('Build') {
+            ansiColor('xterm') {
+                sh(label: "Build test binary on ${container}",
+                   script: "${launch_container} \$LAMMPS_TESTING_DIR/scripts/simple/builds/${build_script}")
             }
         }
     }

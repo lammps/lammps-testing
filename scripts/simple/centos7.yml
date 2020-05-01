@@ -1,6 +1,5 @@
 display_name: 'CentOS 7'
-container_image: 'lammps_testing:centos_7'
-singularity_image: 'centos7'
+container_image: 'centos7'
 builds:
  - cmake_serial_smallsmall_static
  - cmake_mpi_smallbig_shared
