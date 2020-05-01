@@ -21,7 +21,7 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
 
     def test_serial(func_name, script_name):
         def test_serial_run(self):
-            rc = self.run_script(script_name)
+            rc = self.run_script(script_name, test_name=func_name)
             self.assertEqual(rc, 0)
         test_serial_run.__name__ = func_name
         return test_serial_run

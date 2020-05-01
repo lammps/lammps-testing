@@ -20,49 +20,49 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
 
     def test_serial(func_name, script_name):
         def test_serial_run(self):
-            rc = self.run_script(script_name)
+            rc = self.run_script(script_name, test_name=func_name)
             self.assertEqual(rc, 0)
         test_serial_run.__name__ = func_name
         return test_serial_run
 
     def test_parallel(func_name, script_name):
         def test_parallel_run(self):
-            rc = self.run_script(script_name, nprocs=4)
+            rc = self.run_script(script_name, nprocs=4, test_name=func_name)
             self.assertEqual(rc, 0)
         test_parallel_run.__name__ = func_name
         return test_parallel_run
 
     def test_gpu(func_name, script_name):
         def test_gpu_run(self):
-            rc = self.run_script(script_name, force_gpu=True)
+            rc = self.run_script(script_name, force_gpu=True, test_name=func_name)
             self.assertEqual(rc, 0)
         test_gpu_run.__name__ = func_name
         return test_gpu_run
 
     def test_kokkos_omp(func_name, script_name):
         def test_kokkos_omp_run(self):
-            rc = self.run_script(script_name, force_kokkos=True, nthreads=4)
+            rc = self.run_script(script_name, force_kokkos=True, nthreads=4, test_name=func_name)
             self.assertEqual(rc, 0)
         test_kokkos_omp_run.__name__ = func_name
         return test_kokkos_omp_run
 
     def test_kokkos_cuda(func_name, script_name):
         def test_kokkos_cuda_run(self):
-            rc = self.run_script(script_name, force_kokkos=True, force_cuda=True)
+            rc = self.run_script(script_name, force_kokkos=True, force_cuda=True, test_name=func_name)
             self.assertEqual(rc, 0)
         test_kokkos_cuda_run.__name__ = func_name
         return test_kokkos_cuda_run
 
     def test_kokkos_cuda_omp(func_name, script_name):
         def test_kokkos_cuda_omp_run(self):
-            rc = self.run_script(script_name, force_kokkos=True, force_cuda=True, nthreads=4)
+            rc = self.run_script(script_name, force_kokkos=True, force_cuda=True, nthreads=4, test_name=func_name)
             self.assertEqual(rc, 0)
         test_kokkos_cuda_omp_run.__name__ = func_name
         return test_kokkos_cuda_omp_run
 
     def test_parallel_omp(func_name, script_name):
         def test_parallel_omp_run(self):
-            rc = self.run_script(script_name, nthreads=4, force_openmp=True)
+            rc = self.run_script(script_name, nthreads=4, force_openmp=True, test_name=func_name)
             self.assertEqual(rc, 0)
         test_parallel_omp_run.__name__ = func_name
         return test_parallel_omp_run
@@ -74,7 +74,7 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
             valgrind_exec += ["--suppressions=/usr/share/openmpi/openmpi-valgrind.supp"]
 
         def test_serial_valgrind_run(self):
-            rc = self.run_script(script_name,launcher=valgrind_exec)
+            rc = self.run_script(script_name,launcher=valgrind_exec, test_name=func_name)
             self.assertEqual(rc, 0)
         test_serial_valgrind_run.__name__ = func_name
         return test_serial_valgrind_run

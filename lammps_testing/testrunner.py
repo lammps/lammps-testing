@@ -29,7 +29,7 @@ LAMMPS_TEST_DIRS=os.environ.get('LAMMPS_TEST_DIRS', '').split(':')
 
 class LAMMPSTestCase:
     """ Mixin class for each LAMMPS test case. Defines utility function to run in serial or parallel"""
-    def run_script(self, script_name, nprocs=1, nthreads=1, ngpus=1, screen=True, log=None, launcher=[], force_openmp=False, force_mpi=False, force_gpu=False, force_kokkos=False, force_cuda=False):
+    def run_script(self, script_name, nprocs=1, nthreads=1, ngpus=1, screen=True, log=None, launcher=[], force_openmp=False, force_mpi=False, force_gpu=False, force_kokkos=False, force_cuda=False, test_name=""):
         if screen:
             output_options = []
         else:
@@ -64,9 +64,10 @@ class LAMMPSTestCase:
             elif LAMMPS_MPI_MODE == "mpich":
                 mpi_options += ["-env", "OMP_NUM_THREADS", str(nthreads)]
 
-        test_name = type(self).__name__
-        outfile_path = os.path.join(self.cwd, f"{test_name}_stdout.log")
-        errfile_path = os.path.join(self.cwd, f"{test_name}_stderr.log")
+        class_name = type(self).__name__
+        full_test_name = f"{class_name}_{test_name}"
+        outfile_path = os.path.join(self.cwd, f"{full_test_name}_stdout.log")
+        errfile_path = os.path.join(self.cwd, f"{full_test_name}_stderr.log")
 
         start_time = datetime.now()
 
