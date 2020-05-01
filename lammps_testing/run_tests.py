@@ -97,6 +97,7 @@ def main():
 
     for tf in timing_files:
         load_test_timing(tests, tf)
+        os.remove(tf)
 
     queues = create_job_queues(tests, args.processes)
 

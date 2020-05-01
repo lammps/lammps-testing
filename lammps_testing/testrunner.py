@@ -6,6 +6,7 @@ __email__ = "richard.berger@temple.edu"
 import unittest
 import os
 import sys
+from datetime import datetime
 from subprocess import call
 
 # Before running any tests these two environment variables must be set
@@ -63,22 +64,27 @@ class LAMMPSTestCase:
             elif LAMMPS_MPI_MODE == "mpich":
                 mpi_options += ["-env", "OMP_NUM_THREADS", str(nthreads)]
 
-        outfile_path = os.path.join(self.cwd, "stdout.log")
-        errfile_path = os.path.join(self.cwd, "stderr.log")
+        test_name = type(self).__name__
+        outfile_path = os.path.join(self.cwd, f"{test_name}_stdout.log")
+        errfile_path = os.path.join(self.cwd, f"{test_name}_stderr.log")
+
+        start_time = datetime.now()
 
         with open(outfile_path, "w+") as outfile, open(errfile_path, "w+") as errfile:
             retcode = call(mpi_options + exe + lammps_options, cwd=self.cwd, stdout=outfile, stderr=errfile)
-            outfile.seek(0)
-            errfile.seek(0)
-            out = outfile.read()
-            err = errfile.read()
+            #outfile.seek(0)
+            #errfile.seek(0)
+            #out = outfile.read()
+            #err = errfile.read()
 
-        # output to Python stdout and stderr so unittest framework captures it
-        if out:
-            print(out, file=sys.stdout)
+        end_time = datetime.now()
+        duration = end_time - start_time
 
-        if err:
-            print(err, file=sys.stderr)
+        print(f"Completed in: f{duration.total_seconds()} seconds")
+
+        # output for JUnit attachment plugin
+        print(f"[[ATTACHMENT|{outfile_path}]]")
+        print(f"[[ATTACHMENT|{errfile_path}]]")
 
         return retcode
 
