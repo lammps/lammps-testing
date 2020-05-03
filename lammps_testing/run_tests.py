@@ -72,6 +72,13 @@ def print_list(x):
 
 def run_nose(args):
     pid, tests = args
+
+    cpu_set = list(os.sched_getaffinity(0))
+
+    if len(cpu_set) > 4:
+        offset = pid*4
+        os.sched_setaffinity(0, set([offset:offset+4]))
+
     xunitfile = "nosetests-{0:02}.xml".format(pid)
     print(pid, ": Running nose with", len(tests), "tests...", xunitfile)
     selected_tests = [x['selector'] for x in tests]
