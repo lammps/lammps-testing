@@ -18,6 +18,10 @@ export LAMMPS_MPI_MODE="openmpi"
 export LAMMPS_TEST_MODES="parallel"
 export LAMMPS_TESTING_NPROC=2
 
+if [ "$HOSTNAME" = atlas2 ]; then
+    taskset -pc 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30 $$
+fi
+
 lammps_run_tests --processes ${LAMMPS_TESTING_NPROC} tests/test_commands.py tests/test_examples.py
 
 #gcovr -s -x -r ${LAMMPS_DIR}/src --object-directory=${PWD}/build -o build/coverage.xml
