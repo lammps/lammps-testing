@@ -16,7 +16,7 @@ export LAMMPS_BINARY=${VIRTUAL_ENV}/bin/lmp
 export LAMMPS_POTENTIALS="${VIRTUAL_ENV}/share/lammps/potentials"
 export LAMMPS_MPI_MODE="openmpi"
 export LAMMPS_TEST_MODES="omp"
-export LAMMPS_TESTING_NPROC=2
+export LAMMPS_TESTING_NPROC=1
 
 if [ "$HOSTNAME" = atlas2 ]; then
     taskset -pc 1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31 $$
