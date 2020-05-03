@@ -35,6 +35,7 @@ export PYTHON=$(which python3)
 ccache -M 5G
 virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
+pip install --upgrade pip setuptools
 
 # Create build directory
 if [ -d "${BUILD}" ]; then

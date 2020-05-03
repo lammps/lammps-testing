@@ -173,6 +173,7 @@ export LAMMPS_DIR=${BUILD}/lammps
 virtualenv --python=$PYTHON pyenv
 
 source pyenv/bin/activate
+pip install --upgrade pip setuptools
 
 build_libraries
 
