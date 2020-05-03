@@ -57,7 +57,7 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
       -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
-      -D ENABLE_COVERAGE=on \
+      -D ENABLE_COVERAGE=off \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \
       -D BUILD_SHARED_LIBS=on \
