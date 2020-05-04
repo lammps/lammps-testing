@@ -1,4 +1,7 @@
 #!/bin/bash -x
+SCRIPT_DIR="$(dirname "$(realpath "$0")")"
+SCRIPT_BASE_DIR=$LAMMPS_TESTING_DIR/scripts/simple
+
 exists()
 {
   command -v "$1" >/dev/null 2>&1
@@ -17,32 +20,13 @@ LAMMPS_C_COMPILER_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitializ
 
 export CCACHE_DIR="$PWD/.ccache"
 export PYTHON=$(which python3)
-export WORKING_DIR=$PWD
 
 # Set up environment
 ccache -M 5G
 
-if [ -d "pyenv" ]; then
-    rm -rf pyenv
-fi
+$SCRIPT_BASE_DIR/common/init_testing_venv.sh
 
-virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
-pip install --upgrade pip setuptools
-
-# install lammps-testing package
-cd $LAMMPS_TESTING_DIR
-# avoid multiple parallel jobs writing in the same temporary directories
-PYTHON_BUILD_DIR=$WORKING_DIR/python_build
-
-if [ -d "$PYTHON_BUILD_DIR" ]; then
-    rm -rf $PYTHON_BUILD_DIR
-fi
-
-mkdir -p $PYTHON_BUILD_DIR
-python setup.py egg_info --egg-base $PYTHON_BUILD_DIR build --build-base $PYTHON_BUILD_DIR/build install || exit 1
-
-cd $WORKING_DIR
 
 # Create build directory
 if [ -d "build" ]; then
@@ -54,7 +38,7 @@ cd build
 
 # Configure
 ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
-      -D CXX_COMPILER_LAUNCHER=ccache \
+      -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_CXX_FLAGS="${LAMMPS_CXX_COMPILER_FLAGS}" \
       -D CMAKE_C_FLAGS="${LAMMPS_C_COMPILER_FLAGS}" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
