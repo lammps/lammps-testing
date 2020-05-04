@@ -2,8 +2,8 @@
 import org.lammps.ci.Utils
 
 def project_url = 'https://github.com/lammps/lammps.git'
-def set_github_status = false
-def send_slack = false
+def set_github_status = true
+def send_slack = true
 
 def lammps_branch = "master"
 def lammps_testing_branch = "lammps_test"
