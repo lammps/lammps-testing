@@ -76,7 +76,7 @@ def run_nose(args):
     cpu_set = list(os.sched_getaffinity(0))
 
     if len(cpu_set) > 4:
-        offset = pid*4
+        offset = (pid*4) % len(cpu_set)
         os.sched_setaffinity(0, set(cpu_set[offset:offset+4]))
 
     xunitfile = "nosetests-{0:02}.xml".format(pid)
