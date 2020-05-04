@@ -20,7 +20,7 @@ fi
 
 virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
-pip install --upgrade pip setuptools
+pip install --upgrade pip setuptools wheel
 
 # avoid multiple parallel jobs writing in the same temporary directories
 PYTHON_BUILD_DIR=$PWD/python_build
@@ -36,5 +36,6 @@ cd $LAMMPS_TESTING_DIR
 
 python setup.py build --build-base $PYTHON_BUILD_DIR/build \
                 egg_info --egg-base $PYTHON_BUILD_DIR \
-                bdist_egg --dist-dir $PYTHON_BUILD_DIR/dist \
-                install || exit 1
+                bdist_wheel -d $PYTHON_BUILD_DIR/dist || exit 1
+
+pip install $PYTHON_BUILD_DIR/dist/lammps_testing-*.whl
