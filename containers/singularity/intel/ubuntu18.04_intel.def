@@ -1,0 +1,44 @@
+BootStrap: localimage
+From: ubuntu18.04.sif
+
+%files
+    # this assumes that your license file is in license.lic
+    # your installer tarball is parallel_studio_xe.tgz
+    # and your installation configuration file is config.cfg
+    # these files are copied while building the container
+    license.lic /tmp/
+    parallel_studio_xe.tgz /tmp/
+    config.cfg /tmp/
+
+%post
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get upgrade --no-install-recommends -y
+    apt-get install --no-install-recommends -y \
+        cpio
+
+    # clean cache
+    rm -rf /var/lib/apt/lists/*
+
+    # Install Intel compilers
+    cd /tmp
+    tar -xvzf parallel_studio_xe.tgz
+    cd /tmp/parallel_studio_xe_*
+
+    echo "Installing Intel Parallel Studio..."
+    bash ./install.sh --silent=/tmp/config.cfg
+    echo "Done"
+    rm -rf /tmp/parallel_studio_xe*
+    rm -rf /tmp/license.lic
+    rm -rf /tmp/config.cfg
+
+%environment
+    LC_ALL=C
+    export LC_ALL
+    export PATH=/usr/lib/ccache:$PATH
+    export COMPILERVARS_ARCHITECTURE=intel64
+    export COMPILERVARS_PLATFORM=linux
+    . /opt/intel/compilers_and_libraries/linux/bin/compilervars.sh
+
+%labels
+    Author akohlmey, rbberger
