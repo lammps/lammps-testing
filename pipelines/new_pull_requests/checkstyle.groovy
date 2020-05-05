@@ -11,7 +11,9 @@ node('atlas2'){
 
     stage('Checkout') {
         dir('lammps') {
-            commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
+            branch_name = "origin-pull/pull/${env.GITHUB_PR_NUMBER}/head"
+            refspec = "+refs/pull/${env.GITHUB_PR_NUMBER}/head:refs/remotes/origin-pull/pull/${env.GITHUB_PR_NUMBER}/head"
+            commit = checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]]
         }
     }
 
@@ -26,7 +28,7 @@ node('atlas2'){
 
     if (currentBuild.result == 'FAILURE') {
         if (set_github_status) {
-            utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'Style issues detected!', 'FAILURE')
+            utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'Style issues detected!', 'SUCCESS')
         }
         if (send_slack) {
             slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"

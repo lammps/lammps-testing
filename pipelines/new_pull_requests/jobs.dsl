@@ -3,6 +3,39 @@ import org.yaml.snakeyaml.Yaml
 
 folder('dev/pull_requests')
 
+pipelineJob("dev/pull_requests/checkstyle") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPullRequests {
+                    spec("* * * * *")
+                    triggerMode('HEAVY_HOOKS')
+                    repoProviders {
+                        githubPlugin {
+                            cacheConnection(true)
+                            manageHooks(true)
+                            repoPermission('ADMIN')
+                        }
+                    }
+                    events {
+                        Open()
+                        commitChanged()
+                    }
+                }
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/new_pull_requests/checkstyle.groovy'))
+            sandbox()
+        }
+    }
+}
+
 pipelineJob("dev/pull_requests/compilation_tests") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
