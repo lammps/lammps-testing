@@ -1,6 +1,6 @@
 folder('lammps/master')
 
-def scripts = ['build-docs', 'regression', 'intel']
+def scripts = ['regression']
 
 scripts.each { name ->
     pipelineJob("lammps/master/${name}") {
