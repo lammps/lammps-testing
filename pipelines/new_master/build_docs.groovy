@@ -30,6 +30,8 @@ node('atlas2') {
         timeout(time: 2, unit: 'HOURS') {
             stage('Generate HTML') {
                 ansiColor('xterm') {
+                    sh(label: "Clean directory",
+                       script: "${launch_container} make -C lammps/doc clean-all")
                     sh(label: "Build HTML on ${container}",
                        script: "${launch_container} make -C lammps/doc -j 8 html")
                     sh 'cd lammps/doc/html; tar cvzf ../lammps-docs.tar.gz *'
