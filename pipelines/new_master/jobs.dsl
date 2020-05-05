@@ -3,6 +3,26 @@ import org.yaml.snakeyaml.Yaml
 
 folder('dev/master')
 
+pipelineJob("dev/master/checkstyle") {
+    quietPeriod(120)
+
+    properties {
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/new_master/checkstyle.groovy'))
+            sandbox()
+        }
+    }
+}
+
 pipelineJob("dev/master/compilation_tests") {
     quietPeriod(120)
 
