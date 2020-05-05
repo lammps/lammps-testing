@@ -8,14 +8,14 @@ def send_slack = true
 def container = 'fedora32_mingw'
 def launch_container = "singularity exec \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
-def lammps_branch = "master"
-
 node('atlas2') {
     env.LAMMPS_CONTAINER_DIR = "/home/jenkins/containers"
 
     stage('Checkout') {
         dir('lammps') {
-            commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
+            branch_name = "origin-pull/pull/${env.GITHUB_PR_NUMBER}/head"
+            refspec = "+refs/pull/${env.GITHUB_PR_NUMBER}/head:refs/remotes/origin-pull/pull/${env.GITHUB_PR_NUMBER}/head"
+            commit = checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]]
         }
     }
 

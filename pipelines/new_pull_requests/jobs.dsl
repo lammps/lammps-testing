@@ -78,21 +78,38 @@ pipelineJob("dev/pull_requests/run_tests") {
     }
 }
 
-//pipelineJob("dev/pull_requests/build-docs") {
-//    properties {
-//        pipelineTriggers {
-//            triggers {
-//                githubPush()
-//            }
-//        }
-//    }
-//
-//    definition {
-//        cps {
-//            script(readFileFromWorkspace('pipelines/new_master/build-docs.groovy'))
-//        }
-//    }
-//}
+pipelineJob("dev/pull_requests/build_docs") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPullRequests {
+                    spec("* * * * *")
+                    triggerMode('HEAVY_HOOKS')
+                    repoProviders {
+                        githubPlugin {
+                            cacheConnection(true)
+                            manageHooks(true)
+                            repoPermission('ADMIN')
+                        }
+                    }
+                    events {
+                        Open()
+                        commitChanged()
+                    }
+                }
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/new_pull_requests/build_docs.groovy'))
+            sandbox()
+        }
+    }
+}
 
 def workspace = SEED_JOB.getWorkspace()
 def scripts = workspace.child('scripts/simple')
