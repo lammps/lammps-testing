@@ -23,6 +23,8 @@ node('atlas2') {
         utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'building...', 'PENDING')
     }
 
+    def err = null
+
     try {
         timeout(time: 2, unit: 'HOURS') {
             stage('Generate HTML') {
