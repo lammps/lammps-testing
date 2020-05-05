@@ -43,7 +43,7 @@ pipelineJob("dev/master/run_tests") {
     }
 }
 
-pipelineJob("dev/master/build-docs") {
+pipelineJob("dev/master/build_docs") {
     quietPeriod(120)
 
     properties {
@@ -56,7 +56,7 @@ pipelineJob("dev/master/build-docs") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_master/build-docs.groovy'))
+            script(readFileFromWorkspace('pipelines/new_master/build_docs.groovy'))
             sandbox()
         }
     }
