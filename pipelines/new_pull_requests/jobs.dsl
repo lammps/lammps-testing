@@ -36,6 +36,48 @@ pipelineJob("dev/pull_requests/compilation_tests") {
     }
 }
 
+pipelineJob("dev/pull_requests/run_tests") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPullRequests {
+                    spec("* * * * *")
+                    triggerMode('HEAVY_HOOKS')
+                    repoProviders {
+                        githubPlugin {
+                            cacheConnection(true)
+                            manageHooks(true)
+                            repoPermission('ADMIN')
+                        }
+                    }
+                    events {
+                        labelsAdded {
+                            label {
+                                labels('test-for-regression')
+                            }
+                        }
+                        labelsExist {
+                            label {
+                                labels('test-for-regression')
+                            }
+                            skip(false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/new_pull_requests/run_tests.groovy'))
+            sandbox()
+        }
+    }
+}
+
 //pipelineJob("dev/pull_requests/build-docs") {
 //    properties {
 //        pipelineTriggers {
@@ -75,6 +117,28 @@ configurations.each { yaml_file ->
                 cps {
                     script(readFileFromWorkspace('pipelines/new_master/build.groovy'))
                     sandbox()
+                }
+            }
+        }
+    }
+
+    if(config.containsKey('run_tests')){
+        folder("dev/pull_requests/${container}/run_tests")
+
+        config.run_tests.each { name ->
+            pipelineJob("dev/pull_requests/${container}/run_tests/${name}") {
+                parameters {
+                    stringParam('GIT_COMMIT')
+                    stringParam('WORKSPACE_PARENT')
+                    stringParam('CONTAINER_NAME', container)
+                    stringParam('CONTAINER_IMAGE', config.container_image)
+                }
+
+                definition {
+                    cps {
+                        script(readFileFromWorkspace('pipelines/new_master/run.groovy'))
+                        sandbox()
+                    }
                 }
             }
         }
