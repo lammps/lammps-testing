@@ -19,14 +19,21 @@ node('atlas2') {
         }
     }
 
-    if (build_script.contains("_icc_")) {
-        recordIssues(tools: [intel()])
-    } else if (build_script.contains("_clang_")) {
-        recordIssues(tools: [clang()])
-    } else {
-        recordIssues(tools: [gcc()])
+    def tools = []
+
+    if (build_script.contains("cmake")) {
+        tools.add(cmake())
     }
 
+    if (build_script.contains("_icc_")) {
+        tools.add(intel())
+    } else if (build_script.contains("_clang_")) {
+        tools.add(clang())
+    } else {
+        tools.add(gcc())
+    }
+
+    recordIssues(tools: tools)
 
     if (currentBuild.result == 'FAILURE') {
         slackSend channel: 'new-testing', color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
