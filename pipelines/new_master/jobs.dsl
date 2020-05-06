@@ -152,10 +152,10 @@ configurations.each { yaml_file ->
         }
     }
 
-    if(config.containsKey('run_tests')){
+    if(config.containsKey('regression_tests')){
         folder("dev/master/${container}/regression_tests")
 
-        config.run_tests.each { name ->
+        config.regression_tests.each { name ->
             pipelineJob("dev/master/${container}/regression_tests/${name}") {
                 parameters {
                     stringParam('GIT_COMMIT')
