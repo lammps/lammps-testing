@@ -225,7 +225,8 @@ def get_names(search_pattern):
     return names
 
 def get_containers(settings):
-    containers = get_names(os.path.join(settings.container_definition_dir, '*.def'))
+    containers  = get_names(os.path.join(settings.container_definition_dir, '*.def'))
+    containers += get_names(os.path.join(settings.container_definition_dir, '**/*.def'))
     return [get_container(c, settings) for c in sorted(containers)]
 
 def get_containers_by_selector(selector, settings):
