@@ -48,19 +48,22 @@ cd ${BUILD}
 # need to set this to avoid picking up parallel HDF5 on centos/fedora
 export HDF5_ROOT=/usr
 # Configure
-${CMAKE_COMMAND} -G Ninja \
+${CMAKE_COMMAND} \
       -C ${LAMMPS_DIR}/cmake/presets/intel.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
+      -C ${LAMMPS_DIR}/cmake/presets/kokkos-openmp.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \
-      -D BUILD_SHARED_LIBS=off \
-      -D LAMMPS_SIZES=BIGBIG \
+      -D BUILD_SHARED_LIBS=on \
+      -D LAMMPS_SIZES=SMALLBIG \
       -D LAMMPS_EXCEPTIONS=on \
+      -D PKG_MESSAGE=on \
       -D PKG_MPIIO=on \
+      -D PKG_USER-ATC=on \
       -D PKG_USER-AWPMD=on \
       -D PKG_USER-BOCS=on \
       -D PKG_USER-EFF=on \
@@ -68,6 +71,7 @@ ${CMAKE_COMMAND} -G Ninja \
       -D PKG_USER-INTEL=on \
       -D PKG_USER-LB=on \
       -D PKG_USER-MANIFOLD=on \
+      -D PKG_USER-MGPT=on \
       -D PKG_USER-MOLFILE=on \
       -D PKG_USER-NETCDF=on \
       -D PKG_USER-PTM=on \
@@ -81,7 +85,8 @@ ${CMAKE_COMMAND} -G Ninja \
 cmake --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
 
 # Install
-cmake --build . --target  install || exit 1
+# running install target repeats the compilation with Kokkos enabled
+#cmake --build . --target  install || exit 1
 deactivate
 
 ccache -s
