@@ -1,4 +1,4 @@
 display_name: 'CentOS 7 (Intel Compiler)'
 container_image: 'centos7_intel'
 builds:
- - cmake_mpi_openmp_bigbig_static
+ - cmake_mpi_openmp_bigbig_icc_static

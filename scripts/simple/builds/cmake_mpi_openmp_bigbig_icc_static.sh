@@ -51,7 +51,7 @@ ${CMAKE_COMMAND} -G Ninja \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
-      -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result" \
+      -D CMAKE_TUNE_FLAGS="-Wall -Wextra" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \
