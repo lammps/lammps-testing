@@ -10,3 +10,6 @@ run_tests:
  - cmake_testing_serial
  - cmake_testing_mpi
  - cmake_testing_openmp
+
+regression_tests:
+ - cmake_regression_mpi

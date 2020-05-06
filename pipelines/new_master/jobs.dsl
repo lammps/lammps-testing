@@ -63,6 +63,26 @@ pipelineJob("dev/master/run_tests") {
     }
 }
 
+pipelineJob("dev/master/regression_tests") {
+    quietPeriod(120)
+
+    properties {
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/new_master/regression_tests.groovy'))
+            sandbox()
+        }
+    }
+}
+
 pipelineJob("dev/master/build_docs") {
     quietPeriod(120)
 
@@ -125,6 +145,28 @@ configurations.each { yaml_file ->
                 definition {
                     cps {
                         script(readFileFromWorkspace('pipelines/new_master/run.groovy'))
+                        sandbox()
+                    }
+                }
+            }
+        }
+    }
+
+    if(config.containsKey('run_tests')){
+        folder("dev/master/${container}/regression_tests")
+
+        config.run_tests.each { name ->
+            pipelineJob("dev/master/${container}/regresssion_tests/${name}") {
+                parameters {
+                    stringParam('GIT_COMMIT')
+                    stringParam('WORKSPACE_PARENT')
+                    stringParam('CONTAINER_NAME', container)
+                    stringParam('CONTAINER_IMAGE', config.container_image)
+                }
+
+                definition {
+                    cps {
+                        script(readFileFromWorkspace('pipelines/new_master/regression.groovy'))
                         sandbox()
                     }
                 }
