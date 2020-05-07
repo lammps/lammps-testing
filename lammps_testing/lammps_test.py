@@ -207,19 +207,21 @@ def status(args, settings):
                 print(" ", f"{run:<40}")
 
 def cleanall(args, settings):
-    if args.env == 'all':
-        containers = get_containers(settings)
-    else:
-        containers = [get_container(args.env, settings)]
+    containers = get_containers(settings)
 
-    for builder in LAMMPS_BUILDERS:
-        for container in containers:
-            for config in get_configurations(settings):
-                for mode in LAMMPS_BUILD_MODES:
-                    b = get_lammps_build(builder, container, config, settings, mode)
-                    b.clean()
+    print("Containers:")
 
     for container in containers:
+        print("-", container.name)
+
+    if not args.force:
+        answer = input('Delete all containers and build? (y/N):')
+        if answer not in ['Y', 'y']:
+            logger.info('Aborting cleanall...')
+            return
+
+    for container in containers:
+        logger.info(f'Removing {container.name}...')
         container.clean()
 
 def clean(args, settings):
@@ -386,8 +388,9 @@ def main():
     parser_clean_container.set_defaults(func=clean_container)
 
     # create the parser for the "cleanall" command
-    #parser_cleanall = subparsers.add_parser('cleanall', help='clean container environment and all builds')
-    #parser_cleanall.set_defaults(func=cleanall)
+    parser_cleanall = subparsers.add_parser('cleanall', help='clean container environment and all builds')
+    parser_cleanall.add_argument('-f', '--force', default=False, action='store_true', help="Clean without asking")
+    parser_cleanall.set_defaults(func=cleanall)
 
     # create the parser for the "compilation" command
     parser_compilation_test = subparsers.add_parser('compilation', help='run compilation tests')

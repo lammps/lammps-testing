@@ -7,7 +7,7 @@ import subprocess
 logger = logging.getLogger('lammps_test')
 logger.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
+ch.setLevel(logging.INFO)
 logger.addHandler(ch)
 
 def file_is_newer(a, b):
@@ -19,19 +19,19 @@ class Settings(object):
             logger.error("lammps_test requires the LAMMPS_DIR environment variable to be set!")
             sys.exit(1)
         else:
-            logger.info(f"Using LAMMPS_DIR:        {os.environ['LAMMPS_DIR']}")
+            logger.debug(f"Using LAMMPS_DIR:        {os.environ['LAMMPS_DIR']}")
 
         if 'LAMMPS_TESTING_DIR' not in os.environ:
             logger.error("lammps_test requires the LAMMPS_TESTING_DIR environment variable to be set!")
             sys.exit(1)
         else:
-            logger.info(f"Using LAMMPS_TESTING_DIR: {os.environ['LAMMPS_TESTING_DIR']}")
+            logger.debug(f"Using LAMMPS_TESTING_DIR: {os.environ['LAMMPS_TESTING_DIR']}")
 
         if 'LAMMPS_CACHE_DIR' not in os.environ:
             logger.error("lammps_test requires the LAMMPS_CACHE_DIR environment variable to be set!")
             sys.exit(1)
         else:
-            logger.info(f"Using LAMMPS_CACHE_DIR:  {os.environ['LAMMPS_CACHE_DIR']}")
+            logger.debug(f"Using LAMMPS_CACHE_DIR:  {os.environ['LAMMPS_CACHE_DIR']}")
 
     @property
     def cache_dir(self):
