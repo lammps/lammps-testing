@@ -3,6 +3,7 @@ import sys
 import glob
 import logging
 import subprocess
+from nose.tools import nottest
 
 logger = logging.getLogger('lammps_test')
 logger.setLevel(logging.DEBUG)
@@ -136,15 +137,15 @@ class MPIRunner(LocalRunner):
         base_command = super().get_full_command(input_script, options)
         return  ["mpirun", "-np", str(self.nprocs)] + self.custom_mpi_options + base_command
 
-
+@nottest
 def discover_tests(test_dir, skip_list=[]):
-    for name in os.listdir(test_dir):
-        path = os.path.join(test_dir, name)
+    for path, _, files in os.walk(test_dir):
+        name = os.path.relpath(path, test_dir)
 
-        if name in skip_list:
+        if(any([name.startswith(s) for s in skip_list])):
             continue
 
-        if os.path.isdir(path):
-            scripts = list(map(os.path.basename, glob.glob(os.path.join(path, 'in.*'))))
-            if len(scripts) > 0:
-                yield name, scripts
+        scripts = [os.path.join(path, f) for f in files if f.startswith('in.')]
+
+        if len(scripts) > 0:
+            yield name, scripts

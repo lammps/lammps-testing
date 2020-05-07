@@ -86,6 +86,11 @@ class LAMMPSTestCase:
         return retcode
 
 
+class LAMMPSRegressionTestCase:
+    def run_regression(self, script_name, test_name):
+        rc = call(f'lammps_run_regression_test -v -j -g {LAMMPS_BINARY} {script_name}', shell=True)
+        return rc
+
 def SkipTest(cls, func_name, reason):
     """ utility function to skip a specific test for a reason """
     setattr(cls, func_name, unittest.skip(reason)(getattr(cls, func_name)))
