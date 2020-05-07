@@ -20,7 +20,7 @@ rm *.out *.xml || true
 nosetests -v --with-xunit --xunit-file=regression_01.xml tests/test_regression.py
 
 # generate regression XML
-#lammps_generate_regression_xml --test-dir tests/ --log-file test0.out --out-file regression_00.xml
-#lammps_generate_regression_xml --test-dir tests/ --log-file test1.out --out-file regression_01.xml
+#lammps_generate_regression_xml --test-dir ${PWD}/tests/ --log-file test0.out --out-file regression_00.xml
+#lammps_generate_regression_xml --test-dir ${PWD}/tests/ --log-file test1.out --out-file regression_01.xml
 
 deactivate
