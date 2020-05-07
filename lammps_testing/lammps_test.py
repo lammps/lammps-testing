@@ -372,8 +372,8 @@ def main():
     parser_status.set_defaults(func=status)
 
     # create the parser for the "checkstyle" command
-    #parser_checkstyle = subparsers.add_parser('checkstyle', help='check current checkout for code style issues')
-    #parser_checkstyle.set_defaults(func=checkstyle)
+    parser_checkstyle = subparsers.add_parser('checkstyle', help='check current checkout for code style issues')
+    parser_checkstyle.set_defaults(func=checkstyle)
 
     # create the parser for the "build_container" command
     parser_build_container = subparsers.add_parser('build_container', help='build container image(s)')
