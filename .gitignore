@@ -5,6 +5,7 @@ stdout.log
 stderr.log
 log.cite
 *~
+pyenv*
 /bin/
 build
 dist
