@@ -14,7 +14,8 @@ setup(name='lammps_testing',
         "console_scripts": ['lammps_run_tests = lammps_testing.run_tests:main',
                             'lammps_generate_regression_xml  = lammps_testing.generate_regression_xml:main',
                             'lammps_regression_tests = lammps_testing.regression:main',
-                            'lammps_test = lammps_testing.lammps_test:main'
+                            'lammps_test = lammps_testing.lammps_test:main',
+                            'lammps_run_regression_test = lammps_testing.run_regression_test:main'
                            ]
     },
     install_requires=[

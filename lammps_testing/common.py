@@ -104,6 +104,38 @@ class Container(object):
     def exists(self):
         return os.path.exists(self.container)
 
+    
+class LocalRunner(object):
+    def __init__(self, lammps_binary_path):
+        self.lammps_binary_path = lammps_binary_path
+        self.working_directory = os.getcwd()
+
+    def get_full_command(self, input_script, options=[]):
+        return [self.lammps_binary_path, "-in", input_script] + options
+
+    def run(self, input_script, options, stdout=None):
+        command = self.get_full_command(input_script, options)
+
+        if stdout:
+            subprocess.call(command, cwd=self.working_directory, stdout=stdout, stderr=subprocess.STDOUT)
+        else:
+            subprocess.call(command, cwd=self.working_directory)
+
+
+class MPIRunner(LocalRunner):
+    def __init__(self, lammps_binary_path, nprocs=1):
+        super().__init__(lammps_binary_path)
+        self.nprocs = nprocs
+        self.custom_mpi_options = []
+
+        if 'LAMMPS_MPI_OPTIONS' in os.environ:
+            logger.debug(f"Using LAMMPS_MPI_OPTIONS: {os.environ['LAMMPS_MPI_OPTIONS']}")
+            self.custom_mpi_options = os.environ['LAMMPS_MPI_OPTIONS'].split()
+    
+    def get_full_command(self, input_script, options=[]):
+        base_command = super().get_full_command(input_script, options)
+        return  ["mpirun", "-np", str(self.nprocs)] + self.custom_mpi_options + base_command
+
 
 def discover_tests(test_dir, skip_list=[]):
     for name in os.listdir(test_dir):
