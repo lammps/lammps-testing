@@ -9,6 +9,7 @@ import unittest
 import os
 import glob
 from lammps_testing.testrunner import LAMMPSTestCase, SkipTest, LAMMPS_MPI_MODE
+from lammps_testing.common import discover_tests
 
 TESTS_DIR=os.path.dirname(os.path.realpath(__file__))
 
@@ -44,17 +45,8 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
 
 commands_dir = os.path.join(TESTS_DIR, 'commands')
 
-skip_list = []
-
-for name in os.listdir(commands_dir):
-    path = os.path.join(commands_dir, name)
-
-    if name in skip_list:
-        continue
-
-    if os.path.isdir(path):
-        script_names = map(os.path.basename, glob.glob(os.path.join(path, 'in.*')))
-        vars()[name.title() + "TestCase"] = CreateLAMMPSTestCase(name, script_names)
+for name, scripts in discover_tests(commands_dir):
+    vars()[name.title() + "TestCase"] = CreateLAMMPSTestCase(name, scripts)
 
 if __name__ == '__main__':
     unittest.main()

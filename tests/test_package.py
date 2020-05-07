@@ -10,7 +10,7 @@ import os
 import glob
 from lammps_testing.testrunner import LAMMPSTestCase, SkipTest, LAMMPS_DIR, LAMMPS_MPI_MODE, LAMMPS_TEST_MODES, LAMMPS_TEST_DIRS
 
-TESTS_DIR=os.path.dirname(os.path.realpath(__file__))
+TESTS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def CreateLAMMPSTestCase(testcase_name, script_names):
     """ Utility function to generate LAMMPS test case classes with both serial and parallel

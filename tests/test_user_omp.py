@@ -9,14 +9,16 @@ import unittest
 import os
 import sys
 import glob
-from lammps_testing.testrunner import LAMMPSTestCase, SkipTest, LAMMPS_DIR
+from lammps_testing.testrunner import LAMMPSTestCase, SkipTest
+from lammps_testing.common import discover_tests
 
+TESTS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def CreateLAMMPSTestCaseOMP(testcase_name, script_names):
     """ Utility function to generate LAMMPS test case classes for OpenMP
         testing functions for each input script"""
     def setUp(self):
-        self.cwd = os.path.join(LAMMPS_DIR, "test-user-omp", testcase_name)
+        self.cwd = os.path.join(TESTS_DIR, 'legacy', 'test-user-omp', testcase_name)
 
     def test_parallel_omp(script_name, nprocs, nthreads, log):
         def test_parallel_omp_run(self):
@@ -43,27 +45,15 @@ def CreateLAMMPSTestCaseOMP(testcase_name, script_names):
     return type(testcase_name.title() + "TestCase", (LAMMPSTestCase, unittest.TestCase), methods)
 
 
-
-
 # collect all the script files and generate the tests automatically by a recursive search and
 # skipping a selection of folders
 
-test_user_omp_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'legacy', 'test-user-omp'))
+test_user_omp_dir = os.path.abspath(os.path.join(TESTS_DIR, 'legacy', 'test-user-omp'))
 
-skip_list = []
-
-for name in os.listdir(test_user_omp_dir):
-    path = os.path.join(test_user_omp_dir, name)
-    print(name)
-
-    if name in skip_list:
-        continue
-
+for name, scripts in discover_tests(test_user_omp_dir):
     # for now only use the lower case examples (=simple ones)
-
-    if name.islower() and os.path.isdir(path):
-        script_names = map(os.path.basename, glob.glob(os.path.join(path, 'in.*')))
-        vars()[name.title() + "TestCase"] = CreateLAMMPSTestCaseOMP(name, script_names)
+    if name.islower():
+        vars()[name.title() + "TestCase"] = CreateLAMMPSTestCaseOMP(name, scripts)
 
 if __name__ == '__main__':
     unittest.main()

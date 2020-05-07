@@ -9,8 +9,9 @@ import unittest
 import os
 import glob
 from lammps_testing.testrunner import LAMMPSTestCase, SkipTest, LAMMPS_DIR, LAMMPS_MPI_MODE, LAMMPS_TEST_MODES
+from lammps_testing.common import discover_tests
 
-TESTS_DIR=os.path.dirname(os.path.realpath(__file__))
+TESTS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def CreateLAMMPSTestCase(testcase_name, script_names):
     """ Utility function to generate LAMMPS test case classes with both serial and parallel
@@ -126,17 +127,10 @@ examples_dir = os.path.join(TESTS_DIR, 'examples')
 
 skip_list = ['accelerate', 'kim', 'neb', 'reax', 'rerun', 'tad', 'prd', 'mscg']
 
-for name in os.listdir(examples_dir):
-    path = os.path.join(examples_dir, name)
-
-    if name in skip_list:
-        continue
-
+for name, scripts in discover_tests(examples_dir, skip_list):
     # for now only use the lower case examples (=simple ones)
-
-    if name.islower() and os.path.isdir(path):
-        script_names = map(os.path.basename, glob.glob(os.path.join(path, 'in.*')))
-        vars()[name.title() + "TestCase"] = CreateLAMMPSTestCase(name, script_names)
+    if name.islower():    
+        vars()[name.title() + "TestCase"] = CreateLAMMPSTestCase(name, scripts)
 
 if 'omp' in LAMMPS_TEST_MODES:
     SkipTest(CombTestCase, "test_comb3_parallel_omp", "comb3 currently not supported by USER-OMP")
