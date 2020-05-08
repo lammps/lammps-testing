@@ -413,7 +413,7 @@ def regression_test(args, settings):
             if 'ALL' not in selected_builds and build_name not in selected_builds:
                 continue
 
-            if not regTest.build(build_name):
+            if not args.test_only and not regTest.build(build_name):
                 print(f"Compilation of '{build_name}' on '{container.name}' FAILED!")
                 sys.exit(1)
 
@@ -464,6 +464,7 @@ def main():
     parser_compilation_test.add_argument('--builds', metavar='build', nargs='+', default=['ALL'], help='comma separated list of builds that should run')
     parser_compilation_test.add_argument('--config', metavar='config', nargs='+', default=['ALL'], help='name of configuration')
     parser_compilation_test.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
+    parser_compilation_test.add_argument('--test-only', default=False, action='store_true', help='Only run test')
     parser_compilation_test.set_defaults(func=regression_test)
 
     #try:

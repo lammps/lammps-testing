@@ -6,6 +6,7 @@ __email__ = "richard.berger@temple.edu"
 import unittest
 import os
 import sys
+import shlex
 from datetime import datetime
 from subprocess import call
 
@@ -88,7 +89,9 @@ class LAMMPSTestCase:
 
 class LAMMPSRegressionTestCase:
     def run_regression(self, script_name, test_name):
-        rc = call(f'lammps_run_regression_test -v -j -g {LAMMPS_BINARY} {script_name}', shell=True)
+        cmd = f'lammps_run_regression_test -v -j -g {LAMMPS_BINARY} {script_name}'
+        cmd = shlex.split(cmd)
+        rc = call(cmd)
         return rc
 
 def SkipTest(cls, func_name, reason):
