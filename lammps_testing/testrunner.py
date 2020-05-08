@@ -8,7 +8,7 @@ import os
 import sys
 import shlex
 from datetime import datetime
-from subprocess import call
+from subprocess import call, Popen, PIPE
 
 # Before running any tests these two environment variables must be set
 
@@ -91,7 +91,14 @@ class LAMMPSRegressionTestCase:
     def run_regression(self, script_name, test_name):
         cmd = f'lammps_run_regression_test -v -j -g {LAMMPS_BINARY} {script_name}'
         cmd = shlex.split(cmd)
-        rc = call(cmd)
+
+        p = Popen(cmd, stdout=PIPE, stderr=PIPE)
+        output, error = p.communicate()
+        rc = p.returncode
+
+        print(output.decode('utf-8'), file=sys.stdout)
+        print(error.decode('utf-8'), file=sys.stderr)
+
         return rc
 
 def SkipTest(cls, func_name, reason):
