@@ -201,7 +201,7 @@ configurations.each { yaml_file ->
         folder("dev/progguide/${container}/unit_tests")
 
         config.unit_tests.each { name ->
-            pipelineJob("dev/master/${container}/unit_tests/${name}") {
+            pipelineJob("dev/progguide/${container}/unit_tests/${name}") {
                 parameters {
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
