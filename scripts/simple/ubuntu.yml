@@ -13,3 +13,6 @@ run_tests:
 
 regression_tests:
  - cmake_regression_mpi
+
+ unit_tests:
+ - cmake_unittest_serial

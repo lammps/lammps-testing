@@ -102,6 +102,28 @@ pipelineJob("dev/master/build_docs") {
     }
 }
 
+folder('dev/progguide')
+
+pipelineJob("dev/progguide/unit_tests") {
+    quietPeriod(120)
+
+    properties {
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/new_master/unit_tests.groovy'))
+            sandbox()
+        }
+    }
+}
+
 def workspace = SEED_JOB.getWorkspace()
 def scripts = workspace.child('scripts/simple')
 def configurations = scripts.list('*.yml')
@@ -111,6 +133,7 @@ configurations.each { yaml_file ->
     def container = yaml_file.getBaseName()
 
     folder("dev/master/${container}")
+    folder("dev/progguide/${container}")
 
     config.builds.each { name ->
         pipelineJob("dev/master/${container}/${name}") {
@@ -167,6 +190,28 @@ configurations.each { yaml_file ->
                 definition {
                     cps {
                         script(readFileFromWorkspace('pipelines/new_master/regression.groovy'))
+                        sandbox()
+                    }
+                }
+            }
+        }
+    }
+
+    if(config.containsKey('unit_tests')){
+        folder("dev/progguide/${container}/unit_tests")
+
+        config.unit_tests.each { name ->
+            pipelineJob("dev/master/${container}/unit_tests/${name}") {
+                parameters {
+                    stringParam('GIT_COMMIT')
+                    stringParam('WORKSPACE_PARENT')
+                    stringParam('CONTAINER_NAME', container)
+                    stringParam('CONTAINER_IMAGE', config.container_image)
+                }
+
+                definition {
+                    cps {
+                        script(readFileFromWorkspace('pipelines/new_master/run_unit_tests.groovy'))
                         sandbox()
                     }
                 }
