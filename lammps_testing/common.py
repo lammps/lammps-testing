@@ -59,6 +59,10 @@ class Settings(object):
         return os.path.join(self.configuration_dir, 'run_tests')
 
     @property
+    def regression_scripts_dir(self):
+        return os.path.join(self.configuration_dir, 'regression_tests')
+
+    @property
     def lammps_dir(self):
         return os.environ['LAMMPS_DIR']
 
@@ -117,6 +121,8 @@ class LocalRunner(object):
     def run(self, input_script, options, stdout=None):
         command = self.get_full_command(input_script, options)
 
+        print(" ".join(command))
+
         if stdout:
             subprocess.call(command, cwd=self.working_directory, stdout=stdout, stderr=subprocess.STDOUT)
         else:
@@ -149,3 +155,5 @@ def discover_tests(test_dir, skip_list=[]):
 
         if len(scripts) > 0:
             yield name, scripts
+
+MPIRunner()
