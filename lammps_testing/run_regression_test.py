@@ -13,9 +13,9 @@ def regression(args, settings):
     name = input_script[3:]
 
     if args.nprocs > 1:
-        runner = LocalRunner(args.binary)
-    else:
         runner = MPIRunner(args.binary, nprocs=args.nprocs)
+    else:
+        runner = LocalRunner(args.binary)
     
     runner.working_dir = test_directory
 
