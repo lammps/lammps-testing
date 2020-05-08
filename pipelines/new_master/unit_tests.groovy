@@ -100,7 +100,7 @@ def get_configuration(yaml_file) {
     }
 
     if(config.containsKey('unit_tests')) {
-        regression_tests = config.unit_tests.collect({ it.toString() })
+        unit_tests = config.unit_tests.collect({ it.toString() })
     }
 
     return ["${name}": [
