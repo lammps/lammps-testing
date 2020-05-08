@@ -155,5 +155,3 @@ def discover_tests(test_dir, skip_list=[]):
 
         if len(scripts) > 0:
             yield name, scripts
-
-MPIRunner()
