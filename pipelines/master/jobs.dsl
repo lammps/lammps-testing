@@ -17,7 +17,7 @@ pipelineJob("dev/master/checkstyle") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_master/checkstyle.groovy'))
+            script(readFileFromWorkspace('pipelines/master/checkstyle.groovy'))
             sandbox()
         }
     }
@@ -37,7 +37,7 @@ pipelineJob("dev/master/compilation_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_master/compilation_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/master/compilation_tests.groovy'))
             sandbox()
         }
     }
@@ -57,7 +57,7 @@ pipelineJob("dev/master/run_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_master/run_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/master/run_tests.groovy'))
             sandbox()
         }
     }
@@ -77,7 +77,7 @@ pipelineJob("dev/master/regression_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_master/regression_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/master/regression_tests.groovy'))
             sandbox()
         }
     }
@@ -96,7 +96,7 @@ pipelineJob("dev/master/build_docs") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_master/build_docs.groovy'))
+            script(readFileFromWorkspace('pipelines/master/build_docs.groovy'))
             sandbox()
         }
     }
@@ -118,7 +118,7 @@ pipelineJob("dev/progguide/unit_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_master/unit_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/master/unit_tests.groovy'))
             sandbox()
         }
     }
@@ -146,7 +146,7 @@ configurations.each { yaml_file ->
 
             definition {
                 cps {
-                    script(readFileFromWorkspace('pipelines/new_master/build.groovy'))
+                    script(readFileFromWorkspace('pipelines/master/build.groovy'))
                     sandbox()
                 }
             }
@@ -167,7 +167,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/new_master/run.groovy'))
+                        script(readFileFromWorkspace('pipelines/master/run.groovy'))
                         sandbox()
                     }
                 }
@@ -189,7 +189,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/new_master/regression.groovy'))
+                        script(readFileFromWorkspace('pipelines/master/regression.groovy'))
                         sandbox()
                     }
                 }
@@ -211,7 +211,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/new_master/run_unit_tests.groovy'))
+                        script(readFileFromWorkspace('pipelines/master/run_unit_tests.groovy'))
                         sandbox()
                     }
                 }
@@ -243,7 +243,7 @@ container_definitions.each { definition_file ->
                         branches('lammps_test')
                     }
                 }
-                scriptPath("pipelines/new_master/singularity_container.groovy")
+                scriptPath("pipelines/master/singularity_container.groovy")
             }
         }
     }

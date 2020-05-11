@@ -30,7 +30,7 @@ pipelineJob("dev/pull_requests/checkstyle") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_pull_requests/checkstyle.groovy'))
+            script(readFileFromWorkspace('pipelines/pull_requests/checkstyle.groovy'))
             sandbox()
         }
     }
@@ -63,7 +63,7 @@ pipelineJob("dev/pull_requests/compilation_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_pull_requests/compilation_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/pull_requests/compilation_tests.groovy'))
             sandbox()
         }
     }
@@ -105,7 +105,7 @@ pipelineJob("dev/pull_requests/run_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_pull_requests/run_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/pull_requests/run_tests.groovy'))
             sandbox()
         }
     }
@@ -147,7 +147,7 @@ pipelineJob("dev/pull_requests/regression_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_pull_requests/regression_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/pull_requests/regression_tests.groovy'))
             sandbox()
         }
     }
@@ -180,7 +180,7 @@ pipelineJob("dev/pull_requests/build_docs") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/new_pull_requests/build_docs.groovy'))
+            script(readFileFromWorkspace('pipelines/pull_requests/build_docs.groovy'))
             sandbox()
         }
     }
@@ -207,7 +207,7 @@ configurations.each { yaml_file ->
 
             definition {
                 cps {
-                    script(readFileFromWorkspace('pipelines/new_master/build.groovy'))
+                    script(readFileFromWorkspace('pipelines/master/build.groovy'))
                     sandbox()
                 }
             }
@@ -228,7 +228,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/new_master/run.groovy'))
+                        script(readFileFromWorkspace('pipelines/master/run.groovy'))
                         sandbox()
                     }
                 }
@@ -250,7 +250,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/new_master/regression.groovy'))
+                        script(readFileFromWorkspace('pipelines/master/regression.groovy'))
                         sandbox()
                     }
                 }
