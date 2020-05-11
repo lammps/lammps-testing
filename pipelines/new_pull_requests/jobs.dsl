@@ -111,6 +111,48 @@ pipelineJob("dev/pull_requests/run_tests") {
     }
 }
 
+pipelineJob("dev/pull_requests/regression_tests") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPullRequests {
+                    spec("* * * * *")
+                    triggerMode('HEAVY_HOOKS')
+                    repoProviders {
+                        githubPlugin {
+                            cacheConnection(true)
+                            manageHooks(true)
+                            repoPermission('ADMIN')
+                        }
+                    }
+                    events {
+                        labelsAdded {
+                            label {
+                                labels('full-regression-test')
+                            }
+                        }
+                        labelsExist {
+                            label {
+                                labels('full-regression-test')
+                            }
+                            skip(false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/new_pull_requests/regression_tests.groovy'))
+            sandbox()
+        }
+    }
+}
+
 pipelineJob("dev/pull_requests/build_docs") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
@@ -187,6 +229,28 @@ configurations.each { yaml_file ->
                 definition {
                     cps {
                         script(readFileFromWorkspace('pipelines/new_master/run.groovy'))
+                        sandbox()
+                    }
+                }
+            }
+        }
+    }
+
+    if(config.containsKey('regression_tests')){
+        folder("dev/pull_requests/${container}/regression_tests")
+
+        config.regression_tests.each { name ->
+            pipelineJob("dev/pull_requests/${container}/regression_tests/${name}") {
+                parameters {
+                    stringParam('GIT_COMMIT')
+                    stringParam('WORKSPACE_PARENT')
+                    stringParam('CONTAINER_NAME', container)
+                    stringParam('CONTAINER_IMAGE', config.container_image)
+                }
+
+                definition {
+                    cps {
+                        script(readFileFromWorkspace('pipelines/new_master/regression.groovy'))
                         sandbox()
                     }
                 }
