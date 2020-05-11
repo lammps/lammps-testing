@@ -14,28 +14,26 @@ from lammps_testing.common import discover_tests
 TESTS_DIR=os.path.dirname(os.path.realpath(__file__))
 
 
-def CreateLAMMPSTestCase(testcase_name, script_names):
+def CreateLAMMPSTestCase(testcase_name, script_paths):
     """ Utility function to generate LAMMPS test case classes with both serial and parallel
         testing functions for each input script"""
-    def setUp(self):
-        self.cwd = os.path.join(TESTS_DIR, "commands", testcase_name)
-
-    def test_serial(func_name, script_name):
+    def test_serial(func_name, script_path):
         def test_serial_run(self):
-            rc = self.run_script(script_name, test_name=func_name)
+            rc = self.run_script(script_path, test_name=func_name)
             self.assertEqual(rc, 0)
         test_serial_run.__name__ = func_name
         return test_serial_run
 
-    methods = {"setUp": setUp}
+    methods = {}
 
-    for script_name in script_names:
+    for script_path in script_paths:
+        script_name = os.path.basename(script_path)
         name = '_'.join(script_name.split('.')[1:])
         name = '_'.join(name.split('-'))
         name = '_'.join(name.split('+'))
 
         func_name = "test_" + name + "_serial"
-        methods[func_name] = test_serial(func_name, script_name)
+        methods[func_name] = test_serial(func_name, script_path)
 
     return type(testcase_name.title() + "TestCase", (LAMMPSTestCase, unittest.TestCase), methods)
 

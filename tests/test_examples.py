@@ -13,109 +13,107 @@ from lammps_testing.common import discover_tests
 
 TESTS_DIR = os.path.dirname(os.path.realpath(__file__))
 
-def CreateLAMMPSTestCase(testcase_name, script_names):
+def CreateLAMMPSTestCase(testcase_name, script_paths):
     """ Utility function to generate LAMMPS test case classes with both serial and parallel
         testing functions for each input script"""
-    def setUp(self):
-        self.cwd = os.path.join(TESTS_DIR, "examples", testcase_name)
-
-    def test_serial(func_name, script_name):
+    def test_serial(func_name, script_path):
         def test_serial_run(self):
-            rc = self.run_script(script_name, test_name=func_name)
+            rc = self.run_script(script_path, test_name=func_name)
             self.assertEqual(rc, 0)
         test_serial_run.__name__ = func_name
         return test_serial_run
 
-    def test_parallel(func_name, script_name):
+    def test_parallel(func_name, script_path):
         def test_parallel_run(self):
-            rc = self.run_script(script_name, nprocs=4, test_name=func_name)
+            rc = self.run_script(script_path, nprocs=4, test_name=func_name)
             self.assertEqual(rc, 0)
         test_parallel_run.__name__ = func_name
         return test_parallel_run
 
-    def test_gpu(func_name, script_name):
+    def test_gpu(func_name, script_path):
         def test_gpu_run(self):
-            rc = self.run_script(script_name, force_gpu=True, test_name=func_name)
+            rc = self.run_script(script_path, force_gpu=True, test_name=func_name)
             self.assertEqual(rc, 0)
         test_gpu_run.__name__ = func_name
         return test_gpu_run
 
-    def test_kokkos_omp(func_name, script_name):
+    def test_kokkos_omp(func_name, script_path):
         def test_kokkos_omp_run(self):
-            rc = self.run_script(script_name, force_kokkos=True, nthreads=4, test_name=func_name)
+            rc = self.run_script(script_path, force_kokkos=True, nthreads=4, test_name=func_name)
             self.assertEqual(rc, 0)
         test_kokkos_omp_run.__name__ = func_name
         return test_kokkos_omp_run
 
-    def test_kokkos_cuda(func_name, script_name):
+    def test_kokkos_cuda(func_name, script_path):
         def test_kokkos_cuda_run(self):
-            rc = self.run_script(script_name, force_kokkos=True, force_cuda=True, test_name=func_name)
+            rc = self.run_script(script_path, force_kokkos=True, force_cuda=True, test_name=func_name)
             self.assertEqual(rc, 0)
         test_kokkos_cuda_run.__name__ = func_name
         return test_kokkos_cuda_run
 
-    def test_kokkos_cuda_omp(func_name, script_name):
+    def test_kokkos_cuda_omp(func_name, script_path):
         def test_kokkos_cuda_omp_run(self):
-            rc = self.run_script(script_name, force_kokkos=True, force_cuda=True, nthreads=4, test_name=func_name)
+            rc = self.run_script(script_path, force_kokkos=True, force_cuda=True, nthreads=4, test_name=func_name)
             self.assertEqual(rc, 0)
         test_kokkos_cuda_omp_run.__name__ = func_name
         return test_kokkos_cuda_omp_run
 
-    def test_parallel_omp(func_name, script_name):
+    def test_parallel_omp(func_name, script_path):
         def test_parallel_omp_run(self):
-            rc = self.run_script(script_name, nthreads=4, force_openmp=True, test_name=func_name)
+            rc = self.run_script(script_path, nthreads=4, force_openmp=True, test_name=func_name)
             self.assertEqual(rc, 0)
         test_parallel_omp_run.__name__ = func_name
         return test_parallel_omp_run
 
-    def test_serial_valgrind(func_name, name, script_name):
+    def test_serial_valgrind(func_name, name, script_path):
         valgrind_exec = ["valgrind", "--leak-check=full", "--xml=yes", "--xml-file=" + name + ".memcheck"]
 
         if LAMMPS_MPI_MODE == "openmpi" and os.path.exists("/usr/share/openmpi/openmpi-valgrind.supp"):
             valgrind_exec += ["--suppressions=/usr/share/openmpi/openmpi-valgrind.supp"]
 
         def test_serial_valgrind_run(self):
-            rc = self.run_script(script_name,launcher=valgrind_exec, test_name=func_name)
+            rc = self.run_script(script_path,launcher=valgrind_exec, test_name=func_name)
             self.assertEqual(rc, 0)
         test_serial_valgrind_run.__name__ = func_name
         return test_serial_valgrind_run
 
-    methods = {"setUp": setUp}
+    methods = {}
 
-    for script_name in script_names:
+    for script_path in script_paths:
+        script_name = os.path.basename(script_path)
         name = '_'.join(script_name.split('.')[1:])
 
         if 'serial' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_serial"
-            methods[func_name] = test_serial(func_name, script_name)
+            methods[func_name] = test_serial(func_name, script_path)
 
         if 'gpu' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_gpu"
-            methods[func_name] = test_gpu(func_name, script_name)
+            methods[func_name] = test_gpu(func_name, script_path)
 
         if 'kokkos_omp' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_kokkos_omp"
-            methods[func_name] = test_kokkos_omp(func_name, script_name)
+            methods[func_name] = test_kokkos_omp(func_name, script_path)
 
         if 'kokkos_cuda' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_kokkos_cuda"
-            methods[func_name] = test_kokkos_cuda(func_name, script_name)
+            methods[func_name] = test_kokkos_cuda(func_name, script_path)
 
         if 'kokkos_cuda_omp' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_kokkos_cuda_omp"
-            methods[func_name] = test_kokkos_cuda_omp(func_name, script_name)
+            methods[func_name] = test_kokkos_cuda_omp(func_name, script_path)
 
         if 'parallel' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_parallel"
-            methods[func_name] = test_parallel(func_name, script_name)
+            methods[func_name] = test_parallel(func_name, script_path)
 
         if 'omp' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_parallel_omp"
-            methods[func_name] = test_parallel_omp(func_name, script_name)
+            methods[func_name] = test_parallel_omp(func_name, script_path)
 
         if 'valgrind' in LAMMPS_TEST_MODES:
             func_name = "test_" + name + "_serial_valgrind"
-            methods[func_name] = test_serial_valgrind(func_name, name, script_name)
+            methods[func_name] = test_serial_valgrind(func_name, name, script_path)
 
     return type(testcase_name.title() + "TestCase", (LAMMPSTestCase, unittest.TestCase), methods)
 

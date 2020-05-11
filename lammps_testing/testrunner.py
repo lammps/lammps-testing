@@ -27,10 +27,12 @@ LAMMPS_TEST_MODES=os.environ.get('LAMMPS_TEST_MODES', 'serial').split(':')
 # list of folders which should be scanned for tests
 LAMMPS_TEST_DIRS=os.environ.get('LAMMPS_TEST_DIRS', '').split(':')
 
-
 class LAMMPSTestCase:
     """ Mixin class for each LAMMPS test case. Defines utility function to run in serial or parallel"""
-    def run_script(self, script_name, nprocs=1, nthreads=1, ngpus=1, screen=True, log=None, launcher=[], force_openmp=False, force_mpi=False, force_gpu=False, force_kokkos=False, force_cuda=False, test_name=""):
+    def run_script(self, script_path, nprocs=1, nthreads=1, ngpus=1, screen=True, log=None, launcher=[], force_openmp=False, force_mpi=False, force_gpu=False, force_kokkos=False, force_cuda=False, test_name=""):
+        working_dir = os.path.dirname(script_path)
+        script_name = os.path.basename(script_path)
+
         if screen:
             output_options = []
         else:
@@ -67,13 +69,16 @@ class LAMMPSTestCase:
 
         class_name = type(self).__name__
         full_test_name = f"{class_name}_{test_name}"
-        outfile_path = os.path.join(self.cwd, f"{full_test_name}_stdout.log")
-        errfile_path = os.path.join(self.cwd, f"{full_test_name}_stderr.log")
+        outfile_path = os.path.join(working_dir, f"{full_test_name}_stdout.log")
+        errfile_path = os.path.join(working_dir, f"{full_test_name}_stderr.log")
 
         start_time = datetime.now()
 
+        full_command = mpi_options + exe + lammps_options
+        print(" ".join(full_command))
+
         with open(outfile_path, "w+") as outfile, open(errfile_path, "w+") as errfile:
-            retcode = call(mpi_options + exe + lammps_options, cwd=self.cwd, stdout=outfile, stderr=errfile)
+            retcode = call(full_command, cwd=working_dir, stdout=outfile, stderr=errfile)
 
         end_time = datetime.now()
         duration = end_time - start_time

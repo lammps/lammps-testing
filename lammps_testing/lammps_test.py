@@ -484,11 +484,11 @@ def run_test(args, settings):
             if 'ALL' not in selected_builds and build_name not in selected_builds:
                 continue
 
-            if not runTest.build(build_name):
+            if not args.test_only and not runTest.build(build_name):
                 print(f"Compilation of '{build_name}' on '{container.name}' FAILED!")
                 sys.exit(1)
 
-            if not runTest.test(build_name):
+            if not args.build_only and not runTest.test(build_name):
                 print(f"Run test of '{build_name}' on '{container.name}' FAILED!")
                 sys.exit(1)
 
@@ -535,6 +535,9 @@ def main():
     parser_run_test.add_argument('--builds', metavar='build', nargs='+', default=['ALL'], help='comma separated list of builds that should run')
     parser_run_test.add_argument('--config', metavar='config', nargs='+', default=['ALL'], help='name of configuration')
     parser_run_test.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
+    run_test_group = parser_run_test.add_mutually_exclusive_group()
+    run_test_group.add_argument('--build-only', default=False, action='store_true', help='Only build run binary')
+    run_test_group.add_argument('--test-only', default=False, action='store_true', help='Only run test on existing binary')
     parser_run_test.set_defaults(func=run_test)
 
     # create the parser for the "regression" command
