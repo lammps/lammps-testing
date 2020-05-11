@@ -26,7 +26,7 @@ node('atlas2') {
         utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'building...', 'PENDING')
     }
 
-    def yaml_files = findFiles glob: 'lammps-testing/scripts/simple/*.yml'
+    def yaml_files = findFiles glob: 'lammps-testing/scripts/*.yml'
 
 
     def configurations = yaml_files.collectEntries { yaml_file -> get_configuration(yaml_file)  }

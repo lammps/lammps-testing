@@ -1,6 +1,6 @@
 #!/bin/bash -x
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-SCRIPT_BASE_DIR=$LAMMPS_TESTING_DIR/scripts/simple
+SCRIPT_BASE_DIR=$LAMMPS_TESTING_DIR/scripts
 
 if [ -z "${LAMMPS_DIR}" ]
 then
@@ -55,11 +55,11 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-O3 -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
-      -D ENABLE_COVERAGE=on \
-      -D BUILD_MPI=off \
+      -D ENABLE_COVERAGE=off \
+      -D BUILD_MPI=on \
       -D BUILD_OMP=off \
       -D BUILD_SHARED_LIBS=on \
-      -D LAMMPS_SIZES=SMALLSMALL \
+      -D LAMMPS_SIZES=SMALLBIG \
       -D LAMMPS_EXCEPTIONS=on \
       -D PKG_ASPHERE=on \
       -D PKG_BODY=on \
@@ -113,6 +113,8 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D PKG_USER-TALLY=on \
       -D PKG_USER-UEF=on \
       -D PKG_USER-YAFF=on \
+      -D PKG_MPIIO=on \
+      -D PKG_USER-LB=on \
       -D PKG_VORONOI=on \
       -D PKG_USER-ATC=on \
       ${LAMMPS_DIR}/cmake || exit 1

@@ -15,14 +15,14 @@ node('atlas2') {
         stage('Build') {
             ansiColor('xterm') {
                 sh(label: "Build test binary on ${container}",
-                   script: "${launch_container} \$LAMMPS_TESTING_DIR/scripts/simple/run_tests/${build_script}")
+                   script: "${launch_container} \$LAMMPS_TESTING_DIR/scripts/run_tests/${build_script}")
             }
         }
 
         stage('Testing') {
             ansiColor('xterm') {
                 sh(label: "Run run_tests/${test_script} on ${container}",
-                   script: "${launch_container} \$LAMMPS_TESTING_DIR/scripts/simple/run_tests/${test_script}")
+                   script: "${launch_container} \$LAMMPS_TESTING_DIR/scripts/run_tests/${test_script}")
             }
         }
     }

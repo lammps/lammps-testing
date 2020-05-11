@@ -14,7 +14,7 @@ node('atlas2') {
         stage('Build') {
             ansiColor('xterm') {
                 sh(label: "Build test binary on ${container}",
-                   script: "${launch_container} \$LAMMPS_TESTING_DIR/scripts/simple/builds/${build_script}")
+                   script: "${launch_container} \$LAMMPS_TESTING_DIR/scripts/builds/${build_script}")
             }
         }
     }

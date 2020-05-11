@@ -125,7 +125,7 @@ pipelineJob("dev/progguide/unit_tests") {
 }
 
 def workspace = SEED_JOB.getWorkspace()
-def scripts = workspace.child('scripts/simple')
+def scripts = workspace.child('scripts')
 def configurations = scripts.list('*.yml')
 
 configurations.each { yaml_file ->

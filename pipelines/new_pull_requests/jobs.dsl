@@ -187,7 +187,7 @@ pipelineJob("dev/pull_requests/build_docs") {
 }
 
 def workspace = SEED_JOB.getWorkspace()
-def scripts = workspace.child('scripts/simple')
+def scripts = workspace.child('scripts')
 def configurations = scripts.list('*.yml')
 
 configurations.each { yaml_file ->

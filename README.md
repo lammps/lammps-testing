@@ -71,7 +71,7 @@ lammps_test build_container ubuntu18.04 centos7 fedora30_mingw
 
 The compilation tests done by the LAMMPS Jenkins server executes several bash
 scripts on multiple containers. Each environment that should be tested defines
-a YAML file in the `scripts/simple/` folder. Currently it has 5 definitions:
+a YAML file in the `scripts/` folder. Currently it has 5 definitions:
 
 * ubuntu.yml
 * centos.yml
@@ -81,7 +81,7 @@ a YAML file in the `scripts/simple/` folder. Currently it has 5 definitions:
 
 Each of these environment defines a list of `builds` and the used
 `singularity_image`. The names of the builds correspond to bash scripts located
-in `scripts/simple/builds/<BUILD_NAME>.sh`.
+in `scripts/builds/<BUILD_NAME>.sh`.
 
 These build scripts assume the necessary environment variables described above
 are defined and will compile LAMMPS in the current working directory.
@@ -150,7 +150,7 @@ Run tests define a set of test cases which will execute LAMMPS input scripts.
 We only observe if the test case completes without an error. Similar to
 compilation tests, each configuration can define a list of `run_tests` in
 their YAML file. The names correspond to folders in the
-`scripts/simple/run_tests` directory.
+`scripts/run_tests` directory.
 
 ```yaml
 display_name: 'Ubuntu 18.04'
@@ -209,7 +209,7 @@ scripts to complete without an error, but that their generated outputs are
 
 Regression tests are defined for each configuration by adding a
 `regression_tests` list to their YAML file. The names correspond to folders
-in the `scripts/simple/regression_tests` directory.
+in the `scripts/regression_tests` directory.
 
 ```yaml
 display_name: 'Ubuntu 18.04'

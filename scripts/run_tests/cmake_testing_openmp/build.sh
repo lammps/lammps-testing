@@ -1,6 +1,6 @@
 #!/bin/bash -x
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
-SCRIPT_BASE_DIR=$LAMMPS_TESTING_DIR/scripts/simple
+SCRIPT_BASE_DIR=$LAMMPS_TESTING_DIR/scripts
 
 if [ -z "${LAMMPS_DIR}" ]
 then
