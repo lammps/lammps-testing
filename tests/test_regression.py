@@ -13,12 +13,10 @@ from lammps_testing.common import discover_tests
 
 TESTS_DIR = os.path.dirname(os.path.realpath(__file__))
 
-def CreateLAMMPSTestCase(testcase_name, script_names):
+
+def CreateLAMMPSTestCase(testcase_name, script_paths):
     """ Utility function to generate LAMMPS test case classes with both serial and parallel
         testing functions for each input script"""
-    def setUp(self):
-        self.cwd = os.path.join(TESTS_DIR, "examples", testcase_name)
-
     def test_regression(func_name, script_name):
         def test_regression_run(self):
             rc = self.run_regression(script_name, test_name=func_name)
@@ -26,14 +24,15 @@ def CreateLAMMPSTestCase(testcase_name, script_names):
         test_regression_run.__name__ = func_name
         return test_regression_run
 
-    methods = {"setUp": setUp}
+    methods = {}
 
-    for script_name in script_names:
+    for script_path in script_paths:
+        script_name = os.path.basename(script_path)
         name = '_'.join(script_name.split('.')[1:])
         name = name.replace('-', '_')
 
         func_name = "test_" + name + "_regression"
-        methods[func_name] = test_regression(func_name, script_name)
+        methods[func_name] = test_regression(func_name, script_path)
 
     return type(testcase_name.title() + "TestCase", (LAMMPSRegressionTestCase, unittest.TestCase), methods)
 
@@ -72,7 +71,7 @@ skip_list = [
 ]
 
 for name, scripts in discover_tests(examples_dir, skip_list):
-    name = name.replace('/', '.')
+    name = name.replace('/', '__')
     name = name.replace('-', '_')
     vars()[name.title() + "TestCase"] = CreateLAMMPSTestCase(name, scripts)
 
