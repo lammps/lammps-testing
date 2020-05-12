@@ -7,6 +7,7 @@ def set_github_status = false
 def send_slack = false
 
 def lammps_branch = "master"
+def lammps_testing_branch = "master"
 def lammps_packages_branch = "master"
 
 def docker_image_name = "lammps:${env.JOB_NAME}"
@@ -18,6 +19,10 @@ node('atlas2') {
     stage('Checkout') {
         dir('lammps') {
             commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
+        }
+
+        dir('lammps-testing') {
+            checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${lammps_testing_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps-testing']]]
         }
 
         dir('lammps-packages') {
