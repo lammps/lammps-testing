@@ -263,7 +263,7 @@ container_definitions.each { definition_file ->
                             credentials('lammps-jenkins')
                         }
 
-                        branches('lammps_test')
+                        branches('master')
                     }
                 }
                 scriptPath("pipelines/master/singularity_container.groovy")

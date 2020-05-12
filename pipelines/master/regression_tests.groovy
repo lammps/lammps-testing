@@ -6,7 +6,7 @@ def set_github_status = true
 def send_slack = true
 
 def lammps_branch = "master"
-def lammps_testing_branch = "lammps_test"
+def lammps_testing_branch = "master"
 
 node('atlas2') {
     def utils = new Utils()

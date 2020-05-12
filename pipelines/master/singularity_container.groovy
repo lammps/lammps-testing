@@ -1,6 +1,6 @@
 def project_url = 'https://github.com/lammps/lammps-testing.git'
 
-def lammps_branch = "lammps_test"
+def lammps_branch = "master"
 
 def container_definition = "containers/singularity/${currentBuild.projectName}.def"
 def container_file = "${currentBuild.projectName}.sif"
