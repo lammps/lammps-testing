@@ -36,13 +36,12 @@ node('atlas2') {
     def err = null
 
     try {
-            jobs = config.containers.collectEntries { container ->
-                ["${container}": launch_build("docker/${container}", commit.GIT_COMMIT, env.WORKSPACE)]
-            }
+        jobs = config.containers.collectEntries { container ->
+            ["${container}": launch_build("docker/${container}", commit.GIT_COMMIT, env.WORKSPACE)]
+        }
 
-            stage('Build Containers') {
-                parallel jobs
-            }
+        stage('Build Containers') {
+            parallel jobs
         }
     } catch (caughtErr) {
         err = caughtErr
