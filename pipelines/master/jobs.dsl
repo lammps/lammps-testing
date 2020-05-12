@@ -124,6 +124,29 @@ pipelineJob("dev/progguide/unit_tests") {
     }
 }
 
+folder('dev/master/docker')
+
+
+pipelineJob("dev/master/docker_containers") {
+    quietPeriod(120)
+
+    properties {
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/master/docker_containers.groovy'))
+            sandbox()
+        }
+    }
+}
+
 def workspace = SEED_JOB.getWorkspace()
 def scripts = workspace.child('scripts')
 def configurations = scripts.list('*.yml')
@@ -167,7 +190,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/master/run.groovy'))
+                        script(readFileFromWorkspace('pipelines/master/run.g:qroovy'))
                         sandbox()
                     }
                 }
@@ -244,6 +267,26 @@ container_definitions.each { definition_file ->
                     }
                 }
                 scriptPath("pipelines/master/singularity_container.groovy")
+            }
+        }
+    }
+}
+
+def docker_config_file = workspace.child('containers/docker.yml')
+def docker_config = new Yaml().load(docker_config_file.readToString())
+folder("dev/master/docker")
+
+docker_config.containers.each { name ->
+    pipelineJob("dev/master/docker/${name}") {
+        parameters {
+            stringParam('GIT_COMMIT')
+            stringParam('WORKSPACE_PARENT')
+        }
+
+        definition {
+            cps {
+                script(readFileFromWorkspace('pipelines/master/docker_container.groovy'))
+                sandbox()
             }
         }
     }
