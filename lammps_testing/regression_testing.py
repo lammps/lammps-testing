@@ -109,7 +109,7 @@ class RegressionTest(object):
 
         if is_reference:
             today = datetime.now()
-            system_name = platform.system()
+            system_name = platform.system().lower()
             target_file_path = os.path.join(self.test_directory, f'log.{today:%d%b%y}.{system_name}.{self.descriptor}.{self.name}')
             shutil.copyfile(self.log_file_path, target_file_path)
 
