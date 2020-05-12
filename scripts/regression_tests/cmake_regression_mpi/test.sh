@@ -14,6 +14,6 @@ export LC_ALL=C.UTF-8
 
 rm *.xml || true
 
-nosetests -v --with-xunit --xunit-file=regression_01.xml tests/test_regression.py:GranregionTestCase
+nosetests -v --with-xunit --xunit-file=regression_01.xml tests/test_regression.py
 
 deactivate
