@@ -48,7 +48,7 @@ class Settings(object):
 
     @property
     def configuration_dir(self):
-        return os.path.join(os.environ['LAMMPS_TESTING_DIR'], 'scripts', 'simple')
+        return os.path.join(os.environ['LAMMPS_TESTING_DIR'], 'scripts')
 
     @property
     def build_scripts_dir(self):
