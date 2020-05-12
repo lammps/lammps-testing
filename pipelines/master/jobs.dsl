@@ -190,7 +190,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/master/run.g:qroovy'))
+                        script(readFileFromWorkspace('pipelines/master/run.groovy'))
                         sandbox()
                     }
                 }
