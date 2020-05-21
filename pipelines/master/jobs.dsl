@@ -104,7 +104,7 @@ pipelineJob("dev/master/build_docs") {
 
 folder('dev/progguide')
 
-pipelineJob("dev/progguide/unit_tests") {
+pipelineJob("dev/master/unit_tests") {
     quietPeriod(120)
 
     properties {
@@ -221,10 +221,10 @@ configurations.each { yaml_file ->
     }
 
     if(config.containsKey('unit_tests')){
-        folder("dev/progguide/${container}/unit_tests")
+        folder("dev/master/${container}/unit_tests")
 
         config.unit_tests.each { name ->
-            pipelineJob("dev/progguide/${container}/unit_tests/${name}") {
+            pipelineJob("dev/master/${container}/unit_tests/${name}") {
                 parameters {
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
