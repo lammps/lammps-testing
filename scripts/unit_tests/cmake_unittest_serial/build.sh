@@ -61,6 +61,7 @@ ${CMAKE_COMMAND} \
       -D LAMMPS_SIZES=SMALLBIG \
       -D LAMMPS_EXCEPTIONS=on \
       -D ENABLE_TESTING=on \
+      -D ENABLE_COVERAGE=on \
       ${LAMMPS_DIR}/cmake || exit 1
 
 # Build
