@@ -28,7 +28,21 @@ node('atlas2') {
         }
     }
 
-    recordIssues(tools: [gcc()])
+    def tools = []
+
+    if (build_script.contains("cmake")) {
+        tools.add(cmake())
+    }
+
+    if (build_script.contains("_icc_")) {
+        tools.add(intel())
+    } else if (build_script.contains("_clang_")) {
+        tools.add(clang())
+    } else {
+        tools.add(gcc())
+    }
+
+    recordIssues(tools: tools)
 
     xunit([CTest(deleteOutputFiles: true, failIfNotNew: true, pattern: 'build/Testing/**/Test.xml', skipNoTestFiles: false, stopProcessingIfError: true)])
 
