@@ -15,4 +15,4 @@ regression_tests:
  - cmake_regression_mpi
 
 unit_tests:
- - cmake_unittest_serial
+ - cmake_mpi_openmp_smallbig_shared
