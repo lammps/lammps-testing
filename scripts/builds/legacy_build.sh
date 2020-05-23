@@ -166,7 +166,7 @@ ccache -M 5G
 echo "Copy sources..."
 
 mkdir -p ${BUILD}/lammps
-rsync -a --delete --include='src/***' --include='lib/***' --include='potentials/***' --include='python/***' --exclude='*' ${LAMMPS_DIR}/ ${BUILD}/lammps/
+rsync -a --delete --include='src/***' --include='lib/***' --include='potentials/***' --include='python/***' --include='fmtlib/***' --exclude='*' ${LAMMPS_DIR}/ ${BUILD}/lammps/
 
 export LAMMPS_DIR=${BUILD}/lammps
 
