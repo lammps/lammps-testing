@@ -1,6 +1,6 @@
 node('atlas2') {
-    def docker_image_name = "lammps:${env.JOB_NAME}"
-    def dockerfile = "${params.WORKSPACE_PARENT}/lammps-packages/docker/${env.JOB_NAME}/Dockerfile"
+    def docker_image_name = "lammps:${env.JOB_BASE_NAME}"
+    def dockerfile = "${params.WORKSPACE_PARENT}/lammps-packages/docker/${env.JOB_BASE_NAME}/Dockerfile"
 
     stage('Build') {
         result = docker.build(docker_image_name, "-f ${dockerfile} ${params.WORKSPACE_PARENT}")
