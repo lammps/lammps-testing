@@ -6,6 +6,7 @@ def set_github_status = true
 def send_slack = true
 
 node('atlas2') {
+ws("PR${env.GITHUB_PR_NUMBER}") {
     def utils = new Utils()
 
 
@@ -68,6 +69,7 @@ node('atlas2') {
             throw err
         }
     }
+}
 }
 
 def get_configuration(yaml_file) {
