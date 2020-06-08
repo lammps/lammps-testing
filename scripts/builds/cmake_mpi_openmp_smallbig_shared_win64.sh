@@ -18,7 +18,10 @@ CMAKE_COMMAND=mingw64-cmake
 
 LAMMPS_COMPILE_NPROC=${LAMMPS_COMPILE_NPROC-8}
 
-export CCACHE_DIR="$PWD/.ccache"
+if [ -z "${CCACHE_DIR}" ]
+then
+    export CCACHE_DIR="$PWD/.ccache"
+fi
 
 # Set up environment
 ccache -M 5G

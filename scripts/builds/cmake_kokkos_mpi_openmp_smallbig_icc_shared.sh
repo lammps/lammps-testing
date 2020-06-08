@@ -28,7 +28,11 @@ fi
 
 LAMMPS_COMPILE_NPROC=${LAMMPS_COMPILE_NPROC-8}
 
-export CCACHE_DIR="$PWD/.ccache"
+if [ -z "${CCACHE_DIR}" ]
+then
+    export CCACHE_DIR="$PWD/.ccache"
+fi
+
 export PYTHON=$(which python3)
 
 # Set up environment
