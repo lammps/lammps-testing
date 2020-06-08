@@ -69,6 +69,39 @@ pipelineJob("dev/pull_requests/compilation_tests") {
     }
 }
 
+pipelineJob("dev/pull_requests/unit_tests") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPullRequests {
+                    spec("* * * * *")
+                    triggerMode('HEAVY_HOOKS')
+                    repoProviders {
+                        githubPlugin {
+                            cacheConnection(true)
+                            manageHooks(true)
+                            repoPermission('ADMIN')
+                        }
+                    }
+                    events {
+                        Open()
+                        commitChanged()
+                    }
+                }
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull_requests/unit_tests.groovy'))
+            sandbox()
+        }
+    }
+}
+
 pipelineJob("dev/pull_requests/run_tests") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
@@ -251,6 +284,28 @@ configurations.each { yaml_file ->
                 definition {
                     cps {
                         script(readFileFromWorkspace('pipelines/master/regression.groovy'))
+                        sandbox()
+                    }
+                }
+            }
+        }
+    }
+
+    if(config.containsKey('unit_tests')){
+        folder("dev/pull_requests/${container}/unit_tests")
+
+        config.unit_tests.each { name ->
+            pipelineJob("dev/pull_requests/${container}/unit_tests/${name}") {
+                parameters {
+                    stringParam('GIT_COMMIT')
+                    stringParam('WORKSPACE_PARENT')
+                    stringParam('CONTAINER_NAME', container)
+                    stringParam('CONTAINER_IMAGE', config.container_image)
+                }
+
+                definition {
+                    cps {
+                        script(readFileFromWorkspace('pipelines/master/run_unit_tests.groovy'))
                         sandbox()
                     }
                 }
