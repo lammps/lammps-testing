@@ -116,7 +116,7 @@ def get_configuration(yaml_file) {
     ]]
 }
 
-def launch_build(job_name, commit, workspace) {
+def launch_build(job_name, commit, workspace, ccache_dir) {
     return {
         build job: job_name, parameters: [ string(name: 'GIT_COMMIT', value: commit), string(name: 'WORKSPACE_PARENT', value: workspace), string(name: 'CCACHE_DIR', value: ccache_dir) ]
     }
