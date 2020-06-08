@@ -49,5 +49,5 @@ node('atlas2') {
         slackSend channel: 'new-testing', color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
     }
 
-    sh(label: "Save current CCACHE to seed future jobs", script: "ln -s ${env.CCACHE_DIR} .ccache_latest")
+    sh(label: "Save current CCACHE to seed future jobs", script: "rm -f .ccache_latest && ln -s ${env.CCACHE_DIR} .ccache_latest")
 }
