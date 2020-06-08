@@ -2,6 +2,14 @@ node('atlas2') {
     env.LAMMPS_DIR = "${params.WORKSPACE_PARENT}/lammps"
     env.LAMMPS_TESTING_DIR = "${params.WORKSPACE_PARENT}/lammps-testing"
     env.LAMMPS_CONTAINER_DIR = "/home/jenkins/containers"
+    env.CCACHE_DIR = "${env.WORKSPACE}/${params.CCACHE_DIR}"
+
+    if(!fileExists(env.CCACHE_DIR)) {
+        sh(label: "Ensure CCACHE_DIR folder exists", script: "mkdir -p ${CCACHE_DIR}")
+        if(fileExists(".ccache_latest")) {
+            sh(label: "Seed CCACHE_DIR", script: "cp -R .ccache_latest/* ${env.CCACHE_DIR}/")
+        }
+    }
 
     def container = "${params.CONTAINER_IMAGE}"
     def container_args = "--nv -B ${params.WORKSPACE_PARENT}:${params.WORKSPACE_PARENT}"
@@ -40,4 +48,6 @@ node('atlas2') {
     } else {
         slackSend channel: 'new-testing', color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
     }
+
+    sh(label: "Save current CCACHE to seed future jobs", script: "ln -s ${env.CCACHE_DIR} .ccache_latest")
 }
