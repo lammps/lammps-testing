@@ -5,6 +5,8 @@ def project_url = 'https://github.com/lammps/lammps.git'
 def set_github_status = true
 def send_slack = true
 
+def lammps_testing_branch = 'master'
+
 node('atlas2') {
 ws("PR${env.GITHUB_PR_NUMBER}") {
     def utils = new Utils()
@@ -18,7 +20,7 @@ ws("PR${env.GITHUB_PR_NUMBER}") {
         }
 
         dir('lammps-testing') {
-            checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: '*/lammps_test']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps-testing']]]
+            checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${lammps_testing_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps-testing']]]
         }
     }
 
