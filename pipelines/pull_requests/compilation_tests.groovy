@@ -34,11 +34,12 @@ node('atlas2') {
 
     def jobs = [:]
     def err = null
+    def ccache_dir = "PR${env.GITHUB_PR_NUMBER}/.ccache"
 
     try {
         configurations.each { container, config ->
             jobs[container] = config.builds.collectEntries { build ->
-                ["${build}": launch_build("${container}/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
+                ["${build}": launch_build("${container}/${build}", commit.GIT_COMMIT, env.WORKSPACE, ccache_dir)]
             }
 
             stage(config.display_name) {
@@ -81,8 +82,8 @@ def get_configuration(yaml_file) {
     ]]
 }
 
-def launch_build(job_name, commit, workspace) {
+def launch_build(job_name, commit, workspace, ccache_dir) {
     return {
-        build job: job_name, parameters: [ string(name: 'GIT_COMMIT', value: commit), string(name: 'WORKSPACE_PARENT', value: workspace) ]
+        build job: job_name, parameters: [ string(name: 'GIT_COMMIT', value: commit), string(name: 'WORKSPACE_PARENT', value: workspace), string(name: 'CCACHE_DIR', value: ccache_dir) ]
     }
 }

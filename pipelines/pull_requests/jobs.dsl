@@ -234,6 +234,7 @@ configurations.each { yaml_file ->
             parameters {
                 stringParam('GIT_COMMIT')
                 stringParam('WORKSPACE_PARENT')
+                stringParam('CCACHE_DIR')
                 stringParam('CONTAINER_NAME', container)
                 stringParam('CONTAINER_IMAGE', config.container_image)
             }
@@ -255,6 +256,7 @@ configurations.each { yaml_file ->
                 parameters {
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
+                    stringParam('CCACHE_DIR')
                     stringParam('CONTAINER_NAME', container)
                     stringParam('CONTAINER_IMAGE', config.container_image)
                 }
@@ -277,6 +279,7 @@ configurations.each { yaml_file ->
                 parameters {
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
+                    stringParam('CCACHE_DIR')
                     stringParam('CONTAINER_NAME', container)
                     stringParam('CONTAINER_IMAGE', config.container_image)
                 }
@@ -299,6 +302,7 @@ configurations.each { yaml_file ->
                 parameters {
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
+                    stringParam('CCACHE_DIR')
                     stringParam('CONTAINER_NAME', container)
                     stringParam('CONTAINER_IMAGE', config.container_image)
                 }
