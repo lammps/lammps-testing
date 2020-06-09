@@ -8,7 +8,7 @@ node('atlas2') {
     if(!fileExists(env.CCACHE_DIR)) {
         sh(label: "Ensure CCACHE_DIR folder exists", script: "mkdir -p ${CCACHE_DIR}")
         if(fileExists(".ccache_latest")) {
-            sh(label: "Seed CCACHE_DIR", script: "cp -R .ccache_latest/* ${env.CCACHE_DIR}/")
+            sh(label: "Seed CCACHE_DIR", script: "rsync -ra .ccache_latest/ ${env.CCACHE_DIR}/")
         }
     }
 
@@ -64,5 +64,5 @@ node('atlas2') {
         slackSend channel: 'new-testing', color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
     }
 
-    sh(label: "Save current CCACHE to seed future jobs", script: "rm -rf .ccache_latest && cp -R ${env.CCACHE_DIR} .ccache_latest")
+    sh(label: "Save current CCACHE to seed future jobs", script: "rm -rf .ccache_latest && rsync -ra ${env.CCACHE_DIR}/ .ccache_latest/")
 }
