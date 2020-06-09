@@ -59,9 +59,9 @@ node('atlas2') {
     }
 
     if (currentBuild.result == 'FAILURE') {
-        slackSend channel: 'new-testing', color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
+        slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
     } else {
-        slackSend channel: 'new-testing', color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
+        slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
     }
 
     sh(label: "Save current CCACHE to seed future jobs", script: "rm -rf .ccache_latest && rsync -ra ${env.CCACHE_DIR}/ .ccache_latest/")
