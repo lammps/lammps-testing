@@ -40,13 +40,16 @@ def load_test_timing(tests, filename):
                 return x
         return None
 
-    tree = ET.parse(filename)
-    testcases = [x.attrib for x in tree.getroot()]
+    try:
+        tree = ET.parse(filename)
+        testcases = [x.attrib for x in tree.getroot()]
 
-    for test_result in testcases:
-        test = find_test(test_result['classname'], test_result['name'])
-        if test:
-            test['time'] = float(test_result['time'])
+        for test_result in testcases:
+            test = find_test(test_result['classname'], test_result['name'])
+            if test:
+                test['time'] = float(test_result['time'])
+    except Exception:
+        pass
 
 
 def create_job_queues(tests, nprocesses):
