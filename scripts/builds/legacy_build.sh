@@ -127,7 +127,11 @@ build_libraries() {
     fi
 }
 
-export CCACHE_DIR="$PWD/.ccache"
+if [ -z "${CCACHE_DIR}" ]
+then
+    export CCACHE_DIR="$PWD/.ccache"
+fi
+
 export OMPI_CC=$CC
 export OMPI_CXX=$CXX
 export PYTHON=$(which python3)
