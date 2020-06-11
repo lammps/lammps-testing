@@ -4,6 +4,7 @@ node('atlas2') {
     env.LAMMPS_CACHE_DIR = "${env.WORKSPACE}/cache"
     env.LAMMPS_CONTAINER_DIR = "/home/jenkins/containers"
     env.CCACHE_DIR = "${env.WORKSPACE}/${params.CCACHE_DIR}"
+    env.GIT_COMMIT = params.GIT_COMMIT
 
     def container = "${params.CONTAINER_IMAGE}"
     def container_args = "--nv -B ${params.WORKSPACE_PARENT}:${params.WORKSPACE_PARENT}"
@@ -49,6 +50,10 @@ node('atlas2') {
 
     if (fileExists('build/coverage.xml')) {
         cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+
+        withCredentials([string(credentialsId: 'codecov-token', variable: 'CODECOV_TOKEN')]) {
+            sh "bash <(curl -s https://codecov.io/bash)"
+        }
     }
 
     if (currentBuild.result == 'FAILURE') {
