@@ -164,7 +164,7 @@ case $LAMMPS_CXX_STANDARD in
         ;;
 esac
 
-ccache -M 5G
+ccache -M 10G
 
 # Create copy of LAMMPS directory
 echo "Copy sources..."

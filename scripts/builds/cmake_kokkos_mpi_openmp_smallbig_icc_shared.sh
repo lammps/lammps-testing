@@ -36,7 +36,7 @@ fi
 export PYTHON=$(which python3)
 
 # Set up environment
-ccache -M 5G
+ccache -M 10G
 virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
 pip install --upgrade pip setuptools

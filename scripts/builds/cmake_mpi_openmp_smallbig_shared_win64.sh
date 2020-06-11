@@ -24,7 +24,7 @@ then
 fi
 
 # Set up environment
-ccache -M 5G
+ccache -M 10G
 
 # Create build directory
 if [ -d "${BUILD}" ]; then

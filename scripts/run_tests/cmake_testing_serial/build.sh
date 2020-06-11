@@ -39,7 +39,7 @@ fi
 export PYTHON=$(which python3)
 
 # Set up environment
-ccache -M 5G
+ccache -M 10G
 
 $SCRIPT_BASE_DIR/common/init_testing_venv.sh
 

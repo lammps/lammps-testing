@@ -8,7 +8,6 @@ def send_slack = true
 def lammps_testing_branch = "master"
 
 node('atlas2') {
-ws("PR${env.GITHUB_PR_NUMBER}") {
     def utils = new Utils()
 
 
@@ -74,7 +73,6 @@ ws("PR${env.GITHUB_PR_NUMBER}") {
             throw err
         }
     }
-}
 }
 
 def get_configuration(yaml_file) {

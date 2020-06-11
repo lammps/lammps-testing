@@ -34,7 +34,7 @@ node('atlas2') {
 
     def jobs = [:]
     def err = null
-    def ccache_dir = "PR${env.GITHUB_PR_NUMBER}/.ccache"
+    def ccache_dir = ".ccache"
 
     try {
         configurations.each { container, config ->
