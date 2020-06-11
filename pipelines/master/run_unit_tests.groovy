@@ -53,7 +53,7 @@ node('atlas2') {
 
         withCredentials([string(credentialsId: 'codecov-token', variable: 'CODECOV_TOKEN')]) {
             sh """#!/bin/bash
-            bash <(curl -s https://codecov.io/bash)
+            bash <(curl -s https://codecov.io/bash) -f build/coverage.xml
             """
         }
     }
