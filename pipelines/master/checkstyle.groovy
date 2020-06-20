@@ -7,6 +7,7 @@ def send_slack = true
 def lammps_branch = 'master'
 
 node('atlas2'){
+    cleanWs()
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/home/jenkins/containers"
     def container = "fedora32_mingw"
@@ -14,9 +15,7 @@ node('atlas2'){
     def launch_container = "singularity exec ${container_args} \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
     stage('Checkout') {
-        dir('lammps') {
-            commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
-        }
+        commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
     }
 
     if (set_github_status) {
@@ -25,29 +24,25 @@ node('atlas2'){
 
     try {
         stage('Whitespace') {
-            dir('lammps') {
-                if(fileExists('tools/coding_standard/whitespace.py')) {
-                    tee('whitespace.log') {
-                        sh(label: "Check for whitespace errors",
-                           script: "${launch_container} python3 tools/coding_standard/whitespace.py . || true")
-                    }
-                    recordIssues failOnError: true, tools: [groovyScript(parserId: 'whitespace', pattern: 'whitespace.log')]
-                } else {
-                    echo 'Skipping'
+            if(fileExists('tools/coding_standard/whitespace.py')) {
+                tee('whitespace.log') {
+                    sh(label: "Check for whitespace errors",
+                       script: "${launch_container} python3 tools/coding_standard/whitespace.py . || true")
                 }
+                recordIssues failOnError: true, tools: [groovyScript(parserId: 'whitespace', pattern: 'whitespace.log')]
+            } else {
+                echo 'Skipping'
             }
         }
 
         stage('File Permissions') {
-            dir('lammps') {
-                if(fileExists('tools/coding_standard/permissions.py')) {
-                    tee('permissions.log') {
-                        sh(label: "Check file permissions",
-                           script: "${launch_container} python3 tools/coding_standard/permissions.py . || true")
-                    }
-                } else {
-                    echo 'Skipping'
+            if(fileExists('tools/coding_standard/permissions.py')) {
+                tee('permissions.log') {
+                    sh(label: "Check file permissions",
+                       script: "${launch_container} python3 tools/coding_standard/permissions.py . || true")
                 }
+            } else {
+                echo 'Skipping'
             }
         }
     } catch(Exception e) {
