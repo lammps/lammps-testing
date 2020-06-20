@@ -27,8 +27,11 @@ node('atlas2'){
         stage('Whitespace') {
             dir('lammps') {
                 if(fileExists('tools/coding_standard/whitespace.py')) {
-                    sh(label: "Check for whitespace errors",
-                       script: "${launch_container} python3 tools/coding_standard/whitespace.py .")
+                    tee('whitespace.log') {
+                        sh(label: "Check for whitespace errors",
+                           script: "${launch_container} python3 tools/coding_standard/whitespace.py .")
+                    }
+                    recordIssues failOnError: true, tools: [groovyScript(parserId: 'whitespace', pattern: 'whitespace.log')]
                 } else {
                     echo 'Skipping'
                 }
@@ -38,8 +41,10 @@ node('atlas2'){
         stage('File Permissions') {
             dir('lammps') {
                 if(fileExists('tools/coding_standard/permissions.py')) {
-                    sh(label: "Check file permissions",
-                       script: "${launch_container} python3 tools/coding_standard/permissions.py .")
+                    tee('permissions.log') {
+                        sh(label: "Check file permissions",
+                           script: "${launch_container} python3 tools/coding_standard/permissions.py .")
+                    }
                 } else {
                     echo 'Skipping'
                 }
