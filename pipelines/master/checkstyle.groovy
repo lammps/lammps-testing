@@ -29,7 +29,7 @@ node('atlas2'){
                 if(fileExists('tools/coding_standard/whitespace.py')) {
                     tee('whitespace.log') {
                         sh(label: "Check for whitespace errors",
-                           script: "${launch_container} python3 tools/coding_standard/whitespace.py .")
+                           script: "${launch_container} python3 tools/coding_standard/whitespace.py . || true")
                     }
                     recordIssues failOnError: true, tools: [groovyScript(parserId: 'whitespace', pattern: 'whitespace.log')]
                 } else {
@@ -43,7 +43,7 @@ node('atlas2'){
                 if(fileExists('tools/coding_standard/permissions.py')) {
                     tee('permissions.log') {
                         sh(label: "Check file permissions",
-                           script: "${launch_container} python3 tools/coding_standard/permissions.py .")
+                           script: "${launch_container} python3 tools/coding_standard/permissions.py . || true")
                     }
                 } else {
                     echo 'Skipping'
