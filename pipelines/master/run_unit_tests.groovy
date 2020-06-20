@@ -1,5 +1,5 @@
 node('atlas2') {
-    env.LAMMPS_DIR = "${params.WORKSPACE_PARENT}/lammps"
+    env.LAMMPS_DIR = "lammps"
     env.LAMMPS_TESTING_DIR = "${params.WORKSPACE_PARENT}/lammps-testing"
     env.LAMMPS_CACHE_DIR = "${env.WORKSPACE}/cache"
     env.LAMMPS_CONTAINER_DIR = "/home/jenkins/containers"
@@ -13,6 +13,10 @@ node('atlas2') {
     def test_script = "${currentBuild.projectName}/test.sh"
 
     def launch_container = "singularity exec ${container_args} \$LAMMPS_CONTAINER_DIR/${container}.sif"
+
+    stage('Copy LAMMPS sources') {
+      sh "rsync -avht --delete ${params.WORKSPACE_PARENT}/lammps/ lammps/"
+    }
 
     timeout(time: 2, unit: 'HOURS') {
         stage('Build') {
