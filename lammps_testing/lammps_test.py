@@ -622,7 +622,7 @@ def main():
     parser_run_test.set_defaults(func=run_test)
 
     # create the parser for the "unittests" command
-    parser_unit_test = subparsers.add_parser('unittest', help='run unit tests')
+    parser_unit_test = subparsers.add_parser('unit', help='run unit tests')
     parser_unit_test.add_argument('--builds', metavar='build', nargs='+', default=['ALL'], help='comma separated list of builds that should run')
     parser_unit_test.add_argument('--config', metavar='config', nargs='+', default=['ALL'], help='name of configuration')
     parser_unit_test.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
