@@ -80,7 +80,7 @@ From: ubuntu:20.04
         tar -xzf plumed.tar.gz
         cd plumed-${version}
         ./configure --disable-doc --prefix=/usr
-        make
+        make -j 12
         make install
         # fix up installation for CentOS and Fedora
         # mv -v /usr/lib/pkgconfig/plumed* /usr/share/pkgconfig/
