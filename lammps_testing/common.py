@@ -55,6 +55,10 @@ class Settings(object):
         return os.path.join(self.configuration_dir, 'builds')
 
     @property
+    def unit_tests_scripts_dir(self):
+        return os.path.join(self.configuration_dir, 'unit_tests')
+
+    @property
     def run_tests_scripts_dir(self):
         return os.path.join(self.configuration_dir, 'run_tests')
 
