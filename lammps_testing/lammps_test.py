@@ -480,17 +480,18 @@ def run_test(args, settings):
 
         runTest = RunTest(container, settings, args.ignore_commit)
 
-        for build_name in config.run_tests:
-            if 'ALL' not in selected_builds and build_name not in selected_builds:
-                continue
+        if hasattr(config, 'run_tests'):
+            for build_name in config.run_tests:
+                if 'ALL' not in selected_builds and build_name not in selected_builds:
+                    continue
 
-            if not args.test_only and not runTest.build(build_name):
-                print(f"Compilation of '{build_name}' on '{container.name}' FAILED!")
-                sys.exit(1)
+                if not args.test_only and not runTest.build(build_name):
+                    print(f"Compilation of '{build_name}' on '{container.name}' FAILED!")
+                    sys.exit(1)
 
-            if not args.build_only and not runTest.test(build_name):
-                print(f"Run test of '{build_name}' on '{container.name}' FAILED!")
-                sys.exit(1)
+                if not args.build_only and not runTest.test(build_name):
+                    print(f"Run test of '{build_name}' on '{container.name}' FAILED!")
+                    sys.exit(1)
 
 def main():
     s = Settings()
