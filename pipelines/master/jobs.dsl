@@ -102,7 +102,6 @@ pipelineJob("dev/master/build_docs") {
     }
 }
 
-folder('dev/progguide')
 
 pipelineJob("dev/master/unit_tests") {
     quietPeriod(120)
@@ -156,7 +155,6 @@ configurations.each { yaml_file ->
     def container = yaml_file.getBaseName()
 
     folder("dev/master/${container}")
-    folder("dev/progguide/${container}")
 
     config.builds.each { name ->
         pipelineJob("dev/master/${container}/${name}") {
