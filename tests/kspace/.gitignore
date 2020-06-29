@@ -1,0 +1,5 @@
+*.log
+in.tpc_*
+in.spce_*
+in.rhodopsin_*
+in.rpc*
