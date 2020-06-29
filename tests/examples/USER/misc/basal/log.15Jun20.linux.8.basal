@@ -1,4 +1,4 @@
-LAMMPS (4 Jan 2019)
+LAMMPS (15 Jun 2020)
 ############################################################################
 # Input file for investigating twinning nucleation under uniaxial loading with basal plane vector analysis
 # Christopher Barrett, March 2013
@@ -46,7 +46,7 @@ atom_modify map array
 
 # lattice custom scale a1 "coordinates of a1" a2 "coordinates of a2" a3 "coordinates of a3" basis "atom1 coordinates" basis "atom2 coordinates" basis "atom3 coordinates" basis "atom4 coordinates" orient x "crystallagraphic orientation of x axis" orient y "crystallagraphic orientation of y axis" z "crystallagraphic orientation of z axis"
 lattice custom 3.181269601 a1 1 0 0 a2 0 1.732050808 0 a3 0 0 1.632993162 basis 0.0 0.0 0.0 basis 0.5 0.5 0 basis 0 0.3333333 0.5 basis 0.5 0.833333 0.5 orient x 0 1 1 orient y 1 0 0 orient z 0 1 -1
-Lattice spacing in x,y,z = 7.56966 3.18127 7.56966
+Lattice spacing in x,y,z = 7.569657350637932 3.181269601 7.569657350637932
 variable multiple equal 20
 variable mx equal "v_lx*v_multiple"
 variable my equal "v_ly*v_multiple"
@@ -58,11 +58,11 @@ region		whole block 0 103.899830089032 0 ${mx} 0 ${my} units box
 region		whole block 0 103.899830089032 0 63.62539202 0 ${my} units box
 region		whole block 0 103.899830089032 0 63.62539202 0 110.202411630128 units box
 create_box		2 whole
-Created orthogonal box = (0 0 0) to (103.9 63.6254 110.202)
+Created orthogonal box = (0.0 0.0 0.0) to (103.899830089032 63.62539202 110.202411630128)
   2 by 2 by 2 MPI processor grid
 create_atoms 1 box basis 1 1 basis 2 1 basis 3 1 basis 4 1
 Created 32823 atoms
-  Time spent = 0.00250195 secs
+  create_atoms CPU = 0.002 seconds
 
 region fixed1 block INF INF INF INF INF 10 units box
 region fixed2 block INF INF INF INF  100 INF units box
@@ -101,13 +101,13 @@ thermo 1
 thermo_style custom step pe c_eatoms
 min_style cg
 minimize	1e-15 1e-15 1000 2000
-WARNING: Using 'neigh_modify every 1 delay 0 check yes' setting during minimization (../min.cpp:168)
+WARNING: Using 'neigh_modify every 1 delay 0 check yes' setting during minimization (src/min.cpp:191)
 Neighbor list info ...
   update every 1 steps, delay 0 steps, check yes
   max neighbors/atom: 2000, page size: 100000
   master list distance cutoff = 8.68
   ghost atom cutoff = 8.68
-  binsize = 4.34, bins = 24 15 26
+  binsize = 4.34, bins = 24.0 15.0 26.0
   3 neighbor lists, perpetual/occasional/extra = 1 2 0
   (1) pair eam/alloy/opt, perpetual
       attributes: half, newton on
@@ -124,7 +124,7 @@ Neighbor list info ...
       pair build: full/bin/atomonly
       stencil: full/bin/3d
       bin: standard
-Per MPI rank memory allocation (min/avg/max) = 6.969 | 6.97 | 6.971 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 6.97 | 6.971 | 6.972 Mbytes
 Step PotEng c_eatoms 
        0   -47765.363   -47765.363 
        1   -47777.259   -47777.259 
@@ -271,72 +271,72 @@ Step PotEng c_eatoms
      142    -47802.27    -47802.27 
      143   -47802.371   -47802.371 
      144   -47802.467   -47802.467 
-     145   -47802.563   -47802.563 
+     145   -47802.564   -47802.564 
      146   -47802.689   -47802.689 
-     147   -47802.816   -47802.816 
-     148   -47802.955   -47802.955 
-     149   -47803.106   -47803.106 
-     150   -47803.218   -47803.218 
-     151   -47803.344   -47803.344 
-     152   -47803.394   -47803.394 
-     153   -47803.458   -47803.458 
-     154   -47803.494   -47803.494 
-     155   -47803.547   -47803.547 
-     156   -47803.612   -47803.612 
-     157   -47803.675   -47803.675 
-     158   -47803.738   -47803.738 
-     159   -47803.794   -47803.794 
-     160   -47803.848   -47803.848 
-     161   -47803.906   -47803.906 
-     162   -47803.962   -47803.962 
-     163   -47804.018   -47804.018 
-     164   -47804.065   -47804.065 
-     165   -47804.104   -47804.104 
-     166   -47804.138   -47804.138 
-     167   -47804.157   -47804.157 
-     168   -47804.174   -47804.174 
-     169   -47804.183   -47804.183 
-     170   -47804.188   -47804.188 
-     171   -47804.193   -47804.193 
-     172   -47804.196   -47804.196 
-     173   -47804.199   -47804.199 
-     174   -47804.203   -47804.203 
-     175   -47804.206   -47804.206 
-     176   -47804.211   -47804.211 
-     177   -47804.216   -47804.216 
-     178   -47804.221   -47804.221 
-     179   -47804.224   -47804.224 
-     180   -47804.226   -47804.226 
-     181   -47804.227   -47804.227 
-     182   -47804.228   -47804.228 
-     183    -47804.23    -47804.23 
-     184   -47804.231   -47804.231 
-     185   -47804.232   -47804.232 
-     186   -47804.233   -47804.233 
-     187   -47804.233   -47804.233 
-     188   -47804.233   -47804.233 
-     189   -47804.234   -47804.234 
-     190   -47804.234   -47804.234 
-     191   -47804.235   -47804.235 
-     192   -47804.235   -47804.235 
-     193   -47804.236   -47804.236 
-     194   -47804.236   -47804.236 
+     147   -47802.817   -47802.817 
+     148   -47802.954   -47802.954 
+     149   -47803.105   -47803.105 
+     150   -47803.203   -47803.203 
+     151   -47803.329   -47803.329 
+     152   -47803.368   -47803.368 
+     153   -47803.431   -47803.431 
+     154   -47803.482   -47803.482 
+     155   -47803.531   -47803.531 
+     156   -47803.568   -47803.568 
+     157   -47803.623   -47803.623 
+     158   -47803.701   -47803.701 
+     159   -47803.743   -47803.743 
+     160   -47803.786   -47803.786 
+     161   -47803.841   -47803.841 
+     162   -47803.891   -47803.891 
+     163   -47803.958   -47803.958 
+     164   -47804.007   -47804.007 
+     165   -47804.045   -47804.045 
+     166   -47804.079   -47804.079 
+     167   -47804.099   -47804.099 
+     168   -47804.132   -47804.132 
+     169   -47804.164   -47804.164 
+     170   -47804.173   -47804.173 
+     171   -47804.179   -47804.179 
+     172   -47804.183   -47804.183 
+     173    -47804.19    -47804.19 
+     174   -47804.195   -47804.195 
+     175   -47804.199   -47804.199 
+     176   -47804.204   -47804.204 
+     177   -47804.209   -47804.209 
+     178   -47804.214   -47804.214 
+     179   -47804.218   -47804.218 
+     180   -47804.221   -47804.221 
+     181   -47804.222   -47804.222 
+     182   -47804.224   -47804.224 
+     183   -47804.226   -47804.226 
+     184   -47804.228   -47804.228 
+     185   -47804.229   -47804.229 
+     186    -47804.23    -47804.23 
+     187   -47804.231   -47804.231 
+     188   -47804.232   -47804.232 
+     189   -47804.232   -47804.232 
+     190   -47804.233   -47804.233 
+     191   -47804.233   -47804.233 
+     192   -47804.234   -47804.234 
+     193   -47804.235   -47804.235 
+     194   -47804.235   -47804.235 
      195   -47804.236   -47804.236 
-     196   -47804.237   -47804.237 
-     197   -47804.237   -47804.237 
+     196   -47804.236   -47804.236 
+     197   -47804.236   -47804.236 
      198   -47804.237   -47804.237 
      199   -47804.237   -47804.237 
      200   -47804.237   -47804.237 
-     201   -47804.238   -47804.238 
-     202   -47804.238   -47804.238 
-     203   -47804.238   -47804.238 
+     201   -47804.237   -47804.237 
+     202   -47804.237   -47804.237 
+     203   -47804.237   -47804.237 
      204   -47804.238   -47804.238 
      205   -47804.238   -47804.238 
      206   -47804.238   -47804.238 
      207   -47804.238   -47804.238 
      208   -47804.238   -47804.238 
-     209   -47804.239   -47804.239 
-     210   -47804.239   -47804.239 
+     209   -47804.238   -47804.238 
+     210   -47804.238   -47804.238 
      211   -47804.239   -47804.239 
      212   -47804.239   -47804.239 
      213   -47804.239   -47804.239 
@@ -358,8 +358,8 @@ Step PotEng c_eatoms
      229   -47804.239   -47804.239 
      230   -47804.239   -47804.239 
      231   -47804.239   -47804.239 
-     232    -47804.24    -47804.24 
-     233    -47804.24    -47804.24 
+     232   -47804.239   -47804.239 
+     233   -47804.239   -47804.239 
      234    -47804.24    -47804.24 
      235    -47804.24    -47804.24 
      236    -47804.24    -47804.24 
@@ -493,45 +493,49 @@ Step PotEng c_eatoms
      364    -47804.24    -47804.24 
      365    -47804.24    -47804.24 
      366    -47804.24    -47804.24 
-Loop time of 6.2388 on 8 procs for 366 steps with 32823 atoms
+     367    -47804.24    -47804.24 
+     368    -47804.24    -47804.24 
+     369    -47804.24    -47804.24 
+     370    -47804.24    -47804.24 
+Loop time of 10.015 on 8 procs for 370 steps with 32823 atoms
 
-98.6% CPU use with 8 MPI tasks x no OpenMP threads
+98.8% CPU use with 8 MPI tasks x no OpenMP threads
 
 Minimization stats:
   Stopping criterion = energy tolerance
   Energy initial, next-to-last, final = 
-        -47765.3632223     -47804.2397338     -47804.2397338
-  Force two-norm initial, final = 6.77696 2.60676e-05
-  Force max component initial, final = 0.218712 3.98932e-06
-  Final line search alpha, max atom move = 1 3.98932e-06
-  Iterations, force evaluations = 366 625
+     -47765.3632223354  -47804.2397337671  -47804.2397337671
+  Force two-norm initial, final = 6.7769578784160664 2.4070789606000178e-05
+  Force max component initial, final = 0.21871164717957287 3.7637499083610464e-06
+  Final line search alpha, max atom move = 1.0 3.7637499083610464e-06
+  Iterations, force evaluations = 370 636
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 5.5966     | 5.6657     | 5.7339     |   1.9 | 90.81
-Neigh   | 0.09182    | 0.098455   | 0.10451    |   1.7 |  1.58
-Comm    | 0.27152    | 0.34462    | 0.41765    |   8.5 |  5.52
-Output  | 0.043338   | 0.043767   | 0.045802   |   0.4 |  0.70
+Pair    | 7.6367     | 8.3661     | 8.773      |  12.9 | 83.54
+Neigh   | 0.11524    | 0.12959    | 0.15086    |   3.3 |  1.29
+Comm    | 0.86362    | 1.2741     | 2.0158     |  33.7 | 12.72
+Output  | 0.05743    | 0.058856   | 0.066267   |   1.2 |  0.59
 Modify  | 0          | 0          | 0          |   0.0 |  0.00
-Other   |            | 0.08631    |            |       |  1.38
+Other   |            | 0.1863     |            |       |  1.86
 
-Nlocal:    4102.88 ave 4240 max 3958 min
-Histogram: 1 1 2 0 0 0 1 0 1 2
-Nghost:    2921.12 ave 3043 max 2802 min
-Histogram: 3 1 0 0 0 0 0 0 2 2
-Neighs:    244312 ave 253004 max 235050 min
-Histogram: 1 2 1 0 0 0 0 2 0 2
-FullNghs:  0 ave 0 max 0 min
+Nlocal:    4102.875 ave 4237.0 max 3960.0 min
+Histogram: 1 1 2 0 0 0 0 1 1 2
+Nghost:    2921.125 ave 3045.0 max 2799.0 min
+Histogram: 2 2 0 0 0 0 0 0 2 2
+Neighs:    244312.125 ave 252972.0 max 235251.0 min
+Histogram: 2 1 1 0 0 0 0 2 0 2
+FullNghs:  0.0 ave 0.0 max 0.0 min
 Histogram: 8 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 1954495
-Ave neighs/atom = 59.5465
+Total # of neighbors = 1954497
+Ave neighs/atom = 59.54656795539713
 Neighbor list builds = 13
 Dangerous builds = 0
 variable eminimum equal "c_eatoms / count(all)"
 print "%%e(it,1)=${eminimum}"
-%%e(it,1)=-1.45642505967666
+%%e(it,1)=-1.45642505967667
 
 ######################################
 # EQUILIBRATION
@@ -551,37 +555,37 @@ thermo_style custom step lx ly lz press pxx pyy pzz pe temp
 
 # Run for at least 2 picosecond (assuming 1 fs timestep)
 run 200
-Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 5.972 | 5.972 | 5.974 Mbytes
 Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
-       0    104.64275    65.714339    110.11226    598.47294    597.01768    597.81136    600.58977    -47804.24          100 
-     100    104.64275    65.714339    110.11226     410.2413    428.72132    361.69192    440.31067   -47600.368    51.958034 
-     200    104.64275    65.714339    110.11226    319.66305     356.1557    292.32688    310.50657   -47572.062    45.287327 
-Loop time of 1.76039 on 8 procs for 200 steps with 32823 atoms
+       0    104.64275    65.714342    110.11226    598.47213    597.01637    597.81151    600.58851    -47804.24          100 
+     100    104.64275    65.714342    110.11226    410.24051    428.71994    361.69216    440.30941   -47600.368    51.958034 
+     200    104.64275    65.714342    110.11226    319.66237    356.15439    292.32732    310.50539   -47572.062    45.287326 
+Loop time of 2.65245 on 8 procs for 200 steps with 32823 atoms
 
-Performance: 9.816 ns/day, 2.445 hours/ns, 113.611 timesteps/s
-99.8% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 6.515 ns/day, 3.684 hours/ns, 75.402 timesteps/s
+99.2% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 1.5021     | 1.5988     | 1.7064     |   6.4 | 90.82
+Pair    | 2.0688     | 2.2779     | 2.5381     |  10.0 | 85.88
 Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.036807   | 0.1444     | 0.24133    |  21.3 |  8.20
-Output  | 0.00019595 | 0.00020978 | 0.00023245 |   0.0 |  0.01
-Modify  | 0.0096827  | 0.010563   | 0.011681   |   0.8 |  0.60
-Other   |            | 0.006384   |            |       |  0.36
+Comm    | 0.081792   | 0.33911    | 0.54822    |  25.9 | 12.78
+Output  | 0.00053821 | 0.00069822 | 0.00076473 |   0.0 |  0.03
+Modify  | 0.011053   | 0.0148     | 0.020153   |   2.1 |  0.56
+Other   |            | 0.01999    |            |       |  0.75
 
-Nlocal:    4102.88 ave 4232 max 4020 min
-Histogram: 1 2 1 2 0 0 0 0 0 2
-Nghost:    2921.62 ave 3029 max 2825 min
-Histogram: 1 1 0 1 3 0 0 0 0 2
-Neighs:    244312 ave 261745 max 231995 min
-Histogram: 1 0 4 0 1 0 0 1 0 1
-FullNghs:  0 ave 0 max 0 min
+Nlocal:    4102.875 ave 4224.0 max 3988.0 min
+Histogram: 1 1 0 1 1 2 0 0 0 2
+Nghost:    2921.625 ave 3029.0 max 2825.0 min
+Histogram: 2 0 1 1 0 1 0 1 1 1
+Neighs:    244312.0 ave 253466.0 max 230836.0 min
+Histogram: 1 0 2 0 0 0 0 3 0 2
+FullNghs:  0.0 ave 0.0 max 0.0 min
 Histogram: 8 0 0 0 0 0 0 0 0 0
 
 Total # of neighbors = 1954496
-Ave neighs/atom = 59.5465
+Ave neighs/atom = 59.54653748895591
 Neighbor list builds = 0
 Dangerous builds = 0
 
@@ -589,38 +593,38 @@ Dangerous builds = 0
 label loopeq
 variable eq loop 100
 run 250
-Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 5.972 | 5.972 | 5.974 Mbytes
 Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
-     200    104.85745    65.870291    110.35759    317.54578    353.79672    290.39067    308.44995   -47572.062    45.287327 
-     300    104.85745    65.870291    110.35759    39.147155    108.77502    -67.85052    76.516965   -47607.259    53.580796 
-     400    104.85745    65.870291    110.35759    9.4988762     77.05445   -140.12203    91.564205   -47584.488     48.21624 
-     450    104.85745    65.870291    110.35759   -89.400259   -71.056886   -183.61357   -13.530319   -47596.051        50.94 
-Loop time of 2.15427 on 8 procs for 250 steps with 32823 atoms
+     200    104.85745    65.870292    110.35759    317.54511    353.79543    290.39112    308.44879   -47572.062    45.287326 
+     300    104.85745    65.870292    110.35759    39.146596     108.7739   -67.849967    76.515852   -47607.259    53.580797 
+     400    104.85745    65.870292    110.35759    9.4983318    77.053439   -140.12154    91.563099   -47584.488    48.216239 
+     450    104.85745    65.870292    110.35759   -89.400783    -71.05784   -183.61315   -13.531357   -47596.051        50.94 
+Loop time of 3.28055 on 8 procs for 250 steps with 32823 atoms
 
-Performance: 10.027 ns/day, 2.394 hours/ns, 116.049 timesteps/s
-99.7% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 6.584 ns/day, 3.645 hours/ns, 76.207 timesteps/s
+99.1% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 1.8815     | 1.9843     | 2.083      |   6.6 | 92.11
+Pair    | 2.6792     | 2.875      | 3.1075     |   8.8 | 87.64
 Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.048862   | 0.14817    | 0.25165    |  24.1 |  6.88
-Output  | 0.00029417 | 0.00031737 | 0.00036429 |   0.0 |  0.01
-Modify  | 0.012219   | 0.013284   | 0.014273   |   0.7 |  0.62
-Other   |            | 0.008172   |            |       |  0.38
+Comm    | 0.13372    | 0.36022    | 0.55642    |  24.5 | 10.98
+Output  | 0.00046536 | 0.00052803 | 0.00061026 |   0.0 |  0.02
+Modify  | 0.015226   | 0.018892   | 0.023517   |   1.8 |  0.58
+Other   |            | 0.02595    |            |       |  0.79
 
-Nlocal:    4102.88 ave 4187 max 4015 min
+Nlocal:    4102.875 ave 4187.0 max 4015.0 min
 Histogram: 1 0 1 0 2 1 1 0 1 1
-Nghost:    2920.75 ave 2987 max 2859 min
+Nghost:    2920.75 ave 2987.0 max 2859.0 min
 Histogram: 2 0 0 1 1 2 0 0 1 1
-Neighs:    242686 ave 251809 max 233243 min
+Neighs:    242686.5 ave 251809.0 max 233243.0 min
 Histogram: 1 1 1 1 0 0 0 2 0 2
-FullNghs:  0 ave 0 max 0 min
+FullNghs:  0.0 ave 0.0 max 0.0 min
 Histogram: 8 0 0 0 0 0 0 0 0 0
 
 Total # of neighbors = 1941492
-Ave neighs/atom = 59.1504
+Ave neighs/atom = 59.150351887396035
 Neighbor list builds = 0
 Dangerous builds = 0
 variable converge equal press
@@ -632,124 +636,81 @@ jump ${fname} loopeq
 jump in.basal loopeq
 variable eq loop 100
 run 250
-Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 5.972 | 5.972 | 5.974 Mbytes
 Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
-     450    104.93751    65.816396    110.44649   -89.333241   -71.003618   -183.47593   -13.520177   -47596.051        50.94 
-     500    104.93751    65.816396    110.44649   -128.13777   -107.02073   -228.78358   -48.609004   -47598.293    51.468216 
-     600    104.93751    65.816396    110.44649   -153.68473   -114.96992   -298.29515   -47.789112   -47589.034    49.286859 
-     700    104.93751    65.816396    110.44649   -241.42667   -241.19265   -368.16332   -114.92404   -47588.405    49.138629 
-Loop time of 2.01971 on 8 procs for 250 steps with 32823 atoms
+     450    104.93751    65.816396    110.44649   -89.333767   -71.004573   -183.47551   -13.521214   -47596.051        50.94 
+     500    104.93751    65.816396    110.44649   -128.13828   -107.02163   -228.78324   -48.609978   -47598.293    51.468216 
+     600    104.93751    65.816396    110.44649   -153.68521   -114.97067   -298.29492   -47.790027   -47589.034    49.286859 
+     700    104.93751    65.816396    110.44649   -241.42698   -241.19312   -368.16309   -114.92471   -47588.405     49.13863 
+Loop time of 3.20001 on 8 procs for 250 steps with 32823 atoms
 
-Performance: 10.695 ns/day, 2.244 hours/ns, 123.780 timesteps/s
-99.7% CPU use with 8 MPI tasks x no OpenMP threads
-
-MPI task timing breakdown:
-Section |  min time  |  avg time  |  max time  |%varavg| %total
----------------------------------------------------------------
-Pair    | 1.8371     | 1.8931     | 1.9383     |   3.0 | 93.73
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.060961   | 0.10474    | 0.15949    |  13.0 |  5.19
-Output  | 0.00029307 | 0.00031854 | 0.0003657  |   0.0 |  0.02
-Modify  | 0.012242   | 0.013346   | 0.014304   |   0.7 |  0.66
-Other   |            | 0.008214   |            |       |  0.41
-
-Nlocal:    4102.88 ave 4214 max 3976 min
-Histogram: 1 0 1 1 1 0 1 1 1 1
-Nghost:    2923.38 ave 3008 max 2834 min
-Histogram: 2 0 2 0 0 0 0 1 1 2
-Neighs:    242674 ave 249776 max 234753 min
-Histogram: 2 1 1 0 0 0 0 0 1 3
-FullNghs:  0 ave 0 max 0 min
-Histogram: 8 0 0 0 0 0 0 0 0 0
-
-Total # of neighbors = 1941394
-Ave neighs/atom = 59.1474
-Neighbor list builds = 0
-Dangerous builds = 0
-variable converge equal press
-if "${converge} <= 0" then "variable converge equal -press" else "variable converge equal press"
-variable converge equal -press
-if "${converge} <= 50" then "jump ${fname} breakeq"
-next eq
-jump ${fname} loopeq
-jump in.basal loopeq
-variable eq loop 100
-run 250
-Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
-Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
-     700    105.05598    65.774424    110.51837   -241.15135    -240.9176   -367.74348   -114.79298   -47588.405    49.138629 
-     800    105.05598    65.774424    110.51837   -378.30436   -378.37883   -487.74529   -268.78896    -47596.14    50.961339 
-     900    105.07404    66.033127    110.48537   -357.57781   -344.37188   -492.95449   -235.40706     -47592.7    50.150809 
-     950    105.07404    66.033127    110.48537    -359.4805   -352.15471   -497.10825   -229.17854   -47594.848    50.656895 
-Loop time of 2.02785 on 8 procs for 250 steps with 32823 atoms
-
-Performance: 10.652 ns/day, 2.253 hours/ns, 123.283 timesteps/s
-99.3% CPU use with 8 MPI tasks x no OpenMP threads
-
-MPI task timing breakdown:
-Section |  min time  |  avg time  |  max time  |%varavg| %total
----------------------------------------------------------------
-Pair    | 1.8241     | 1.8863     | 1.9455     |   3.4 | 93.02
-Neigh   | 0.0070113  | 0.0074409  | 0.0078885  |   0.5 |  0.37
-Comm    | 0.054187   | 0.11234    | 0.1737     |  14.0 |  5.54
-Output  | 0.00028537 | 0.00030944 | 0.00035006 |   0.0 |  0.02
-Modify  | 0.012101   | 0.013377   | 0.014552   |   0.8 |  0.66
-Other   |            | 0.008076   |            |       |  0.40
-
-Nlocal:    4102.88 ave 4238 max 3960 min
-Histogram: 1 1 1 1 0 0 1 1 1 1
-Nghost:    2923 ave 3040 max 2808 min
-Histogram: 2 1 1 0 0 0 0 0 2 2
-Neighs:    242540 ave 250164 max 233729 min
-Histogram: 1 2 1 0 0 0 0 0 2 2
-FullNghs:  0 ave 0 max 0 min
-Histogram: 8 0 0 0 0 0 0 0 0 0
-
-Total # of neighbors = 1940322
-Ave neighs/atom = 59.1147
-Neighbor list builds = 1
-Dangerous builds = 0
-variable converge equal press
-if "${converge} <= 0" then "variable converge equal -press" else "variable converge equal press"
-variable converge equal -press
-if "${converge} <= 50" then "jump ${fname} breakeq"
-next eq
-jump ${fname} loopeq
-jump in.basal loopeq
-variable eq loop 100
-run 250
-Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
-Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
-     950    104.97662    66.158488     110.4855   -359.13189    -351.8132   -496.62617   -228.95629   -47594.848    50.656895 
-    1000    104.97662    66.158488     110.4855   -356.56598   -367.33164   -464.99703   -237.36926   -47589.171    49.319059 
-    1100    104.97662    66.158488     110.4855   -355.51464   -386.08447   -409.38325    -271.0762   -47592.485    50.099914 
-    1200    104.97322    66.139626    110.27684    -282.0605   -328.28835   -328.30869   -189.58446   -47594.758    50.635616 
-Loop time of 2.04532 on 8 procs for 250 steps with 32823 atoms
-
-Performance: 10.561 ns/day, 2.273 hours/ns, 122.230 timesteps/s
+Performance: 6.750 ns/day, 3.556 hours/ns, 78.125 timesteps/s
 99.2% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 1.8362     | 1.8982     | 1.9575     |   3.3 | 92.81
-Neigh   | 0.0069655  | 0.0074317  | 0.0079257  |   0.5 |  0.36
-Comm    | 0.05913    | 0.11753    | 0.17885    |  13.3 |  5.75
-Output  | 0.00029748 | 0.00032759 | 0.00037216 |   0.0 |  0.02
-Modify  | 0.012108   | 0.013365   | 0.014535   |   0.8 |  0.65
-Other   |            | 0.008491   |            |       |  0.42
+Pair    | 2.5801     | 2.7778     | 3.0829     |  10.3 | 86.81
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.07989    | 0.38112    | 0.57812    |  27.5 | 11.91
+Output  | 0.00049518 | 0.00053534 | 0.00062935 |   0.0 |  0.02
+Modify  | 0.014247   | 0.017711   | 0.023282   |   2.1 |  0.55
+Other   |            | 0.02281    |            |       |  0.71
 
-Nlocal:    4102.88 ave 4241 max 3954 min
-Histogram: 1 1 1 1 0 0 1 0 1 2
-Nghost:    2916.62 ave 3037 max 2790 min
-Histogram: 2 1 1 0 0 0 0 1 1 2
-Neighs:    242558 ave 251295 max 233335 min
-Histogram: 1 2 1 0 0 0 0 2 0 2
-FullNghs:  0 ave 0 max 0 min
+Nlocal:    4102.875 ave 4214.0 max 3976.0 min
+Histogram: 1 0 1 1 1 0 1 1 1 1
+Nghost:    2923.375 ave 3008.0 max 2834.0 min
+Histogram: 2 0 2 0 0 0 0 1 1 2
+Neighs:    242674.25 ave 249776.0 max 234753.0 min
+Histogram: 2 1 1 0 0 0 0 0 1 3
+FullNghs:  0.0 ave 0.0 max 0.0 min
 Histogram: 8 0 0 0 0 0 0 0 0 0
 
-Total # of neighbors = 1940463
-Ave neighs/atom = 59.119
+Total # of neighbors = 1941394
+Ave neighs/atom = 59.147366176156964
+Neighbor list builds = 0
+Dangerous builds = 0
+variable converge equal press
+if "${converge} <= 0" then "variable converge equal -press" else "variable converge equal press"
+variable converge equal -press
+if "${converge} <= 50" then "jump ${fname} breakeq"
+next eq
+jump ${fname} loopeq
+jump in.basal loopeq
+variable eq loop 100
+run 250
+Per MPI rank memory allocation (min/avg/max) = 5.972 | 5.972 | 5.974 Mbytes
+Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
+     700    105.05598    65.774422    110.51837   -241.15167   -240.91808   -367.74326   -114.79366   -47588.405     49.13863 
+     800    105.05598    65.774422    110.51837   -378.30449   -378.37917     -487.745   -268.78929    -47596.14    50.961339 
+     900    105.07404    66.033126    110.48537   -357.57778   -344.37199   -492.95415    -235.4072     -47592.7    50.150808 
+     950    105.07404    66.033126    110.48537   -359.48034   -352.15471   -497.10789   -229.17842   -47594.848    50.656896 
+Loop time of 3.23182 on 8 procs for 250 steps with 32823 atoms
+
+Performance: 6.684 ns/day, 3.591 hours/ns, 77.356 timesteps/s
+99.3% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 2.5721     | 2.8522     | 2.9875     |   8.2 | 88.25
+Neigh   | 0.0087232  | 0.01011    | 0.012155   |   1.1 |  0.31
+Comm    | 0.19685    | 0.33123    | 0.61102    |  24.1 | 10.25
+Output  | 0.0004621  | 0.00050684 | 0.00058835 |   0.0 |  0.02
+Modify  | 0.013971   | 0.018207   | 0.020082   |   1.4 |  0.56
+Other   |            | 0.01961    |            |       |  0.61
+
+Nlocal:    4102.875 ave 4238.0 max 3960.0 min
+Histogram: 1 1 1 1 0 0 1 1 1 1
+Nghost:    2923.0 ave 3040.0 max 2808.0 min
+Histogram: 2 1 1 0 0 0 0 0 2 2
+Neighs:    242540.25 ave 250164.0 max 233729.0 min
+Histogram: 1 2 1 0 0 0 0 0 2 2
+FullNghs:  0.0 ave 0.0 max 0.0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1940322
+Ave neighs/atom = 59.11470615117448
 Neighbor list builds = 1
 Dangerous builds = 0
 variable converge equal press
@@ -761,38 +722,81 @@ jump ${fname} loopeq
 jump in.basal loopeq
 variable eq loop 100
 run 250
-Per MPI rank memory allocation (min/avg/max) = 5.971 | 5.972 | 5.973 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 5.972 | 5.973 | 5.974 Mbytes
 Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
-    1200    104.96284    66.109179    110.29485   -282.17223    -328.4184   -328.43874   -189.65956   -47594.758    50.635616 
-    1300    104.96284    66.109179    110.29485   -94.190914   -188.78286   -55.830474   -37.959405   -47593.372    50.309133 
-    1400    104.96284    66.109179    110.29485   -37.778014   -201.34289    162.26116   -74.252313   -47593.755    50.399144 
-    1450    104.96284    66.109179    110.29485   -30.195692   -202.11454    188.94189    -77.41443   -47591.803    49.939333 
-Loop time of 2.03557 on 8 procs for 250 steps with 32823 atoms
+     950    104.97662    66.158489     110.4855   -359.13172   -351.81319    -496.6258   -228.95616   -47594.848    50.656896 
+    1000    104.97662    66.158489     110.4855   -356.56572   -367.33138   -464.99676   -237.36902   -47589.171     49.31906 
+    1100    104.97662    66.158489     110.4855   -355.51435   -386.08425   -409.38312   -271.07569   -47592.485    50.099914 
+    1200    104.97322    66.139626    110.27684   -282.06012   -328.28777   -328.30878   -189.58381   -47594.758    50.635616 
+Loop time of 3.21062 on 8 procs for 250 steps with 32823 atoms
 
-Performance: 10.611 ns/day, 2.262 hours/ns, 122.816 timesteps/s
-99.7% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 6.728 ns/day, 3.567 hours/ns, 77.867 timesteps/s
+99.2% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 1.824      | 1.8953     | 1.9607     |   4.3 | 93.11
-Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.052755   | 0.11878    | 0.18885    |  17.1 |  5.84
-Output  | 0.00028227 | 0.00030535 | 0.00034751 |   0.0 |  0.02
-Modify  | 0.011939   | 0.013212   | 0.014314   |   0.8 |  0.65
-Other   |            | 0.007935   |            |       |  0.39
+Pair    | 2.6166     | 2.8202     | 2.9568     |   8.2 | 87.84
+Neigh   | 0.0087306  | 0.01023    | 0.012187   |   1.2 |  0.32
+Comm    | 0.20146    | 0.34066    | 0.54053    |  23.6 | 10.61
+Output  | 0.00051998 | 0.00057579 | 0.00065255 |   0.0 |  0.02
+Modify  | 0.015184   | 0.018317   | 0.020084   |   1.3 |  0.57
+Other   |            | 0.0206     |            |       |  0.64
 
-Nlocal:    4102.88 ave 4202 max 3969 min
+Nlocal:    4102.875 ave 4241.0 max 3954.0 min
+Histogram: 1 1 1 1 0 0 1 0 1 2
+Nghost:    2916.625 ave 3037.0 max 2790.0 min
+Histogram: 2 1 1 0 0 0 0 1 1 2
+Neighs:    242557.875 ave 251295.0 max 233335.0 min
+Histogram: 1 2 1 0 0 0 0 2 0 2
+FullNghs:  0.0 ave 0.0 max 0.0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+
+Total # of neighbors = 1940463
+Ave neighs/atom = 59.119001919385795
+Neighbor list builds = 1
+Dangerous builds = 0
+variable converge equal press
+if "${converge} <= 0" then "variable converge equal -press" else "variable converge equal press"
+variable converge equal -press
+if "${converge} <= 50" then "jump ${fname} breakeq"
+next eq
+jump ${fname} loopeq
+jump in.basal loopeq
+variable eq loop 100
+run 250
+Per MPI rank memory allocation (min/avg/max) = 5.972 | 5.973 | 5.974 Mbytes
+Step Lx Ly Lz Press Pxx Pyy Pzz PotEng Temp 
+    1200    104.96284    66.109182    110.29485   -282.17184    -328.4178   -328.43881    -189.6589   -47594.758    50.635616 
+    1300    104.96284    66.109182    110.29485   -94.190744   -188.78276   -55.830674   -37.958801   -47593.372    50.309132 
+    1400    104.96284    66.109182    110.29485   -37.777559   -201.34168    162.26041   -74.251402   -47593.755    50.399146 
+    1450    104.96284    66.109182    110.29485   -30.195154   -202.11299      188.941   -77.413473   -47591.803    49.939333 
+Loop time of 3.23441 on 8 procs for 250 steps with 32823 atoms
+
+Performance: 6.678 ns/day, 3.594 hours/ns, 77.294 timesteps/s
+99.1% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 2.5759     | 2.8245     | 3.0295     |   8.2 | 87.33
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.16731    | 0.36975    | 0.61512    |  22.6 | 11.43
+Output  | 0.0005332  | 0.00059254 | 0.00073194 |   0.0 |  0.02
+Modify  | 0.013617   | 0.018304   | 0.022577   |   1.9 |  0.57
+Other   |            | 0.02123    |            |       |  0.66
+
+Nlocal:    4102.875 ave 4202.0 max 3969.0 min
 Histogram: 1 0 1 0 1 1 1 0 2 1
-Nghost:    2923.5 ave 2997 max 2815 min
+Nghost:    2923.5 ave 2997.0 max 2815.0 min
 Histogram: 1 1 0 0 2 0 0 0 2 2
-Neighs:    242563 ave 250161 max 234194 min
+Neighs:    242562.625 ave 250161.0 max 234194.0 min
 Histogram: 2 1 1 0 0 0 0 0 1 3
-FullNghs:  0 ave 0 max 0 min
+FullNghs:  0.0 ave 0.0 max 0.0 min
 Histogram: 8 0 0 0 0 0 0 0 0 0
 
 Total # of neighbors = 1940501
-Ave neighs/atom = 59.1202
+Ave neighs/atom = 59.12015964415197
 Neighbor list builds = 0
 Dangerous builds = 0
 variable converge equal press
@@ -805,9 +809,9 @@ jump in.basal breakeq
 # Store length for strain rate calculations
 variable tmp equal "lx"
 variable L0 equal ${tmp}
-variable L0 equal 104.96283536362
+variable L0 equal 104.962835363315
 print "Initial Length, L0: ${L0}"
-Initial Length, L0: 104.96283536362
+Initial Length, L0: 104.962835363315
 unfix 1
 
 ######################################
@@ -849,36 +853,36 @@ label loop
 displace_atoms	all ramp x 0.0 ${srate1} z 10 100 units box
 displace_atoms	all ramp x 0.0 0.1 z 10 100 units box
 run		100
-Per MPI rank memory allocation (min/avg/max) = 9.352 | 9.543 | 9.735 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 9.352 | 9.544 | 9.736 Mbytes
 Step v_strain Pxz Lx Temp PotEng KinEng 
-       0 0.0013983619   -156.85219    105.10961    43.696559   -47591.767    185.38599 
-     100 0.0013983619   -144.67365    105.10961    43.829042    -47592.33    185.94806 
-Loop time of 0.809006 on 8 procs for 100 steps with 32823 atoms
+       0 0.0013983598   -156.85257    105.10961    43.696559   -47591.767      185.386 
+     100 0.0013983598   -144.67415    105.10961    43.829042    -47592.33    185.94806 
+Loop time of 1.25157 on 8 procs for 100 steps with 32823 atoms
 
-Performance: 10.680 ns/day, 2.247 hours/ns, 123.608 timesteps/s
-99.4% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 6.903 ns/day, 3.477 hours/ns, 79.900 timesteps/s
+99.3% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.72382    | 0.75195    | 0.77965    |   2.5 | 92.95
+Pair    | 1.0059     | 1.1012     | 1.171      |   4.9 | 87.99
 Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.019954   | 0.047022   | 0.07467    |  10.1 |  5.81
-Output  | 5.2543e-05 | 6.1522e-05 | 6.3451e-05 |   0.0 |  0.01
-Modify  | 0.0060164  | 0.0066862  | 0.0073295  |   0.6 |  0.83
-Other   |            | 0.003289   |            |       |  0.41
+Comm    | 0.061604   | 0.13231    | 0.22754    |  14.3 | 10.57
+Output  | 8.7196e-05 | 9.008e-05  | 9.2015e-05 |   0.0 |  0.01
+Modify  | 0.0070294  | 0.0094304  | 0.010881   |   1.2 |  0.75
+Other   |            | 0.008503   |            |       |  0.68
 
-Nlocal:    4102.88 ave 4245 max 3951 min
+Nlocal:    4102.875 ave 4245.0 max 3951.0 min
 Histogram: 1 1 1 1 0 0 1 0 1 2
-Nghost:    2923.88 ave 3051 max 2804 min
+Nghost:    2923.875 ave 3051.0 max 2804.0 min
 Histogram: 2 1 1 0 0 0 0 1 1 2
-Neighs:    242670 ave 251430 max 233391 min
+Neighs:    242670.125 ave 251430.0 max 233391.0 min
 Histogram: 1 2 0 1 0 0 0 2 0 2
-FullNghs:  0 ave 0 max 0 min
+FullNghs:  0.0 ave 0.0 max 0.0 min
 Histogram: 8 0 0 0 0 0 0 0 0 0
 
 Total # of neighbors = 1941361
-Ave neighs/atom = 59.1464
+Ave neighs/atom = 59.14636078359687
 Neighbor list builds = 0
 Dangerous builds = 0
 variable runtime equal ${runtime}+100
@@ -889,36 +893,36 @@ jump in.basal loop
 displace_atoms	all ramp x 0.0 ${srate1} z 10 100 units box
 displace_atoms	all ramp x 0.0 0.1 z 10 100 units box
 run		100
-Per MPI rank memory allocation (min/avg/max) = 9.352 | 9.543 | 9.735 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 9.352 | 9.544 | 9.736 Mbytes
 Step v_strain Pxz Lx Temp PotEng KinEng 
-     100 0.0016983058   -334.91503    105.14109    43.829042   -47592.202    185.94806 
-     200 0.0016983058   -300.07195    105.14109    43.897454   -47592.492     186.2383 
-Loop time of 0.801596 on 8 procs for 100 steps with 32823 atoms
+     100 0.0016983002   -334.91553    105.14109    43.829042   -47592.202    185.94806 
+     200 0.0016983002   -300.07257    105.14109    43.897455   -47592.492    186.23831 
+Loop time of 1.3442 on 8 procs for 100 steps with 32823 atoms
 
-Performance: 10.778 ns/day, 2.227 hours/ns, 124.751 timesteps/s
-99.7% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 6.428 ns/day, 3.734 hours/ns, 74.393 timesteps/s
+99.2% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.71924    | 0.74647    | 0.77261    |   2.4 | 93.12
+Pair    | 1.1301     | 1.1762     | 1.2242     |   3.3 | 87.50
 Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.019616   | 0.045155   | 0.071913   |   9.5 |  5.63
-Output  | 5.0348e-05 | 5.1963e-05 | 5.2769e-05 |   0.0 |  0.01
-Modify  | 0.0059877  | 0.0066602  | 0.0073208  |   0.6 |  0.83
-Other   |            | 0.00326    |            |       |  0.41
+Comm    | 0.099038   | 0.14769    | 0.19314    |   9.5 | 10.99
+Output  | 6.6786e-05 | 7.0171e-05 | 7.4747e-05 |   0.0 |  0.01
+Modify  | 0.0094567  | 0.010386   | 0.011714   |   0.8 |  0.77
+Other   |            | 0.009853   |            |       |  0.73
 
-Nlocal:    4102.88 ave 4248 max 3948 min
+Nlocal:    4102.875 ave 4248.0 max 3948.0 min
 Histogram: 1 1 1 1 0 0 1 0 1 2
-Nghost:    2919.88 ave 3054 max 2797 min
+Nghost:    2919.875 ave 3054.0 max 2797.0 min
 Histogram: 2 1 1 0 0 0 0 2 0 2
-Neighs:    242748 ave 251393 max 233289 min
+Neighs:    242747.625 ave 251393.0 max 233289.0 min
 Histogram: 1 2 0 1 0 0 0 2 0 2
-FullNghs:  0 ave 0 max 0 min
+FullNghs:  0.0 ave 0.0 max 0.0 min
 Histogram: 8 0 0 0 0 0 0 0 0 0
 
 Total # of neighbors = 1941981
-Ave neighs/atom = 59.1652
+Ave neighs/atom = 59.16524997715017
 Neighbor list builds = 0
 Dangerous builds = 0
 variable runtime equal ${runtime}+100
@@ -929,36 +933,36 @@ jump in.basal loop
 displace_atoms	all ramp x 0.0 ${srate1} z 10 100 units box
 displace_atoms	all ramp x 0.0 0.1 z 10 100 units box
 run		100
-Per MPI rank memory allocation (min/avg/max) = 9.352 | 9.543 | 9.735 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 9.352 | 9.544 | 9.736 Mbytes
 Step v_strain Pxz Lx Temp PotEng KinEng 
-     200 0.0029705078   -489.52893    105.27463    43.897454   -47592.283     186.2383 
-     300 0.0029705078   -456.40922    105.27463    44.193301   -47593.538    187.49346 
-Loop time of 0.815844 on 8 procs for 100 steps with 32823 atoms
+     200  0.002970499    -489.5296    105.27463    43.897455   -47592.283    186.23831 
+     300  0.002970499   -456.40978    105.27463      44.1933   -47593.538    187.49346 
+Loop time of 1.37943 on 8 procs for 100 steps with 32823 atoms
 
-Performance: 10.590 ns/day, 2.266 hours/ns, 122.572 timesteps/s
-99.4% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 6.263 ns/day, 3.832 hours/ns, 72.493 timesteps/s
+99.1% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.72702    | 0.75544    | 0.78516    |   2.7 | 92.60
+Pair    | 1.0647     | 1.1725     | 1.2837     |   6.1 | 85.00
 Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.020587   | 0.049916   | 0.078067   |  10.6 |  6.12
-Output  | 5.7986e-05 | 5.8644e-05 | 5.9415e-05 |   0.0 |  0.01
-Modify  | 0.0060735  | 0.0067945  | 0.0074638  |   0.6 |  0.83
-Other   |            | 0.00364    |            |       |  0.45
+Comm    | 0.075755   | 0.18653    | 0.29417    |  15.2 | 13.52
+Output  | 7.199e-05  | 7.647e-05  | 8.1812e-05 |   0.0 |  0.01
+Modify  | 0.0072227  | 0.0099677  | 0.012421   |   1.5 |  0.72
+Other   |            | 0.01038    |            |       |  0.75
 
-Nlocal:    4102.88 ave 4248 max 3952 min
+Nlocal:    4102.875 ave 4248.0 max 3952.0 min
 Histogram: 1 1 1 1 0 0 1 0 1 2
-Nghost:    2924.38 ave 3052 max 2798 min
+Nghost:    2924.375 ave 3052.0 max 2798.0 min
 Histogram: 2 1 1 0 0 0 0 1 1 2
-Neighs:    242836 ave 251404 max 233538 min
+Neighs:    242836.125 ave 251404.0 max 233538.0 min
 Histogram: 1 2 0 1 0 0 0 2 0 2
-FullNghs:  0 ave 0 max 0 min
+FullNghs:  0.0 ave 0.0 max 0.0 min
 Histogram: 8 0 0 0 0 0 0 0 0 0
 
 Total # of neighbors = 1942689
-Ave neighs/atom = 59.1868
+Ave neighs/atom = 59.18682021753039
 Neighbor list builds = 0
 Dangerous builds = 0
 variable runtime equal ${runtime}+100
@@ -969,4 +973,4 @@ if "${runtime} < 300" then "jump ${fname} loop"
 # SIMULATION DONE
 print "All done"
 All done
-Total wall time: 0:00:20
+Total wall time: 0:00:33
