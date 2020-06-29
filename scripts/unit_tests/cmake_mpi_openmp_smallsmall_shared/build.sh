@@ -62,6 +62,12 @@ ${CMAKE_COMMAND} \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \
+      -D PKG_CLASS2=on \
+      -D PKG_MLIAP=on \
+      -D PKG_SNAP=on \
+      -D PKG_OPT=on \
+      -D PKG_USER-INTEL=on \
+      -D PKG_USER-MISC=on \
       -D PKG_USER-OMP=on \
       -D BUILD_SHARED_LIBS=on \
       -D LAMMPS_SIZES=SMALLSMALL \
