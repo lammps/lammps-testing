@@ -12,6 +12,7 @@ pipelineJob("dev/pull_requests/checkstyle") {
                 githubPullRequests {
                     spec("* * * * *")
                     triggerMode('HEAVY_HOOKS')
+                    cancelQueued(true)
                     repoProviders {
                         githubPlugin {
                             cacheConnection(true)
@@ -45,6 +46,7 @@ pipelineJob("dev/pull_requests/compilation_tests") {
                 githubPullRequests {
                     spec("* * * * *")
                     triggerMode('HEAVY_HOOKS')
+                    cancelQueued(true)
                     repoProviders {
                         githubPlugin {
                             cacheConnection(true)
@@ -78,6 +80,7 @@ pipelineJob("dev/pull_requests/unit_tests") {
                 githubPullRequests {
                     spec("* * * * *")
                     triggerMode('HEAVY_HOOKS')
+                    cancelQueued(true)
                     repoProviders {
                         githubPlugin {
                             cacheConnection(true)
@@ -111,6 +114,7 @@ pipelineJob("dev/pull_requests/run_tests") {
                 githubPullRequests {
                     spec("* * * * *")
                     triggerMode('HEAVY_HOOKS')
+                    cancelQueued(true)
                     repoProviders {
                         githubPlugin {
                             cacheConnection(true)
@@ -153,6 +157,7 @@ pipelineJob("dev/pull_requests/regression_tests") {
                 githubPullRequests {
                     spec("* * * * *")
                     triggerMode('HEAVY_HOOKS')
+                    cancelQueued(true)
                     repoProviders {
                         githubPlugin {
                             cacheConnection(true)
@@ -195,6 +200,7 @@ pipelineJob("dev/pull_requests/build_docs") {
                 githubPullRequests {
                     spec("* * * * *")
                     triggerMode('HEAVY_HOOKS')
+                    cancelQueued(true)
                     repoProviders {
                         githubPlugin {
                             cacheConnection(true)
