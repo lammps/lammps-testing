@@ -23,6 +23,7 @@ setup(name='lammps_testing',
         'gcovr',
         'termcolor',
         'matplotlib',
-        'pyyaml'
+        'pyyaml',
+        'Jinja2'
     ]
 )

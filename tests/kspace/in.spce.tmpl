@@ -1,0 +1,46 @@
+# SPC/E water box benchmark
+
+units           real
+atom_style      full
+
+reset_timestep  0
+
+pair_style      {{pair_style}} 15.0
+kspace_style    {{kspace_style}} {{accuracy}}
+kspace_modify   {{kspace_modify}}
+
+bond_style      harmonic
+angle_style     harmonic
+dihedral_style  none
+improper_style  none
+
+read_data data.spce
+
+replicate       2 2 2
+
+special_bonds   lj/coul 0.0 0.0 0.5
+
+fix             1 all shake 0.0001 20 0 b 1 a 1
+
+velocity        all create 300 432567 dist uniform
+
+timestep        2.0
+thermo          1
+
+compute         peperatom all pe/atom
+compute         sumpe all reduce sum c_peperatom
+
+compute         pressperatom all stress/atom NULL
+variable        myperatomp atom (c_pressperatom[1]+c_pressperatom[2]+c_pressperatom[3]+c_pressperatom[4]+c_pressperatom[5]+c_pressperatom[6])
+compute         p all reduce sum c_pressperatom[1] c_pressperatom[2] c_pressperatom[3] c_pressperatom[4] c_pressperatom[5] c_pressperatom[6]
+variable        sumpress equal -(c_p[1]+c_p[2]+c_p[3])/(3*vol)
+variable        sumpxx equal -c_p[1]/vol
+variable        sumpyy equal -c_p[2]/vol
+variable        sumpzz equal -c_p[3]/vol
+variable        sumpxy equal -c_p[4]/vol
+variable        sumpxz equal -c_p[5]/vol
+variable        sumpyz equal -c_p[6]/vol
+
+thermo_style    custom step cpu pe c_sumpe press v_sumpress pxx v_sumpxx pyy v_sumpyy pzz v_sumpzz pxy v_sumpxy pxz v_sumpxz pyz v_sumpyz
+
+run             1

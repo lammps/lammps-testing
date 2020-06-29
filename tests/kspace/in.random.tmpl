@@ -1,0 +1,65 @@
+variable        n equal 100                # number of particles (choose an even integer)
+variable        box_length equal 30        # size of the box in real units
+variable        rmin equal 2               # minimum separation between particles
+
+units           real
+atom_style      charge
+atom_modify     map array
+
+lattice         sc 1.0
+region          box block 0 ${box_length} 0 ${box_length} 0 ${box_length}
+create_box      1 box
+
+variable        q equal 1
+variable        x equal random(xlo,xhi,123456)
+variable        y equal random(ylo,yhi,123456)
+variable        z equal random(zlo,zhi,123456)
+label           loopa
+variable        a loop $n
+  label           loopb
+  label           try_again
+  variable        xtmp equal $x
+  variable        ytmp equal $y
+  variable        ztmp equal $z
+  variable        b loop $a
+    if              '$a == $b' then "jump SELF break"
+    variable        xb equal x[$b]
+    variable        yb equal y[$b]
+    variable        zb equal z[$b]
+    variable        r equal sqrt((${xtmp}-${xb})^2+(${ytmp}-${yb})^2+(${ztmp}-${zb})^2)
+    if              '$r < ${rmin}' then "jump SELF try_again"
+    label           break
+  next            b
+  jump            SELF loopb
+  create_atoms    1 single $x $y $z units box
+  variable        q equal -$q
+  set             atom $a charge $q
+  print           "Atom number $a created."
+next            a
+jump            SELF loopa
+
+mass            1 1.0
+pair_style      lj/cut/coul/long 10.0
+pair_coeff      1 1 0.0 0.0
+pair_modify     table 0
+
+kspace_style    ewald 1e-18
+run             0
+fix             ref all store/state 0 fx fy fz
+
+pair_style      {{pair_style}} 10.0
+pair_coeff      1 1 0.0 0.0
+pair_modify     table 0
+kspace_style    {{kspace_style}} {{accuracy}}
+kspace_modify   {{kspace_modify}}
+thermo_style    one
+run             0
+fix             test all store/state 0 fx fy fz
+variable        ferrsq atom ((f_ref[1]-f_test[1])^2+(f_ref[2]-f_test[2])^2+(f_ref[3]-f_test[3])^2)
+compute         avefersq all reduce ave v_ferrsq
+thermo_style    custom step c_avefersq cpu
+run             100
+variable        rms_force_error equal sqrt(c_avefersq)
+print           "computed absolute RMS force accuracy = ${rms_force_error}"
+unfix           test
+uncompute       avefersq

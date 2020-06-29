@@ -1,6 +1,8 @@
 #!/bin/bash
 export WORKING_DIR=$PWD
+SCRIPT_BASE_DIR=$LAMMPS_TESTING_DIR/scripts
 SCRIPTDIR="$(dirname "$(realpath "$0")")"
+export PYTHON=$(which python3)
 
 # copy tests
 rsync -a --delete $LAMMPS_TESTING_DIR/tests .
@@ -14,6 +16,7 @@ export LC_ALL=C.UTF-8
 
 rm *.xml || true
 
-nosetests -v --with-xunit --xunit-file=regression_01.xml tests/test_regression.py
+nosetests -v --with-xunit --xunit-file=regression_01.xml tests/test_long_range_electrostatics.py
+nosetests -v --with-xunit --xunit-file=regression_02.xml tests/test_examples.py
 
 deactivate
