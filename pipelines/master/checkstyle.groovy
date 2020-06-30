@@ -41,6 +41,7 @@ node('atlas2'){
                     sh(label: "Check file permissions",
                        script: "${launch_container} python3 tools/coding_standard/permissions.py . || true")
                 }
+                recordIssues failOnError: true, tools: [groovyScript(parserId: 'permissions', pattern: 'permissions.log')]
             } else {
                 echo 'Skipping'
             }
