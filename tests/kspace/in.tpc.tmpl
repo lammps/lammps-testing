@@ -1,0 +1,28 @@
+units           real
+atom_style      charge
+atom_modify     map array
+
+boundary        {{xbound}} {{ybound}} {{zbound}}
+
+lattice         sc 1.0
+region          box block 0 10 0 10 0 10
+create_box      1 box
+
+create_atoms    1 single 5 5 5 units box
+variable        q equal 1.0
+set             atom 1 charge $q
+print           "Atom number 1 created."
+
+create_atoms    1 single 3.14 2.78 5.43 units box
+variable        q equal -1.0
+set             atom 2 charge $q
+print           "Atom number 2 created."
+
+mass            1 1.0
+pair_style      {{pair_style}} 10.0
+pair_coeff      1 1 0.0 0.0
+pair_modify     table 0 
+kspace_style    {{kspace_style}} {{accuracy}}
+kspace_modify   {{kspace_modify}}
+thermo_style    custom step cpu etotal press
+run             100

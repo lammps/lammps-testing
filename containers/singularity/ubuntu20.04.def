@@ -80,7 +80,7 @@ From: ubuntu:20.04
         tar -xzf plumed.tar.gz
         cd plumed-${version}
         ./configure --disable-doc --prefix=/usr
-        make -j 12
+        make
         make install
         # fix up installation for CentOS and Fedora
         # mv -v /usr/lib/pkgconfig/plumed* /usr/share/pkgconfig/
@@ -99,7 +99,7 @@ EOF
     LC_ALL=C
     export LC_ALL
     export PATH=/usr/lib/ccache:$PATH
-    # restrict OpenMPI to shared memory comm by default
+    # tell OpenMPI to not try using Infiniband
     OMPI_MCA_btl="^openib"
     # do not warn about unused components as this messes up testing
     OMPI_MCA_btl_base_warn_component_unused="0"
