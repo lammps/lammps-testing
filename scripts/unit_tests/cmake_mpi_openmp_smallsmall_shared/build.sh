@@ -63,6 +63,8 @@ ${CMAKE_COMMAND} \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \
       -D PKG_CLASS2=on \
+      -D PKG_CORESHELL=on \
+      -D PKG_MISC=on \
       -D PKG_MLIAP=on \
       -D PKG_SNAP=on \
       -D PKG_OPT=on \
