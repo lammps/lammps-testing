@@ -86,7 +86,7 @@ variable etot equal c_erot+c_ekin+c_epot
 #dump_modify out format line "%d %d %d  %13.6le %13.6le %13.6le %d %d %d  %13.6le %13.6le %13.6le  %13.6le %13.6le %13.6le  %13.6le "
 
 #restart 10000 config0_restart config1_restart
-thermo_style custom temp press v_ekin v_erot v_epot v_etot
+thermo_style custom step temp press v_ekin v_erot v_epot v_etot
 thermo 100
 run 1000
 
