@@ -1,4 +1,4 @@
-LAMMPS (4 Jan 2019)
+LAMMPS (30 Jun 2020)
 # Solvated 5-mer peptide
 
 units		real
@@ -12,7 +12,7 @@ improper_style  harmonic
 kspace_style	pppm 0.0001
 
 read_data	data.peptide
-  orthogonal box = (36.8402 41.0137 29.7681) to (64.2116 68.3851 57.1395)
+  orthogonal box = (36.840194 41.013691 29.768095) to (64.211560 68.385058 57.139462)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
   2004 atoms
@@ -34,10 +34,12 @@ read_data	data.peptide
   207 dihedrals
   reading impropers ...
   12 impropers
-  4 = max # of 1-2 neighbors
-  7 = max # of 1-3 neighbors
-  14 = max # of 1-4 neighbors
-  18 = max # of special neighbors
+     4 = max # of 1-2 neighbors
+     7 = max # of 1-3 neighbors
+    14 = max # of 1-4 neighbors
+    18 = max # of special neighbors
+  special bonds CPU = 0.001 seconds
+  read_data CPU = 0.016 seconds
 
 neighbor	2.0 bin
 neigh_modify	delay 5
@@ -63,10 +65,11 @@ fix		3b two spring couple ref 100.0 0.0 0.0 0.0 10.0
 fix		2a ref setforce 0.0 0.0 0.0
 
 fix		4 all shake 0.0001 10 100 b 4 6 8 10 12 14 18 a 31
-  19 = # of size 2 clusters
-  6 = # of size 3 clusters
-  3 = # of size 4 clusters
-  640 = # of frozen angles
+      19 = # of size 2 clusters
+       6 = # of size 3 clusters
+       3 = # of size 4 clusters
+     640 = # of frozen angles
+  find clusters CPU = 0.000 seconds
 
 #dump		1 colvar custom 1 dump.spring.lammpstrj id xu yu zu fx fy fz
 #dump_modify 1  sort id
@@ -79,13 +82,13 @@ thermo		10
 
 run		100
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (../kspace.cpp:321)
-  G vector (1/distance) = 0.268725
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:330)
+  G vector (1/distance) = 0.26872465
   grid = 15 15 15
   stencil order = 5
-  estimated absolute RMS force accuracy = 0.0228209
-  estimated relative force accuracy = 6.87243e-05
-  using double precision FFTs
+  estimated absolute RMS force accuracy = 0.022820853
+  estimated relative force accuracy = 6.872432e-05
+  using double precision FFTW3
   3d grid and FFT values/proc = 2744 512
 Neighbor list info ...
   update every 1 steps, delay 5 steps, check yes
@@ -99,16 +102,16 @@ Neighbor list info ...
       pair build: half/bin/newton
       stencil: half/bin/3d/newton
       bin: standard
-SHAKE stats (type/ave/delta) on step 0
-  4 1.111 1.44264e-05
-  6 0.996998 7.26967e-06
-  8 1.08 1.32536e-05
-  10 1.111 1.22749e-05
-  12 1.08 1.11767e-05
-  14 0.96 0
-  18 0.957206 4.37979e-05
-  31 104.519 0.00396029
-Per MPI rank memory allocation (min/avg/max) = 15.02 | 15.13 | 15.41 Mbytes
+SHAKE stats (type/ave/delta/count) on step 0
+     4   1.11100   1.44264e-05       36
+     6   0.996998  7.26967e-06       12
+     8   1.08000   1.32536e-05       18
+    10   1.11100   1.22749e-05       24
+    12   1.08000   1.11767e-05       18
+    14   0.96      0.00000            2
+    18   0.957206  4.37979e-05     3840
+    31   104.519   0.00396029      1920
+Per MPI rank memory allocation (min/avg/max) = 15.39 | 15.5 | 15.78 Mbytes
 Step Temp TotEng PotEng KinEng E_pair E_bond v_sp 
        0    282.10052    -5237.458   -6372.3766    1134.9186    -6442.768    16.557152    292.14604 
       10    305.06149   -5058.8972   -6286.1901    1227.2929   -6413.1021      58.8499    103.38345 
@@ -120,43 +123,43 @@ Step Temp TotEng PotEng KinEng E_pair E_bond v_sp
       70    277.83519   -5163.9758   -6281.7345    1117.7587   -6447.7033    39.627168    11.433603 
       80    267.51495   -5206.4046    -6282.644    1076.2394   -6456.6369    31.611883    6.3554178 
       90    278.15579   -5245.3824    -6364.431    1119.0485   -6499.8063    28.849773   0.36941576 
-SHAKE stats (type/ave/delta) on step 100
-  4 1.11098 8.97155e-05
-  6 0.996996 1.00568e-05
-  8 1.08 6.02345e-06
-  10 1.111 1.84253e-05
-  12 1.08 7.2713e-06
-  14 0.959996 0
-  18 0.957198 3.36079e-05
-  31 104.52 0.0030599
+SHAKE stats (type/ave/delta/count) on step 100
+     4   1.11098   8.97155e-05       36
+     6   0.996996  1.00568e-05       12
+     8   1.08000   6.02345e-06       18
+    10   1.11100   1.84253e-05       24
+    12   1.08000   7.27130e-06       18
+    14   0.959996  0.00000            2
+    18   0.957198  3.36079e-05     3840
+    31   104.520   0.0030599       1920
      100    260.10613   -5292.6885   -6339.1215     1046.433   -6471.6734    25.362042   0.21987323 
-Loop time of 0.354826 on 8 procs for 100 steps with 2004 atoms
+Loop time of 0.357202 on 8 procs for 100 steps with 2004 atoms
 
-Performance: 48.700 ns/day, 0.493 hours/ns, 281.828 timesteps/s
-98.5% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 48.376 ns/day, 0.496 hours/ns, 279.954 timesteps/s
+92.1% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.18866    | 0.20388    | 0.22024    |   2.3 | 57.46
-Bond    | 5.0281e-05 | 0.00053564 | 0.0018125  |   0.0 |  0.15
-Kspace  | 0.054259   | 0.069289   | 0.084094   |   3.7 | 19.53
-Neigh   | 0.035695   | 0.035742   | 0.035786   |   0.0 | 10.07
-Comm    | 0.025638   | 0.026279   | 0.026913   |   0.3 |  7.41
-Output  | 0.00032926 | 0.00034803 | 0.00044389 |   0.0 |  0.10
-Modify  | 0.017727   | 0.018024   | 0.018295   |   0.2 |  5.08
-Other   |            | 0.0007253  |            |       |  0.20
+Pair    | 0.13444    | 0.18846    | 0.24107    |  10.6 | 52.76
+Bond    | 6.6999e-05 | 0.00075518 | 0.0026214  |   0.0 |  0.21
+Kspace  | 0.040091   | 0.089786   | 0.14182    |  14.8 | 25.14
+Neigh   | 0.040926   | 0.041056   | 0.041284   |   0.1 | 11.49
+Comm    | 0.016909   | 0.019319   | 0.021583   |   1.4 |  5.41
+Output  | 0.00039983 | 0.00042286 | 0.00054199 |   0.0 |  0.12
+Modify  | 0.01603    | 0.01621    | 0.016368   |   0.1 |  4.54
+Other   |            | 0.001198   |            |       |  0.34
 
-Nlocal:    250.5 ave 263 max 235 min
+Nlocal:        250.500 ave         263 max         235 min
 Histogram: 1 0 1 1 0 1 2 0 0 2
-Nghost:    4925.75 ave 4965 max 4880 min
+Nghost:        4925.75 ave        4965 max        4880 min
 Histogram: 1 0 1 0 3 0 0 1 0 2
-Neighs:    88529.6 ave 93144 max 82124 min
+Neighs:        88529.6 ave       93144 max       82124 min
 Histogram: 1 0 0 2 0 1 1 1 0 2
 
 Total # of neighbors = 708237
-Ave neighs/atom = 353.412
-Ave special neighs/atom = 2.34032
+Ave neighs/atom = 353.41168
+Ave special neighs/atom = 2.3403194
 Neighbor list builds = 12
 Dangerous builds = 2
 Total wall time: 0:00:00
