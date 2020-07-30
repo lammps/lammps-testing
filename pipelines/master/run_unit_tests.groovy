@@ -6,6 +6,11 @@ node('atlas2') {
     env.CCACHE_DIR = "${env.WORKSPACE}/${params.CCACHE_DIR}"
     env.GIT_COMMIT = params.GIT_COMMIT
 
+    if(params.GITHUB_PR_NUMBER) {
+        env.GITHUB_PR_NUMBER = params.GITHUB_PR_NUMBER
+        env.CHANGE_ID = params.GITHUB_PR_NUMBER
+    }
+
     def container = "${params.CONTAINER_IMAGE}"
     def container_args = "--nv -B ${params.WORKSPACE_PARENT}:${params.WORKSPACE_PARENT}"
 
