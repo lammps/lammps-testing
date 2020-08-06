@@ -53,6 +53,8 @@ fi
 mkdir -p ${BUILD}
 cd ${BUILD}
 
+source kim-api-activate
+
 # Configure
 ${CMAKE_COMMAND} \
       -C ${LAMMPS_DIR}/cmake/presets/minimal.cmake \
@@ -62,15 +64,35 @@ ${CMAKE_COMMAND} \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \
+      -D PKG_ASPHERE=on \
+      -D PKG_BODY=on \
       -D PKG_CLASS2=on \
+      -D PKG_COLLOID=on \
       -D PKG_CORESHELL=on \
+      -D PKG_DIPOLE=on \
+      -D PKG_GRANULAR=on \
+      -D PKG_KIM=on \
+      -D PKG_KSPACE=on \
+      -D PKG_MANYBODY=on \
+      -D PKG_MC=on \
       -D PKG_MISC=on \
       -D PKG_MLIAP=on \
-      -D PKG_SNAP=on \
+      -D PKG_MOLECULE=on \
+      -D PKG_MPIIO=on \
       -D PKG_OPT=on \
+      -D PKG_PERI=on \
+      -D PKG_POEMS=on \
+      -D PKG_PYTHON=on \
+      -D PKG_REPLICA=on \
+      -D PKG_RIGID=ON \
+      -D PKG_SHOCK=on \
+      -D PKG_SNAP=on \
+      -D PKG_USER-CGDNA=on \
       -D PKG_USER-INTEL=on \
       -D PKG_USER-MISC=on \
       -D PKG_USER-OMP=on \
+      -D PKG_USER-QTB=on \
+      -D PKG_USER-REAXC=on \
       -D BUILD_SHARED_LIBS=on \
       -D LAMMPS_SIZES=BIGBIG \
       -D LAMMPS_EXCEPTIONS=on \
