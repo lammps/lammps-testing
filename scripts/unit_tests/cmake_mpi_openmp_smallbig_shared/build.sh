@@ -64,6 +64,7 @@ ${CMAKE_COMMAND} \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \
+      -D BUILD_TOOLS=on \
       -D PKG_ASPHERE=on \
       -D PKG_BODY=on \
       -D PKG_CLASS2=on \
