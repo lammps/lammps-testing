@@ -307,6 +307,7 @@ configurations.each { yaml_file ->
             pipelineJob("dev/pull_requests/${container}/unit_tests/${name}") {
                 parameters {
                     stringParam('GIT_COMMIT')
+                    stringParam('GITHUB_PR_NUMBER')
                     stringParam('WORKSPACE_PARENT')
                     stringParam('CCACHE_DIR')
                     stringParam('CONTAINER_NAME', container)

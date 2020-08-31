@@ -1,4 +1,4 @@
-LAMMPS (5 May 2020)
+LAMMPS (30 Jun 2020)
 # Solvated 5-mer peptide
 
 units		real
@@ -12,7 +12,7 @@ improper_style  harmonic
 kspace_style	pppm 0.0001
 
 read_data	data.peptide
-  orthogonal box = (36.8402 41.0137 29.7681) to (64.2116 68.3851 57.1395)
+  orthogonal box = (36.840194 41.013691 29.768095) to (64.211560 68.385058 57.139462)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
   2004 atoms
@@ -34,12 +34,12 @@ read_data	data.peptide
   207 dihedrals
   reading impropers ...
   12 impropers
-  4 = max # of 1-2 neighbors
-  7 = max # of 1-3 neighbors
-  14 = max # of 1-4 neighbors
-  18 = max # of special neighbors
-  special bonds CPU = 0.000539598 secs
-  read_data CPU = 0.0161725 secs
+     4 = max # of 1-2 neighbors
+     7 = max # of 1-3 neighbors
+    14 = max # of 1-4 neighbors
+    18 = max # of special neighbors
+  special bonds CPU = 0.001 seconds
+  read_data CPU = 0.014 seconds
 
 neighbor	2.0 bin
 neigh_modify	delay 5
@@ -64,11 +64,11 @@ fix		2 all colvars peptide.colvars
 fix		2a ref setforce 0.0 0.0 0.0
 
 fix		4 all shake 0.0001 10 100 b 4 6 8 10 12 14 18 a 31
-  19 = # of size 2 clusters
-  6 = # of size 3 clusters
-  3 = # of size 4 clusters
-  640 = # of frozen angles
-  find clusters CPU = 0.000455648 secs
+      19 = # of size 2 clusters
+       6 = # of size 3 clusters
+       3 = # of size 4 clusters
+     640 = # of frozen angles
+  find clusters CPU = 0.000 seconds
 
 #dump		1 colvar custom 1 dump.colvar.lammpstrj id xu yu zu fx fy fz
 #dump_modify 1 sort id
@@ -79,12 +79,12 @@ thermo		10
 
 run		100
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (src/kspace.cpp:332)
-  G vector (1/distance) = 0.268725
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:330)
+  G vector (1/distance) = 0.26872465
   grid = 15 15 15
   stencil order = 5
-  estimated absolute RMS force accuracy = 0.0228209
-  estimated relative force accuracy = 6.87243e-05
+  estimated absolute RMS force accuracy = 0.022820853
+  estimated relative force accuracy = 6.872432e-05
   using double precision FFTW3
   3d grid and FFT values/proc = 2744 512
 Neighbor list info ...
@@ -254,15 +254,15 @@ colvars: Re-initialized atom group for variable "one":0/0. 4 atoms: total mass =
 colvars: Re-initialized atom group for variable "one":0/1. 1 atoms: total mass = 12.011, total charge = 0.51.
 colvars: Re-initialized atom group for variable "two":0/0. 4 atoms: total mass = 15.035, total charge = 0.16.
 colvars: Re-initialized atom group for variable "two":0/1. 1 atoms: total mass = 12.011, total charge = 0.51.
-SHAKE stats (type/ave/delta) on step 0
-  4 1.111 1.44264e-05
-  6 0.996998 7.26967e-06
-  8 1.08 1.32536e-05
-  10 1.111 1.22749e-05
-  12 1.08 1.11767e-05
-  14 0.96 0
-  18 0.957206 4.37979e-05
-  31 104.519 0.00396029
+SHAKE stats (type/ave/delta/count) on step 0
+     4   1.11100   1.44264e-05       36
+     6   0.996998  7.26967e-06       12
+     8   1.08000   1.32536e-05       18
+    10   1.11100   1.22749e-05       24
+    12   1.08000   1.11767e-05       18
+    14   0.96      0.00000            2
+    18   0.957206  4.37979e-05     3840
+    31   104.519   0.00396029      1920
 Per MPI rank memory allocation (min/avg/max) = 15.39 | 15.5 | 15.78 Mbytes
 Step Temp TotEng PotEng KinEng E_pair E_bond f_2 
        0    282.10052    -5237.458   -6372.3766    1134.9186    -6442.768    16.557152    292.14604 
@@ -275,70 +275,70 @@ Step Temp TotEng PotEng KinEng E_pair E_bond f_2
       70    277.83519   -5163.9758   -6281.7345    1117.7587   -6447.7033    39.627168    11.433603 
       80    267.51495   -5206.4046    -6282.644    1076.2394   -6456.6369    31.611883    6.3554178 
       90    278.15579   -5245.3824    -6364.431    1119.0485   -6499.8063    28.849773   0.36941576 
-SHAKE stats (type/ave/delta) on step 100
-  4 1.11098 8.97155e-05
-  6 0.996996 1.00568e-05
-  8 1.08 6.02345e-06
-  10 1.111 1.84253e-05
-  12 1.08 7.2713e-06
-  14 0.959996 0
-  18 0.957198 3.36079e-05
-  31 104.52 0.0030599
+SHAKE stats (type/ave/delta/count) on step 100
+     4   1.11098   8.97155e-05       36
+     6   0.996996  1.00568e-05       12
+     8   1.08000   6.02345e-06       18
+    10   1.11100   1.84253e-05       24
+    12   1.08000   7.27130e-06       18
+    14   0.959996  0.00000            2
+    18   0.957198  3.36079e-05     3840
+    31   104.520   0.0030599       1920
      100    260.10613   -5292.6885   -6339.1215     1046.433   -6471.6734    25.362042   0.21987323 
 colvars: Saving collective variables state to "out.colvars.state".
-Loop time of 0.444007 on 8 procs for 100 steps with 2004 atoms
+Loop time of 0.37081 on 8 procs for 100 steps with 2004 atoms
 
-Performance: 38.918 ns/day, 0.617 hours/ns, 225.222 timesteps/s
-86.0% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 46.601 ns/day, 0.515 hours/ns, 269.680 timesteps/s
+94.3% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.1616     | 0.21934    | 0.26429    |   9.0 | 49.40
-Bond    | 0.00013491 | 0.00083497 | 0.002318   |   0.0 |  0.19
-Kspace  | 0.069028   | 0.1117     | 0.16851    |  12.1 | 25.16
-Neigh   | 0.045948   | 0.04611    | 0.046385   |   0.1 | 10.39
-Comm    | 0.023976   | 0.025699   | 0.027892   |   1.0 |  5.79
-Output  | 0.00037862 | 0.00040375 | 0.00053171 |   0.0 |  0.09
-Modify  | 0.037816   | 0.037966   | 0.038147   |   0.1 |  8.55
-Other   |            | 0.00196    |            |       |  0.44
+Pair    | 0.14242    | 0.21103    | 0.23881    |   8.6 | 56.91
+Bond    | 6.6575e-05 | 0.00081926 | 0.0025508  |   0.0 |  0.22
+Kspace  | 0.042432   | 0.068538   | 0.13477    |  14.6 | 18.48
+Neigh   | 0.040982   | 0.041167   | 0.041452   |   0.1 | 11.10
+Comm    | 0.01803    | 0.019509   | 0.022843   |   1.3 |  5.26
+Output  | 0.00034259 | 0.00036492 | 0.00050298 |   0.0 |  0.10
+Modify  | 0.027939   | 0.028112   | 0.028307   |   0.1 |  7.58
+Other   |            | 0.001267   |            |       |  0.34
 
-Nlocal:    250.5 ave 263 max 235 min
+Nlocal:        250.500 ave         263 max         235 min
 Histogram: 1 0 1 1 0 1 2 0 0 2
-Nghost:    4925.75 ave 4965 max 4880 min
+Nghost:        4925.75 ave        4965 max        4880 min
 Histogram: 1 0 1 0 3 0 0 1 0 2
-Neighs:    88529.6 ave 93144 max 82124 min
+Neighs:        88529.6 ave       93144 max       82124 min
 Histogram: 1 0 0 2 0 1 1 1 0 2
 
 Total # of neighbors = 708237
-Ave neighs/atom = 353.412
-Ave special neighs/atom = 2.34032
+Ave neighs/atom = 353.41168
+Ave special neighs/atom = 2.3403194
 Neighbor list builds = 12
 Dangerous builds = 2
 
 run     100
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (src/kspace.cpp:332)
-  G vector (1/distance) = 0.268725
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:330)
+  G vector (1/distance) = 0.26872465
   grid = 15 15 15
   stencil order = 5
-  estimated absolute RMS force accuracy = 0.0228209
-  estimated relative force accuracy = 6.87243e-05
+  estimated absolute RMS force accuracy = 0.022820853
+  estimated relative force accuracy = 6.872432e-05
   using double precision FFTW3
   3d grid and FFT values/proc = 2744 512
 colvars: Re-initialized atom group for variable "one":0/0. 4 atoms: total mass = 15.035, total charge = -2.77556e-17.
 colvars: Re-initialized atom group for variable "one":0/1. 1 atoms: total mass = 12.011, total charge = 0.51.
 colvars: Re-initialized atom group for variable "two":0/0. 4 atoms: total mass = 15.035, total charge = 0.16.
 colvars: Re-initialized atom group for variable "two":0/1. 1 atoms: total mass = 12.011, total charge = 0.51.
-SHAKE stats (type/ave/delta) on step 100
-  4 1.11098 8.97155e-05
-  6 0.996996 1.00568e-05
-  8 1.08 6.02345e-06
-  10 1.111 1.84253e-05
-  12 1.08 7.2713e-06
-  14 0.959996 0
-  18 0.957198 3.36079e-05
-  31 104.52 0.0030599
+SHAKE stats (type/ave/delta/count) on step 100
+     4   1.11098   8.97155e-05       36
+     6   0.996996  1.00568e-05       12
+     8   1.08000   6.02345e-06       18
+    10   1.11100   1.84253e-05       24
+    12   1.08000   7.27130e-06       18
+    14   0.959996  0.00000            2
+    18   0.957198  3.36079e-05     3840
+    31   104.520   0.0030599       1920
 Per MPI rank memory allocation (min/avg/max) = 15.39 | 15.5 | 15.78 Mbytes
 Step Temp TotEng PotEng KinEng E_pair E_bond f_2 
      100    260.10613   -5292.6885   -6339.1215     1046.433   -6471.6734    25.362042   0.21987323 
@@ -351,44 +351,44 @@ Step Temp TotEng PotEng KinEng E_pair E_bond f_2
      170    253.42527   -5540.0942   -6559.6494    1019.5552   -6656.6678    23.293812    10.290217 
      180    248.51161   -5550.3254   -6550.1125    999.78704   -6661.4235    26.200127    3.4336037 
      190    250.80862   -5555.2554   -6564.2835    1009.0281   -6666.1639     25.53634    3.3494286 
-SHAKE stats (type/ave/delta) on step 200
-  4 1.111 1.81266e-06
-  6 0.997 7.79424e-07
-  8 1.08 1.08903e-06
-  10 1.111 2.96503e-07
-  12 1.08 4.69038e-07
-  14 0.960001 0
-  18 0.957201 3.76471e-06
-  31 104.52 0.000411055
+SHAKE stats (type/ave/delta/count) on step 200
+     4   1.11100   1.81266e-06       36
+     6   0.997     7.79424e-07       12
+     8   1.08000   1.08903e-06       18
+    10   1.11100   2.96503e-07       24
+    12   1.08000   4.69038e-07       18
+    14   0.960001  0.00000            2
+    18   0.957201  3.76471e-06     3840
+    31   104.520   0.000411055     1920
      200    251.50475   -5557.4251   -6569.2538    1011.8288   -6674.0845    24.804906    7.1387572 
 colvars: Saving collective variables state to "out.colvars.state".
-Loop time of 0.351587 on 8 procs for 100 steps with 2004 atoms
+Loop time of 0.35371 on 8 procs for 100 steps with 2004 atoms
 
-Performance: 49.149 ns/day, 0.488 hours/ns, 284.425 timesteps/s
-90.2% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 48.854 ns/day, 0.491 hours/ns, 282.717 timesteps/s
+92.1% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.13057    | 0.188      | 0.24325    |  12.2 | 53.47
-Bond    | 6.8766e-05 | 0.00056405 | 0.0016012  |   0.0 |  0.16
-Kspace  | 0.041435   | 0.094011   | 0.14952    |  16.5 | 26.74
-Neigh   | 0.024236   | 0.024361   | 0.024602   |   0.1 |  6.93
-Comm    | 0.015597   | 0.018032   | 0.021112   |   1.6 |  5.13
-Output  | 0.0002947  | 0.00031798 | 0.00043442 |   0.0 |  0.09
-Modify  | 0.024617   | 0.024788   | 0.024997   |   0.1 |  7.05
-Other   |            | 0.00151    |            |       |  0.43
+Pair    | 0.14228    | 0.20919    | 0.24117    |   8.5 | 59.14
+Bond    | 6.5351e-05 | 0.00082216 | 0.0025287  |   0.0 |  0.23
+Kspace  | 0.042284   | 0.072782   | 0.13728    |  13.8 | 20.58
+Neigh   | 0.024121   | 0.024217   | 0.024347   |   0.1 |  6.85
+Comm    | 0.01612    | 0.017894   | 0.02125    |   1.4 |  5.06
+Output  | 0.00033606 | 0.00035649 | 0.00047083 |   0.0 |  0.10
+Modify  | 0.026886   | 0.027075   | 0.02727    |   0.1 |  7.65
+Other   |            | 0.001375   |            |       |  0.39
 
-Nlocal:    250.5 ave 261 max 238 min
+Nlocal:        250.500 ave         261 max         238 min
 Histogram: 1 0 1 1 1 0 1 1 0 2
-Nghost:    4919.12 ave 4961 max 4863 min
+Nghost:        4919.12 ave        4961 max        4863 min
 Histogram: 1 1 0 0 1 2 0 0 1 2
-Neighs:    88510.4 ave 92988 max 84076 min
+Neighs:        88510.4 ave       92988 max       84076 min
 Histogram: 1 0 2 0 1 1 0 1 1 1
 
 Total # of neighbors = 708083
-Ave neighs/atom = 353.335
-Ave special neighs/atom = 2.34032
+Ave neighs/atom = 353.33483
+Ave special neighs/atom = 2.3403194
 Neighbor list builds = 7
 Dangerous builds = 0
 
@@ -397,12 +397,12 @@ colvars: Resetting the Collective Variables module.
 
 run     100
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (src/kspace.cpp:332)
-  G vector (1/distance) = 0.268725
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:330)
+  G vector (1/distance) = 0.26872465
   grid = 15 15 15
   stencil order = 5
-  estimated absolute RMS force accuracy = 0.0228209
-  estimated relative force accuracy = 6.87243e-05
+  estimated absolute RMS force accuracy = 0.022820853
+  estimated relative force accuracy = 6.872432e-05
   using double precision FFTW3
   3d grid and FFT values/proc = 2744 512
 colvars: Creating proxy instance
@@ -567,15 +567,15 @@ colvars: Re-initialized atom group for variable "one":0/0. 4 atoms: total mass =
 colvars: Re-initialized atom group for variable "one":0/1. 1 atoms: total mass = 12.011, total charge = 0.51.
 colvars: Re-initialized atom group for variable "two":0/0. 4 atoms: total mass = 15.035, total charge = 0.16.
 colvars: Re-initialized atom group for variable "two":0/1. 1 atoms: total mass = 12.011, total charge = 0.51.
-SHAKE stats (type/ave/delta) on step 200
-  4 1.111 1.81266e-06
-  6 0.997 7.79424e-07
-  8 1.08 1.08903e-06
-  10 1.111 2.96503e-07
-  12 1.08 4.69038e-07
-  14 0.960001 0
-  18 0.957201 3.76471e-06
-  31 104.52 0.000411055
+SHAKE stats (type/ave/delta/count) on step 200
+     4   1.11100   1.81266e-06       36
+     6   0.997     7.79424e-07       12
+     8   1.08000   1.08903e-06       18
+    10   1.11100   2.96503e-07       24
+    12   1.08000   4.69038e-07       18
+    14   0.960001  0.00000            2
+    18   0.957201  3.76471e-06     3840
+    31   104.520   0.000411055     1920
 Per MPI rank memory allocation (min/avg/max) = 15.4 | 15.52 | 15.78 Mbytes
 Step Temp TotEng PotEng KinEng E_pair E_bond f_2 
      200    251.50475   -5557.4251   -6569.2538    1011.8288   -6674.0845    24.804906    7.1387572 
@@ -588,44 +588,44 @@ Step Temp TotEng PotEng KinEng E_pair E_bond f_2
      270    272.81307   -5350.8819   -6448.4362    1097.5543   -6563.8228    23.114196    10.973132 
      280    279.42264   -5307.9799   -6432.1251    1124.1452   -6557.3368    33.644022    8.5490489 
      290    286.85168   -5260.8409   -6414.8739     1154.033   -6515.6796    28.574838    5.9100102 
-SHAKE stats (type/ave/delta) on step 300
-  4 1.111 1.79793e-05
-  6 0.997005 1.02512e-05
-  8 1.08 1.85103e-05
-  10 1.111 9.98839e-06
-  12 1.08 8.84114e-06
-  14 0.960008 0
-  18 0.957203 1.8445e-05
-  31 104.52 0.00168383
+SHAKE stats (type/ave/delta/count) on step 300
+     4   1.11100   1.79793e-05       36
+     6   0.997005  1.02512e-05       12
+     8   1.08000   1.85103e-05       18
+    10   1.11100   9.98839e-06       24
+    12   1.08000   8.84114e-06       18
+    14   0.960008  0.00000            2
+    18   0.957203  1.84450e-05     3840
+    31   104.520   0.00168383      1920
      300    291.52795   -5216.2878   -6389.1339    1172.8461   -6503.1274    27.889149    2.2482427 
 colvars: Saving collective variables state to "out2.colvars.state".
-Loop time of 0.35706 on 8 procs for 100 steps with 2004 atoms
+Loop time of 0.364351 on 8 procs for 100 steps with 2004 atoms
 
-Performance: 48.395 ns/day, 0.496 hours/ns, 280.065 timesteps/s
-88.5% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 47.427 ns/day, 0.506 hours/ns, 274.461 timesteps/s
+94.4% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.13514    | 0.18729    | 0.24405    |  11.1 | 52.45
-Bond    | 6.9018e-05 | 0.00057544 | 0.0016646  |   0.0 |  0.16
-Kspace  | 0.041802   | 0.095381   | 0.14476    |  14.8 | 26.71
-Neigh   | 0.028203   | 0.028343   | 0.028578   |   0.1 |  7.94
-Comm    | 0.016091   | 0.018726   | 0.021807   |   1.5 |  5.24
-Output  | 0.00029709 | 0.00032026 | 0.0004414  |   0.0 |  0.09
-Modify  | 0.024696   | 0.024904   | 0.025206   |   0.1 |  6.97
-Other   |            | 0.001523   |            |       |  0.43
+Pair    | 0.15168    | 0.21065    | 0.24871    |   7.6 | 57.81
+Bond    | 7.9118e-05 | 0.0008286  | 0.0026193  |   0.0 |  0.23
+Kspace  | 0.040882   | 0.076563   | 0.13382    |  12.2 | 21.01
+Neigh   | 0.027605   | 0.027729   | 0.027912   |   0.1 |  7.61
+Comm    | 0.016442   | 0.018351   | 0.021096   |   1.2 |  5.04
+Output  | 0.00034201 | 0.00036986 | 0.00048564 |   0.0 |  0.10
+Modify  | 0.02831    | 0.028418   | 0.028519   |   0.0 |  7.80
+Other   |            | 0.001445   |            |       |  0.40
 
-Nlocal:    250.5 ave 264 max 226 min
+Nlocal:        250.500 ave         264 max         226 min
 Histogram: 1 0 0 0 0 2 2 0 1 2
-Nghost:    4950.38 ave 5021 max 4857 min
+Nghost:        4950.38 ave        5021 max        4857 min
 Histogram: 1 0 1 0 1 0 3 0 1 1
-Neighs:    88519 ave 95177 max 82042 min
+Neighs:        88519.0 ave       95177 max       82042 min
 Histogram: 1 0 1 1 2 0 1 0 1 1
 
 Total # of neighbors = 708152
-Ave neighs/atom = 353.369
-Ave special neighs/atom = 2.34032
+Ave neighs/atom = 353.36926
+Ave special neighs/atom = 2.3403194
 Neighbor list builds = 8
 Dangerous builds = 0
 

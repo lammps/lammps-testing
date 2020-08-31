@@ -6,6 +6,11 @@ node('atlas2') {
     env.CCACHE_DIR = "${env.WORKSPACE}/${params.CCACHE_DIR}"
     env.GIT_COMMIT = params.GIT_COMMIT
 
+    if(params.GITHUB_PR_NUMBER) {
+        env.GITHUB_PR_NUMBER = params.GITHUB_PR_NUMBER
+        env.CHANGE_ID = params.GITHUB_PR_NUMBER
+    }
+
     def container = "${params.CONTAINER_IMAGE}"
     def container_args = "--nv -B ${params.WORKSPACE_PARENT}:${params.WORKSPACE_PARENT}"
 
@@ -63,7 +68,9 @@ node('atlas2') {
     }
 
     if (currentBuild.result == 'FAILURE') {
-        slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
+        slackSend color: 'danger', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
+    } else if (currentBuild.result == 'UNSTABLE') {
+        slackSend color: 'warning', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} has failed tests!"
     } else {
         slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
     }
