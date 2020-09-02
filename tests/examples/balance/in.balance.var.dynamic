@@ -54,7 +54,7 @@ fix		1 all nve
 
 thermo		50
 run		500
-run		500
+run		300
 
 balance		1.0 shift x 10 1.0 &
                 weight group 2 fast 0.8 slow 2.5 weight store WEIGHT
@@ -63,4 +63,4 @@ fix		0 all balance 50 1.0 shift x 5 1.0 &
                 weight var lastweight weight neigh 0.5 weight store WEIGHT
 
 run             500
-run             500
+run             300
