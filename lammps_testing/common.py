@@ -86,16 +86,19 @@ class Container(object):
         self.container = container
         self.container_definition =  container_definition
 
-    def build(self):
+    def build(self, force=False):
         os.makedirs(os.path.dirname(self.container), exist_ok=True)
         if os.path.exists(self.container) and file_is_newer(self.container_definition, self.container):
             logger.info(f"Newer container definition found! Rebuilding container '{self.name}'...")
+            os.unlink(self.container)
+        elif os.path.exists(self.container) and force:
+            logger.info(f"Forcing rebuilding container '{self.name}'...")
             os.unlink(self.container)
         elif not os.path.exists(self.container):
             logger.info(f"Building container '{self.name}'...")
 
         if not os.path.exists(self.container):
-            subprocess.call(['sudo', 'singularity', 'build', self.container, self.container_definition])
+            subprocess.call(['sudo', '-E', 'singularity', 'build', self.container, self.container_definition])
         else:
             logger.info(f"Container '{self.name}' already exists and is up-to-date.")
 

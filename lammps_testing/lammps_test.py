@@ -255,7 +255,7 @@ def clean(args, settings):
 
 def build_container(args, settings):
     for c in get_containers_by_selector(args.images, settings):
-        c.build()
+        c.build(force=args.force)
 
 def clean_container(args, settings):
     for c in get_containers_by_selector(args.images, settings):
@@ -592,6 +592,7 @@ def main():
     # create the parser for the "build_container" command
     parser_build_container = subparsers.add_parser('build_container', help='build container image(s)')
     parser_build_container.add_argument('images', metavar='image_name', nargs='+', help='container image names')
+    parser_build_container.add_argument('-f', '--force', default=False, action='store_true', help="Force rebuild")
     parser_build_container.set_defaults(func=build_container)
 
     # create the parser for the "clean_container" command
