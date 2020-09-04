@@ -118,7 +118,7 @@ From: ubuntu:18.04
 
 
     ###########################################################################
-    # ROCm hipCUB 
+    # ROCm hipCUB
     ###########################################################################
 
     export PATH=$PATH:/opt/rocm/bin:/opt/rocm/profiler/bin:/opt/rocm/opencl/bin/x86_64
