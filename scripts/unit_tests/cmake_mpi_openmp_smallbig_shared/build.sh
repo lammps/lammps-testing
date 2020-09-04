@@ -53,7 +53,7 @@ fi
 mkdir -p ${BUILD}
 cd ${BUILD}
 
-source kim-api-activate
+type kim-api-activate >& null && source kim-api-activate
 
 # Configure
 ${CMAKE_COMMAND} \
