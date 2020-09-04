@@ -39,6 +39,8 @@ From: ubuntu:20.04
         cmake \
         cmake-curses-gui \
         curl \
+        doxygen \
+        enchant \
         g++ \
         gcc \
         gfortran \
@@ -47,6 +49,7 @@ From: ubuntu:20.04
         less \
         libblas-dev \
         libeigen3-dev \
+        libenchant-dev \
         libfftw3-dev \
         libgsl-dev \
         libhdf5-serial-dev \
