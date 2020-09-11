@@ -58,12 +58,17 @@ node('atlas2') {
     xunit([CTest(deleteOutputFiles: true, failIfNotNew: true, pattern: 'build/Testing/**/Test.xml', skipNoTestFiles: false, stopProcessingIfError: true)])
 
     if (fileExists('build/coverage.xml')) {
-        cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+        cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/*coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
 
          withCredentials([string(credentialsId: 'codecov-token', variable: 'CODECOV_TOKEN')]) {
              sh """#!/bin/bash
              bash <(curl -s https://codecov.io/bash) -f build/coverage.xml
              """
+             if (fileExists('build/python_coverage.xml')) {
+                  sh """#!/bin/bash
+                  bash <(curl -s https://codecov.io/bash) -F python -f build/python_coverage.xml
+                  """
+             }
          }
     }
 

@@ -20,5 +20,6 @@ export CTEST_PARALLEL_LEVEL=$LAMMPS_COMPILE_NPROC
 ctest -V --no-compress-output -T Test
 
 make gen_coverage_xml
+make gen_python_coverage_xml || true
 
 deactivate
