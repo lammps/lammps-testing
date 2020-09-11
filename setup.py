@@ -24,6 +24,7 @@ setup(name='lammps_testing',
         'termcolor',
         'matplotlib',
         'pyyaml',
-        'Jinja2'
+        'Jinja2',
+        'coverage'
     ]
 )
