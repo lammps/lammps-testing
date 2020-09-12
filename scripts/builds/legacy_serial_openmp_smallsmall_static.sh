@@ -19,6 +19,7 @@ LAMMPS_PACKAGES=(
                  yes-python
                  yes-poems
                  yes-user-colvars
+                 yes-user-atc
                  yes-user-awpmd
                  yes-user-h5md
                  yes-user-dpd
