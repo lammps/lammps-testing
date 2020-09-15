@@ -89,13 +89,13 @@ build_libraries() {
     if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-poems"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" LINK="${LAMMPS_COMPILER}" || exit 1
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" LINK="${LAMMPS_COMPILER}" || exit 1
     fi
 
     if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-awpmd"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER}" EXTRAMAKE=Makefile.lammps.installed || exit 1
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE=Makefile.lammps.installed || exit 1
     fi
 
     if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-h5md"* ]]
@@ -112,7 +112,7 @@ build_libraries() {
     if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-atc"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} EXTRAMAKE="Makefile.lammps.installed" || exit 1
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE="Makefile.lammps.installed" || exit 1
     fi
 
     if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-qmmm"* ]]
