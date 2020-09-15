@@ -70,6 +70,7 @@ ${CMAKE_COMMAND} \
       -D PKG_CLASS2=on \
       -D PKG_COLLOID=on \
       -D PKG_CORESHELL=on \
+      -D PKG_COMPRESS=on \
       -D PKG_DIPOLE=on \
       -D PKG_GRANULAR=on \
       -D PKG_KIM=on \
