@@ -293,3 +293,25 @@ docker_config.containers.each { name ->
         }
     }
 }
+
+folder('dev/master/static_analysis')
+
+pipelineJob("dev/master/static_analysis/cmake_coverity") {
+    quietPeriod(120)
+
+    properties {
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/master/cmake_coverity.groovy'))
+            sandbox()
+        }
+    }
+}
