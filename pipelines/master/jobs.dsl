@@ -303,7 +303,7 @@ pipelineJob("dev/master/static_analysis/cmake_coverity") {
         disableConcurrentBuilds()
         pipelineTriggers {
             triggers {
-                githubPush()
+                cron('0 2 * * 5')
             }
         }
     }
