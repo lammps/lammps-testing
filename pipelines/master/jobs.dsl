@@ -297,13 +297,11 @@ docker_config.containers.each { name ->
 folder('dev/master/static_analysis')
 
 pipelineJob("dev/master/static_analysis/cmake_coverity") {
-    quietPeriod(120)
-
     properties {
         disableConcurrentBuilds()
         pipelineTriggers {
             triggers {
-                cron('0 2 * * 5')
+                cron("H 2 * * 5")
             }
         }
     }
