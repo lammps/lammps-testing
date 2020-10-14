@@ -65,6 +65,7 @@ ${CMAKE_COMMAND} \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \
       -D BUILD_TOOLS=on \
+      -D BUILD_LAMMPS_SHELL=on \
       -D PKG_ASPHERE=on \
       -D PKG_BODY=on \
       -D PKG_CLASS2=on \
