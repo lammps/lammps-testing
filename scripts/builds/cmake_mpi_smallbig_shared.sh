@@ -78,10 +78,10 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       ${LAMMPS_DIR}/cmake || exit 1
 
 # Build
-cmake --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
+${CMAKE_COMMAND} --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
 
 # Install
-cmake --build . --target  install || exit 1
+${CMAKE_COMMAND} --build . --target  install || exit 1
 deactivate
 
 ccache -s
