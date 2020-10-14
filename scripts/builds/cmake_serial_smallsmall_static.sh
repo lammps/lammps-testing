@@ -81,7 +81,7 @@ ${CMAKE_COMMAND} \
       ${LAMMPS_DIR}/cmake || exit 1
 
 # Build
-cmake --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
+${CMAKE_COMMAND} --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
 
 # Install
 make install || exit 1

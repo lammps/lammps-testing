@@ -47,6 +47,6 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/mingw-cross.cmake \
       ${LAMMPS_DIR}/cmake || exit 1
 
 # Build
-cmake --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
+${CMAKE_COMMAND} --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
 
 ccache -s
