@@ -1,4 +1,4 @@
-LAMMPS (30 Jun 2020)
+LAMMPS (22 Oct 2020)
 # Solvated 5-mer peptide
 
 units		real
@@ -12,6 +12,7 @@ improper_style  harmonic
 kspace_style	pppm 0.0001
 
 read_data	data.peptide
+Reading data file ...
   orthogonal box = (36.840194 41.013691 29.768095) to (64.211560 68.385058 57.139462)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
@@ -34,12 +35,15 @@ read_data	data.peptide
   207 dihedrals
   reading impropers ...
   12 impropers
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0.0      0.0      0.0     
+  special bond factors coul:  0.0      0.0      0.0     
      4 = max # of 1-2 neighbors
      7 = max # of 1-3 neighbors
     14 = max # of 1-4 neighbors
     18 = max # of special neighbors
   special bonds CPU = 0.001 seconds
-  read_data CPU = 0.015 seconds
+  read_data CPU = 0.030 seconds
 
 neighbor	2.0 bin
 neigh_modify	delay 5
@@ -78,7 +82,7 @@ thermo		10
 
 run		100
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (src/kspace.cpp:330)
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:328)
   G vector (1/distance) = 0.26872465
   grid = 15 15 15
   stencil order = 5
@@ -100,12 +104,12 @@ Neighbor list info ...
       bin: standard
 colvars: Creating proxy instance
 colvars: ----------------------------------------------------------------------
-colvars: Initializing the collective variables module, version "2020-02-25".
+colvars: Initializing the collective variables module, version "2020-09-17".
 colvars: Please cite Fiorin et al, Mol Phys 2013:
-colvars:  https://doi.org/10.1080/00268976.2013.813594
+colvars:  https://dx.doi.org/10.1080/00268976.2013.813594
 colvars: in any publication based on this calculation.
 colvars: This version was built with the C++11 standard or higher.
-colvars: Using LAMMPS interface, version "2019-12-04".
+colvars: Using LAMMPS interface, version "2020-04-07".
 colvars: ----------------------------------------------------------------------
 colvars: Reading new configuration from file "peptide.colvars2":
 colvars: # units = "" [default]
@@ -175,7 +179,9 @@ colvars: ----------------------------------------------------------------------
 colvars:   Initializing a new "harmonic" instance.
 colvars:   # name = "h_pot"
 colvars:   # colvars = { one }
+colvars:   # stepZeroData = off [default]
 colvars:   # outputEnergy = off [default]
+colvars:   # outputFreq = 1000 [default]
 colvars:   # timeStepFactor = 1 [default]
 colvars:   # writeTISamples = off [default]
 colvars:   # writeTIPMF = off [default]
@@ -192,19 +198,20 @@ colvars: Collective variables module (re)initialized.
 colvars: ----------------------------------------------------------------------
 colvars: The restart output state file will be "rest.colvars.state".
 colvars: The final output state file will be "peptide2.colvars.state".
-colvars: Writing to colvar trajectory file "peptide2.colvars.traj".
+colvars: Opening trajectory file "peptide2.colvars.traj".
 colvars: Re-initialized atom group for variable "one":0/0. 4 atoms: total mass = 15.035, total charge = -2.77556e-17.
 colvars: Re-initialized atom group for variable "one":0/1. 4 atoms: total mass = 15.035, total charge = 0.16.
+colvars: Synchronizing (emptying the buffer of) trajectory file "peptide2.colvars.traj".
 SHAKE stats (type/ave/delta/count) on step 0
-     4   1.11100   1.44264e-05       36
-     6   0.996998  7.26967e-06       12
-     8   1.08000   1.32536e-05       18
-    10   1.11100   1.22749e-05       24
-    12   1.08000   1.11767e-05       18
-    14   0.96      0.00000            2
-    18   0.957206  4.37979e-05     3840
-    31   104.519   0.00396029      1920
-Per MPI rank memory allocation (min/avg/max) = 15.39 | 15.5 | 15.78 Mbytes
+     4   2.22200   1.44264e-05       18
+     6   1.99400   7.26967e-06        6
+     8   2.16000   1.32536e-05        9
+    10   2.22200   1.22749e-05       12
+    12   2.16000   1.11767e-05        9
+    14   1.92000   0.00000            1
+    18   1.91441   4.37979e-05     1920
+    31   313.558   0.00396029       640
+Per MPI rank memory allocation (min/avg/max) = 15.39 | 15.50 | 15.78 Mbytes
 Step Temp TotEng PotEng KinEng E_pair E_bond f_2 
        0    282.10052    -5237.458   -6372.3766    1134.9186    -6442.768    16.557152    273.74323 
       10    333.47919   -4982.3968   -6324.0169    1341.6201   -6400.4223    21.367762    12.393263 
@@ -217,32 +224,32 @@ Step Temp TotEng PotEng KinEng E_pair E_bond f_2
       80    268.01484   -5281.8509   -6360.1014    1078.2505   -6496.6086    20.300754    5.2607186 
       90    270.43472   -5334.0835   -6422.0694    1087.9859   -6563.2511    39.846095    1.1832272 
 SHAKE stats (type/ave/delta/count) on step 100
-     4   1.11096   0.000191462       36
-     6   0.996989  3.55508e-05       12
-     8   1.08000   9.09970e-06       18
-    10   1.11100   1.58544e-05       24
-    12   1.08000   5.80604e-06       18
-    14   0.959997  0.00000            2
-    18   0.957198  2.92445e-05     3840
-    31   104.520   0.00239923      1920
+     4   2.22193   0.000191462       18
+     6   1.99398   3.55508e-05        6
+     8   2.15999   9.09970e-06        9
+    10   2.22199   1.58544e-05       12
+    12   2.16000   5.80604e-06        9
+    14   1.91999   0.00000            1
+    18   1.91440   2.92445e-05     1920
+    31   313.560   0.00239923       640
      100    260.35636   -5387.2284   -6434.6681    1047.4397   -6534.1956    20.246866  0.075048487 
 colvars: Saving collective variables state to "peptide2.colvars.state".
-Loop time of 0.398244 on 8 procs for 100 steps with 2004 atoms
+Loop time of 0.33602 on 8 procs for 100 steps with 2004 atoms
 
-Performance: 43.391 ns/day, 0.553 hours/ns, 251.103 timesteps/s
-91.7% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 51.425 ns/day, 0.467 hours/ns, 297.601 timesteps/s
+95.0% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.14448    | 0.20793    | 0.25548    |   9.2 | 52.21
-Bond    | 8.8698e-05 | 0.00079025 | 0.0028652  |   0.0 |  0.20
-Kspace  | 0.043442   | 0.08899    | 0.15091    |  13.6 | 22.35
-Neigh   | 0.04776    | 0.048058   | 0.048739   |   0.2 | 12.07
-Comm    | 0.019239   | 0.021167   | 0.023346   |   1.1 |  5.32
-Output  | 0.00036185 | 0.0003902  | 0.00055835 |   0.0 |  0.10
-Modify  | 0.029329   | 0.029459   | 0.0296     |   0.1 |  7.40
-Other   |            | 0.001458   |            |       |  0.37
+Pair    | 0.18681    | 0.20277    | 0.21238    |   1.7 | 60.35
+Bond    | 4.9435e-05 | 0.00056288 | 0.0018032  |   0.0 |  0.17
+Kspace  | 0.041355   | 0.050607   | 0.06628    |   3.3 | 15.06
+Neigh   | 0.040387   | 0.040439   | 0.04048    |   0.0 | 12.03
+Comm    | 0.019077   | 0.019473   | 0.019979   |   0.2 |  5.80
+Output  | 0.00032346 | 0.00034259 | 0.00044653 |   0.0 |  0.10
+Modify  | 0.019623   | 0.019666   | 0.019747   |   0.0 |  5.85
+Other   |            | 0.002157   |            |       |  0.64
 
 Nlocal:        250.500 ave         263 max         237 min
 Histogram: 1 1 0 0 2 1 0 1 1 1
