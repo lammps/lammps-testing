@@ -15,7 +15,7 @@ node('atlas2') {
         dir('lammps') {
             branch_name = "origin-pull/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}"
             refspec = "+refs/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}:refs/remotes/origin-pull/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}"
-            commit = checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]]
+            checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]]
         }
 
         dir('lammps-testing') {
@@ -24,7 +24,7 @@ node('atlas2') {
     }
 
     if (set_github_status) {
-        utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'building...', 'PENDING')
+        utils.setGitHubCommitStatus(project_url, env.JOB_NAME, env.GITHUB_PR_HEAD_SHA, 'building...', 'PENDING')
     }
 
     def yaml_files = findFiles glob: 'lammps-testing/scripts/*.yml'
@@ -39,7 +39,7 @@ node('atlas2') {
     try {
         configurations.each { container, config ->
             jobs[container] = config.builds.collectEntries { build ->
-                ["${build}": launch_build("${container}/${build}", commit.GIT_COMMIT, env.WORKSPACE, ccache_dir)]
+                ["${build}": launch_build("${container}/${build}", env.GITHUB_PR_HEAD_SHA, env.WORKSPACE, ccache_dir)]
             }
 
             stage(config.display_name) {
@@ -53,14 +53,14 @@ node('atlas2') {
     } finally {
         if (currentBuild.result == 'FAILURE') {
             if (set_github_status) {
-                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'build failed!', 'FAILURE')
+                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, env.GITHUB_PR_HEAD_SHA, 'build failed!', 'FAILURE')
             }
             if (send_slack) {
                 slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
             }
         } else {
             if (set_github_status) {
-                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'build successful!', 'SUCCESS')
+                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, env.GITHUB_PR_HEAD_SHA, 'build successful!', 'SUCCESS')
             }
             if (send_slack) {
                 slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"

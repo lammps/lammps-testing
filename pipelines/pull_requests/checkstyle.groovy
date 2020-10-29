@@ -16,11 +16,11 @@ node('atlas2'){
     stage('Checkout') {
         branch_name = "origin-pull/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}"
         refspec = "+refs/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}:refs/remotes/origin-pull/pull/${env.GITHUB_PR_NUMBER}/${env.GITHUB_PR_COND_REF}"
-        commit = checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]]
+        checkout changelog: true, poll: true, scm: [$class: 'GitSCM', branches: [[name: branch_name]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CleanCheckout'], [$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', name: 'origin-pull', refspec: refspec, url: project_url]]]
     }
 
     if (set_github_status) {
-        utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'building...', 'PENDING')
+        utils.setGitHubCommitStatus(project_url, env.JOB_NAME, env.GITHUB_PR_HEAD_SHA, 'building...', 'PENDING')
     }
 
     try {
@@ -52,21 +52,21 @@ node('atlas2'){
     } finally {
         if (currentBuild.result == 'FAILURE') {
             if (set_github_status) {
-                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'Style issues detected!', 'FAILURE')
+                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, env.GITHUB_PR_HEAD_SHA, 'Style issues detected!', 'FAILURE')
             }
             if (send_slack) {
                 slackSend color: 'danger', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
             }
         } else if (currentBuild.result == 'UNSTABLE') {
             if (set_github_status) {
-                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'Style issues detected!', 'SUCCESS')
+                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, env.GITHUB_PR_HEAD_SHA, 'Style issues detected!', 'SUCCESS')
             }
             if (send_slack) {
                 slackSend color: 'warning', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} has style issues!"
             }
         } else {
             if (set_github_status) {
-                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'No warnings', 'SUCCESS')
+                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, env.GITHUB_PR_HEAD_SHA, 'No warnings', 'SUCCESS')
             }
             if (send_slack) {
                 slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
