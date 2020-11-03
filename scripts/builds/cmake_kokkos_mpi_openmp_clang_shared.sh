@@ -90,7 +90,15 @@ ${CMAKE_COMMAND} --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
 
 # Install
 # running install target repeats the compilation with Kokkos enabled
-#${CMAKE_COMMAND} --build . --target  install || exit 1
+${CMAKE_COMMAND} --build . --target  install || exit 1
+
+MANIFEST=$PWD/install_manifest.txt
+
+cd ${VIRTUAL_ENV}
+sed s#${VIRTUAL_ENV}/## ${MANIFEST} > rel_install_manifest.txt
+
+tar czvf lammps.tgz -T rel_install_manifest.txt
+
 deactivate
 
 ccache -s

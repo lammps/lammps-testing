@@ -36,6 +36,10 @@ node('atlas2') {
 
     recordIssues(tools: tools)
 
+    if (fileExists('pyenv/lammps.tgz')) {
+        archiveArtifacts artifacts: 'pyenv/lammps.tgz', fingerprint: true, followSymlinks: false
+    }
+
     if (currentBuild.result == 'FAILURE') {
         slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
     } else {
