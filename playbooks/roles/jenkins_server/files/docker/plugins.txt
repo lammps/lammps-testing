@@ -1,5 +1,4 @@
 ace-editor:latest
-analysis-core:latest
 analysis-model-api:latest
 ansicolor:latest
 antisamy-markup-formatter:latest
@@ -114,7 +113,6 @@ token-macro:latest
 trilead-api:latest
 variant:latest
 warnings-ng:latest
-warnings:latest
 workflow-aggregator:latest
 workflow-api:latest
 workflow-basic-steps:latest

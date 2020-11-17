@@ -28,7 +28,10 @@
  - name: build jenkins docker container
    docker_image:
      name: jenkins
-     path: /home/jenkins/docker
+     build:
+       path: /home/jenkins/docker
+       nocache: yes
+       pull: yes
      state: build
      force: True
 
