@@ -55,7 +55,7 @@ node('atlas2') {
             }
         }
 
-        warnings canComputeNew: false, canResolveRelativePaths: false, canRunOnFailed: true, categoriesPattern: 'RemovedInSphinx20Warning|UserWarning', consoleParsers: [[parserName: 'Sphinx Spelling Check'],[parserName: 'Sphinx Documentation Build']], defaultEncoding: '', excludePattern: '', failedTotalAll: '1', healthy: '0', includePattern: '', messagesPattern: 'Duplicate declaration.*', unHealthy: '1', unstableTotalAll: '1'
+        recordIssues enabledForFailure: true, filters: [excludeCategory('RemovedInSphinx20Warning|UserWarning'), excludeMessage('Duplicate declaration.*')], healthy: 1, qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], tools: [groovyScript('sphinx'), groovyScript('spelling')], unhealthy: 2
     } catch (caughtErr) {
         err = caughtErr
         currentBuild.result = 'FAILURE'
