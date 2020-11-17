@@ -33,7 +33,7 @@ node('atlas2') {
                     sh(label: "Clean directory",
                        script: "${launch_container} make -C lammps/doc clean-all")
                     sh(label: "Build HTML on ${container}",
-                       script: "${launch_container} make -C lammps/doc -j 8 html")
+                       script: "${launch_container} make -C lammps/doc -j 8 html | tee html_build.log")
                     sh 'cd lammps/doc/html; tar cvzf ../lammps-docs.tar.gz *'
                 }
                 archiveArtifacts 'lammps/doc/lammps-docs.tar.gz'
@@ -50,12 +50,12 @@ node('atlas2') {
             stage('Check Spelling') {
                 ansiColor('xterm') {
                     sh(label: "Run spellcheck on ${container}",
-                       script: "${launch_container} make -C lammps/doc -j 8 spelling")
+                       script: "${launch_container} make -C lammps/doc -j 8 spelling | tee spellcheck_build.log")
                 }
             }
         }
 
-        recordIssues enabledForFailure: true, filters: [excludeCategory('RemovedInSphinx20Warning|UserWarning'), excludeMessage('Duplicate declaration.*')], healthy: 1, qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], tools: [groovyScript('sphinx'), groovyScript('spelling')], unhealthy: 2
+        recordIssues enabledForFailure: true, filters: [excludeCategory('RemovedInSphinx20Warning|UserWarning'), excludeMessage('Duplicate declaration.*')], healthy: 1, qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], tools: [groovyScript(parserId: 'sphinx', pattern: 'html_build.log'), groovyScript(parserId: 'spelling', pattern: 'spellcheck_build.log')], unhealthy: 2
     } catch (caughtErr) {
         err = caughtErr
         currentBuild.result = 'FAILURE'
