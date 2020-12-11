@@ -10,7 +10,7 @@ def launch_container = "singularity exec \$LAMMPS_CONTAINER_DIR/${container}.sif
 
 node('atlas2') {
     def utils = new Utils()
-    env.LAMMPS_CONTAINER_DIR = "/home/jenkins/containers"
+    env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
 
     stage('Checkout') {
         dir('lammps') {

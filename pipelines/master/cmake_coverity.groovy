@@ -31,7 +31,7 @@ node('atlas2') {
         env.LAMMPS_DIR = "${env.WORKSPACE}/lammps"
         env.LAMMPS_TESTING_DIR = "${env.WORKSPACE}/lammps-testing"
         env.LAMMPS_CACHE_DIR = "${env.WORKSPACE}/cache"
-        env.LAMMPS_CONTAINER_DIR = "/home/jenkins/containers"
+        env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
 
         def container = "ubuntu20.04"
         def container_args = "--nv -B /opt/coverity:/opt/coverity"

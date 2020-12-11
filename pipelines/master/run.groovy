@@ -1,7 +1,7 @@
 node('atlas2') {
     env.LAMMPS_DIR = "${params.WORKSPACE_PARENT}/lammps"
     env.LAMMPS_TESTING_DIR = "${params.WORKSPACE_PARENT}/lammps-testing"
-    env.LAMMPS_CONTAINER_DIR = "/home/jenkins/containers"
+    env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
     env.CCACHE_DIR = "${env.WORKSPACE}/${params.CCACHE_DIR}"
 
     def container = "${params.CONTAINER_IMAGE}"

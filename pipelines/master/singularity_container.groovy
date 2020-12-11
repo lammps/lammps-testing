@@ -18,6 +18,6 @@ node('atlas2') {
     }
 
     stage('Publish') {
-        sh "cp -f ${container_file} /home/jenkins/containers/"
+        sh "cp -f ${container_file} /mnt/lammps/containers/"
     }
 }
