@@ -8,7 +8,7 @@ def send_slack = true
 def container = 'fedora32_mingw'
 def launch_container = "singularity exec \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
-node('atlas2') {
+node('slow') {
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
 

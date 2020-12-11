@@ -6,7 +6,7 @@ def set_github_status = true
 def send_slack = true
 def lammps_branch = 'master'
 
-node('atlas2'){
+node('slow'){
     cleanWs()
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"

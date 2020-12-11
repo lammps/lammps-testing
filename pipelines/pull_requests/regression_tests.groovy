@@ -5,7 +5,7 @@ def project_url = 'https://github.com/lammps/lammps.git'
 def set_github_status = true
 def send_slack = true
 
-node('atlas2') {
+node('slow') {
     def utils = new Utils()
 
 

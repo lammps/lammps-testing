@@ -1,4 +1,4 @@
-node('atlas2') {
+node('slow') {
     env.LAMMPS_DIR = "${params.WORKSPACE_PARENT}/lammps"
     env.LAMMPS_TESTING_DIR = "${params.WORKSPACE_PARENT}/lammps-testing"
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
