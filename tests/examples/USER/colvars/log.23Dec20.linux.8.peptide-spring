@@ -1,4 +1,4 @@
-LAMMPS (22 Oct 2020)
+LAMMPS (30 Nov 2020)
 # Solvated 5-mer peptide
 
 units		real
@@ -36,14 +36,14 @@ Reading data file ...
   reading impropers ...
   12 impropers
 Finding 1-2 1-3 1-4 neighbors ...
-  special bond factors lj:    0.0      0.0      0.0     
-  special bond factors coul:  0.0      0.0      0.0     
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
      4 = max # of 1-2 neighbors
      7 = max # of 1-3 neighbors
     14 = max # of 1-4 neighbors
     18 = max # of special neighbors
   special bonds CPU = 0.001 seconds
-  read_data CPU = 0.015 seconds
+  read_data CPU = 0.023 seconds
 
 neighbor	2.0 bin
 neigh_modify	delay 5
@@ -73,7 +73,7 @@ fix		4 all shake 0.0001 10 100 b 4 6 8 10 12 14 18 a 31
        6 = # of size 3 clusters
        3 = # of size 4 clusters
      640 = # of frozen angles
-  find clusters CPU = 0.000 seconds
+  find clusters CPU = 0.001 seconds
 
 #dump		1 colvar custom 1 dump.spring.lammpstrj id xu yu zu fx fy fz
 #dump_modify 1  sort id
@@ -86,7 +86,7 @@ thermo		10
 
 run		100
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (src/kspace.cpp:328)
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:339)
   G vector (1/distance) = 0.26872465
   grid = 15 15 15
   stencil order = 5
@@ -107,14 +107,14 @@ Neighbor list info ...
       stencil: half/bin/3d/newton
       bin: standard
 SHAKE stats (type/ave/delta/count) on step 0
-     4   2.22200   1.44264e-05       18
-     6   1.99400   7.26967e-06        6
-     8   2.16000   1.32536e-05        9
-    10   2.22200   1.22749e-05       12
-    12   2.16000   1.11767e-05        9
-    14   1.92000   0.00000            1
-    18   1.91441   4.37979e-05     1920
-    31   313.558   0.00396029       640
+     4   1.11100   1.44264e-05       18
+     6   0.996998  7.26967e-06        6
+     8   1.08000   1.32536e-05        9
+    10   1.11100   1.22749e-05       12
+    12   1.08000   1.11767e-05        9
+    14   0.960000  0.00000             1
+    18   0.957206  4.37979e-05     1920
+    31   104.519   0.00396029       640
 Per MPI rank memory allocation (min/avg/max) = 15.39 | 15.50 | 15.78 Mbytes
 Step Temp TotEng PotEng KinEng E_pair E_bond v_sp 
        0    282.10052    -5237.458   -6372.3766    1134.9186    -6442.768    16.557152    292.14604 
@@ -128,31 +128,31 @@ Step Temp TotEng PotEng KinEng E_pair E_bond v_sp
       80    267.51495   -5206.4046    -6282.644    1076.2394   -6456.6369    31.611883    6.3554178 
       90    278.15579   -5245.3824    -6364.431    1119.0485   -6499.8063    28.849773   0.36941576 
 SHAKE stats (type/ave/delta/count) on step 100
-     4   2.22196   8.97155e-05       18
-     6   1.99399   1.00568e-05        6
-     8   2.15999   6.02345e-06        9
-    10   2.22199   1.84253e-05       12
-    12   2.15999   7.27130e-06        9
-    14   1.91999   0.00000            1
-    18   1.91440   3.36079e-05     1920
-    31   313.560   0.0030599        640
+     4   1.11098   8.97155e-05       18
+     6   0.996996  1.00568e-05        6
+     8   1.08000   6.02345e-06        9
+    10   1.11100   1.84253e-05       12
+    12   1.08000   7.27130e-06        9
+    14   0.959996  0.00000             1
+    18   0.957198  3.36079e-05     1920
+    31   104.520   0.00305990       640
      100    260.10613   -5292.6885   -6339.1215     1046.433   -6471.6734    25.362042   0.21987323 
-Loop time of 0.330808 on 8 procs for 100 steps with 2004 atoms
+Loop time of 0.640822 on 8 procs for 100 steps with 2004 atoms
 
-Performance: 52.236 ns/day, 0.459 hours/ns, 302.290 timesteps/s
-95.1% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 26.965 ns/day, 0.890 hours/ns, 156.050 timesteps/s
+92.6% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.17169    | 0.19384    | 0.21488    |   3.6 | 58.60
-Bond    | 4.1191e-05 | 0.00053629 | 0.0018224  |   0.0 |  0.16
-Kspace  | 0.042726   | 0.062068   | 0.083774   |   6.1 | 18.76
-Neigh   | 0.036942   | 0.037057   | 0.037164   |   0.0 | 11.20
-Comm    | 0.018555   | 0.019626   | 0.020277   |   0.4 |  5.93
-Output  | 0.00034243 | 0.00036309 | 0.00046078 |   0.0 |  0.11
-Modify  | 0.014965   | 0.015178   | 0.015405   |   0.2 |  4.59
-Other   |            | 0.002139   |            |       |  0.65
+Pair    | 0.35877    | 0.38589    | 0.40087    |   2.2 | 60.22
+Bond    | 0.00011674 | 0.0012853  | 0.0041273  |   4.3 |  0.20
+Kspace  | 0.079699   | 0.094995   | 0.12208    |   4.4 | 14.82
+Neigh   | 0.063678   | 0.063772   | 0.063841   |   0.0 |  9.95
+Comm    | 0.05046    | 0.051296   | 0.051947   |   0.2 |  8.00
+Output  | 0.00056777 | 0.00062298 | 0.00098045 |   0.0 |  0.10
+Modify  | 0.036312   | 0.036449   | 0.036674   |   0.1 |  5.69
+Other   |            | 0.006517   |            |       |  1.02
 
 Nlocal:        250.500 ave         263 max         235 min
 Histogram: 1 0 1 1 0 1 2 0 0 2
