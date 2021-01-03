@@ -7,8 +7,10 @@ def send_slack = true
 
 def lammps_branch = "master"
 def lammps_testing_branch = "master"
+def workspace = '/mnt/lammps/workspace/' + env.JOB_NAME
 
-node('atlas2') {
+node('multicore') {
+    ws(workspace) {
     def utils = new Utils()
 
 
@@ -68,6 +70,7 @@ node('atlas2') {
         if(err) {
             throw err
         }
+    }
     }
 }
 
