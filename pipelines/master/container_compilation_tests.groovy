@@ -2,8 +2,9 @@ node('multicore') {
     env.LAMMPS_DIR = "${params.WORKSPACE_PARENT}/lammps"
     env.LAMMPS_TESTING_DIR = "${params.WORKSPACE_PARENT}/lammps-testing"
 
-    def yaml_file = env.LAMMPS_TESTING_DIR + "/scripts/${params.CONTAINER}.yml"
-    def config = get_configuration(yaml_file)
+    def yaml_path = env.LAMMPS_TESTING_DIR + "/scripts/${params.CONTAINER}.yml"
+    def yaml_files = findFiles glob: yaml_path
+    def config = get_configuration(yaml_files[0])
 
     def err = null
 
