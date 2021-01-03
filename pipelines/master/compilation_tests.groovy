@@ -36,7 +36,7 @@ node('multicore') {
     def err = null
 
     try {
-        stage(config.display_name) {
+        stage('Compilation') {
             configurations.each { container, config ->
                 jobs["${container}"] = launch_build("${container}/compilation_tests", commit.GIT_COMMIT, env.WORKSPACE)
             }
