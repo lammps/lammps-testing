@@ -9,7 +9,7 @@ node('multicore') {
 
     try {
         def jobs = config.builds.collectEntries { build ->
-            ["${build}": launch_build("${container}/${build}", params.GIT_COMMIT, params.WORKSPACE_PARENT)]
+            ["${build}": launch_build("${params.CONTAINER_NAME}/${build}", params.GIT_COMMIT, params.WORKSPACE_PARENT)]
         }
 
         stage(config.display_name) {
@@ -36,10 +36,10 @@ def get_configuration(yaml_file) {
     def filename = yaml_file.substring(yaml_file.lastIndexOf('/')+1)
     def name = filename.take(filename.lastIndexOf('.'))
     def config  = readYaml(file: yaml_file)
-    return ["${name}": [
+    return [
         "display_name": config.display_name.toString(),
         "builds": config.builds.collect({ it.toString() })
-    ]]
+    ]
 }
 
 def launch_build(job_name, commit, workspace) {
