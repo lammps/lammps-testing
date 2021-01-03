@@ -30,22 +30,17 @@ node('multicore') {
 
     def yaml_files = findFiles glob: 'lammps-testing/scripts/*.yml'
 
-
     def configurations = yaml_files.collectEntries { yaml_file -> get_configuration(yaml_file)  }
 
     def jobs = [:]
     def err = null
 
     try {
-        configurations.each { container, config ->
-            jobs[container] = config.builds.collectEntries { build ->
-                ["${build}": launch_build("${container}/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
+        stage(config.display_name) {
+            configurations.each { container, config ->
+                jobs["${container}"] = launch_build("${container}/compilation_tests", commit.GIT_COMMIT, env.WORKSPACE)
             }
-
-            stage(config.display_name) {
-                echo "Running ${config.display_name}"
-                parallel jobs[container]
-            }
+            parallel jobs
         }
     } catch (caughtErr) {
         err = caughtErr

@@ -156,6 +156,21 @@ configurations.each { yaml_file ->
 
     folder("dev/master/${container}")
 
+    pipelineJob("dev/master/${container}/compilation_tests") {
+        parameters {
+            stringParam('GIT_COMMIT')
+            stringParam('WORKSPACE_PARENT')
+            stringParam('CONTAINER_NAME', container)
+        }
+
+        definition {
+            cps {
+                script(readFileFromWorkspace('pipelines/master/container_compilation_tests.groovy'))
+                sandbox()
+            }
+        }
+    }
+
     config.builds.each { name ->
         pipelineJob("dev/master/${container}/${name}") {
             parameters {
