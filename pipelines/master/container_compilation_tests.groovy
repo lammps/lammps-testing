@@ -1,10 +1,11 @@
+import hudson.FilePath;
+
 node('multicore') {
     env.LAMMPS_DIR = "${params.WORKSPACE_PARENT}/lammps"
     env.LAMMPS_TESTING_DIR = "${params.WORKSPACE_PARENT}/lammps-testing"
 
     def yaml_path = env.LAMMPS_TESTING_DIR + "/scripts/${params.CONTAINER}.yml"
-    def yaml_files = findFiles glob: yaml_path
-    def config = get_configuration(yaml_files[0])
+    def config = get_configuration(yaml_path)
 
     def err = null
 
@@ -38,8 +39,9 @@ node('multicore') {
 }
 
 def get_configuration(yaml_file) {
-    def name = yaml_file.name.take(yaml_file.name.lastIndexOf('.'))
-    def config  = readYaml(file: yaml_file.path)
+    def fp = new FilePath(yaml_file)
+    def name = fp.getBaseName()
+    def config  = readYaml(file: yaml_file)
     return ["${name}": [
         "display_name": config.display_name.toString(),
         "builds": config.builds.collect({ it.toString() })
