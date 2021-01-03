@@ -9,7 +9,7 @@ node('multicore') {
 
     try {
         def jobs = config.builds.collectEntries { build ->
-            ["${build}": launch_build("${params.CONTAINER_NAME}/${build}", params.GIT_COMMIT, params.WORKSPACE_PARENT)]
+            ["${build}": launch_build("${build}", params.GIT_COMMIT, params.WORKSPACE_PARENT)]
         }
 
         stage(config.display_name) {
