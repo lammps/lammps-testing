@@ -21,13 +21,9 @@ node('multicore') {
         currentBuild.result = 'FAILURE'
     } finally {
         if (currentBuild.result == 'FAILURE') {
-            if (send_slack) {
-                slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
-            }
+            slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
         } else {
-            if (send_slack) {
-                slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
-            }
+            slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
         }
 
         if(err) {
