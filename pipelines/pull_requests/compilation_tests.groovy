@@ -6,8 +6,10 @@ def set_github_status = true
 def send_slack = true
 
 def lammps_testing_branch = 'master'
+def workspace = '/mnt/lammps/workspace/' + env.JOB_NAME
 
 node('atlas2') {
+    ws(workspace) {
     def utils = new Utils()
 
 
@@ -37,15 +39,11 @@ node('atlas2') {
     def ccache_dir = ".ccache"
 
     try {
-        configurations.each { container, config ->
-            jobs[container] = config.builds.collectEntries { build ->
-                ["${build}": launch_build("${container}/${build}", env.GITHUB_PR_HEAD_SHA, env.WORKSPACE, ccache_dir)]
+        stage('Compilation') {
+            configurations.each { container, config ->
+                jobs["${container}"] = launch_build("${container}/compilation_tests", env.GITHUB_PR_HEAD_SHA, env.WORKSPACE, ccache_dir)
             }
-
-            stage(config.display_name) {
-                echo "Running ${config.display_name}"
-                parallel jobs[container]
-            }
+            parallel jobs
         }
     } catch (caughtErr) {
         err = caughtErr
@@ -70,6 +68,7 @@ node('atlas2') {
         if(err) {
             throw err
         }
+    }
     }
 }
 

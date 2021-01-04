@@ -235,12 +235,28 @@ configurations.each { yaml_file ->
 
     folder("dev/pull_requests/${container}")
 
+    pipelineJob("dev/pull_requests/${container}/compilation_tests") {
+        parameters {
+            stringParam('GIT_COMMIT')
+            stringParam('WORKSPACE_PARENT')
+            stringParam('CONTAINER_NAME', container)
+            stringParam('CCACHE_DIR', '.ccache')
+        }
+
+        definition {
+            cps {
+                script(readFileFromWorkspace('pipelines/master/container_compilation_tests.groovy'))
+                sandbox()
+            }
+        }
+    }
+
     config.builds.each { name ->
         pipelineJob("dev/pull_requests/${container}/${name}") {
             parameters {
                 stringParam('GIT_COMMIT')
                 stringParam('WORKSPACE_PARENT')
-                stringParam('CCACHE_DIR')
+                stringParam('CCACHE_DIR', '.ccache')
                 stringParam('CONTAINER_NAME', container)
                 stringParam('CONTAINER_IMAGE', config.container_image)
             }
