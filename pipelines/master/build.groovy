@@ -12,6 +12,11 @@ node('multicore') {
 
     def launch_container = "singularity exec ${container_args} \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
+    if (!fileExists('.ccache') && fileExists('${env.CCACHE_STORAGE_DIR}/${env.JOB_NAME}/ccache.tar.gz')) {
+        echo 'Restoring ccache...'
+        sh 'tar xz $CCACHE_STORAGE_DIR/$JOB_NAME/ccache.tar.gz'
+    }
+
     timeout(time: 2, unit: 'HOURS') {
         stage('Build') {
             ansiColor('xterm') {
@@ -41,10 +46,12 @@ node('multicore') {
         archiveArtifacts artifacts: 'pyenv/lammps.tgz', fingerprint: true, followSymlinks: false
     }
 
+//    if (!fileExists('${env.CCACHE_STORAGE_DIR}/${env.JOB_NAME}/ccache.tar.gz')) {
     sh '''cd $CCACHE_DIR/..
     mkdir -p $CCACHE_STORAGE_DIR/$JOB_NAME
     tar czf $CCACHE_STORAGE_DIR/$JOB_NAME/ccache.tar.gz  .ccache
     '''
+//    }
 
     if (currentBuild.result == 'FAILURE') {
         slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
