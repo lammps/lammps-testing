@@ -3,6 +3,7 @@ node('multicore') {
     env.LAMMPS_TESTING_DIR = "${params.WORKSPACE_PARENT}/lammps-testing"
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
     env.CCACHE_DIR = "${env.WORKSPACE}/${params.CCACHE_DIR}"
+    env.CCACHE_STORAGE_DIR = "${params.WORKSPACE_PARENT}/caches"
 
     def container = "${params.CONTAINER_IMAGE}"
     def container_args = "--nv -B ${params.WORKSPACE_PARENT}:${params.WORKSPACE_PARENT}"
@@ -39,6 +40,11 @@ node('multicore') {
     if (fileExists('pyenv/lammps.tgz')) {
         archiveArtifacts artifacts: 'pyenv/lammps.tgz', fingerprint: true, followSymlinks: false
     }
+
+    sh '''cd $CCACHE_DIR/..
+    mkdir -p $CCACHE_STORAGE_DIR/$JOB_NAME
+    tar czf $CCACHE_STORAGE_DIR/$JOB_NAME/ccache.tar.gz  .ccache
+    '''
 
     if (currentBuild.result == 'FAILURE') {
         slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
