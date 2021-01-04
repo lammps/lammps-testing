@@ -46,12 +46,12 @@ node('multicore') {
         archiveArtifacts artifacts: 'pyenv/lammps.tgz', fingerprint: true, followSymlinks: false
     }
 
-//    if (!fileExists('${env.CCACHE_STORAGE_DIR}/${env.JOB_NAME}/ccache.tar.gz')) {
-    sh '''cd $CCACHE_DIR/..
-    mkdir -p $CCACHE_STORAGE_DIR/$JOB_NAME
-    tar czf $CCACHE_STORAGE_DIR/$JOB_NAME/ccache.tar.gz  .ccache
-    '''
-//    }
+    if (!fileExists('${env.CCACHE_STORAGE_DIR}/${env.JOB_NAME}/ccache.tar.gz')) {
+        sh '''cd $CCACHE_DIR/..
+        mkdir -p $CCACHE_STORAGE_DIR/$JOB_NAME
+        tar czf $CCACHE_STORAGE_DIR/$JOB_NAME/ccache.tar.gz  .ccache
+        '''
+    }
 
     if (currentBuild.result == 'FAILURE') {
         slackSend color: 'bad', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
