@@ -9,7 +9,7 @@ def lammps_branch = "master"
 def lammps_testing_branch = "master"
 def workspace = '/mnt/lammps/workspace/' + env.JOB_NAME
 
-node('multicore') {
+node('atlas2') {
     ws(workspace) {
     def utils = new Utils()
 
