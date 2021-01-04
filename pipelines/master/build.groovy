@@ -1,4 +1,11 @@
-node('multicore') {
+def selector = 'multicore'
+
+if (currentBuild.projectName.contains("_icc_") || currentBuild.projectName.contains("_kokkos_")) {
+  // run on latest gen hardware
+  selector = 'atlas2'
+}
+
+node(selector) {
     env.LAMMPS_DIR = "${params.WORKSPACE_PARENT}/lammps"
     env.LAMMPS_TESTING_DIR = "${params.WORKSPACE_PARENT}/lammps-testing"
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
