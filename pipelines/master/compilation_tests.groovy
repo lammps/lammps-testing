@@ -7,6 +7,7 @@ def send_slack = true
 
 def lammps_branch = "master"
 def lammps_testing_branch = "master"
+def potentials = '/mnt/lammps/downloads/potentials'
 def workspace = '/mnt/lammps/workspace/' + env.JOB_NAME
 
 node('atlas2') {
@@ -17,6 +18,7 @@ node('atlas2') {
     stage('Checkout') {
         dir('lammps') {
             commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps']]])
+            sh "cp -f ${potentials}/* potentials/"
         }
 
         dir('lammps-testing') {
