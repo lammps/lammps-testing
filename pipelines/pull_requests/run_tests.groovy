@@ -7,7 +7,7 @@ def send_slack = true
 
 def lammps_testing_branch = "master"
 
-node('slow') {
+node('atlas2') {
     def utils = new Utils()
 
 
