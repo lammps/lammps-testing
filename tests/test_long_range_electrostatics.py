@@ -61,7 +61,7 @@ class TwoPointCharges(LAMMPSTestCase, unittest.TestCase):
         """
         two point charges in a periodic box with MSM
         """
-        name = "tpc_non_periodic_box_with_msm"
+        name = "tpc_periodic_box_with_msm"
         kspace_style = "msm"
         accuracy = "1e-8"
         kspace_modify = "pressure/scalar yes"
