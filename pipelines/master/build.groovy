@@ -1,6 +1,6 @@
 def selector = 'multicore'
 
-if (currentBuild.projectName.contains("_icc_") || currentBuild.projectName.contains("_kokkos_")) {
+if (currentBuild.projectName.contains("_icc_") || ccurrentBuild.projectName.contains("_oneapi_") || urrentBuild.projectName.contains("_kokkos_")) {
   // run on latest gen hardware
   selector = 'atlas2'
 }
@@ -39,7 +39,7 @@ node(selector) {
         tools.add(cmake())
     }
 
-    if (build_script.contains("_icc_")) {
+    if (build_script.contains("_icc_") || build_script.contains("_oneapi_")) {
         tools.add(intel())
     } else if (build_script.contains("_clang_")) {
         tools.add(clang())

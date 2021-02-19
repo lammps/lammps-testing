@@ -330,3 +330,23 @@ pipelineJob("dev/master/static_analysis/cmake_coverity") {
         }
     }
 }
+
+pipelineJob("dev/master/ppc64le") {
+    quietPeriod(120)
+
+    properties {
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/master/cmake_ppc64le.groovy'))
+            sandbox()
+        }
+    }
+}
