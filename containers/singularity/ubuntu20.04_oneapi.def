@@ -14,8 +14,6 @@ From: ubuntu:20.04
         build-essential \
         ccache \
         clang \
-        cmake \
-        cmake-curses-gui \
         curl \
         doxygen \
         enchant \
@@ -76,6 +74,15 @@ From: ubuntu:20.04
         openkim-models
 
     ###########################################################################
+    # Latest CMake (needed for OneAPI)
+    ###########################################################################
+
+    wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+    apt-add-repository 'deb https://apt.kitware.com/ubuntu/ focal main'
+    apt update
+    apt install -y cmake
+
+    ###########################################################################
     # OneAPI
     ###########################################################################
 
@@ -88,8 +95,22 @@ From: ubuntu:20.04
     echo "deb https://apt.repos.intel.com/oneapi all main" | tee /etc/apt/sources.list.d/oneAPI.list
     add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
     apt update
-    apt install -y intel-basekit
-    apt install -y intel-hpckit
+    apt install -y \
+        intel-oneapi-compiler-dpcpp-cpp \
+        intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic \
+        intel-oneapi-compiler-fortran \
+        intel-oneapi-dev-utilities \
+        intel-oneapi-openmp \
+        intel-oneapi-ipp-devel \
+        intel-oneapi-mpi-devel \
+        intel-oneapi-tbb-devel \
+        intel-oneapi-ippcp-devel \
+        intel-oneapi-ccl-devel \
+        intel-oneapi-dnnl-devel \
+        intel-oneapi-onevpl-devel \
+        intel-oneapi-dal-devel \
+        intel-oneapi-mkl-devel \
+        intel-oneapi-libdpstd-devel
 
     ###########################################################################
     # KIM-API
