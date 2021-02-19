@@ -1,6 +1,6 @@
 def selector = 'multicore'
 
-if (currentBuild.projectName.contains("_icc_") || ccurrentBuild.projectName.contains("_oneapi_") || urrentBuild.projectName.contains("_kokkos_")) {
+if (currentBuild.projectName.contains("_icc_") || currentBuild.projectName.contains("_oneapi_") || currentBuild.projectName.contains("_kokkos_")) {
   // run on latest gen hardware
   selector = 'atlas2'
 }
