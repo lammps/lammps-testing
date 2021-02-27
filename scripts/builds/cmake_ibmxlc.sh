@@ -58,6 +58,8 @@ ${CMAKE_COMMAND} \
       -C ${LAMMPS_DIR}/cmake/presets/minimal.cmake \
       -D CMAKE_CXX_COMPILER=xlc++ \
       -D CMAKE_C_COMPILER=xlc \
+      -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
+      -D CMAKE_C_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D BUILD_MPI=off \
