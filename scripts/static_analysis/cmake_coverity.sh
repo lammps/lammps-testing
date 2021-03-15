@@ -61,7 +61,7 @@ ${CMAKE_COMMAND} \
       -D BUILD_OMP=on \
       -D BUILD_SHARED_LIBS=on \
       -D LAMMPS_SIZES=SMALLBIG \
-      -D LAMMPS_EXCEPTIONS=on \
+      -D LAMMPS_EXCEPTIONS=off \
       -D PKG_MESSAGE=on \
       -D PKG_MPIIO=on \
       -D PKG_USER-ATC=on \
