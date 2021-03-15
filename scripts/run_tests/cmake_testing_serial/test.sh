@@ -24,6 +24,6 @@ fi
 
 lammps_run_tests --processes ${LAMMPS_TESTING_NPROC} tests/test_commands.py tests/test_examples.py
 
-gcovr -s -x -r ${LAMMPS_DIR}/src --object-directory=${PWD}/build -o build/coverage.xml
+#gcovr -s -x -r ${LAMMPS_DIR}/src --object-directory=${PWD}/build -o build/coverage.xml
 
 deactivate

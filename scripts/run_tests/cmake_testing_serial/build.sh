@@ -59,7 +59,7 @@ ${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-O3 -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
-      -D ENABLE_COVERAGE=on \
+      -D ENABLE_COVERAGE=off \
       -D BUILD_MPI=off \
       -D BUILD_OMP=off \
       -D BUILD_SHARED_LIBS=on \
