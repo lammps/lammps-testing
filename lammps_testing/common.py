@@ -34,13 +34,18 @@ class Settings(object):
         else:
             logger.debug(f"Using LAMMPS_CACHE_DIR:  {os.environ['LAMMPS_CACHE_DIR']}")
 
+        if 'LAMMPS_CONTAINER_DIR' not in os.environ:
+            os.environ['LAMMPS_CONTAINER_DIR'] = os.path.join(os.environ['LAMMPS_CACHE_DIR'], 'containers')
+        else:
+            logger.debug(f"Using LAMMPS_CONTAINER_DIR:  {os.environ['LAMMPS_CONTAINER_DIR']}")
+
     @property
     def cache_dir(self):
         return os.environ['LAMMPS_CACHE_DIR']
 
     @property
     def container_dir(self):
-        return os.path.join(os.environ['LAMMPS_CACHE_DIR'], 'containers')
+        return os.environ['LAMMPS_CONTAINER_DIR']
 
     @property
     def container_definition_dir(self):
