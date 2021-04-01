@@ -56,7 +56,7 @@ cd ${BUILD}
 export HDF5_ROOT=/usr
 # Configure
 ${CMAKE_COMMAND} -G Ninja \
-      -C ${LAMMPS_DIR}/cmake/presets/intel.cmake \
+      -C ${LAMMPS_DIR}/cmake/presets/oneapi.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \

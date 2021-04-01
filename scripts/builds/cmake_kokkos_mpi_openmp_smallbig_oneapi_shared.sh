@@ -56,7 +56,7 @@ cd ${BUILD}
 export HDF5_ROOT=/usr
 # Configure
 ${CMAKE_COMMAND} \
-      -C ${LAMMPS_DIR}/cmake/presets/intel.cmake \
+      -C ${LAMMPS_DIR}/cmake/presets/oneapi.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/kokkos-openmp.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \
