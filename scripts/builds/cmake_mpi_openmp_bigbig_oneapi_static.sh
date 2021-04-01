@@ -54,11 +54,9 @@ cd ${BUILD}
 
 # need to set this to avoid picking up parallel HDF5 on centos/fedora
 export HDF5_ROOT=/usr
-# make OpenMPI use the alternate intel compilers
-export OMPI_CC=icx OMPI_CXX=icpx OMPI_FC=ifx
 # Configure
 ${CMAKE_COMMAND} -G Ninja \
-      -C ${LAMMPS_DIR}/cmake/presets/oneapi.cmake \
+      -C ${LAMMPS_DIR}/cmake/presets/intel.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
