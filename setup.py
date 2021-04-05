@@ -25,6 +25,7 @@ setup(name='lammps_testing',
         'matplotlib',
         'pyyaml',
         'Jinja2',
-        'coverage'
+        'coverage',
+        'devpi'
     ]
 )
