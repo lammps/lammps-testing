@@ -18,8 +18,17 @@ then
     rm -rf pyenv
 fi
 
-virtualenv --python=$PYTHON pyenv
+PYTHON_MAJOR_VERSION=`${PYTHON} --version | awk '{print $2}' | cut -d. -f1`
+
+if [ $PYTHON_MAJOR_VERSION -eq 2 ]
+then
+    virtualenv --python=$PYTHON pyenv
+else
+    ${PYTHON} -m venv pyenv
+fi
+
 source pyenv/bin/activate
+
 pip install --upgrade pip setuptools wheel
 
 # avoid multiple parallel jobs writing in the same temporary directories
