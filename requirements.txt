@@ -1,0 +1,8 @@
+nose
+gcovr
+termcolor
+matplotlib
+pyyaml
+Jinja2
+coverage
+devpi
