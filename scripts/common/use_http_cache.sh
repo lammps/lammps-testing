@@ -1,17 +1,23 @@
 #!/bin/bash
 
-if [ -z "${HTTP_PROXY_DIR}" ]
+if [ -z "${HTTP_CACHE_DIR}" ]
 then
-    echo "Must set HTTP_PROXY_DIR environment variable"
+    echo "Must set HTTP_CACHE_DIR environment variable"
     exit 1
 fi
 
-if [ -z "${HTTP_PROXY_PORT}" ]
+if [ -z "${HTTP_CACHE_PORT}" ]
 then
-    HTTP_PROXY_PORT=8080
+    HTTP_CACHE_PORT=8080
 fi
 
-python3 -m http.server $HTTP_PROXY_PORT --directory $HTTP_PROXY_DIR &
-export HTTP_PROXY_PID=$!
+if [ -z "${LOGGING_DIR}" ]
+then
+    echo "Must set LOGGING_DIR environment variable"
+    exit 1
+fi
 
-export HTTP_PROXY_URL=http://localhost:$HTTP_PROXY_PORT
+python3 -m http.server $HTTP_CACHE_PORT --directory $HTTP_CACHE_DIR 2>&1 > ${LOGGING_DIR}/http.log &
+export HTTP_CACHE_PID=$!
+
+export HTTP_CACHE_URL=http://localhost:$HTTP_CACHE_PORT

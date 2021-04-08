@@ -7,25 +7,7 @@ then
     exit 1
 fi
 
-if [ -z "${PYTHON}" ]
-then
-    echo "Must set PYTHON environment variable"
-    exit 1
-fi
-
-if [ -d "pyenv" ]
-then
-    rm -rf pyenv
-fi
-
-PYTHON_MAJOR_VERSION=`${PYTHON} --version | awk '{print $2}' | cut -d. -f1`
-
-if [ $PYTHON_MAJOR_VERSION -eq 2 ]
-then
-    virtualenv --python=$PYTHON pyenv
-else
-    ${PYTHON} -m venv pyenv
-fi
+source 
 
 source pyenv/bin/activate
 
@@ -48,3 +30,5 @@ python setup.py build --build-base $PYTHON_BUILD_DIR/build \
                 bdist_wheel -d $PYTHON_BUILD_DIR/dist || exit 1
 
 pip install $PYTHON_BUILD_DIR/dist/lammps_testing-*.whl
+
+deactivate

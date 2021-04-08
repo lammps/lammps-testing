@@ -1,7 +1,22 @@
 #!/bin/bash
 
-devpi-init
-devpi-server &
+
+if [ -z "${LOGGING_DIR}" ]
+then
+    echo "Must set LOGGING_DIR environment variable"
+    exit 1
+fi
+
+if [ -z "${DEVPI_SERVER_DIR}" ]
+then
+    echo "Must set DEVPI_SERVER_DIR environment variable"
+    exit 1
+fi
+
+set -x
+
+devpi-init --serverdir ${DEVPI_SERVER_DIR} --role standalone # 2>&1 > $LOGGING_DIR/devpi_init.log
+devpi-server --serverdir ${DEVPI_SERVER_DIR} & # 2>&1 > $LOGGING_DIR/devpi.log &
 
 DEVPI_SERVER_PID=$!
 

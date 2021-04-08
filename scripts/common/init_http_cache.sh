@@ -1,15 +1,15 @@
 #!/bin/bash
 
-if [ -z "${HTTP_PROXY_DIR}" ]
+if [ -z "${HTTP_CACHE_DIR}" ]
 then
-    echo "Must set HTTP_PROXY_DIR environment variable"
+    echo "Must set HTTP_CACHE_DIR environment variable"
     exit 1
 fi
 
-mkdir -p $HTTP_PROXY_DIR
-mkdir -p $HTTP_PROXY_DIR/potentials
-mkdir -p $HTTP_PROXY_DIR/thirdparty
-cd $HTTP_PROXY_DIR
+mkdir -p $HTTP_CACHE_DIR
+mkdir -p $HTTP_CACHE_DIR/potentials
+mkdir -p $HTTP_CACHE_DIR/thirdparty
+cd $HTTP_CACHE_DIR
 
 LAMMPS_DOWNLOADS_URL="https://download.lammps.org"
 LAMMPS_POTENTIALS_URL="${LAMMPS_DOWNLOADS_URL}/potentials"
@@ -27,9 +27,9 @@ POTENTIALS=(
 echo "Dowloading potentials..."
 for p in ${POTENTIALS[@]}
 do
-    if [ ! -f $HTTP_PROXY_DIR/potentials/$p ]
+    if [ ! -f $HTTP_CACHE_DIR/potentials/$p ]
     then
-        wget -O $HTTP_PROXY_DIR/potentials/$p $LAMMPS_POTENTIALS_URL/$p
+        wget -O $HTTP_CACHE_DIR/potentials/$p $LAMMPS_POTENTIALS_URL/$p
     fi
 done
 
@@ -80,7 +80,7 @@ TARBALLS=(
     SCAFACOS_URL
 )
 
-echo "# auto-generated proxy preset file" > $HTTP_PROXY_DIR/proxy.cmake
+echo "# auto-generated proxy preset file" > $HTTP_CACHE_DIR/proxy.cmake
 
 for t in ${TARBALLS[@]}
 do
@@ -92,10 +92,10 @@ do
         filename=${!FILENAME_VAR}
     fi
 
-    if [ ! -f $HTTP_PROXY_DIR/thirdparty/$filename ]
+    if [ ! -f $HTTP_CACHE_DIR/thirdparty/$filename ]
     then
-        wget -O $HTTP_PROXY_DIR/thirdparty/$filename ${!t}
+        wget -O $HTTP_CACHE_DIR/thirdparty/$filename ${!t}
     fi
 
-    echo "set(${t} \"\${LAMMPS_DOWNLOADS_URL}/thirdparty/$filename\" CACHE STRING \"\" FORCE)" >> $HTTP_PROXY_DIR/proxy.cmake
+    echo "set(${t} \"\${LAMMPS_DOWNLOADS_URL}/thirdparty/$filename\" CACHE STRING \"\" FORCE)" >> $HTTP_CACHE_DIR/proxy.cmake
 done
