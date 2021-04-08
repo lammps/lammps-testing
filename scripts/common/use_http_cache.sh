@@ -22,3 +22,9 @@ export HTTP_CACHE_PID=$!
 
 export HTTP_CACHE_URL=http://localhost:$HTTP_CACHE_PORT
 echo "Running local HTTP cache server on $HTTP_CACHE_URL (pid: $HTTP_CACHE_PID)"
+
+function deactivate_http_cache {
+    echo "Shutting down HTTP cache server..."
+    kill $HTTP_CACHE_PID
+    unset HTTP_CACHE_PID
+}

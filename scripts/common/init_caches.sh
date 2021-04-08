@@ -6,15 +6,20 @@ then
     exit 1
 fi
 
+if [ -z "${LAMMPS_CACHING_DIR}" ]
+then
+    export LAMMPS_CACHING_DIR=$PWD
+fi
+
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 SCRIPT_BASE_DIR=$LAMMPS_TESTING_DIR/scripts
 COMMON_SCRIPTS_DIR=${SCRIPT_BASE_DIR}/common
 
-export GITHUB_PROXY_DIR=$PWD/github
-export LOGGING_DIR=$PWD/logs
-export PIP_CACHE_DIR=$PWD/pip
-export HTTP_CACHE_DIR=$PWD/http
+export GITHUB_PROXY_DIR=$LAMMPS_CACHING_DIR/github
+export LOGGING_DIR=$LAMMPS_CACHING_DIR/logs
+export PIP_CACHE_DIR=$LAMMPS_CACHING_DIR/pip
+export HTTP_CACHE_DIR=$LAMMPS_CACHING_DIR/http
 
 mkdir -p $GITHUB_PROXY_DIR
 mkdir -p $LOGGING_DIR
