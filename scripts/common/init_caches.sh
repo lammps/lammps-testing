@@ -11,6 +11,11 @@ then
     export LAMMPS_CACHING_DIR=$PWD
 fi
 
+echo "##############################################################################"
+echo "Initializing LAMMPS offline compilation environment"
+echo "##############################################################################"
+
+echo "Using $LAMMPS_CACHING_DIR as cache directory..."
 
 SCRIPT_DIR="$(dirname "$(realpath "$0")")"
 SCRIPT_BASE_DIR=$LAMMPS_TESTING_DIR/scripts
@@ -29,3 +34,9 @@ mkdir -p $HTTP_CACHE_DIR
 ${COMMON_SCRIPTS_DIR}/init_pip_cache.sh
 ${COMMON_SCRIPTS_DIR}/init_git_cache.sh
 ${COMMON_SCRIPTS_DIR}/init_http_cache.sh  
+echo "##############################################################################"
+echo
+echo "To activate:"
+echo "source ${COMMON_SCRIPTS_DIR}/use_caches.sh"
+echo
+echo "##############################################################################"

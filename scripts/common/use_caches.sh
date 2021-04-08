@@ -11,6 +11,8 @@ then
     export LAMMPS_CACHING_DIR=$PWD
 fi
 
+echo "Using $LAMMPS_CACHING_DIR as cache directory..."
+
 if test -n "$BASH" ; then script=$BASH_SOURCE
 else script=$0
 fi
@@ -48,9 +50,29 @@ then
     return
 fi
 
+echo "##############################################################################"
+echo "Setting up LAMMPS offline compilation environment"
+echo "##############################################################################"
+
 source ${COMMON_SCRIPTS_DIR}/use_git_cache.sh
 source ${COMMON_SCRIPTS_DIR}/use_pip_cache.sh
 source ${COMMON_SCRIPTS_DIR}/use_http_cache.sh  
+
+echo "##############################################################################"
+echo
+echo "Prepend the following CMake options to your builds:"
+echo
+echo "-D LAMMPS_DOWNLOADS_URL=\${HTTP_CACHE_URL} -C \${LAMMPS_HTTP_CACHE_CONFIG}"
+echo
+echo "or"
+echo
+echo "-D LAMMPS_DOWNLOADS_URL=${HTTP_CACHE_URL} -C ${LAMMPS_HTTP_CACHE_CONFIG}"
+echo
+echo "pip installations and git clones (from git://) are automatically redirected"
+echo
+echo Use 'deactivate_caches' to revert changes
+echo
+echo "##############################################################################"
 
 function deactivate_caches {
     deactivate_http_cache
