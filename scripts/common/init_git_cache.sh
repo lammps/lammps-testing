@@ -11,6 +11,7 @@ cd $GITHUB_PROXY_DIR
 
 PROJECTS=(
     akohlmey/sphinx-fortran
+    mathjax/MathJax
 )
 
 for project in ${PROJECTS[@]}

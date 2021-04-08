@@ -1,0 +1,24 @@
+#!/bin/bash
+
+
+if [ -z "${LOGGING_DIR}" ]
+then
+    echo "Must set LOGGING_DIR environment variable"
+    exit 1
+fi
+
+if [ -z "${PIP_CACHE_DIR}" ]
+then
+    echo "Must set PIP_CACHE_DIR environment variable"
+    exit 1
+fi
+
+set -x
+
+mkdir -p $PIP_CACHE_DIR
+
+# download packages that might be needed
+cd $PIP_CACHE_DIR
+pip download pip setuptools wheel
+pip download -r $LAMMPS_DIR/doc/utils/requirements.txt
+pip download -r $LAMMPS_TESTING_DIR/requirements.txt
