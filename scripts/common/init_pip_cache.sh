@@ -19,6 +19,6 @@ mkdir -p $PIP_CACHE_DIR
 
 # download packages that might be needed
 cd $PIP_CACHE_DIR
-pip download pip setuptools wheel
-pip download -r $LAMMPS_DIR/doc/utils/requirements.txt
-pip download -r $LAMMPS_TESTING_DIR/requirements.txt
+pip3 download pip setuptools wheel
+pip3 download -r $LAMMPS_DIR/doc/utils/requirements.txt
+pip3 download -r $LAMMPS_TESTING_DIR/requirements.txt
