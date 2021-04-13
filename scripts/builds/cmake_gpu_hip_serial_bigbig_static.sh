@@ -33,6 +33,13 @@ then
     export CCACHE_DIR="$PWD/.ccache"
 fi
 
+if [ -z "${HTTP_CACHE_URL}" || -z "${LAMMPS_HTTP_CACHE_CONFIG}" ]
+then
+    BUILD_HTTP_CACHE_CONFIGURATION=""
+else
+    BUILD_HTTP_CACHE_CONFIGURATION="-D LAMMPS_DOWNLOADS_URL=${HTTP_CACHE_URL} -C ${LAMMPS_HTTP_CACHE_CONFIG}"
+fi
+
 export PYTHON=$(which python3)
 
 # Set up environment
@@ -52,13 +59,15 @@ cd ${BUILD}
 # needed for linker during build to find libcuda.so.1
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LIBRARY_PATH}
 
-export HIP_PLATFORM=hcc
+export HIP_PLATFORM=amd
 export HCC_AMDGPU_TARGET=gfx906
 
 # Configure
 #      -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
 #      -D CMAKE_CUDA_COMPILER_LAUNCHER=ccache \
-${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
+${CMAKE_COMMAND} \
+      ${BUILD_HTTP_CACHE_CONFIGURATION} \
+      -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-macro-redefined" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D CMAKE_LIBRARY_PATH=$LIBRARY_PATH \
