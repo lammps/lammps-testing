@@ -33,7 +33,7 @@ then
     export CCACHE_DIR="$PWD/.ccache"
 fi
 
-if [ -z "${HTTP_CACHE_URL}" || -z "${LAMMPS_HTTP_CACHE_CONFIG}" ]
+if [ -z "${HTTP_CACHE_URL}" ] || [ -z "${LAMMPS_HTTP_CACHE_CONFIG}" ]
 then
     BUILD_HTTP_CACHE_CONFIGURATION=""
 else
