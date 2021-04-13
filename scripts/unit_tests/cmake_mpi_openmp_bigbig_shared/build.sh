@@ -48,6 +48,7 @@ export PYTHON=$(which python3)
 # Set up environment
 ccache -M 10G
 
+$SCRIPT_BASE_DIR/common/init_venv.sh
 $SCRIPT_BASE_DIR/common/init_testing_venv.sh
 
 source pyenv/bin/activate
