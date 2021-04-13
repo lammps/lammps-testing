@@ -7,8 +7,6 @@ then
     exit 1
 fi
 
-source 
-
 source pyenv/bin/activate
 
 pip install --upgrade pip setuptools wheel
