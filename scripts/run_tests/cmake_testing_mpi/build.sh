@@ -36,6 +36,13 @@ then
     export CCACHE_DIR="$PWD/.ccache"
 fi
 
+if [ -z "${HTTP_CACHE_URL}" || -z "${LAMMPS_HTTP_CACHE_CONFIG}" ]
+then
+    BUILD_HTTP_CACHE_CONFIGURATION=""
+else
+    BUILD_HTTP_CACHE_CONFIGURATION="-D LAMMPS_DOWNLOADS_URL=${HTTP_CACHE_URL} -C ${LAMMPS_HTTP_CACHE_CONFIG}"
+fi
+
 export PYTHON=$(which python3)
 
 # Set up environment
@@ -54,7 +61,9 @@ mkdir -p ${BUILD}
 cd ${BUILD}
 
 # Configure
-${CMAKE_COMMAND} -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
+${CMAKE_COMMAND} \
+      ${BUILD_HTTP_CACHE_CONFIGURATION} \
+      -C ${LAMMPS_DIR}/cmake/presets/all_off.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-O3 -Wall -Wextra -Wno-unused-result -Wno-unused-parameter -Wno-maybe-uninitialized" \
