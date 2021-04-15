@@ -36,6 +36,13 @@ then
     export CCACHE_DIR="$PWD/.ccache"
 fi
 
+if [ -z "${HTTP_CACHE_URL}" ] || [ -z "${LAMMPS_HTTP_CACHE_CONFIG}" ]
+then
+    BUILD_HTTP_CACHE_CONFIGURATION=""
+else
+    BUILD_HTTP_CACHE_CONFIGURATION="-D LAMMPS_DOWNLOADS_URL=${HTTP_CACHE_URL} -C ${LAMMPS_HTTP_CACHE_CONFIG}"
+fi
+
 export PYTHON=$(which python3)
 
 # Set up environment
@@ -56,6 +63,7 @@ cd ${BUILD}
 export HDF5_ROOT=/usr
 # Configure
 ${CMAKE_COMMAND} -G Ninja \
+      ${BUILD_HTTP_CACHE_CONFIGURATION} \
       -C ${LAMMPS_DIR}/cmake/presets/intel.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \

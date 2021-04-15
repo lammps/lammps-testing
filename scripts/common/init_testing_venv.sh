@@ -7,19 +7,8 @@ then
     exit 1
 fi
 
-if [ -z "${PYTHON}" ]
-then
-    echo "Must set PYTHON environment variable"
-    exit 1
-fi
-
-if [ -d "pyenv" ]
-then
-    rm -rf pyenv
-fi
-
-virtualenv --python=$PYTHON pyenv
 source pyenv/bin/activate
+
 pip install --upgrade pip setuptools wheel
 
 # avoid multiple parallel jobs writing in the same temporary directories
@@ -39,3 +28,5 @@ python setup.py build --build-base $PYTHON_BUILD_DIR/build \
                 bdist_wheel -d $PYTHON_BUILD_DIR/dist || exit 1
 
 pip install $PYTHON_BUILD_DIR/dist/lammps_testing-*.whl
+
+deactivate
