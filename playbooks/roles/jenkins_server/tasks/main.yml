@@ -32,8 +32,8 @@
        path: /home/jenkins/docker
        nocache: yes
        pull: yes
-     state: build
-     force: True
+     source: build
+     force_source: True
 
  - name: startup jenkins docker container
    docker_container:
