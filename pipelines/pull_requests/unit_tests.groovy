@@ -38,7 +38,7 @@ node('atlas2') {
 
     try {
         configurations.each { container, config ->
-            if(config.unit_tests.size() > 0) {
+            if(config.pr_unit_tests.size() > 0) {
                 jobs[container] = config.unit_tests.collectEntries { build ->
                     ["${build}": launch_build("${container}/unit_tests/${build}", env.GITHUB_PR_HEAD_SHA, env.GITHUB_PR_NUMBER, env.WORKSPACE, ccache_dir)]
                 }
@@ -84,6 +84,7 @@ def get_configuration(yaml_file) {
     def run_tests  = []
     def regression_tests = []
     def unit_tests = []
+    def pr_unit_tests = []
 
     if(config.containsKey('display_name')) {
         display_name = config.display_name.toString()
@@ -105,12 +106,17 @@ def get_configuration(yaml_file) {
         unit_tests = config.unit_tests.collect({ it.toString() })
     }
 
+    if(config.containsKey('pr_unit_tests')) {
+        pr_unit_tests = config.pr_unit_tests.collect({ it.toString() })
+    }
+
     return ["${name}": [
         "display_name": display_name,
         "builds": builds,
         "run_tests": run_tests,
         "regression_tests": regression_tests,
         "unit_tests": unit_tests,
+        "pr_unit_tests": pr_unit_tests,
     ]]
 }
 

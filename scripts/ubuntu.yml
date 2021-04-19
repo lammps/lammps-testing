@@ -18,3 +18,8 @@ unit_tests:
  - cmake_mpi_openmp_smallsmall_shared
  - cmake_mpi_openmp_smallbig_shared
  - cmake_mpi_openmp_bigbig_shared
+
+pr_unit_tests:
+ - cmake_mpi_openmp_smallsmall_shared
+ - cmake_mpi_openmp_smallbig_shared
+ - cmake_mpi_openmp_bigbig_shared
