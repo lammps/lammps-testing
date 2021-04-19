@@ -17,6 +17,7 @@ export LC_ALL=C.UTF-8
 cd ${BUILD}
 
 export CTEST_PARALLEL_LEVEL=$LAMMPS_COMPILE_NPROC
+echo "Running tests in parallel with CTEST_PARALLEL_LEVEL=$CTEST_PARALLEL_LEVEL"
 ctest -V --no-compress-output -T Test
 
 make gen_coverage_xml
