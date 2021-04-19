@@ -40,7 +40,9 @@ node('atlas2') {
     try {
         stage('Compilation') {
             configurations.each { container, config ->
-                jobs["${container}"] = launch_build("${container}/compilation_tests", commit.GIT_COMMIT, env.WORKSPACE)
+                if(config.builds.size() > 0) {
+                    jobs["${container}"] = launch_build("${container}/compilation_tests", commit.GIT_COMMIT, env.WORKSPACE)
+                }
             }
             parallel jobs
         }
@@ -74,9 +76,39 @@ node('atlas2') {
 def get_configuration(yaml_file) {
     def name = yaml_file.name.take(yaml_file.name.lastIndexOf('.'))
     def config  = readYaml(file: yaml_file.path)
+
+    def display_name = name
+    def builds = []
+    def run_tests  = []
+    def regression_tests = []
+    def unit_tests = []
+
+    if(config.containsKey('display_name')) {
+        display_name = config.display_name.toString()
+    }
+
+    if(config.containsKey('builds')) {
+        builds = config.builds.collect({ it.toString() })
+    }
+
+    if(config.containsKey('run_tests')) {
+        run_tests = config.run_tests.collect({ it.toString() })
+    }
+
+    if(config.containsKey('regression_tests')) {
+        regression_tests = config.regression_tests.collect({ it.toString() })
+    }
+
+    if(config.containsKey('unit_tests')) {
+        unit_tests = config.unit_tests.collect({ it.toString() })
+    }
+
     return ["${name}": [
-        "display_name": config.display_name.toString(),
-        "builds": config.builds.collect({ it.toString() })
+        "display_name": display_name,
+        "builds": builds,
+        "run_tests": run_tests,
+        "regression_tests": regression_tests,
+        "unit_tests": unit_tests,
     ]]
 }
 
