@@ -57,13 +57,20 @@ mkdir -p ${BUILD}
 cd ${BUILD}
 
 # need to set this to avoid picking up parallel HDF5 on centos/fedora
+
+# 2021/04/27
+# cannot test compiling with KOKKOS on Ubuntu18.04LTS anymore since
+# Kokkos v3.4.0 now requires CMake 3.16. Can re-instate once we decide
+# to move this test to a 20.04 container.
+#      -C ${LAMMPS_DIR}/cmake/presets/kokkos-openmp.cmake \
+#
+
 export HDF5_ROOT=/usr
 # Configure
 ${CMAKE_COMMAND} \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
       -C ${LAMMPS_DIR}/cmake/presets/clang.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
-      -C ${LAMMPS_DIR}/cmake/presets/kokkos-openmp.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result" \
