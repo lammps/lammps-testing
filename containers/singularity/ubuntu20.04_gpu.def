@@ -66,6 +66,7 @@ From: ubuntu:20.04
         libvtk6-dev \
         libyaml-dev \
         libzstd-dev \
+        llvm \
         make \
         mpi-default-bin \
         mpi-default-dev \
