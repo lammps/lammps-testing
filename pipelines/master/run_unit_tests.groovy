@@ -63,9 +63,9 @@ node('atlas2') {
 
             sh 'curl -fLso codecov https://codecov.io/bash'
 
-            def CODECOV_VERSION = sh 'grep -o \'VERSION=\"[0-9\\.]*\"\' codecov | cut -d\'"\' -f2', returnStdout: true
+            def CODECOV_VERSION = sh script: 'grep -o \'VERSION="[0-9\\.]*"\' codecov | cut -d\'"\' -f2', returnStdout: true
 
-            def valid_script = sh "for i in 1 256 512; do shasum -a \$i -c <(curl -s \"https://raw.githubusercontent.com/codecov/codecov-bash/${CODECOV_VERSION}/SHA\${i}SUM\" | grep -w \"codecov\"); done", returnStatus: true
+            def valid_script = sh script: "for i in 1 256 512; do shasum -a \$i -c <(curl -s \"https://raw.githubusercontent.com/codecov/codecov-bash/${CODECOV_VERSION}/SHA\${i}SUM\" | grep -w \"codecov\"); done", returnStatus: true
 
             if (valid_script == 0) {
                 withCredentials([string(credentialsId: 'codecov-token', variable: 'CODECOV_TOKEN')]) {
