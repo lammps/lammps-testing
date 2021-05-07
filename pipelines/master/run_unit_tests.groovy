@@ -57,25 +57,35 @@ node('atlas2') {
 
     xunit(thresholds: [failed(failureNewThreshold: '0', failureThreshold: '0', unstableNewThreshold: '0', unstableThreshold: '0')], tools: [CTest(deleteOutputFiles: true, failIfNotNew: true, pattern: 'build/Testing/**/Test.xml', skipNoTestFiles: false, stopProcessingIfError: true)])
 
-    if (fileExists('build/coverage.xml')) {
-        cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/*coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
+    stage('Upload Results') {
+        if (fileExists('build/coverage.xml')) {
+            cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/*coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
 
-         withCredentials([string(credentialsId: 'codecov-token', variable: 'CODECOV_TOKEN')]) {
-             if (build_script.contains("gpu")) {
-                 sh """#!/bin/bash
-                 bash <(curl -s https://codecov.io/bash) -F gpu -f build/coverage.xml
-                 """
-             } else {
-                 sh """#!/bin/bash
-                 bash <(curl -s https://codecov.io/bash) -f build/coverage.xml
-                 """
-             }
-             if (fileExists('build/python_coverage.xml')) {
-                  sh """#!/bin/bash
-                  bash <(curl -s https://codecov.io/bash) -F python -f build/python_coverage.xml
-                  """
-             }
-         }
+            sh 'curl -fLso codecov https://codecov.io/bash'
+
+            def valid_script = sh 'for i in 1 256 512; do shasum -a $i -c <(curl -s "https://raw.githubusercontent.com/codecov/codecov-bash/${VERSION}/SHA${i}SUM" | grep -w "codecov"); done', returnStatus:true
+
+            if (valid_script == 0) {
+                withCredentials([string(credentialsId: 'codecov-token', variable: 'CODECOV_TOKEN')]) {
+                    if (build_script.contains("gpu")) {
+                        sh """#!/bin/bash
+                        bash codecov -F gpu -f build/coverage.xml
+                        """
+                    } else {
+                        sh """#!/bin/bash
+                        bash codecov -f build/coverage.xml
+                        """
+                    }
+                    if (fileExists('build/python_coverage.xml')) {
+                         sh """#!/bin/bash
+                         bash codecov -F python -f build/python_coverage.xml
+                         """
+                    }
+                }
+            } else {
+                currentBuild.result = 'FAILURE'
+            }
+        }
     }
 
     if (currentBuild.result == 'FAILURE') {
