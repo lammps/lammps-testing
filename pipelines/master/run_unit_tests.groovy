@@ -61,13 +61,9 @@ node('atlas2') {
         if (fileExists('build/coverage.xml')) {
             cobertura autoUpdateHealth: false, autoUpdateStability: false, coberturaReportFile: 'build/*coverage.xml', conditionalCoverageTargets: '70, 0, 0', failUnhealthy: false, failUnstable: false, lineCoverageTargets: '80, 0, 0', maxNumberOfBuilds: 0, methodCoverageTargets: '80, 0, 0', onlyStable: false, sourceEncoding: 'ASCII', zoomCoverageChart: false
 
-            sh label: 'Download latest CodeCov bash script', script: 'curl -fLso codecov https://codecov.io/bash'
+            def valid_codecov = sh label: 'Download and verify CodeCov', script: '\$LAMMPS_TESTING_DIR/scripts/common/download_codecov.sh', returnStatus: true
 
-            def CODECOV_VERSION = sh label: 'Determine CodeCov version', script: 'grep -o \'VERSION="[0-9\\.]*"\' codecov | cut -d\'"\' -f2', returnStdout: true
-
-            def valid_script = sh label: 'Validate CodeCov checksums', script: "for i in 1 256 512; do shasum -a \$i -c <(curl -s \"https://raw.githubusercontent.com/codecov/codecov-bash/${CODECOV_VERSION}/SHA\${i}SUM\" | grep -w \"codecov\"); done", returnStatus: true
-
-            if (valid_script == 0) {
+            if (valid_codecov == 0) {
                 withCredentials([string(credentialsId: 'codecov-token', variable: 'CODECOV_TOKEN')]) {
                     if (build_script.contains("gpu")) {
                         sh """#!/bin/bash
