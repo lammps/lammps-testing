@@ -1,0 +1,185 @@
+LAMMPS (8 Apr 2021)
+# Big colloid particles and small LJ particles
+
+units		lj
+atom_style	sphere
+dimension	2
+
+lattice		sq 0.01
+Lattice spacing in x,y,z = 10.000000 10.000000 10.000000
+region		box block 0 30 0 30 -0.5 0.5
+create_box	2 box
+Created orthogonal box = (0.0000000 0.0000000 -5.0000000) to (300.00000 300.00000 5.0000000)
+  4 by 2 by 1 MPI processor grid
+create_atoms	1 box
+Created 900 atoms
+  create_atoms CPU = 0.001 seconds
+
+set		group all type/fraction 2 0.96 23984
+Setting atom values ...
+  861 settings made for type/fraction
+
+set		type 1 mass 9
+Setting atom values ...
+  39 settings made for mass
+set		type 2 mass 1
+Setting atom values ...
+  861 settings made for mass
+
+velocity	all create 1.44 87287 loop geom
+
+# multi neighbor and comm for efficiency
+
+neighbor	1 multi
+neigh_modify	delay 0
+comm_modify     mode multi
+
+# colloid potential
+
+pair_style	colloid 12.5
+pair_coeff	1 1  1.0 1.0 5.0 5.0 12.5
+pair_coeff	1 2  5.0 1.0 5.0 0.0 7.0
+pair_coeff	2 2 10.0 1.0 0.0 0.0 2.5
+
+fix		1 all npt temp 2.0 2.0 1.0 iso 0.0 1.0 10.0 drag 1.0 	        mtk no pchain 0 tchain 1
+fix		2 all enforce2d
+
+#dump		1 all atom 1000 dump.colloid
+
+#dump		2 all image 1000 image.*.jpg type type #		zoom 1.5 center d 0.5 0.5 0.5
+#dump_modify	2 pad 5 adiam 1 5.0 adiam 2 1.5
+
+#dump		3 all movie 1000 movie.mpg type type #		zoom 1.5 center d 0.5 0.5 0.5
+#dump_modify	3 pad 5 adiam 1 5.0 adiam 2 1.5
+
+thermo_style	custom step temp epair etotal press vol
+thermo		1000
+
+timestep	0.005
+
+run		50000
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- neighbor multi command: doi:10.1016/j.cpc.2008.03.005, doi:10.1007/s40571-020-00361-2
+
+@Article{Intveld08,
+ author =  {P.{\,}J.~in{\,}'t~Veld and S.{\,}J.~Plimpton and G.{\,}S.~Grest},
+ title =   {Accurate and Efficient Methods for Modeling Colloidal
+            Mixtures in an Explicit Solvent using Molecular Dynamics},
+ journal = {Comp.~Phys.~Comm.},
+ year =    2008,
+ volume =  179,
+ pages =   {320--329}
+}
+
+@article{Stratford2018,
+ author = {Stratford, Kevin and Shire, Tom and Hanley, Kevin},
+ title = {Implementation of multi-level contact detection in LAMMPS},
+ year = {2018}
+}
+
+@article{Shire2020,
+ author = {Shire, Tom and Hanley, Kevin J. and Stratford, Kevin},
+ title = {DEM simulations of polydisperse media: efficient contact
+          detection applied to investigate the quasi-static limit},
+ journal = {Computational Particle Mechanics},
+ year = {2020}
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 13.5
+  ghost atom cutoff = 13.5
+  binsize = 1.75, bins = 172 172 6
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair colloid, perpetual
+      attributes: half, newton on
+      pair build: half/multi/newton
+      stencil: half/multi/2d
+      bin: multi
+Per MPI rank memory allocation (min/avg/max) = 4.323 | 4.323 | 4.323 Mbytes
+Step Temp E_pair TotEng Press Volume 
+       0         1.44 -2.2136534e-06    1.4383978  0.014383923        90000 
+    1000    1.9572809 -0.00036743274    1.9547388  0.017982269    98935.161 
+    2000     2.068567 -0.0010518227    2.0652168  0.019466739    96307.439 
+    3000    2.1787472 0.0045846363     2.180911  0.029249545     68560.31 
+    4000    2.1979309 0.0017234058    2.1972121  0.048831814    42699.657 
+    5000    2.1541368 0.0068842503    2.1586276   0.07471981    28571.492 
+    6000    2.1113172 0.0024197498    2.1113911  0.091799827     21611.61 
+    7000    2.0789334  0.006025545    2.0826491   0.11638119    17868.763 
+    8000     2.061429 0.0062107613    2.0653493   0.13135048    15515.919 
+    9000    2.0389678  0.022297304    2.0589995   0.15874267    13880.044 
+   10000    2.0404025   0.01860305    2.0567384    0.1707253    12579.282 
+   11000    2.0404466  0.017729941    2.0559094   0.19335133    11469.956 
+   12000     2.050357  0.011335504    2.0594144   0.20307828    10521.823 
+   13000    2.0216423  0.035135918     2.054532    0.2312686    9764.3884 
+   14000    2.0091286  0.043234223    2.0501304    0.2793989    9132.1194 
+   15000    2.0350245   0.02105564     2.053819   0.26868498    8571.8784 
+   16000     2.019747  0.035925806    2.0534287   0.33612212    8098.9941 
+   17000    2.0084844  0.043072006    2.0493247   0.34774494    7720.3987 
+   18000    2.0216221  0.027307111    2.0466829   0.34939976    7410.3438 
+   19000    2.0183538  0.036503989    2.0526152   0.37711777    7112.6131 
+   20000     2.009854  0.046176346    2.0537971   0.42621016    6808.3782 
+   21000    2.0358587  0.019057777    2.0526544   0.35555326    6546.7145 
+   22000    2.0228337   0.03289851    2.0534846   0.40711829    6328.9782 
+   23000    2.0193786  0.037998468    2.0551333   0.44414627    6131.1531 
+   24000    2.0137385  0.043347609    2.0548487     0.463522    5935.4577 
+   25000    2.0149408  0.045771068    2.0584731   0.47990965    5751.0864 
+   26000    2.0495232 0.0085366054    2.0557825    0.4569989     5587.004 
+   27000    2.0275072  0.036735187    2.0619896   0.51687079    5461.7865 
+   28000    2.0347942  0.024265683     2.056799   0.46561022    5341.1707 
+   29000     2.021632  0.044612111    2.0639978   0.51118357    5212.3554 
+   30000     2.013125  0.053941211    2.0648295   0.56822484    5074.3951 
+   31000    1.9832385  0.083053385    2.0640883   0.69130225    4968.8988 
+   32000    2.0387062  0.034892414    2.0713334   0.60079696    4860.4243 
+   33000    1.9979923  0.073698119    2.0694704   0.70317969    4765.2364 
+   34000    2.0101401  0.057141274    2.0650479   0.73507571     4706.605 
+   35000    1.9982245  0.076597912    2.0726022   0.65201751    4598.8969 
+   36000    2.0227462  0.050812171    2.0713109    0.7277094     4521.303 
+   37000    2.0010262  0.078036959    2.0768398   0.80845004    4443.6388 
+   38000    2.0152808  0.061399534    2.0744411   0.71384881    4373.7447 
+   39000    2.0399398  0.036552232    2.0742254    0.6593743    4309.6261 
+   40000    2.0076569  0.076284872    2.0817111   0.85407989    4232.4378 
+   41000    2.0138586  0.070133466    2.0817545   0.79970151    4174.9491 
+   42000    1.9756498   0.10366864    2.0771233   0.96479434    4110.2527 
+   43000    2.0156251  0.062359654    2.0757452   0.77811807    4075.7992 
+   44000    2.0001159  0.087887769    2.0857813   0.90767277    4001.6106 
+   45000    1.9696723   0.12037221     2.087856    1.1370703    3956.1211 
+   46000    2.0071655   0.07824881    2.0831841   0.90169307    3922.0805 
+   47000      2.00766  0.089340421    2.0947697   0.93171943    3888.8118 
+   48000    2.0023073  0.087667208    2.0877497   0.94758235    3845.6488 
+   49000    1.9950067   0.10435166    2.0971417   0.98887772    3805.8579 
+   50000    1.9808052   0.10876092    2.0873652   0.99896322    3783.7613 
+Loop time of 5.02877 on 8 procs for 50000 steps with 900 atoms
+
+Performance: 4295287.439 tau/day, 9942.795 timesteps/s
+97.9% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.55575    | 0.66772    | 0.75747    |   6.7 | 13.28
+Neigh   | 0.19454    | 0.22782    | 0.24189    |   3.1 |  4.53
+Comm    | 1.8603     | 1.9682     | 2.0575     |   4.2 | 39.14
+Output  | 0.0022338  | 0.0030077  | 0.0082469  |   3.6 |  0.06
+Modify  | 1.6632     | 1.7459     | 1.8871     |   5.3 | 34.72
+Other   |            | 0.4161     |            |       |  8.27
+
+Nlocal:        112.500 ave         138 max          93 min
+Histogram: 1 1 0 2 1 1 1 0 0 1
+Nghost:        239.875 ave         271 max         209 min
+Histogram: 1 0 1 2 0 1 0 1 1 1
+Neighs:        739.000 ave         881 max         579 min
+Histogram: 1 0 0 3 1 0 0 1 1 1
+
+Total # of neighbors = 5912
+Ave neighs/atom = 6.5688889
+Neighbor list builds = 3127
+Dangerous builds = 0
+Total wall time: 0:00:05
