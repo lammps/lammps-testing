@@ -19,9 +19,9 @@ velocity        all create 1.44 87287 loop geom
 
 # multi neighbor and comm for efficiency
 
-neighbor        1 multi
+neighbor        1 multi/old
 neigh_modify    delay 0
-comm_modify     mode multi
+comm_modify     mode multi/old cutoff/multi/old 1 20.0 cutoff/multi/old 2 9.0
 
 # colloid potential
 
@@ -49,5 +49,7 @@ thermo          1000
 
 timestep        0.005
 run 0 post no
-run             5000
 info            all
+run             5000
+comm_modify cutoff/multi/old * 0.0
+info            communication
