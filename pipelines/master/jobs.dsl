@@ -2,6 +2,7 @@
 import org.yaml.snakeyaml.Yaml
 
 folder('dev/master')
+folder('dev/unstable')
 
 pipelineJob("dev/master/checkstyle") {
     quietPeriod(120)
@@ -97,6 +98,25 @@ pipelineJob("dev/master/build_docs") {
     definition {
         cps {
             script(readFileFromWorkspace('pipelines/master/build_docs.groovy'))
+            sandbox()
+        }
+    }
+}
+
+pipelineJob("dev/unstable/build_docs") {
+    quietPeriod(120)
+
+    properties {
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/unstable/build_docs.groovy'))
             sandbox()
         }
     }
