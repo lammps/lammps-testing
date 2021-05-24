@@ -1,9 +1,11 @@
 ---
  - hosts: glados2
+   vars:
+     ansible_python_interpreter: /usr/bin/python3
    become: true
-   gather_facts: false
+   gather_facts: true
    pre_tasks:
-    - name: Install python2 for Ansible
+    - name: Install python3 for Ansible
       raw: bash -c "test -e /usr/bin/python || (apt -qqy update && apt install -qqy python-minimal)"
       register: output
       changed_when: output.stdout != ""
@@ -12,6 +14,7 @@
    roles:
     - role: ci_firewall
     - role: docker_host
+      tags: ["docker"]
     - role: jenkins_server
       tags:
        - jenkins

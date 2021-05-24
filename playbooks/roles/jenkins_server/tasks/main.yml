@@ -12,7 +12,7 @@
      groups: docker
  - name: make sure pip is installed
    apt:
-     name: python-pip
+     name: python3-pip
      state: latest
 
  - name: install docker-py package
