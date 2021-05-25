@@ -13,6 +13,8 @@ def lammps_branch = "master"
 node('slow') {
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
+    env.LAMMPS_WEBSITE_BUILD = "1"
+    env.LAMMPS_WEBSITE_BUILD_VERSION = "latest"
 
     stage('Checkout') {
         dir('lammps') {
