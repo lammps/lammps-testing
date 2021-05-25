@@ -47,6 +47,18 @@ node('slow'){
                 echo 'Skipping'
             }
         }
+
+        stage('Homepage URLs') {
+            if(fileExists('tools/coding_standard/homepage.py')) {
+                tee('homepage.log') {
+                    sh(label: "Check for old LAMMPS homepage URLs",
+                       script: "${launch_container} python3 tools/coding_standard/homepage.py . || true")
+                }
+                recordIssues qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], failOnError: true, tools: [groovyScript(parserId: 'homepage', pattern: 'homepage.log')]
+            } else {
+                echo 'Skipping'
+            }
+        }
     } catch(Exception e) {
         currentBuild.result = 'FAILURE'
     } finally {
