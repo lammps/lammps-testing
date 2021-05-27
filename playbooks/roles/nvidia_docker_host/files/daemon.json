@@ -1,9 +1,0 @@
-{
-    "insecure-registries" : ["glados.cst.temple.edu:5000"],
-    "runtimes": {
-        "nvidia": {
-            "path": "nvidia-container-runtime",
-            "runtimeArgs": []
-        }
-    }
-}
