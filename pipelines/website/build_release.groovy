@@ -16,7 +16,7 @@ node('slow') {
 
     stage('Checkout') {
         dir('lammps') {
-            commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1000, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
+            commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
             lammps_release_tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0 | cut -d_ -f2').trim()
         }
     }
@@ -68,6 +68,10 @@ node('slow') {
                   archiveArtifacts 'release.tar.gz'
                 }
             }
+        }
+
+        stage('Publish') {
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'docs.lammps.org', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "mv /var/www/lammps/download/tars/release.tar.gz /var/www/lammps/download/tars/lammps-${lammps_release_tag}.tar.gz", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/var/www/lammps/download/tars/', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'release.tar.gz')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
         }
     } catch (caughtErr) {
         err = caughtErr
