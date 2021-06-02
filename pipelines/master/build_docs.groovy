@@ -15,6 +15,7 @@ node('slow') {
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
     env.LAMMPS_WEBSITE_BUILD = "1"
     env.LAMMPS_WEBSITE_BUILD_VERSION = "latest"
+    env.LAMMPS_WEBSITE_BASEURL = "https://docs.lammps.org/latest/"
 
     stage('Checkout') {
         dir('lammps') {

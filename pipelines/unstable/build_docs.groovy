@@ -14,6 +14,7 @@ node('slow') {
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
     env.LAMMPS_WEBSITE_BUILD = "1"
+    env.LAMMPS_WEBSITE_BASEURL = "https://docs.lammps.org/"
 
     stage('Checkout') {
         dir('lammps') {
