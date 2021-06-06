@@ -2,24 +2,22 @@
 import org.lammps.ci.Utils
 
 def project_url = 'https://github.com/lammps/lammps.git'
-def set_github_status = true
-def send_slack = true
+def set_github_status = false
+def send_slack = false
 
 def container = 'fedora32_mingw'
 def launch_container = "singularity exec \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
-def lammps_branch = "master"
+def lammps_branch = "unstable"
 
 node('slow') {
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
-    env.LAMMPS_WEBSITE_BUILD = "1"
-    env.LAMMPS_WEBSITE_BUILD_VERSION = "latest"
-    env.LAMMPS_WEBSITE_BASEURL = "https://docs.lammps.org/latest/"
 
     stage('Checkout') {
         dir('lammps') {
             commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
+            lammps_release_tag = sh(returnStdout: true, script: 'git describe --tags --abbrev=0 | cut -d_ -f2').trim()
         }
     }
 
@@ -37,9 +35,7 @@ node('slow') {
                        script: "${launch_container} make -C lammps/doc clean-all")
                     sh(label: "Build HTML on ${container}",
                        script: "${launch_container} make -C lammps/doc -j 8 html | tee html_build.log")
-                    sh 'cd lammps/doc/html; tar cvzf ../lammps-docs.tar.gz *'
                 }
-                archiveArtifacts 'lammps/doc/lammps-docs.tar.gz'
             }
 
             stage('Generate PDF') {
@@ -47,22 +43,35 @@ node('slow') {
                     sh(label: "Build PDF on ${container}",
                        script: "${launch_container} make -C lammps/doc pdf")
                 }
-                archiveArtifacts 'lammps/doc/Manual.pdf'
             }
 
-            stage('Check Spelling') {
+            stage('Generate Release') {
                 ansiColor('xterm') {
-                    sh(label: "Run spellcheck on ${container}",
-                       script: "${launch_container} make -C lammps/doc -j 8 spelling | tee spellcheck_build.log")
+                  if (fileExists('release.tar')) {
+                    sh 'rm -f release.tar'
+                  }
+
+                  if (fileExists('release.tar.gz')) {
+                    sh 'rm -f release.tar.gz'
+                  }
+
+                  dir('lammps') {
+                    sh(label: "Generate initial release tarball",
+                       script: "git archive --output=../release.tar --prefix=lammps-${lammps_release_tag}/ HEAD")
+                  }
+
+                  dir('lammps/doc') {
+                    sh "tar -rf ../../release.tar --transform 's,^,lammps-${lammps_release_tag}/doc/,' html Manual.pdf"
+                  }
+
+                  sh 'gzip -9 release.tar'
+                  archiveArtifacts 'release.tar.gz'
                 }
             }
         }
 
-        recordIssues enabledForFailure: true, filters: [excludeCategory('RemovedInSphinx20Warning|UserWarning'), excludeMessage('Duplicate declaration.*')], healthy: 1, qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], tools: [groovyScript(parserId: 'sphinx', pattern: 'html_build.log'), groovyScript(parserId: 'spelling', pattern: 'spellcheck_build.log')], unhealthy: 2
-
         stage('Publish') {
-            sshPublisher(publishers: [sshPublisherDesc(configName: 'docs.lammps.org', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'rm -rf /var/www/lammps/docs/master/*', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: ''), sshTransfer(cleanRemote: false, excludes: '', execCommand: 'tar xvzf /var/www/lammps/docs/master/lammps-docs.tar.gz -C /var/www/lammps/docs/master && rm /var/www/lammps/docs/master/lammps-docs.tar.gz', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'lammps/docs/master', remoteDirectorySDF: false, removePrefix: 'lammps/doc/', sourceFiles: 'lammps/doc/lammps-docs.tar.gz')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-            sshPublisher(publishers: [sshPublisherDesc(configName: 'docs.lammps.org', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'lammps/docs/master', remoteDirectorySDF: false, removePrefix: 'lammps/doc/', sourceFiles: 'lammps/doc/Manual.pdf')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'docs.lammps.org', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: "mv /var/www/lammps/download/tars/release.tar.gz /var/www/lammps/download/tars/lammps-${lammps_release_tag}.tar.gz", execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '/var/www/lammps/download/tars/', remoteDirectorySDF: false, removePrefix: '', sourceFiles: 'release.tar.gz')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
         }
     } catch (caughtErr) {
         err = caughtErr

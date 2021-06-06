@@ -8,13 +8,13 @@ def send_slack = true
 def container = 'fedora32_mingw'
 def launch_container = "singularity exec \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
-def lammps_branch = "unstable"
+def lammps_branch = "stable"
 
 node('slow') {
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
     env.LAMMPS_WEBSITE_BUILD = "1"
-    env.LAMMPS_WEBSITE_BASEURL = "https://docs.lammps.org/"
+    env.LAMMPS_WEBSITE_BASEURL = "https://docs.lammps.org/stable/"
 
     stage('Checkout') {
         dir('lammps') {
@@ -60,8 +60,8 @@ node('slow') {
         recordIssues enabledForFailure: true, filters: [excludeCategory('RemovedInSphinx20Warning|UserWarning'), excludeMessage('Duplicate declaration.*')], healthy: 1, qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], tools: [groovyScript(parserId: 'sphinx', pattern: 'html_build.log'), groovyScript(parserId: 'spelling', pattern: 'spellcheck_build.log')], unhealthy: 2
 
         stage('Publish') {
-            sshPublisher(publishers: [sshPublisherDesc(configName: 'docs.lammps.org', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'rm -rf /var/www/lammps/docs/unstable/*', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: ''), sshTransfer(cleanRemote: false, excludes: '', execCommand: 'tar xvzf /var/www/lammps/docs/unstable/lammps-docs.tar.gz -C /var/www/lammps/docs/unstable && rm /var/www/lammps/docs/unstable/lammps-docs.tar.gz', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'lammps/docs/unstable', remoteDirectorySDF: false, removePrefix: 'lammps/doc/', sourceFiles: 'lammps/doc/lammps-docs.tar.gz')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-            sshPublisher(publishers: [sshPublisherDesc(configName: 'docs.lammps.org', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'lammps/docs/unstable', remoteDirectorySDF: false, removePrefix: 'lammps/doc/', sourceFiles: 'lammps/doc/Manual.pdf')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'docs.lammps.org', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: 'rm -rf /var/www/lammps/docs/stable/*', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '', remoteDirectorySDF: false, removePrefix: '', sourceFiles: ''), sshTransfer(cleanRemote: false, excludes: '', execCommand: 'tar xvzf /var/www/lammps/docs/stable/lammps-docs.tar.gz -C /var/www/lammps/docs/stable && rm /var/www/lammps/docs/stable/lammps-docs.tar.gz', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'lammps/docs/stable', remoteDirectorySDF: false, removePrefix: 'lammps/doc/', sourceFiles: 'lammps/doc/lammps-docs.tar.gz')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
+            sshPublisher(publishers: [sshPublisherDesc(configName: 'docs.lammps.org', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: 'lammps/docs/stable', remoteDirectorySDF: false, removePrefix: 'lammps/doc/', sourceFiles: 'lammps/doc/Manual.pdf')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
         }
     } catch (caughtErr) {
         err = caughtErr
