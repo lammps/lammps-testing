@@ -5,7 +5,7 @@ def project_url = 'https://github.com/lammps/lammps.git'
 def set_github_status = false
 def send_slack = false
 
-def container = 'fedora32_mingw'
+def container = 'fedora34_mingw'
 def launch_container = "singularity exec \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
 def lammps_branch = "unstable"

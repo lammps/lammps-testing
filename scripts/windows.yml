@@ -1,5 +1,5 @@
 display_name: 'Windows (on Fedora 32 with MinGW)'
-container_image: 'fedora32_mingw'
+container_image: 'fedora34_mingw'
 builds:
  - cmake_mpi_openmp_smallbig_shared_win64
  - cmake_serial_smallsmall_static_win32

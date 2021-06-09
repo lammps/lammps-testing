@@ -1,5 +1,5 @@
-display_name: 'Fedora 32'
-container_image: 'fedora32_mingw'
+display_name: 'Fedora 34'
+container_image: 'fedora34_mingw'
 builds:
  - cmake_kokkos_mpi_openmp_clang_shared
  - cmake_serial_smallsmall_static

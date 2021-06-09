@@ -2,22 +2,22 @@
 |Test                                    | OS image          | Compiler | Sizes      | MPI | OpenMP | Exceptions | Linkage |  Comment               |
 |========================================+===================+==========+============+=====+========+============+=========+========================|
 |cmake_kokkos_mpi_openmp_clang_shared    | ubuntu18.04       | clang    | smallbig   | yes |  yes   |   yes      | shared  | includes many packages |
-|                                        | fedora32_mingw    |          |            |     |        |            |         |                        |
+|                                        | fedora34_mingw    |          |            |     |        |            |         |                        |
 |----------------------------------------+-------------------+----------+------------+-----+--------+------------+---------+------------------------|
 |cmake_mpi_smallbig_shared               | centos7           | gcc      | smallbig   | yes |  no    |   no       | shared  |                        |
-|                                        | fedora32_mingw    |          |            |     |        |            |         |                        |
+|                                        | fedora34_mingw    |          |            |     |        |            |         |                        |
 |----------------------------------------+-------------------+----------+------------+-----+--------+------------+---------+------------------------|
 |cmake_mpi_openmp_bigbig_static          | centos7           | gcc      | bigbig     | yes |  yes   |   no       | static  | uses ninja-build       |
-|                                        | ubuntu18.04       |          |            |     |        |            |         |                        |
+|                                        | ubuntu14.04       |          |            |     |        |            |         |                        |
 |----------------------------------------+-------------------+----------+------------+-----+--------+------------+---------+------------------------|
 |cmake_mpi_openmp_bigbig_icc_static      | ubuntu18.04_intel | icc      | bigbig     | yes |  yes   |   no       | static  | uses ninja-build       |
 |----------------------------------------+-------------------+----------+------------+-----+--------+------------+---------+------------------------|
 |cmake_serial_smallsmall_static          | centos7           | clang    | smallsmall | no  |  no    |   no       | static  | uses ninja-build       |
-|                                        | fedora32_mingw    |          |            |     |        |            |         |                        |
+|                                        | fedora34_mingw    |          |            |     |        |            |         |                        |
 |----------------------------------------+-------------------+----------+------------+-----+--------+------------+---------+------------------------|
-|cmake_mpi_openmp_smallbig_shared_win64  | fedora32_mingw    | mingw64  | smallbig   | yes |  yes   |   yes      | shared  | cross-compile to Windows
+|cmake_mpi_openmp_smallbig_shared_win64  | fedora34_mingw    | mingw64  | smallbig   | yes |  yes   |   yes      | shared  | cross-compile to Windows
 |----------------------------------------+-------------------+----------+------------+-----+--------+------------+---------+------------------------|
-|cmake_serial_smallsmall_static_win32    | fedora32_mingw    | mingw32  | smallsmall | no  |  no    |   no       | static  | cross-compile to Windows
+|cmake_serial_smallsmall_static_win32    | fedora34_mingw    | mingw32  | smallsmall | no  |  no    |   no       | static  | cross-compile to Windows
 |----------------------------------------+-------------------+----------+------------+-----+--------+------------+---------+------------------------|
 |cmake_kokkos_cuda_bibig_static          | ubuntu18.04_gpu   | gcc/nvcc | bigbig     | yes |  yes   |    no      | static  | includes few packages  |
 |----------------------------------------+-------------------+----------+------------+-----+--------+------------+---------+------------------------|
@@ -26,7 +26,7 @@
 |cmake_serial_bigbig_static_hip          | ubuntu18.04_gpu   | gcc      | bigbig     | no  |  no    |   no       | static  | includes GPU with HIP  |
 |----------------------------------------+-------------------+----------+------------+-----+--------+------------+---------+------------------------|
 |legacy_mpi_bigbig_shared                | ubuntu18.04       | gcc      | bigbig     | yes |  no    |   no       | shared  |                        |
-|                                        | fedora32_mingw    |          |            |     |        |            |         |                        |
+|                                        | fedora34_mingw    |          |            |     |        |            |         |                        |
 |----------------------------------------+-------------------+----------+------------+-----+--------+------------+---------+------------------------|
 |legacy_serial_openmp_smallsmall_static  | centos7           | gcc      | smallsmall | no  |  yes   |   yes      | static  |                        |
 |                                        | ubuntu18.04       |          |            |     |        |            |         |                        |

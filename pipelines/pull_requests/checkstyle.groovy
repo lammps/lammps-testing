@@ -9,7 +9,7 @@ node('slow'){
     cleanWs()
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
-    def container = "fedora32_mingw"
+    def container = "fedora34_mingw"
     def container_args = ""
     def launch_container = "singularity exec ${container_args} \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
