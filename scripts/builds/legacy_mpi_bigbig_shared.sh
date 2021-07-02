@@ -16,7 +16,6 @@ LAMMPS_PACKAGES=(
                  no-machdyn
                  yes-molfile
                  yes-compress
-                 yes-python
                  yes-poems
                  yes-colvars
                  yes-awpmd
@@ -27,5 +26,7 @@ LAMMPS_PACKAGES=(
                  yes-mpiio
                  yes-latboltz
                 )
+# temporarily disabled. fails to link ML-IAP /w Python on some Fedora versions
+#                 yes-python
 
 . $SCRIPTDIR/legacy_build.sh
