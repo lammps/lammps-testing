@@ -22,7 +22,7 @@ LAMMPS_PACKAGES=(
                  yes-atc
                  yes-awpmd
                  yes-h5md
-                 yes-dpd-reaxct
+                 yes-dpd-react
                  yes-reaxff
                  yes-meam
                 )
