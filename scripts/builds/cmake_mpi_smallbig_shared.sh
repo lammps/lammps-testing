@@ -79,7 +79,6 @@ ${CMAKE_COMMAND} \
       -D PKG_MANIFOLD=on \
       -D PKG_MOLFILE=on \
       -D PKG_ML-HDNN=on \
-      -D PKG_ML-PACE=on \
       -D PKG_ML-RANN=on \
       -D PKG_NETCDF=on \
       -D PKG_PTM=on \
