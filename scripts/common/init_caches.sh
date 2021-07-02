@@ -33,7 +33,7 @@ mkdir -p $HTTP_CACHE_DIR
 
 ${COMMON_SCRIPTS_DIR}/init_pip_cache.sh
 ${COMMON_SCRIPTS_DIR}/init_git_cache.sh
-${COMMON_SCRIPTS_DIR}/init_http_cache.sh  
+${COMMON_SCRIPTS_DIR}/init_http_cache.sh
 echo "##############################################################################"
 echo
 echo "To activate:"

@@ -56,8 +56,6 @@ fi
 mkdir -p ${BUILD}
 cd ${BUILD}
 
-# need to set this to avoid picking up parallel HDF5 on centos/fedora
-
 # 2021/04/27
 # cannot test compiling with KOKKOS on Ubuntu18.04LTS anymore since
 # Kokkos v3.4.0 now requires CMake 3.16. Can re-instate once we decide
@@ -65,7 +63,10 @@ cd ${BUILD}
 #      -C ${LAMMPS_DIR}/cmake/presets/kokkos-openmp.cmake \
 #
 
+# need to set this to avoid picking up parallel HDF5 on centos/fedora
+
 export HDF5_ROOT=/usr
+
 # Configure
 ${CMAKE_COMMAND} \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
@@ -82,22 +83,24 @@ ${CMAKE_COMMAND} \
       -D LAMMPS_EXCEPTIONS=on \
       -D PKG_MESSAGE=on \
       -D PKG_MPIIO=on \
-      -D PKG_USER-ATC=on \
-      -D PKG_USER-AWPMD=on \
-      -D PKG_USER-BOCS=on \
-      -D PKG_USER-EFF=on \
-      -D PKG_USER-H5MD=on \
-      -D PKG_USER-INTEL=on \
-      -D PKG_USER-LB=on \
-      -D PKG_USER-MANIFOLD=on \
-      -D PKG_USER-MGPT=on \
-      -D PKG_USER-MOLFILE=on \
-      -D PKG_USER-NETCDF=on \
-      -D PKG_USER-PTM=on \
-      -D PKG_USER-QTB=on \
-      -D PKG_USER-SDPD=on \
-      -D PKG_USER-SMTBQ=on \
-      -D PKG_USER-TALLY=on \
+      -D PKG_ATC=on \
+      -D PKG_AWPMD=on \
+      -D PKG_BOCS=on \
+      -D PKG_EFF=on \
+      -D PKG_H5MD=on \
+      -D PKG_INTEL=on \
+      -D PKG_LATBOLTZ=on \
+      -D PKG_MANIFOLD=on \
+      -D PKG_MGPT=on \
+      -D PKG_ML-HDNN=on \
+      -D PKG_ML-PACE=on \
+      -D PKG_ML-RANN=on \
+      -D PKG_MOLFILE=on \
+      -D PKG_NETCDF=on \
+      -D PKG_PTM=on \
+      -D PKG_QTB=on \
+      -D PKG_SMTBQ=on \
+      -D PKG_TALLY=on \
       ${LAMMPS_DIR}/cmake || exit 1
 
 # Build

@@ -49,8 +49,11 @@ EIGEN3_URL="https://gitlab.com/libeigen/eigen/-/archive/3.3.7/eigen-3.3.7.tar.gz
 CUB_URL="https://github.com/NVlabs/cub/archive/1.12.0.tar.gz"
 KOKKOS_URL="https://github.com/kokkos/kokkos/archive/3.3.01.tar.gz"
 KIM_URL="https://s3.openkim.org/kim-api/kim-api-2.2.1.txz"
+MDI_URL="https://github.com/MolSSI-MDI/MDI_Library/archive/v1.2.9.tar.gz"
 MSCG_URL="https://github.com/uchicago-voth/MSCG-release/archive/1.7.3.1.tar.gz"
-PLUMED_URL="https://github.com/plumed/plumed2/releases/download/v2.7.0/plumed-src-2.7.0.tgz"
+N2P2_URL="https://github.com/CompPhysVienna/n2p2/archive/v2.1.4.tar.gz"
+PACELIB_URL="https://github.com/ICAMS/lammps-user-pace/archive/refs/tags/v.2021.4.9.tar.gz"
+PLUMED_URL="https://github.com/plumed/plumed2/releases/download/v2.7.1/plumed-src-2.7.1.tgz"
 LATTE_URL="https://github.com/lanl/LATTE/archive/v1.2.2.tar.gz"
 SCAFACOS_URL="https://github.com/scafacos/scafacos/releases/download/v1.0.1/scafacos-1.0.1.tar.gz"
 
@@ -74,7 +77,10 @@ TARBALLS=(
     CUB_URL
     KOKKOS_URL
     KIM_URL
+    MDI_URL
     MSCG_URL
+    N2P2_URL
+    PACELIB_URL
     PLUMED_URL
     LATTE_URL
     SCAFACOS_URL

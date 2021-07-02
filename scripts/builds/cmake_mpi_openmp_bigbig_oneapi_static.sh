@@ -77,20 +77,19 @@ ${CMAKE_COMMAND} -G Ninja \
       -D LAMMPS_EXCEPTIONS=on \
       -D FFT=MKL \
       -D PKG_MPIIO=on \
-      -D PKG_USER-AWPMD=on \
-      -D PKG_USER-BOCS=on \
-      -D PKG_USER-EFF=on \
-      -D PKG_USER-H5MD=on \
-      -D PKG_USER-INTEL=on \
-      -D PKG_USER-LB=on \
-      -D PKG_USER-MANIFOLD=on \
-      -D PKG_USER-MOLFILE=on \
-      -D PKG_USER-NETCDF=on \
-      -D PKG_USER-PTM=on \
-      -D PKG_USER-QTB=on \
-      -D PKG_USER-SDPD=on \
-      -D PKG_USER-SMTBQ=on \
-      -D PKG_USER-TALLY=on \
+      -D PKG_AWPMD=on \
+      -D PKG_BOCS=on \
+      -D PKG_EFF=on \
+      -D PKG_H5MD=on \
+      -D PKG_INTEL=on \
+      -D PKG_LATBOLTZ=on \
+      -D PKG_MANIFOLD=on \
+      -D PKG_MOLFILE=on \
+      -D PKG_NETCDF=on \
+      -D PKG_PTM=on \
+      -D PKG_QTB=on \
+      -D PKG_SMTBQ=on \
+      -D PKG_TALLY=on \
       ${LAMMPS_DIR}/cmake || exit 1
 
 # Build

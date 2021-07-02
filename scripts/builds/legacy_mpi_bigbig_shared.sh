@@ -13,20 +13,19 @@ LAMMPS_PACKAGES=(
                  yes-all
                  no-lib
                  no-mpiio
-                 no-user-smd
-                 yes-user-molfile
+                 no-machdyn
+                 yes-molfile
                  yes-compress
                  yes-python
                  yes-poems
-                 yes-user-colvars
-                 yes-user-awpmd
-                 yes-user-meamc
-                 yes-user-h5md
-                 yes-user-dpd
-                 yes-user-reaxc
-                 yes-user-meamc
+                 yes-colvars
+                 yes-awpmd
+                 yes-h5md
+                 yes-dpd-react
+                 yes-reaxff
+                 yes-meam
                  yes-mpiio
-                 yes-user-lb
+                 yes-latboltz
                 )
 
 . $SCRIPTDIR/legacy_build.sh

@@ -80,7 +80,7 @@ build_libraries() {
     echo "Build libraries..."
     make -C ${LAMMPS_DIR}/src/STUBS clean
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-colvars"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-colvars"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} CXX="${LAMMPS_COMPILER} -std=c++11" || exit 1
@@ -92,13 +92,13 @@ build_libraries() {
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" LINK="${LAMMPS_COMPILER}" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-awpmd"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-awpmd"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE=Makefile.lammps.installed || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-h5md"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-h5md"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/h5md -f Makefile.h5cc clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/h5md -f Makefile.h5cc || exit 1
@@ -109,21 +109,21 @@ build_libraries() {
         make -C ${LAMMPS_DIR}/src lib-voronoi args="-b" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-atc"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-atc"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE="Makefile.lammps.installed" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-qmmm"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-qmmm"* ]]
     then
         make -C ${LAMMPS_DIR}/lib/qmmm -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/qmmm -f Makefile.${LAMMPS_MACH} || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-user-smd"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-machdyn"* ]]
     then
-        make -C ${LAMMPS_DIR}/src lib-smd args="-p /usr/include/eigen3" || exit 1
+        make -C ${LAMMPS_DIR}/src lib-machdyn args="-p /usr/include/eigen3" || exit 1
     fi
 }
 
