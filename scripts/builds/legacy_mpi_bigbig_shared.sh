@@ -14,6 +14,7 @@ LAMMPS_PACKAGES=(
                  no-lib
                  no-mpiio
                  no-machdyn
+                 no-python
                  yes-molfile
                  yes-compress
                  yes-poems
