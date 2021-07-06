@@ -67,7 +67,7 @@ type kim-api-activate >& null && source kim-api-activate
 ${CMAKE_COMMAND} \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
       -C ${LAMMPS_DIR}/cmake/presets/clang.cmake \
-      -C ${LAMMPS_DIR}/cmake/presets/minimal.cmake \
+      -C ${LAMMPS_DIR}/cmake/presets/basic.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-O0 -Wall -Wextra -Wno-unused-result" \
