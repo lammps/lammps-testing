@@ -78,11 +78,11 @@ ${CMAKE_COMMAND} \
       -D PKG_ATC=on \
       -D PKG_AWPMD=on \
       -D PKG_H5MD=on \
-      -D PKG_LATBOLTZ=on \
+      -D PKG_LATBOLTZ=off \
       -D PKG_MANIFOLD=on \
       -D PKG_MGPT=on \
       -D PKG_MOLFILE=on \
-      -D PKG_MPIIO=on \
+      -D PKG_MPIIO=off \
       -D PKG_PTM=on \
       -D PKG_QTB=on \
       -D PKG_SMTBQ=on \
