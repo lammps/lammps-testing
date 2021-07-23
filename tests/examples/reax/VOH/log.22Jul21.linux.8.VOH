@@ -1,0 +1,118 @@
+LAMMPS (2 Jul 2021)
+# REAX potential for VOH system
+# .....
+
+units		real
+
+atom_style	charge
+read_data	data.VOH
+Reading data file ...
+  orthogonal box = (0.0000000 0.0000000 0.0000000) to (25.000000 25.000000 25.000000)
+  2 by 2 by 2 MPI processor grid
+  reading atoms ...
+  100 atoms
+  read_data CPU = 0.002 seconds
+
+pair_style	reax/c lmp_control
+WARNING: Ignoring inactive control parameter: simulation_name (src/REAXFF/reaxff_control.cpp:97)
+WARNING: Ignoring inactive control parameter: energy_update_freq (src/REAXFF/reaxff_control.cpp:97)
+WARNING: Support for writing native trajectories has been removed after LAMMPS version 8 April 2021 (src/REAXFF/reaxff_control.cpp:113)
+WARNING: Ignoring inactive control parameter: traj_title (src/REAXFF/reaxff_control.cpp:97)
+WARNING: Ignoring inactive control parameter: atom_info (src/REAXFF/reaxff_control.cpp:97)
+WARNING: Ignoring inactive control parameter: atom_forces (src/REAXFF/reaxff_control.cpp:97)
+WARNING: Ignoring inactive control parameter: atom_velocities (src/REAXFF/reaxff_control.cpp:97)
+WARNING: Ignoring inactive control parameter: bond_info (src/REAXFF/reaxff_control.cpp:97)
+WARNING: Ignoring inactive control parameter: angle_info (src/REAXFF/reaxff_control.cpp:97)
+pair_coeff	* * ffield.reax.V_O_C_H H C O V
+Reading potential file ffield.reax.V_O_C_H with DATE: 2011-02-18
+WARNING: Changed valency_val to valency_boc for X (src/REAXFF/reaxff_ffield.cpp:294)
+
+neighbor	2 bin
+neigh_modify	every 10 delay 0 check no
+
+fix		1 all nve
+fix             2 all qeq/reax 1 0.0 10.0 1e-6 param.qeq
+fix             3 all temp/berendsen 500.0 500.0 100.0
+
+timestep	0.25
+
+#dump		1 all atom 30 dump.reax.voh
+
+run		3000
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- pair reaxff command:
+
+@Article{Aktulga12,
+ author = {H. M. Aktulga, J. C. Fogarty, S. A. Pandit, A. Y. Grama},
+ title = {Parallel reactive molecular dynamics: Numerical methods and algorithmic techniques},
+ journal = {Parallel Computing},
+ year =    2012,
+ volume =  38,
+ pages =   {245--259}
+}
+
+- fix qeq/reaxff command:
+
+@Article{Aktulga12,
+ author = {H. M. Aktulga, J. C. Fogarty, S. A. Pandit, A. Y. Grama},
+ title = {Parallel reactive molecular dynamics: Numerical methods and algorithmic techniques},
+ journal = {Parallel Computing},
+ year =    2012,
+ volume =  38,
+ pages =   {245--259}
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Neighbor list info ...
+  update every 10 steps, delay 0 steps, check no
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 12
+  ghost atom cutoff = 12
+  binsize = 6, bins = 5 5 5
+  2 neighbor lists, perpetual/occasional/extra = 2 0 0
+  (1) pair reax/c, perpetual
+      attributes: half, newton off, ghost
+      pair build: half/bin/newtoff/ghost
+      stencil: full/ghost/bin/3d
+      bin: standard
+  (2) fix qeq/reax, perpetual, copy from (1)
+      attributes: half, newton off, ghost
+      pair build: copy
+      stencil: none
+      bin: none
+Per MPI rank memory allocation (min/avg/max) = 8.523 | 9.766 | 10.79 Mbytes
+Step Temp E_pair E_mol TotEng Press 
+       0            0   -10246.825            0   -10246.825    42.256092 
+    3000    469.58204   -10183.313            0   -10044.739   -695.27183 
+Loop time of 5.68052 on 8 procs for 3000 steps with 100 atoms
+
+Performance: 11.407 ns/day, 2.104 hours/ns, 528.121 timesteps/s
+99.6% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 1.9332     | 2.461      | 2.9334     |  23.0 | 43.32
+Neigh   | 0.11526    | 0.15065    | 0.20042    |   6.8 |  2.65
+Comm    | 0.71859    | 1.233      | 1.789      |  34.7 | 21.71
+Output  | 8.5412e-05 | 9.2953e-05 | 0.00013511 |   0.0 |  0.00
+Modify  | 1.7925     | 1.8329     | 1.9241     |   2.8 | 32.27
+Other   |            | 0.00293    |            |       |  0.05
+
+Nlocal:        12.5000 ave          23 max           0 min
+Histogram: 1 0 1 0 2 1 1 0 0 2
+Nghost:        283.375 ave         374 max         188 min
+Histogram: 1 0 0 3 0 1 1 0 1 1
+Neighs:        585.625 ave        1261 max           0 min
+Histogram: 1 0 2 2 0 0 1 0 1 1
+
+Total # of neighbors = 4685
+Ave neighs/atom = 46.850000
+Neighbor list builds = 300
+Dangerous builds not checked
+Total wall time: 0:00:05
