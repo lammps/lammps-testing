@@ -53,7 +53,7 @@ MDI_URL="https://github.com/MolSSI-MDI/MDI_Library/archive/v1.2.9.tar.gz"
 MSCG_URL="https://github.com/uchicago-voth/MSCG-release/archive/1.7.3.1.tar.gz"
 N2P2_URL="https://github.com/CompPhysVienna/n2p2/archive/v2.1.4.tar.gz"
 PACELIB_URL="https://github.com/ICAMS/lammps-user-pace/archive/refs/tags/v.2021.4.9.tar.gz"
-PLUMED_URL="https://github.com/plumed/plumed2/releases/download/v2.7.1/plumed-src-2.7.1.tgz"
+PLUMED_URL="https://github.com/plumed/plumed2/releases/download/v2.7.2/plumed-src-2.7.2.tgz"
 LATTE_URL="https://github.com/lanl/LATTE/archive/v1.2.2.tar.gz"
 SCAFACOS_URL="https://github.com/scafacos/scafacos/releases/download/v1.0.1/scafacos-1.0.1.tar.gz"
 
