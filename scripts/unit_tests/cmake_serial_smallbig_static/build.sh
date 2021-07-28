@@ -80,9 +80,9 @@ ${CMAKE_COMMAND} \
       -D ENABLE_COVERAGE=on \
       -D ENABLE_TESTING=on \
       -D PKG_KIM=on \
-      -D PKG_USER-INTEL=on \
-      -D PKG_USER-PACE=on \
-      -D PKG_USER-QTB=on \
+      -D PKG_INTEL=on \
+      -D PKG_ML-PACE=on \
+      -D PKG_QTB=on \
       ${LAMMPS_DIR}/cmake || exit 1
 
 # Build

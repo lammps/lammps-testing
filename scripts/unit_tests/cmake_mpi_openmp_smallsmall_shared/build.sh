@@ -82,8 +82,9 @@ ${CMAKE_COMMAND} \
       -D ENABLE_TESTING=on \
       -D PKG_KIM=on \
       -D PKG_MPIIO=on \
-      -D PKG_USER-INTEL=on \
-      -D PKG_USER-PACE=on \
+      -D PKG_INTEL=on \
+      -D PKG_ML-PACE=on \
+      -D PKG_ML-RANN=on \
       -D PKG_USER-QTB=on \
       ${LAMMPS_DIR}/cmake || exit 1
 
