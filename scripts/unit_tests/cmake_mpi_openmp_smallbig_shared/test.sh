@@ -13,7 +13,6 @@ fi
 
 source pyenv/bin/activate
 export LC_ALL=C.UTF-8
-export COVERAGE_RCFILE=$SCRIPTDIR/.coveragerc
 
 cd ${BUILD}
 
