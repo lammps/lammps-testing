@@ -191,12 +191,12 @@ def status(args, settings):
     for config in configurations:
         print()
         print(f' {config.name} '.center(120, "+"))
-        print()
 
-        print("Builds:")
-
-        for build in config.builds:
-            print(" ", f"{build:<40}")
+        if hasattr(config, "builds"):
+            print()
+            print("Builds:")
+            for build in config.builds:
+                print(" ", f"{build:<40}")
 
 
         if hasattr(config, 'unit_tests'):
