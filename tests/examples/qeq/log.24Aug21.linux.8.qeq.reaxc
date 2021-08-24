@@ -1,4 +1,4 @@
-LAMMPS (4 Jan 2019)
+LAMMPS (30 Jul 2021)
 # This example demonstrates the use of various fix qeq variants with pair reax/c
 # You can comment in/out various versions below
 #
@@ -13,10 +13,12 @@ units		real
 atom_style	charge
 
 read_data	data.CHO
-  orthogonal box = (0 0 0) to (25 25 25)
+Reading data file ...
+  orthogonal box = (0.0000000 0.0000000 0.0000000) to (25.000000 25.000000 25.000000)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
   105 atoms
+  read_data CPU = 0.002 seconds
 
 pair_style	reax/c NULL checkqeq no
 pair_coeff	* * ffield.reax.cho H C O
@@ -53,6 +55,35 @@ fix             2 all qeq/reax 1 0.0 10.0 1e-6 param.qeq.reax
 timestep	0.25
 
 run		10
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- pair reaxff command:
+
+@Article{Aktulga12,
+ author = {H. M. Aktulga, J. C. Fogarty, S. A. Pandit, A. Y. Grama},
+ title = {Parallel reactive molecular dynamics: Numerical methods and algorithmic techniques},
+ journal = {Parallel Computing},
+ year =    2012,
+ volume =  38,
+ pages =   {245--259}
+}
+
+- fix qeq/reaxff command:
+
+@Article{Aktulga12,
+ author = {H. M. Aktulga, J. C. Fogarty, S. A. Pandit, A. Y. Grama},
+ title = {Parallel reactive molecular dynamics: Numerical methods and algorithmic techniques},
+ journal = {Parallel Computing},
+ year =    2012,
+ volume =  38,
+ pages =   {245--259}
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
 Neighbor list info ...
   update every 1 steps, delay 0 steps, check yes
   max neighbors/atom: 2000, page size: 100000
@@ -63,53 +94,50 @@ Neighbor list info ...
   (1) pair reax/c, perpetual
       attributes: half, newton off, ghost
       pair build: half/bin/newtoff/ghost
-      stencil: half/ghost/bin/3d/newtoff
+      stencil: full/ghost/bin/3d
       bin: standard
   (2) fix qeq/reax, perpetual, copy from (1)
       attributes: half, newton off, ghost
       pair build: copy
       stencil: none
       bin: none
-Per MPI rank memory allocation (min/avg/max) = 8.947 | 10 | 11.32 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 8.356 | 9.251 | 10.33 Mbytes
 Step PotEng c_q1 c_q2 c_q3 v_qtot 
-       0   -10226.557  0.095633884   -0.1565875 -0.091167273 -4.4408921e-16 
-       1   -10225.799  0.095650213  -0.15662332  -0.09117149            0 
-       2   -10223.656  0.095669699  -0.15666704 -0.091175299            0 
-       3   -10220.276  0.095691319  -0.15671621 -0.091178694 -1.7763568e-15 
-       4   -10215.894  0.095714072  -0.15676821 -0.091181955 1.3322676e-15 
-       5   -10210.804  0.095734092  -0.15681452  -0.09118412            0 
-       6   -10205.342  0.095750812  -0.15685347 -0.091185605 -4.4408921e-16 
-       7   -10199.848  0.095762294  -0.15687991  -0.09118699 -2.220446e-16 
-       8   -10194.646  0.095766683  -0.15689057  -0.09118683 -1.3322676e-15 
-       9   -10190.016  0.095761147  -0.15687806 -0.091185867            0 
-      10   -10186.168  0.095746988  -0.15684572 -0.091183816 -1.3322676e-15 
-Loop time of 0.0200943 on 8 procs for 10 steps with 105 atoms
+       0   -10226.557  0.095634063  -0.15658793 -0.091167274 4.4408921e-16 
+       1   -10225.799  0.095649716  -0.15662235 -0.091171214 -4.4408921e-16 
+       2   -10223.656  0.095669682  -0.15666697 -0.091175334 -8.8817842e-16 
+       3   -10220.276  0.095691219  -0.15671591 -0.091178774 -1.7763568e-15 
+       4   -10215.894  0.095714203  -0.15676843 -0.091182072 -1.3322676e-15 
+       5   -10210.804  0.095733834   -0.1568139 -0.091184127 2.220446e-15 
+       6   -10205.342   0.09575146  -0.15685489 -0.091185764 1.110223e-15 
+       7   -10199.848  0.095761975  -0.15687943 -0.091186636 6.6613381e-16 
+       8   -10194.646  0.095767208  -0.15689155 -0.091187184            0 
+       9   -10190.016  0.095760867   -0.1568776 -0.091185598 2.6645353e-15 
+      10   -10186.168  0.095748077  -0.15684838  -0.09118376 -4.4408921e-16 
+Loop time of 0.0206903 on 8 procs for 10 steps with 105 atoms
 
-Performance: 10.749 ns/day, 2.233 hours/ns, 497.654 timesteps/s
-98.2% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 10.440 ns/day, 2.299 hours/ns, 483.319 timesteps/s
+97.6% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.0058178  | 0.0081997  | 0.0101     |   1.8 | 40.81
+Pair    | 0.004461   | 0.0073725  | 0.011682   |   2.8 | 35.63
 Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.00046199 | 0.0023546  | 0.0047486  |   3.4 | 11.72
-Output  | 0.0004776  | 0.00049117 | 0.00052818 |   0.0 |  2.44
-Modify  | 0.0089511  | 0.0089702  | 0.0090085  |   0.0 | 44.64
-Other   |            | 7.85e-05   |            |       |  0.39
+Comm    | 0.00041124 | 0.0047089  | 0.0076406  |   3.6 | 22.76
+Output  | 0.00051533 | 0.00054682 | 0.00063955 |   0.0 |  2.64
+Modify  | 0.0079023  | 0.0079226  | 0.0079793  |   0.0 | 38.29
+Other   |            | 0.0001395  |            |       |  0.67
 
-Nlocal:    13.125 ave 31 max 2 min
+Nlocal:        13.1250 ave          31 max           2 min
 Histogram: 2 1 2 0 0 1 0 1 0 1
-Nghost:    216.625 ave 307 max 137 min
+Nghost:        216.625 ave         307 max         137 min
 Histogram: 2 0 0 0 4 0 0 0 0 2
-Neighs:    525.5 ave 1380 max 48 min
+Neighs:        525.500 ave        1380 max          48 min
 Histogram: 2 2 1 0 0 1 0 1 0 1
 
 Total # of neighbors = 4204
-Ave neighs/atom = 40.0381
+Ave neighs/atom = 40.038095
 Neighbor list builds = 0
 Dangerous builds = 0
-
-Please see the log.cite file for references relevant to this simulation
-
 Total wall time: 0:00:00

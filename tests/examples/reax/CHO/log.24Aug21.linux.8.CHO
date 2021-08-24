@@ -1,17 +1,17 @@
-LAMMPS (2 Jul 2021)
-# REAX potential for AuO system
+LAMMPS (30 Jul 2021)
+# REAX potential for CHO system
 # .....
 
 units		real
 
 atom_style	charge
-read_data	data.AuO
+read_data	data.CHO
 Reading data file ...
-  orthogonal box = (0.0000000 0.0000000 0.0000000) to (26.156180 21.542520 24.002460)
+  orthogonal box = (0.0000000 0.0000000 0.0000000) to (25.000000 25.000000 25.000000)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
-  960 atoms
-  read_data CPU = 0.004 seconds
+  105 atoms
+  read_data CPU = 0.002 seconds
 
 pair_style	reax/c lmp_control
 WARNING: Ignoring inactive control parameter: simulation_name (src/REAXFF/reaxff_control.cpp:97)
@@ -23,8 +23,8 @@ WARNING: Ignoring inactive control parameter: atom_forces (src/REAXFF/reaxff_con
 WARNING: Ignoring inactive control parameter: atom_velocities (src/REAXFF/reaxff_control.cpp:97)
 WARNING: Ignoring inactive control parameter: bond_info (src/REAXFF/reaxff_control.cpp:97)
 WARNING: Ignoring inactive control parameter: angle_info (src/REAXFF/reaxff_control.cpp:97)
-pair_coeff	* * ffield.reax.AuO O Au
-Reading potential file ffield.reax.AuO with DATE: 2011-02-18
+pair_coeff	* * ffield.reax.cho H C O
+Reading potential file ffield.reax.cho with DATE: 2011-02-18
 
 neighbor	2 bin
 neigh_modify	every 10 delay 0 check no
@@ -35,9 +35,9 @@ fix             3 all temp/berendsen 500.0 500.0 100.0
 
 timestep	0.25
 
-#dump		1 all atom 30 dump.reax.auo
+#dump		1 all atom 30 dump.reax.cho
 
-run		100
+run		3000
 
 CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
 
@@ -72,7 +72,7 @@ Neighbor list info ...
   max neighbors/atom: 2000, page size: 100000
   master list distance cutoff = 12
   ghost atom cutoff = 12
-  binsize = 6, bins = 5 4 5
+  binsize = 6, bins = 5 5 5
   2 neighbor lists, perpetual/occasional/extra = 2 0 0
   (1) pair reax/c, perpetual
       attributes: half, newton off, ghost
@@ -84,34 +84,34 @@ Neighbor list info ...
       pair build: copy
       stencil: none
       bin: none
-Per MPI rank memory allocation (min/avg/max) = 55.47 | 55.47 | 55.47 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 8.550 | 9.898 | 11.67 Mbytes
 Step Temp E_pair E_mol TotEng Press 
-       0            0   -72201.743            0   -72201.743   -166.20062 
-     100    69.043367    -72076.31            0   -71878.943    22701.855 
-Loop time of 5.75043 on 8 procs for 100 steps with 960 atoms
+       0            0   -10226.557            0   -10226.557   -106.09791 
+    3000    548.08352   -10170.247            0   -10000.339    51.718769 
+Loop time of 4.59505 on 8 procs for 3000 steps with 105 atoms
 
-Performance: 0.376 ns/day, 63.894 hours/ns, 17.390 timesteps/s
-99.2% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 14.102 ns/day, 1.702 hours/ns, 652.877 timesteps/s
+99.6% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 3.6845     | 4.0566     | 4.2724     |  10.2 | 70.54
-Neigh   | 0.22556    | 0.26155    | 0.28397    |   3.5 |  4.55
-Comm    | 0.52086    | 0.73623    | 1.1089     |  23.9 | 12.80
-Output  | 9.3203e-05 | 9.8011e-05 | 0.00012512 |   0.0 |  0.00
-Modify  | 0.67153    | 0.69431    | 0.73086    |   2.1 | 12.07
-Other   |            | 0.001651   |            |       |  0.03
+Pair    | 1.655      | 2.0158     | 2.738      |  25.8 | 43.87
+Neigh   | 0.081127   | 0.11279    | 0.15574    |   7.4 |  2.45
+Comm    | 0.1416     | 0.85425    | 1.2079     |  39.1 | 18.59
+Output  | 6.2741e-05 | 6.7032e-05 | 9.3478e-05 |   0.0 |  0.00
+Modify  | 1.5546     | 1.6097     | 1.6493     |   2.6 | 35.03
+Other   |            | 0.002473   |            |       |  0.05
 
-Nlocal:        120.000 ave         120 max         120 min
-Histogram: 8 0 0 0 0 0 0 0 0 0
-Nghost:        3111.00 ave        3111 max        3111 min
-Histogram: 8 0 0 0 0 0 0 0 0 0
-Neighs:        55874.0 ave       55874 max       55874 min
-Histogram: 8 0 0 0 0 0 0 0 0 0
+Nlocal:        13.1250 ave          37 max           0 min
+Histogram: 2 1 1 1 0 2 0 0 0 1
+Nghost:        294.000 ave         427 max         173 min
+Histogram: 2 0 1 0 1 2 0 0 1 1
+Neighs:        665.625 ave        1829 max           0 min
+Histogram: 3 0 1 0 1 1 1 0 0 1
 
-Total # of neighbors = 446992
-Ave neighs/atom = 465.61667
-Neighbor list builds = 10
+Total # of neighbors = 5325
+Ave neighs/atom = 50.714286
+Neighbor list builds = 300
 Dangerous builds not checked
-Total wall time: 0:00:05
+Total wall time: 0:00:04
