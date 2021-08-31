@@ -1,16 +1,16 @@
-LAMMPS (2 Jul 2021)
-# REAX potential for VOH system
+LAMMPS (30 Jul 2021)
+# REAX potential for Nitroamines system
 # .....
 
 units		real
 
 atom_style	charge
-read_data	data.VOH
+read_data	data.AB
 Reading data file ...
   orthogonal box = (0.0000000 0.0000000 0.0000000) to (25.000000 25.000000 25.000000)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
-  100 atoms
+  104 atoms
   read_data CPU = 0.002 seconds
 
 pair_style	reax/c lmp_control
@@ -23,8 +23,8 @@ WARNING: Ignoring inactive control parameter: atom_forces (src/REAXFF/reaxff_con
 WARNING: Ignoring inactive control parameter: atom_velocities (src/REAXFF/reaxff_control.cpp:97)
 WARNING: Ignoring inactive control parameter: bond_info (src/REAXFF/reaxff_control.cpp:97)
 WARNING: Ignoring inactive control parameter: angle_info (src/REAXFF/reaxff_control.cpp:97)
-pair_coeff	* * ffield.reax.V_O_C_H H C O V
-Reading potential file ffield.reax.V_O_C_H with DATE: 2011-02-18
+pair_coeff	* * ffield.reax.AB H B N
+Reading potential file ffield.reax.AB with DATE: 2011-02-18
 WARNING: Changed valency_val to valency_boc for X (src/REAXFF/reaxff_ffield.cpp:294)
 
 neighbor	2 bin
@@ -36,7 +36,7 @@ fix             3 all temp/berendsen 500.0 500.0 100.0
 
 timestep	0.25
 
-#dump		1 all atom 30 dump.reax.voh
+#dump		1 all atom 30 dump.reax.ab
 
 run		3000
 
@@ -85,34 +85,34 @@ Neighbor list info ...
       pair build: copy
       stencil: none
       bin: none
-Per MPI rank memory allocation (min/avg/max) = 8.523 | 9.766 | 10.79 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 9.558 | 10.17 | 10.77 Mbytes
 Step Temp E_pair E_mol TotEng Press 
-       0            0   -10246.825            0   -10246.825    42.256092 
-    3000    469.58204   -10183.313            0   -10044.739   -695.27183 
-Loop time of 5.68052 on 8 procs for 3000 steps with 100 atoms
+       0            0   -8505.1816            0   -8505.1816   -673.36566 
+    3000    507.48428   -8415.6577            0   -8259.8481    984.83509 
+Loop time of 5.06141 on 8 procs for 3000 steps with 104 atoms
 
-Performance: 11.407 ns/day, 2.104 hours/ns, 528.121 timesteps/s
-99.6% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 12.803 ns/day, 1.875 hours/ns, 592.720 timesteps/s
+99.9% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 1.9332     | 2.461      | 2.9334     |  23.0 | 43.32
-Neigh   | 0.11526    | 0.15065    | 0.20042    |   6.8 |  2.65
-Comm    | 0.71859    | 1.233      | 1.789      |  34.7 | 21.71
-Output  | 8.5412e-05 | 9.2953e-05 | 0.00013511 |   0.0 |  0.00
-Modify  | 1.7925     | 1.8329     | 1.9241     |   2.8 | 32.27
-Other   |            | 0.00293    |            |       |  0.05
+Pair    | 2.0491     | 2.395      | 2.7874     |  17.0 | 47.32
+Neigh   | 0.10388    | 0.12318    | 0.14387    |   3.8 |  2.43
+Comm    | 0.15107    | 0.54466    | 0.89067    |  35.7 | 10.76
+Output  | 6.8914e-05 | 7.372e-05  | 0.00010443 |   0.0 |  0.00
+Modify  | 1.977      | 1.9965     | 2.0149     |   0.9 | 39.45
+Other   |            | 0.001945   |            |       |  0.04
 
-Nlocal:        12.5000 ave          23 max           0 min
-Histogram: 1 0 1 0 2 1 1 0 0 2
-Nghost:        283.375 ave         374 max         188 min
-Histogram: 1 0 0 3 0 1 1 0 1 1
-Neighs:        585.625 ave        1261 max           0 min
-Histogram: 1 0 2 2 0 0 1 0 1 1
+Nlocal:        13.0000 ave          23 max           5 min
+Histogram: 1 2 0 1 0 0 3 0 0 1
+Nghost:        324.875 ave         377 max         273 min
+Histogram: 1 0 1 2 1 0 1 0 0 2
+Neighs:        466.750 ave         780 max         129 min
+Histogram: 1 1 1 0 1 0 1 1 1 1
 
-Total # of neighbors = 4685
-Ave neighs/atom = 46.850000
+Total # of neighbors = 3734
+Ave neighs/atom = 35.903846
 Neighbor list builds = 300
 Dangerous builds not checked
 Total wall time: 0:00:05

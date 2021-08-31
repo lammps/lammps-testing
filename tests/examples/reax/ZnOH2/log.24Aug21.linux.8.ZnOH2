@@ -1,17 +1,17 @@
-LAMMPS (2 Jul 2021)
-# REAX potential for CHO system
+LAMMPS (30 Jul 2021)
+# REAX potential for ZnOH2 system
 # .....
 
 units		real
 
 atom_style	charge
-read_data	data.CHO
+read_data	data.ZnOH2
 Reading data file ...
   orthogonal box = (0.0000000 0.0000000 0.0000000) to (25.000000 25.000000 25.000000)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
   105 atoms
-  read_data CPU = 0.203 seconds
+  read_data CPU = 0.002 seconds
 
 pair_style	reax/c lmp_control
 WARNING: Ignoring inactive control parameter: simulation_name (src/REAXFF/reaxff_control.cpp:97)
@@ -23,8 +23,9 @@ WARNING: Ignoring inactive control parameter: atom_forces (src/REAXFF/reaxff_con
 WARNING: Ignoring inactive control parameter: atom_velocities (src/REAXFF/reaxff_control.cpp:97)
 WARNING: Ignoring inactive control parameter: bond_info (src/REAXFF/reaxff_control.cpp:97)
 WARNING: Ignoring inactive control parameter: angle_info (src/REAXFF/reaxff_control.cpp:97)
-pair_coeff	* * ffield.reax.cho H C O
-Reading potential file ffield.reax.cho with DATE: 2011-02-18
+pair_coeff	* * ffield.reax.ZnOH H O Zn
+Reading potential file ffield.reax.ZnOH with DATE: 2011-02-18
+WARNING: Changed valency_val to valency_boc for X (src/REAXFF/reaxff_ffield.cpp:294)
 
 neighbor	2 bin
 neigh_modify	every 10 delay 0 check no
@@ -35,7 +36,7 @@ fix             3 all temp/berendsen 500.0 500.0 100.0
 
 timestep	0.25
 
-#dump		1 all atom 30 dump.reax.cho
+#dump		1 all atom 30 dump.reax.znoh
 
 run		3000
 
@@ -84,34 +85,34 @@ Neighbor list info ...
       pair build: copy
       stencil: none
       bin: none
-Per MPI rank memory allocation (min/avg/max) = 8.550 | 9.898 | 11.67 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 8.564 | 9.887 | 11.13 Mbytes
 Step Temp E_pair E_mol TotEng Press 
-       0            0   -10226.557            0   -10226.557   -106.09738 
-    3000    547.82679   -10170.166            0   -10000.337    63.601028 
-Loop time of 6.55208 on 8 procs for 3000 steps with 105 atoms
+       0            0   -7900.2668            0   -7900.2668    60.076093 
+    3000    547.20432   -7938.3792            0   -7768.7435    -527.3617 
+Loop time of 2.49531 on 8 procs for 3000 steps with 105 atoms
 
-Performance: 9.890 ns/day, 2.427 hours/ns, 457.870 timesteps/s
-99.6% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 25.969 ns/day, 0.924 hours/ns, 1202.253 timesteps/s
+99.7% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 2.3495     | 2.8281     | 3.5977     |  22.5 | 43.16
-Neigh   | 0.11153    | 0.15282    | 0.20571    |   7.6 |  2.33
-Comm    | 0.58859    | 1.341      | 1.8376     |  32.4 | 20.47
-Output  | 9.2359e-05 | 9.9119e-05 | 0.00013303 |   0.0 |  0.00
-Modify  | 2.1531     | 2.2258     | 2.2765     |   2.7 | 33.97
-Other   |            | 0.00423    |            |       |  0.06
+Pair    | 0.88427    | 1.0811     | 1.3237     |  12.1 | 43.32
+Neigh   | 0.099688   | 0.1385     | 0.18067    |   6.4 |  5.55
+Comm    | 0.10552    | 0.34796    | 0.53812    |  21.3 | 13.94
+Output  | 6.9079e-05 | 7.3795e-05 | 0.00010071 |   0.0 |  0.00
+Modify  | 0.88271    | 0.92615    | 0.96648    |   2.7 | 37.12
+Other   |            | 0.001584   |            |       |  0.06
 
-Nlocal:        13.1250 ave          37 max           0 min
-Histogram: 2 1 1 1 0 2 0 0 0 1
-Nghost:        294.000 ave         427 max         173 min
-Histogram: 2 0 1 0 1 2 0 0 1 1
-Neighs:        665.625 ave        1829 max           0 min
-Histogram: 3 0 1 0 1 1 1 0 0 1
+Nlocal:        13.1250 ave          28 max           2 min
+Histogram: 2 0 1 0 2 1 0 1 0 1
+Nghost:        305.625 ave         427 max         193 min
+Histogram: 1 0 1 2 0 0 3 0 0 1
+Neighs:        603.500 ave        1415 max          55 min
+Histogram: 2 0 0 2 1 2 0 0 0 1
 
-Total # of neighbors = 5325
-Ave neighs/atom = 50.714286
+Total # of neighbors = 4828
+Ave neighs/atom = 45.980952
 Neighbor list builds = 300
 Dangerous builds not checked
-Total wall time: 0:00:06
+Total wall time: 0:00:02

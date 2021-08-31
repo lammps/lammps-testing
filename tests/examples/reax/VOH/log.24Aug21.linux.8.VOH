@@ -1,17 +1,17 @@
-LAMMPS (2 Jul 2021)
-# REAX potential for high energy CHON systems
+LAMMPS (30 Jul 2021)
+# REAX potential for VOH system
 # .....
 
 units		real
 
 atom_style	charge
-read_data	data.RDX
+read_data	data.VOH
 Reading data file ...
   orthogonal box = (0.0000000 0.0000000 0.0000000) to (25.000000 25.000000 25.000000)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
-  105 atoms
-  read_data CPU = 0.003 seconds
+  100 atoms
+  read_data CPU = 0.001 seconds
 
 pair_style	reax/c lmp_control
 WARNING: Ignoring inactive control parameter: simulation_name (src/REAXFF/reaxff_control.cpp:97)
@@ -23,8 +23,9 @@ WARNING: Ignoring inactive control parameter: atom_forces (src/REAXFF/reaxff_con
 WARNING: Ignoring inactive control parameter: atom_velocities (src/REAXFF/reaxff_control.cpp:97)
 WARNING: Ignoring inactive control parameter: bond_info (src/REAXFF/reaxff_control.cpp:97)
 WARNING: Ignoring inactive control parameter: angle_info (src/REAXFF/reaxff_control.cpp:97)
-pair_coeff	* * ffield.reax.rdx H C O N
-Reading potential file ffield.reax.rdx with DATE: 2010-02-19
+pair_coeff	* * ffield.reax.V_O_C_H H C O V
+Reading potential file ffield.reax.V_O_C_H with DATE: 2011-02-18
+WARNING: Changed valency_val to valency_boc for X (src/REAXFF/reaxff_ffield.cpp:294)
 
 neighbor	2 bin
 neigh_modify	every 10 delay 0 check no
@@ -35,7 +36,7 @@ fix             3 all temp/berendsen 500.0 500.0 100.0
 
 timestep	0.25
 
-#dump		1 all atom 30 dump.reax.rdx
+#dump		1 all atom 30 dump.reax.voh
 
 run		3000
 
@@ -84,34 +85,34 @@ Neighbor list info ...
       pair build: copy
       stencil: none
       bin: none
-Per MPI rank memory allocation (min/avg/max) = 9.290 | 10.08 | 11.06 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 8.523 | 9.766 | 10.79 Mbytes
 Step Temp E_pair E_mol TotEng Press 
-       0            0   -10197.932            0   -10197.932    38.347492 
-    3000       510.19   -10091.398            0    -9933.237    1401.5157 
-Loop time of 10.8015 on 8 procs for 3000 steps with 105 atoms
+       0            0   -10246.825            0   -10246.825    42.256092 
+    3000    474.54005   -10183.999            0   -10043.962   -1103.2301 
+Loop time of 3.99124 on 8 procs for 3000 steps with 100 atoms
 
-Performance: 5.999 ns/day, 4.001 hours/ns, 277.738 timesteps/s
-99.7% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 16.236 ns/day, 1.478 hours/ns, 751.646 timesteps/s
+99.8% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 4.3383     | 5.8155     | 7.2752     |  50.3 | 53.84
-Neigh   | 0.12801    | 0.16577    | 0.21223    |   6.4 |  1.53
-Comm    | 1.5145     | 2.8744     | 4.4159     |  68.4 | 26.61
-Output  | 9.0021e-05 | 9.6748e-05 | 0.00013324 |   0.0 |  0.00
-Modify  | 1.7911     | 1.9397     | 2.1169     |   7.5 | 17.96
-Other   |            | 0.006115   |            |       |  0.06
+Pair    | 1.5515     | 1.8576     | 2.3832     |  18.4 | 46.54
+Neigh   | 0.09248    | 0.11926    | 0.14196    |   4.4 |  2.99
+Comm    | 0.10992    | 0.60645    | 0.93549    |  33.8 | 15.19
+Output  | 6.4921e-05 | 6.9988e-05 | 9.4991e-05 |   0.0 |  0.00
+Modify  | 1.3691     | 1.4062     | 1.5555     |   4.9 | 35.23
+Other   |            | 0.001658   |            |       |  0.04
 
-Nlocal:        13.1250 ave          40 max           0 min
-Histogram: 3 1 1 0 1 0 0 1 0 1
-Nghost:        309.375 ave         427 max         227 min
-Histogram: 2 1 0 0 2 0 2 0 0 1
-Neighs:        527.500 ave        1610 max           0 min
-Histogram: 2 1 2 0 1 0 1 0 0 1
+Nlocal:        12.5000 ave          23 max           0 min
+Histogram: 1 0 1 0 2 1 1 0 0 2
+Nghost:        283.375 ave         374 max         188 min
+Histogram: 1 0 0 3 0 1 1 0 1 1
+Neighs:        586.125 ave        1262 max           0 min
+Histogram: 1 0 2 2 0 0 1 0 1 1
 
-Total # of neighbors = 4220
-Ave neighs/atom = 40.190476
+Total # of neighbors = 4689
+Ave neighs/atom = 46.890000
 Neighbor list builds = 300
 Dangerous builds not checked
-Total wall time: 0:00:11
+Total wall time: 0:00:04
