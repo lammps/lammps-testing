@@ -1,0 +1,7 @@
+display_name: 'Ubuntu 20.04 (GPU HIP)'
+container_image: 'ubuntu20.04_amd_rocm'
+unit_tests:
+ - cmake_gpu_hip_cuda_double_smallbig_clang_shared
+ - cmake_gpu_hip_cuda_single_bigbig_static
+ - cmake_gpu_hip_amd_double_bigbig_shared
+ - cmake_gpu_hip_amd_mixed_smallbig_clang_static
