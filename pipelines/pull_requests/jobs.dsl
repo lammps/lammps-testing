@@ -105,6 +105,51 @@ pipelineJob("dev/pull_requests/unit_tests") {
     }
 }
 
+pipelineJob("dev/pull_requests/gpu_unit_tests") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPullRequests {
+                    spec("* * * * *")
+                    triggerMode('HEAVY_HOOKS')
+                    cancelQueued(true)
+                    repoProviders {
+                        githubPlugin {
+                            cacheConnection(true)
+                            manageHooks(true)
+                            repoPermission('ADMIN')
+                        }
+                    }
+                    events {
+                        labelsAdded {
+                            label {
+                                labels('gpu_unit_tests')
+                                labels('ready_for_merge')
+                            }
+                        }
+                        labelsExist {
+                            label {
+                                labels('gpu_unit_tests')
+                                labels('ready_for_merge')
+                            }
+                            skip(false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull_requests/gpu_unit_tests.groovy'))
+            sandbox()
+        }
+    }
+}
+
 pipelineJob("dev/pull_requests/run_tests") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
@@ -125,12 +170,14 @@ pipelineJob("dev/pull_requests/run_tests") {
                     events {
                         labelsAdded {
                             label {
-                                labels('test-for-regression')
+                                labels('test_runs')
+                                labels('ready_for_merge')
                             }
                         }
                         labelsExist {
                             label {
-                                labels('test-for-regression')
+                                labels('test_runs')
+                                labels('ready_for_merge')
                             }
                             skip(false)
                         }
@@ -168,12 +215,14 @@ pipelineJob("dev/pull_requests/regression_tests") {
                     events {
                         labelsAdded {
                             label {
-                                labels('full-regression-test')
+                                labels('test_for_regression')
+                                labels('ready_for_merge')
                             }
                         }
                         labelsExist {
                             label {
-                                labels('full-regression-test')
+                                labels('test_for_regression')
+                                labels('ready_for_merge')
                             }
                             skip(false)
                         }
