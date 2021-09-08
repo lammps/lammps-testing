@@ -126,12 +126,21 @@ pipelineJob("dev/pull_requests/gpu_unit_tests") {
                         labelsAdded {
                             label {
                                 labels('gpu_unit_tests')
-                                labels('ready_for_merge')
                             }
                         }
                         labelsExist {
                             label {
                                 labels('gpu_unit_tests')
+                            }
+                            skip(false)
+                        }
+                        labelsAdded {
+                            label {
+                                labels('ready_for_merge')
+                            }
+                        }
+                        labelsExist {
+                            label {
                                 labels('ready_for_merge')
                             }
                             skip(false)
@@ -171,12 +180,21 @@ pipelineJob("dev/pull_requests/run_tests") {
                         labelsAdded {
                             label {
                                 labels('test_runs')
-                                labels('ready_for_merge')
                             }
                         }
                         labelsExist {
                             label {
                                 labels('test_runs')
+                            }
+                            skip(false)
+                        }
+                        labelsAdded {
+                            label {
+                                labels('ready_for_merge')
+                            }
+                        }
+                        labelsExist {
+                            label {
                                 labels('ready_for_merge')
                             }
                             skip(false)
@@ -216,12 +234,21 @@ pipelineJob("dev/pull_requests/regression_tests") {
                         labelsAdded {
                             label {
                                 labels('test_for_regression')
-                                labels('ready_for_merge')
                             }
                         }
                         labelsExist {
                             label {
                                 labels('test_for_regression')
+                            }
+                            skip(false)
+                        }
+                        labelsAdded {
+                            label {
+                                labels('ready_for_merge')
+                            }
+                        }
+                        labelsExist {
+                            label {
                                 labels('ready_for_merge')
                             }
                             skip(false)
