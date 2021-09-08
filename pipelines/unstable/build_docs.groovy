@@ -10,7 +10,7 @@ def launch_container = "singularity exec \$LAMMPS_CONTAINER_DIR/${container}.sif
 
 def lammps_branch = "unstable"
 
-node('slow') {
+node('atlas2') {
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
     env.LAMMPS_WEBSITE_BUILD = "1"
