@@ -99,7 +99,7 @@ From: ubuntu:20.04
     # Plumed
     ###########################################################################
 
-    export PLUMED_PKG_VERSION=2.6.1
+    export PLUMED_PKG_VERSION=2.7.2
 
     mkdir plumed
     cd plumed
@@ -107,7 +107,7 @@ From: ubuntu:20.04
     tar -xzf plumed.tar.gz
     cd plumed-${PLUMED_PKG_VERSION}
     ./configure --disable-doc --prefix=/usr
-    make -j 8
+    make
     make install
     cd ../../
     rm -rvf plumed
