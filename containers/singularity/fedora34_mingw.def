@@ -2,6 +2,9 @@ BootStrap: docker
 From: fedora:34
 
 %post
+        echo "fastestmirror=False" >> /etc/dnf/dnf.conf
+        dnf clean all
+        dnf makecache --refresh -v
         dnf -y update
         dnf -y install vim-enhanced git file make cmake patch which file Lmod \
                ninja-build clang clang-tools-extra libomp-devel libubsan libasan libtsan \
