@@ -26,7 +26,7 @@ node('ppc64le') {
     }
 
     if (set_github_status) {
-        utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'building...', 'PENDING')
+        utils.setGitHubCommitStatus(project_url, env.JOB_NAME, env.GITHUB_PR_HEAD_SHA, 'building...', 'PENDING')
     }
 
     def err = null
@@ -70,14 +70,14 @@ node('ppc64le') {
     } finally {
         if (currentBuild.result == 'FAILURE') {
             if (set_github_status) {
-                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'build failed!', 'FAILURE')
+                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, env.GITHUB_PR_HEAD_SHA, 'build failed!', 'FAILURE')
             }
             if (send_slack) {
                 slackSend color: 'danger', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} failed!"
             }
         } else {
             if (set_github_status) {
-                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'build successful!', 'SUCCESS')
+                utils.setGitHubCommitStatus(project_url, env.JOB_NAME, env.GITHUB_PR_HEAD_SHA, 'build successful!', 'SUCCESS')
             }
             if (send_slack) {
                 slackSend color: 'good', message: "Build <${env.BUILD_URL}|#${env.BUILD_NUMBER}> of ${env.JOB_NAME} succeeded!"
