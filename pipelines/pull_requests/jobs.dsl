@@ -159,6 +159,60 @@ pipelineJob("dev/pull_requests/gpu_unit_tests") {
     }
 }
 
+pipelineJob("dev/pull_requests/ibmxl_ppc64le") {
+    properties {
+        githubProjectUrl("https://github.com/lammps/lammps/")
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPullRequests {
+                    spec("* * * * *")
+                    triggerMode('HEAVY_HOOKS')
+                    cancelQueued(true)
+                    repoProviders {
+                        githubPlugin {
+                            cacheConnection(true)
+                            manageHooks(true)
+                            repoPermission('ADMIN')
+                        }
+                    }
+                    events {
+                        labelsAdded {
+                            label {
+                                labels('ppc64le')
+                            }
+                        }
+                        labelsExist {
+                            label {
+                                labels('ppc64le')
+                            }
+                            skip(false)
+                        }
+                        labelsAdded {
+                            label {
+                                labels('ready_for_merge')
+                            }
+                        }
+                        labelsExist {
+                            label {
+                                labels('ready_for_merge')
+                            }
+                            skip(false)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/pull_requests/ibmxl_ppc64le.groovy'))
+            sandbox()
+        }
+    }
+}
+
 pipelineJob("dev/pull_requests/run_tests") {
     properties {
         githubProjectUrl("https://github.com/lammps/lammps/")
