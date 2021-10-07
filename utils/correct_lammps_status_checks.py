@@ -19,13 +19,8 @@ def correct_ci_statuses(commit):
     query = {}
 
     for s in status:
-        if s.context.startswith("dev"):
-            if s.state == 'success':
-                query[s.context] = {'state': 'success', 'target_url': s.target_url}
-            elif s.state == 'pending' and s.context not in query:
-                query[s.context] = {'state': 'pending', 'target_url': s.target_url}
-            elif s.state == 'failed' and s.context not in query:
-                query[s.context] = {'state': 'failed', 'target_url': s.target_url}
+        if s.context.startswith("dev") and (s.context not in query or s.id > query[s.context]['id']):
+             query[s.context] = {'state': s.state, 'target_url': s.target_url, 'id': s.id}
 
     for context, values in query.items():
         jenkins_result = get_jenkins_result(values['target_url'])
