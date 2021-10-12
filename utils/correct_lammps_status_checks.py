@@ -40,11 +40,11 @@ if token is None:
 g = Github(token)
 repo = g.get_repo("lammps/lammps")
 
-branch = repo.get_branch("master")
+branch = repo.get_branch("develop")
 
 correct_ci_statuses(branch.commit)
 
-pulls = repo.get_pulls(state='open', sort='created', base='master')
+pulls = repo.get_pulls(state='open', sort='created', base='develop')
 
 for pr in pulls:
     commits = pr.get_commits()
