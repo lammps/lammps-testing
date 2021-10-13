@@ -375,7 +375,7 @@ configurations.each { yaml_file ->
 
         definition {
             cps {
-                script(readFileFromWorkspace('pipelines/master/container_compilation_tests.groovy'))
+                script(readFileFromWorkspace('pipelines/develop/container_compilation_tests.groovy'))
                 sandbox()
             }
         }
@@ -393,7 +393,7 @@ configurations.each { yaml_file ->
 
             definition {
                 cps {
-                    script(readFileFromWorkspace('pipelines/master/build.groovy'))
+                    script(readFileFromWorkspace('pipelines/develop/build.groovy'))
                     sandbox()
                 }
             }
@@ -415,7 +415,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/master/run.groovy'))
+                        script(readFileFromWorkspace('pipelines/develop/run.groovy'))
                         sandbox()
                     }
                 }
@@ -438,7 +438,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/master/regression.groovy'))
+                        script(readFileFromWorkspace('pipelines/develop/regression.groovy'))
                         sandbox()
                     }
                 }
@@ -462,7 +462,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/master/run_unit_tests.groovy'))
+                        script(readFileFromWorkspace('pipelines/develop/run_unit_tests.groovy'))
                         sandbox()
                     }
                 }
