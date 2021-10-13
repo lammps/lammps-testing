@@ -2,7 +2,7 @@
 import org.yaml.snakeyaml.Yaml
 
 folder('dev/develop')
-folder('dev/unstable')
+folder('dev/release')
 folder('dev/stable')
 
 pipelineJob("dev/develop/checkstyle") {
