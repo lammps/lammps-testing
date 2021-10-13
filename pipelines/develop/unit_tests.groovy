@@ -5,7 +5,7 @@ def project_url = 'https://github.com/lammps/lammps.git'
 def set_github_status = true
 def send_slack = true
 
-def lammps_branch = "master"
+def lammps_branch = "develop"
 def lammps_testing_branch = "master"
 
 node('atlas2') {
@@ -36,9 +36,9 @@ node('atlas2') {
 
     try {
         configurations.each { container, config ->
-            if(config.regression_tests.size() > 0) {
-                jobs[container] = config.regression_tests.collectEntries { build ->
-                    ["${build}": launch_build("${container}/regression_tests/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
+            if(config.unit_tests.size() > 0) {
+                jobs[container] = config.unit_tests.collectEntries { build ->
+                    ["${build}": launch_build("${container}/unit_tests/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
                 }
 
                 stage(config.display_name) {
@@ -81,6 +81,7 @@ def get_configuration(yaml_file) {
     def builds = []
     def run_tests  = []
     def regression_tests = []
+    def unit_tests = []
 
     if(config.containsKey('display_name')) {
         display_name = config.display_name.toString()
@@ -98,11 +99,16 @@ def get_configuration(yaml_file) {
         regression_tests = config.regression_tests.collect({ it.toString() })
     }
 
+    if(config.containsKey('unit_tests')) {
+        unit_tests = config.unit_tests.collect({ it.toString() })
+    }
+
     return ["${name}": [
         "display_name": display_name,
         "builds": builds,
         "run_tests": run_tests,
-        "regression_tests": regression_tests
+        "regression_tests": regression_tests,
+        "unit_tests": unit_tests,
     ]]
 }
 

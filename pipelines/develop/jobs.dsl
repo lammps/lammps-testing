@@ -1,11 +1,11 @@
 @Grab('org.yaml:snakeyaml:1.17')
 import org.yaml.snakeyaml.Yaml
 
-folder('dev/master')
+folder('dev/develop')
 folder('dev/unstable')
 folder('dev/stable')
 
-pipelineJob("dev/master/checkstyle") {
+pipelineJob("dev/develop/checkstyle") {
     quietPeriod(120)
 
     properties {
@@ -19,13 +19,13 @@ pipelineJob("dev/master/checkstyle") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/master/checkstyle.groovy'))
+            script(readFileFromWorkspace('pipelines/develop/checkstyle.groovy'))
             sandbox()
         }
     }
 }
 
-pipelineJob("dev/master/compilation_tests") {
+pipelineJob("dev/develop/compilation_tests") {
     quietPeriod(120)
 
     properties {
@@ -39,13 +39,13 @@ pipelineJob("dev/master/compilation_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/master/compilation_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/develop/compilation_tests.groovy'))
             sandbox()
         }
     }
 }
 
-pipelineJob("dev/master/run_tests") {
+pipelineJob("dev/develop/run_tests") {
     quietPeriod(120)
 
     properties {
@@ -59,13 +59,13 @@ pipelineJob("dev/master/run_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/master/run_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/develop/run_tests.groovy'))
             sandbox()
         }
     }
 }
 
-pipelineJob("dev/master/regression_tests") {
+pipelineJob("dev/develop/regression_tests") {
     quietPeriod(120)
 
     properties {
@@ -79,13 +79,13 @@ pipelineJob("dev/master/regression_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/master/regression_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/develop/regression_tests.groovy'))
             sandbox()
         }
     }
 }
 
-pipelineJob("dev/master/build_docs") {
+pipelineJob("dev/develop/build_docs") {
     quietPeriod(120)
 
     properties {
@@ -98,7 +98,7 @@ pipelineJob("dev/master/build_docs") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/master/build_docs.groovy'))
+            script(readFileFromWorkspace('pipelines/develop/build_docs.groovy'))
             sandbox()
         }
     }
@@ -143,7 +143,7 @@ pipelineJob("dev/stable/build_docs") {
 }
 
 
-pipelineJob("dev/master/unit_tests") {
+pipelineJob("dev/develop/unit_tests") {
     quietPeriod(120)
 
     properties {
@@ -157,16 +157,16 @@ pipelineJob("dev/master/unit_tests") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/master/unit_tests.groovy'))
+            script(readFileFromWorkspace('pipelines/develop/unit_tests.groovy'))
             sandbox()
         }
     }
 }
 
-folder('dev/master/docker')
+folder('dev/develop/docker')
 
 
-pipelineJob("dev/master/docker_containers") {
+pipelineJob("dev/develop/docker_containers") {
     quietPeriod(120)
 
     properties {
@@ -180,7 +180,7 @@ pipelineJob("dev/master/docker_containers") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/master/docker_containers.groovy'))
+            script(readFileFromWorkspace('pipelines/develop/docker_containers.groovy'))
             sandbox()
         }
     }
@@ -194,9 +194,9 @@ configurations.each { yaml_file ->
     def config = new Yaml().load(yaml_file.readToString())
     def container = yaml_file.getBaseName()
 
-    folder("dev/master/${container}")
+    folder("dev/develop/${container}")
 
-    pipelineJob("dev/master/${container}/compilation_tests") {
+    pipelineJob("dev/develop/${container}/compilation_tests") {
         parameters {
             stringParam('GIT_COMMIT')
             stringParam('WORKSPACE_PARENT')
@@ -205,14 +205,14 @@ configurations.each { yaml_file ->
 
         definition {
             cps {
-                script(readFileFromWorkspace('pipelines/master/container_compilation_tests.groovy'))
+                script(readFileFromWorkspace('pipelines/develop/container_compilation_tests.groovy'))
                 sandbox()
             }
         }
     }
 
     config.builds.each { name ->
-        pipelineJob("dev/master/${container}/${name}") {
+        pipelineJob("dev/develop/${container}/${name}") {
             parameters {
                 stringParam('GIT_COMMIT')
                 stringParam('WORKSPACE_PARENT')
@@ -223,7 +223,7 @@ configurations.each { yaml_file ->
 
             definition {
                 cps {
-                    script(readFileFromWorkspace('pipelines/master/build.groovy'))
+                    script(readFileFromWorkspace('pipelines/develop/build.groovy'))
                     sandbox()
                 }
             }
@@ -231,10 +231,10 @@ configurations.each { yaml_file ->
     }
 
     if(config.containsKey('run_tests')){
-        folder("dev/master/${container}/run_tests")
+        folder("dev/develop/${container}/run_tests")
 
         config.run_tests.each { name ->
-            pipelineJob("dev/master/${container}/run_tests/${name}") {
+            pipelineJob("dev/develop/${container}/run_tests/${name}") {
                 parameters {
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
@@ -245,7 +245,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/master/run.groovy'))
+                        script(readFileFromWorkspace('pipelines/develop/run.groovy'))
                         sandbox()
                     }
                 }
@@ -254,10 +254,10 @@ configurations.each { yaml_file ->
     }
 
     if(config.containsKey('regression_tests')){
-        folder("dev/master/${container}/regression_tests")
+        folder("dev/develop/${container}/regression_tests")
 
         config.regression_tests.each { name ->
-            pipelineJob("dev/master/${container}/regression_tests/${name}") {
+            pipelineJob("dev/develop/${container}/regression_tests/${name}") {
                 parameters {
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
@@ -268,7 +268,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/master/regression.groovy'))
+                        script(readFileFromWorkspace('pipelines/develop/regression.groovy'))
                         sandbox()
                     }
                 }
@@ -277,10 +277,10 @@ configurations.each { yaml_file ->
     }
 
     if(config.containsKey('unit_tests')){
-        folder("dev/master/${container}/unit_tests")
+        folder("dev/develop/${container}/unit_tests")
 
         config.unit_tests.each { name ->
-            pipelineJob("dev/master/${container}/unit_tests/${name}") {
+            pipelineJob("dev/develop/${container}/unit_tests/${name}") {
                 parameters {
                     stringParam('GIT_COMMIT')
                     stringParam('WORKSPACE_PARENT')
@@ -291,7 +291,7 @@ configurations.each { yaml_file ->
 
                 definition {
                     cps {
-                        script(readFileFromWorkspace('pipelines/master/run_unit_tests.groovy'))
+                        script(readFileFromWorkspace('pipelines/develop/run_unit_tests.groovy'))
                         sandbox()
                     }
                 }
@@ -320,10 +320,10 @@ container_definitions.each { definition_file ->
                             credentials('lammps-jenkins')
                         }
 
-                        branches('master')
+                        branches('develop')
                     }
                 }
-                scriptPath("pipelines/master/singularity_container.groovy")
+                scriptPath("pipelines/develop/singularity_container.groovy")
             }
         }
     }
@@ -331,10 +331,10 @@ container_definitions.each { definition_file ->
 
 def docker_config_file = workspace.child('containers/docker.yml')
 def docker_config = new Yaml().load(docker_config_file.readToString())
-folder("dev/master/docker")
+folder("dev/develop/docker")
 
 docker_config.containers.each { name ->
-    pipelineJob("dev/master/docker/${name}") {
+    pipelineJob("dev/develop/docker/${name}") {
         parameters {
             stringParam('GIT_COMMIT')
             stringParam('WORKSPACE_PARENT')
@@ -342,16 +342,16 @@ docker_config.containers.each { name ->
 
         definition {
             cps {
-                script(readFileFromWorkspace('pipelines/master/docker_container.groovy'))
+                script(readFileFromWorkspace('pipelines/develop/docker_container.groovy'))
                 sandbox()
             }
         }
     }
 }
 
-folder('dev/master/static_analysis')
+folder('dev/develop/static_analysis')
 
-pipelineJob("dev/master/static_analysis/cmake_coverity") {
+pipelineJob("dev/develop/static_analysis/cmake_coverity") {
     properties {
         disableConcurrentBuilds()
         pipelineTriggers {
@@ -365,7 +365,7 @@ pipelineJob("dev/master/static_analysis/cmake_coverity") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/master/cmake_coverity.groovy'))
+            script(readFileFromWorkspace('pipelines/develop/cmake_coverity.groovy'))
             sandbox()
         }
     }
