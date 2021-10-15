@@ -5,11 +5,12 @@ def project_url = 'https://github.com/lammps/lammps.git'
 def set_github_status = true
 def send_slack = true
 
-def lammps_branch = "master"
+def lammps_branch = "develop"
 def lammps_testing_branch = "master"
 
-node('ppc64le') {
+node('atlas2') {
     def utils = new Utils()
+
 
     stage('Checkout') {
         dir('lammps') {
@@ -25,41 +26,27 @@ node('ppc64le') {
         utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'building...', 'PENDING')
     }
 
+    def yaml_files = findFiles glob: 'lammps-testing/scripts/*.yml'
+
+
+    def configurations = yaml_files.collectEntries { yaml_file -> get_configuration(yaml_file)  }
+
+    def jobs = [:]
     def err = null
 
     try {
-        env.LAMMPS_DIR = "${env.WORKSPACE}/lammps"
-        env.LAMMPS_TESTING_DIR = "${env.WORKSPACE}/lammps-testing"
-        env.LAMMPS_CACHE_DIR = "${env.WORKSPACE}/cache"
+        configurations.each { container, config ->
+            if(config.regression_tests.size() > 0) {
+                jobs[container] = config.regression_tests.collectEntries { build ->
+                    ["${build}": launch_build("${container}/regression_tests/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
+                }
 
-        def build_script = "cmake_ibmxlc.sh"
-
-        timeout(time: 2, unit: 'HOURS') {
-            stage('Build') {
-                ansiColor('xterm') {
-                    sh(label: "Run build script",
-                       script: "\$LAMMPS_TESTING_DIR/scripts/builds/${build_script}")
+                stage(config.display_name) {
+                    echo "Running ${config.display_name}"
+                    parallel jobs[container]
                 }
             }
         }
-
-        def tools = []
-
-        if (build_script.contains("cmake")) {
-            tools.add(cmake())
-        }
-
-        if (build_script.contains("_icc_")) {
-            tools.add(intel())
-        } else if (build_script.contains("_clang_")) {
-            tools.add(clang())
-        } else if (build_script.contains("_ibmxlc_")) {
-            tools.add(xlc())
-        } else {
-            tools.add(gcc())
-        }
-
-        recordIssues(tools: tools)
     } catch (caughtErr) {
         err = caughtErr
         currentBuild.result = 'FAILURE'
@@ -83,5 +70,44 @@ node('ppc64le') {
         if(err) {
             throw err
         }
+    }
+}
+
+def get_configuration(yaml_file) {
+    def name = yaml_file.name.take(yaml_file.name.lastIndexOf('.'))
+    def config  = readYaml(file: yaml_file.path)
+
+    def display_name = name
+    def builds = []
+    def run_tests  = []
+    def regression_tests = []
+
+    if(config.containsKey('display_name')) {
+        display_name = config.display_name.toString()
+    }
+
+    if(config.containsKey('builds')) {
+        builds = config.builds.collect({ it.toString() })
+    }
+
+    if(config.containsKey('run_tests')) {
+        run_tests = config.run_tests.collect({ it.toString() })
+    }
+
+    if(config.containsKey('regression_tests')) {
+        regression_tests = config.regression_tests.collect({ it.toString() })
+    }
+
+    return ["${name}": [
+        "display_name": display_name,
+        "builds": builds,
+        "run_tests": run_tests,
+        "regression_tests": regression_tests
+    ]]
+}
+
+def launch_build(job_name, commit, workspace) {
+    return {
+        build job: job_name, parameters: [ string(name: 'GIT_COMMIT', value: commit), string(name: 'WORKSPACE_PARENT', value: workspace) ]
     }
 }

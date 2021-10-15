@@ -2,51 +2,50 @@
 import org.lammps.ci.Utils
 
 def project_url = 'https://github.com/lammps/lammps.git'
-def packages_project_url = 'https://github.com/lammps/lammps-packages.git'
-def set_github_status = false
-def send_slack = false
+def set_github_status = true
+def send_slack = true
 
-def lammps_branch = "master"
+def lammps_branch = "develop"
 def lammps_testing_branch = "master"
-def lammps_packages_branch = "master"
-
-def docker_image_name = "lammps:${env.JOB_NAME}"
-def dockerfile = "lammps-packages/docker/${env.JOB_NAME}/Dockerfile"
 
 node('atlas2') {
     def utils = new Utils()
 
+
     stage('Checkout') {
         dir('lammps') {
-            commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: project_url]]])
+            commit = checkout([$class: 'GitSCM', branches: [[name: "*/${lammps_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'CloneOption', depth: 1, noTags: false, reference: '', shallow: true]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps']]])
         }
 
         dir('lammps-testing') {
             checkout changelog: false, poll: false, scm: [$class: 'GitSCM', branches: [[name: "*/${lammps_testing_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: 'https://github.com/lammps/lammps-testing']]]
         }
-
-        dir('lammps-packages') {
-            checkout scm: [$class: 'GitSCM', branches: [[name: "*/${lammps_packages_branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'lammps-jenkins', url: packages_project_url]]]
-        }
     }
-
 
     if (set_github_status) {
         utils.setGitHubCommitStatus(project_url, env.JOB_NAME, commit.GIT_COMMIT, 'building...', 'PENDING')
     }
 
-    def config  = readYaml(file: 'lammps-testing/containers/docker.yml')
+    def yaml_files = findFiles glob: 'lammps-testing/scripts/*.yml'
+
+
+    def configurations = yaml_files.collectEntries { yaml_file -> get_configuration(yaml_file)  }
 
     def jobs = [:]
     def err = null
 
     try {
-        jobs = config.containers.collectEntries { container ->
-            ["${container}": launch_build("docker/${container}", commit.GIT_COMMIT, env.WORKSPACE)]
-        }
+        configurations.each { container, config ->
+            if(config.run_tests.size() > 0) {
+                jobs[container] = config.run_tests.collectEntries { build ->
+                    ["${build}": launch_build("${container}/run_tests/${build}", commit.GIT_COMMIT, env.WORKSPACE)]
+                }
 
-        stage('Build Containers') {
-            parallel jobs
+                stage(config.display_name) {
+                    echo "Running ${config.display_name}"
+                    parallel jobs[container]
+                }
+            }
         }
     } catch (caughtErr) {
         err = caughtErr
@@ -72,6 +71,33 @@ node('atlas2') {
             throw err
         }
     }
+}
+
+def get_configuration(yaml_file) {
+    def name = yaml_file.name.take(yaml_file.name.lastIndexOf('.'))
+    def config  = readYaml(file: yaml_file.path)
+
+    def display_name = name
+    def builds = []
+    def run_tests  = []
+
+    if(config.containsKey('display_name')) {
+        display_name = config.display_name.toString()
+    }
+
+    if(config.containsKey('builds')) {
+        builds = config.builds.collect({ it.toString() })
+    }
+
+    if(config.containsKey('run_tests')) {
+        run_tests = config.run_tests.collect({ it.toString() })
+    }
+
+    return ["${name}": [
+        "display_name": display_name,
+        "builds": builds,
+        "run_tests": run_tests
+    ]]
 }
 
 def launch_build(job_name, commit, workspace) {
