@@ -36,7 +36,7 @@ From: fedora:32
                texlive-framed texlive-wrapfig texlive-upquote texlive-capt-of \
                texlive-needspace texlive-titlesec texlive-anysize texlive-dvipng texlive-xindy \
                blas-devel lapack-devel libyaml-devel openkim-models kim-api-devel \
-               zstd libzstd-devel icu libicu-devel libatomic
+               zstd libzstd-devel icu libicu-devel libatomic yaml-cpp-devel
         dnf clean all
 
         # enable Lmod and load MPI
