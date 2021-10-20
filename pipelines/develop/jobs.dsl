@@ -104,7 +104,7 @@ pipelineJob("dev/develop/build_docs") {
     }
 }
 
-pipelineJob("dev/unstable/build_docs") {
+pipelineJob("dev/release/build_docs") {
     quietPeriod(120)
 
     properties {
@@ -117,7 +117,7 @@ pipelineJob("dev/unstable/build_docs") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/unstable/build_docs.groovy'))
+            script(readFileFromWorkspace('pipelines/release/build_docs.groovy'))
             sandbox()
         }
     }
