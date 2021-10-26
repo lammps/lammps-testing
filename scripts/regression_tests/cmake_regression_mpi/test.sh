@@ -18,5 +18,8 @@ rm *.xml || true
 
 nosetests -v --with-xunit --xunit-file=regression_01.xml tests/test_long_range_electrostatics.py
 nosetests -v --with-xunit --xunit-file=regression_02.xml tests/test_regression.py
+# run single test case
+#nosetests -v -s --with-xunit --xunit-file=regression_02.xml tests/test_regression.py:BodyTestCase
+
 
 deactivate
