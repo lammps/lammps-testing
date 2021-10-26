@@ -51,3 +51,11 @@ for pr in pulls:
     head = commits[commits.totalCount-1]
     print(pr.number, head)
     correct_ci_statuses(head)
+
+pulls = repo.get_pulls(state='open', sort='created', base='stable')
+
+for pr in pulls:
+    commits = pr.get_commits()
+    head = commits[commits.totalCount-1]
+    print(pr.number, head)
+    correct_ci_statuses(head)
