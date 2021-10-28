@@ -1,0 +1,19 @@
+LAMMPS (27 Oct 2021)
+# Simple rigid body system
+
+units		lj
+atom_style	atomic
+atom_modify  map array
+
+pair_style	lj/cut 2.5
+
+fix 0 all property/atom i_bodies
+
+read_data	data.rigid-property fix 0 NULL Bodies
+Reading data file ...
+  orthogonal box = (-12.000000 -12.000000 -12.000000) to (12.000000 12.000000 12.000000)
+  2 by 2 by 2 MPI processor grid
+  reading atoms ...
+  81 atoms
+ERROR: Invalid data file section: Bodies (src/read_data.cpp:581)
+Last command: read_data	data.rigid-property fix 0 NULL Bodies
