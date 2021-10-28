@@ -136,9 +136,10 @@ class LocalRunner(object):
         print(" ".join(command))
 
         if stdout:
-            subprocess.call(command, cwd=self.working_directory, stdout=stdout, stderr=subprocess.STDOUT)
+            result = subprocess.call(command, cwd=self.working_directory, stdout=stdout, stderr=subprocess.STDOUT)
         else:
-            subprocess.call(command, cwd=self.working_directory)
+            result = subprocess.call(command, cwd=self.working_directory)
+        return result.returncode
 
 
 class MPIRunner(LocalRunner):

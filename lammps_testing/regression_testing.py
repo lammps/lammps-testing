@@ -102,7 +102,10 @@ class RegressionTest(object):
         with open(self.stdout_file_path, 'w') as f:
             lammps_options = ['-log', self.log_file] + self.options
             runner.working_directory = self.test_directory
-            runner.run(input_script=self.input_script, options=lammps_options, stdout=f)
+            return_code = runner.run(input_script=self.input_script, options=lammps_options, stdout=f)
+
+        if return_code != 0:
+          raise Exception("LAMMPS run failed!")
 
         if not os.path.exists(self.log_file_path):
             raise FileNotFoundError(self.log_file_path)
