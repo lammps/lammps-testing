@@ -1,0 +1,99 @@
+LAMMPS (27 Oct 2021)
+# Initialization
+units           metal
+boundary        p p p
+atom_style      charge
+processors      * * 1     # domain decomposition over x and y
+
+# System and atom definition
+# we use different molecule ids for each layer of hBN
+# so that inter- and intra-layer
+# interactions can be specified separately
+read_data       hBN-monolayer-5nm.data
+Reading data file ...
+  orthogonal box = (0.0000000 0.0000000 0.0000000) to (46.152980 48.443364 100.00000)
+  2 by 4 by 1 MPI processor grid
+  reading atoms ...
+  880 atoms
+  read_data CPU = 0.003 seconds
+mass            1 10.8110   # boron mass (g/mole) | membrane
+mass            2 14.0067   # nitrogen mass (g/mole) | adsorbate
+
+######################## Potential defition ########################
+pair_style  tersoff shift 0.05
+pair_coeff  * * BNC.tersoff B N
+Reading tersoff potential file BNC.tersoff with DATE: 2013-03-21
+####################################################################
+# Neighbor update settings
+neighbor        2.0 bin
+neigh_modify    every 1
+neigh_modify    delay 0
+neigh_modify    check yes
+
+#### Simulation settings ####
+timestep        0.001
+velocity        all create 300.0 4928459 loop geom
+fix             thermostat all nve
+
+############# Output ###############
+thermo          100
+thermo_style    custom step etotal pe ke temp
+#thermo_modify   lost warn
+thermo_modify   line one format float %20.16g lost warn
+
+###### Run molecular dynamics ######
+run             1000
+Neighbor list info ...
+  update every 1 steps, delay 0 steps, check yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 4.1
+  ghost atom cutoff = 4.1
+  binsize = 2.05, bins = 23 24 49
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair tersoff, perpetual
+      attributes: full, newton on
+      pair build: full/bin/atomonly
+      stencil: full/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 3.251 | 3.253 | 3.254 Mbytes
+Step TotEng PotEng KinEng Temp 
+       0    -6570.52599932407   -6604.611899560569        34.0859002365                  300 
+     100   -6570.310828576843   -6584.788128201204    14.47729962436059    127.4189579026399 
+     200   -6570.372315727986   -6587.981402302952    17.60908657496568    154.9827329140873 
+     300   -6570.341402414288   -6587.005611017606     16.6642086033182    146.6665849019334 
+     400    -6570.37338165509   -6587.812074340182    17.43869268509232    153.4830463396582 
+     500   -6570.357279692751   -6587.139105628345    16.78182593559337    147.7017695219004 
+     600   -6570.364533408485   -6588.199043380885    17.83450997240051    156.9667503160403 
+     700   -6570.362000654088   -6587.514376495223    17.15237584113474    150.9630878644146 
+     800    -6570.35839468902   -6587.200486866485    16.84209217746468    148.2321903831933 
+     900   -6570.372035122429   -6588.096861613308     17.7248264908785     156.001393842299 
+    1000   -6570.355748883589    -6587.39942846168    17.04367957809132     150.006420189899 
+Loop time of 0.227669 on 8 procs for 1000 steps with 880 atoms
+
+Performance: 379.499 ns/day, 0.063 hours/ns, 4392.344 timesteps/s
+99.8% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.12506    | 0.1722     | 0.20493    |   6.2 | 75.64
+Neigh   | 0          | 0          | 0          |   0.0 |  0.00
+Comm    | 0.0094332  | 0.045142   | 0.098947   |  14.3 | 19.83
+Output  | 9.1398e-05 | 0.0001797  | 0.00031129 |   0.0 |  0.08
+Modify  | 0.00061181 | 0.00089658 | 0.0011385  |   0.0 |  0.39
+Other   |            | 0.00925    |            |       |  4.06
+
+Nlocal:        110.000 ave         126 max          94 min
+Histogram: 1 0 0 3 0 0 3 0 0 1
+Nghost:        383.000 ave         398 max         368 min
+Histogram: 1 0 1 2 0 0 2 1 0 1
+Neighs:         0.00000 ave           0 max           0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+FullNghs:      1980.00 ave        2268 max        1692 min
+Histogram: 1 0 0 3 0 0 3 0 0 1
+
+Total # of neighbors = 15840
+Ave neighs/atom = 18.000000
+Neighbor list builds = 0
+Dangerous builds = 0
+Total wall time: 0:00:00
