@@ -139,7 +139,7 @@ class LocalRunner(object):
             result = subprocess.call(command, cwd=self.working_directory, stdout=stdout, stderr=subprocess.STDOUT)
         else:
             result = subprocess.call(command, cwd=self.working_directory)
-        return result.returncode
+        return result
 
 
 class MPIRunner(LocalRunner):
