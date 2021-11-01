@@ -92,7 +92,7 @@ ${CMAKE_COMMAND} \
       -D PKG_LATBOLTZ=on \
       -D PKG_MANIFOLD=on \
       -D PKG_MGPT=on \
-      -D PKG_ML-HDNN=on \
+      -D PKG_ML-HDNNP=on \
       -D PKG_ML-PACE=on \
       -D PKG_ML-RANN=on \
       -D PKG_MOLFILE=on \
