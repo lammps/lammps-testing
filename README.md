@@ -99,25 +99,28 @@ You can build all compilation tests at once as follows:
 
 ```bash
 # this will launch all ubuntu, centos and windows compilation tests
-lammps_test compilation
+lammps_test compile
 ```
 
-To limit the compilation tests to a single environment use the `--config` option:
+To limit the compilation tests use the environment name as selector:
 
 ```bash
 # only run ubuntu compilation tests
-lammps_test compilation --config ubuntu
+lammps_test compile ubuntu
 ```
 
-If only a few builds in an environment should be run specify the builds with `--builds`:
+If only a few builds in an environment should be run specify them with their full name:
 
 
 ```bash
 # only run 'cmake_mpi_smallbig_shared' compilation test on ubuntu
-lammps_test compilation --config ubuntu --builds cmake_mpi_smallbig_shared
+lammps_test compile ubuntu/cmake_mpi_smallbig_shared
 
 # run two compilations tests on ubuntu
-lammps_test compilation --config ubuntu --builds cmake_serial_smallsmall_static cmake_mpi_smallbig_shared
+lammps_test compile ubuntu/cmake_serial_smallsmall_static ubuntu/cmake_mpi_smallbig_shared
+
+# run only legacy compilation tests
+lammps_test compile ubuntu/legacy*
 ```
 
 ## Build directories
