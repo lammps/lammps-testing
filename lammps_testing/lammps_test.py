@@ -562,6 +562,17 @@ def config_list(args, settings):
     for c in get_configurations(settings):
         print(c.name)
 
+def build_list(args, settings):
+    try:
+        configs = get_configurations_by_selector(args.config, settings)
+        for config in configs:
+            if hasattr(config, "builds"):
+                for build in config.builds:
+                    print(build)
+    except FileNotFoundError:
+        print(f"Configuration with name '{args.config}' does not exist!")
+        sys.exit(1)
+
 def init_env_command(parser):
     subparsers = parser.add_subparsers(help='sub-command help')
 
@@ -586,6 +597,13 @@ def init_config_command(parser):
     clist = subparsers.add_parser('list', help='list all configurations')
     clist.set_defaults(func=config_list)
 
+def init_build_command(parser):
+    subparsers = parser.add_subparsers(help='sub-command help')
+
+    blist = subparsers.add_parser('list', help='list all configurations')
+    blist.add_argument('config', metavar='config', default=['ALL'], help='name of configuration', nargs='*')
+    blist.set_defaults(func=build_list)
+
 def main():
     s = Settings()
 
@@ -601,6 +619,10 @@ def main():
     # create the parser for the "config" command
     parser_config = subparsers.add_parser('config', help='test config commands')
     init_config_command(parser_config)
+
+    # create the parser for the "build" command
+    parser_build = subparsers.add_parser('build', help='test build commands')
+    init_build_command(parser_build)
 
     # create the parser for the "status" command
     parser_status = subparsers.add_parser('status', help='show status of testing environment')
