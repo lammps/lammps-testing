@@ -58,13 +58,13 @@ with `lammps_test`:
 
 ```bash
 # builds all container definitions at once
-lammps_test build_container ALL
+lammps_test env build ALL
 
 # only build ubuntu18.04 container
-lammps_test build_container ubuntu18.04
+lammps_test env build ubuntu18.04
 
 # build multiple containers
-lammps_test build_container ubuntu18.04 centos7 fedora30_mingw
+lammps_test env build ubuntu18.04 centos7 fedora30_mingw
 ```
 
 ## Compilation Tests

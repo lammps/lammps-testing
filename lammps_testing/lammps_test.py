@@ -238,26 +238,11 @@ def cleanall(args, settings):
         logger.info(f'Removing {container.name}...')
         container.clean()
 
-def clean(args, settings):
-    c = get_container(args.env, settings)
-
-    try:
-        configurations = get_configurations_by_selector(args.config, settings)
-        modes = get_modes_by_selector(args.mode, settings)
-        for config in configurations:
-            for mode in modes:
-                builder = get_lammps_build(args.builder, c, config, settings, mode)
-                builder.clean()
-    except FileNotFoundError as e:
-        logger.error("Configuration does not exist!")
-        logger.error(e)
-        sys.exit(1)
-
-def build_container(args, settings):
+def env_build_container(args, settings):
     for c in get_containers_by_selector(args.images, settings):
         c.build(force=args.force)
 
-def clean_container(args, settings):
+def env_clean_container(args, settings):
     for c in get_containers_by_selector(args.images, settings):
         c.clean()
 
@@ -267,20 +252,6 @@ def ensure_container_exists(container):
         print("Build container environment first!\n")
         print(f"Usage: lammps_test buildenv --env={container.name}")
         sys.exit(1)
-
-def run(args, settings):
-    c = get_container(args.env, settings)
-    config = get_configuration(args.config, settings)
-    builder = get_lammps_build(args.builder, c, config, settings, args.mode)
-    runner  = get_lammps_runner('local', builder, settings)
-    runner.run(args.args.split())
-
-def runtests(args, settings):
-    c = get_container(args.env, settings)
-    config = get_configuration(args.config, settings)
-    builder = get_lammps_build(args.builder, c, config, settings, args.mode)
-    runner  = get_lammps_runner('testing', builder, settings)
-    runner.run()
 
 def checkstyle(args, settings):
     files = glob.glob(os.path.join(settings.lammps_dir, 'src', '**/*.cpp'), recursive=True)
@@ -573,12 +544,38 @@ def unit_test(args, settings):
                     print(f"Run unit tests of '{build_name}' on '{container.name}' FAILED!")
                     sys.exit(1)
 
+def env_status(args, settings):
+    containers = get_containers(settings)
+    print(container_build_status(True), "local")
+    for c in containers:
+        print(container_build_status(c.exists), c.name)
+
+def init_env_command(parser):
+    subparsers = parser.add_subparsers(help='sub-command help')
+
+    status = subparsers.add_parser('status', help='show all test environments')
+    status.set_defaults(func=env_status)
+
+    build = subparsers.add_parser('build', help='build container image(s)')
+    build.add_argument('images', metavar='image_name', nargs='+', help='container image names')
+    build.add_argument('-f', '--force', default=False, action='store_true', help="Force rebuild")
+    build.set_defaults(func=env_build_container)
+
+    clean = subparsers.add_parser('clean', help='remove container image(s)')
+    clean.add_argument('images', metavar='image_name', nargs='+', help='container image names')
+    clean.set_defaults(func=env_clean_container)
+
 def main():
     s = Settings()
 
     # create the top-level parser
     parser = argparse.ArgumentParser(prog='lammps_test')
     subparsers = parser.add_subparsers(help='sub-command help')
+
+
+    # create the parser for the "env" command
+    parser_env = subparsers.add_parser('env', help='test environment commands')
+    init_env_command(parser_env)
 
     # create the parser for the "status" command
     parser_status = subparsers.add_parser('status', help='show status of testing environment')
@@ -588,17 +585,6 @@ def main():
     # create the parser for the "checkstyle" command
     parser_checkstyle = subparsers.add_parser('checkstyle', help='check current checkout for code style issues')
     parser_checkstyle.set_defaults(func=checkstyle)
-
-    # create the parser for the "build_container" command
-    parser_build_container = subparsers.add_parser('build_container', help='build container image(s)')
-    parser_build_container.add_argument('images', metavar='image_name', nargs='+', help='container image names')
-    parser_build_container.add_argument('-f', '--force', default=False, action='store_true', help="Force rebuild")
-    parser_build_container.set_defaults(func=build_container)
-
-    # create the parser for the "clean_container" command
-    parser_clean_container = subparsers.add_parser('clean_container', help='clean container image(s)')
-    parser_clean_container.add_argument('images', metavar='image_name', nargs='+', help='container image names')
-    parser_clean_container.set_defaults(func=clean_container)
 
     # create the parser for the "cleanall" command
     parser_cleanall = subparsers.add_parser('cleanall', help='clean container environment and all builds')
