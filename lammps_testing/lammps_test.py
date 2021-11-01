@@ -558,6 +558,10 @@ def env_status(args, settings):
     for c in containers:
         print(f"{container_build_status(c.exists):>12} |", c.name)
 
+def config_list(args, settings):
+    for c in get_configurations(settings):
+        print(c.name)
+
 def init_env_command(parser):
     subparsers = parser.add_subparsers(help='sub-command help')
 
@@ -576,6 +580,12 @@ def init_env_command(parser):
     clean.add_argument('images', metavar='image_name', nargs='+', help='container image names')
     clean.set_defaults(func=env_clean_container)
 
+def init_config_command(parser):
+    subparsers = parser.add_subparsers(help='sub-command help')
+
+    clist = subparsers.add_parser('list', help='list all configurations')
+    clist.set_defaults(func=config_list)
+
 def main():
     s = Settings()
 
@@ -587,6 +597,10 @@ def main():
     # create the parser for the "env" command
     parser_env = subparsers.add_parser('env', help='test environment commands')
     init_env_command(parser_env)
+
+    # create the parser for the "config" command
+    parser_config = subparsers.add_parser('config', help='test config commands')
+    init_config_command(parser_config)
 
     # create the parser for the "status" command
     parser_status = subparsers.add_parser('status', help='show status of testing environment')
