@@ -544,16 +544,27 @@ def unit_test(args, settings):
                     print(f"Run unit tests of '{build_name}' on '{container.name}' FAILED!")
                     sys.exit(1)
 
+def env_list(args, settings):
+    containers = get_containers(settings)
+    print("local")
+    for c in containers:
+        print(c.name)
+
 def env_status(args, settings):
     containers = get_containers(settings)
-    print(container_build_status(True), "local")
+    print("Build Status | Name")
+    print("-------------|---------------------------------------------")
+    print(f"{container_build_status(True):>12} |", "local")
     for c in containers:
-        print(container_build_status(c.exists), c.name)
+        print(f"{container_build_status(c.exists):>12} |", c.name)
 
 def init_env_command(parser):
     subparsers = parser.add_subparsers(help='sub-command help')
 
-    status = subparsers.add_parser('status', help='show all test environments')
+    elist = subparsers.add_parser('list', help='list all test environments')
+    elist.set_defaults(func=env_list)
+
+    status = subparsers.add_parser('status', help='show build status of all test environments')
     status.set_defaults(func=env_status)
 
     build = subparsers.add_parser('build', help='build container image(s)')
