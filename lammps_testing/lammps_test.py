@@ -167,14 +167,6 @@ def get_lammps_runner(runner, builder, settings):
 def container_build_status(value):
     return "[X]" if value else "[ ]"
 
-def show_build_status(build, title):
-    if build.exists:
-        if build.success:
-            return f"✅ {title:5s} ({colored(build.commit[:8], 'green'):8s})"
-        else:
-            return f"❌ {title:5s} ({colored(build.commit[:8], 'red'):8s})"
-    return f"   {title:5s} (        )"
-
 def status(args, settings):
     print()
     print("Environments:")
@@ -221,18 +213,18 @@ def status(args, settings):
             for regtest in config.regression_tests:
                 print(" ", f"{regtest:<40}")
 
-def cleanall(args, settings):
-    containers = get_containers(settings)
+def env_clean(args, settings):
+    containers = get_containers_by_selector(args.images, settings)
 
-    print("Containers:")
+    print("Selected Containers:")
 
     for container in containers:
         print("-", container.name)
 
     if not args.force:
-        answer = input('Delete all containers and build? (y/N):')
+        answer = input('Delete all these containers? (y/N):')
         if answer not in ['Y', 'y']:
-            logger.info('Aborting cleanall...')
+            logger.info('Aborting clean...')
             return
 
     for container in containers:
@@ -242,10 +234,6 @@ def cleanall(args, settings):
 def env_build_container(args, settings):
     for c in get_containers_by_selector(args.images, settings):
         c.build(force=args.force)
-
-def env_clean_container(args, settings):
-    for c in get_containers_by_selector(args.images, settings):
-        c.clean()
 
 def ensure_container_exists(container):
     if not container.exists:
@@ -630,11 +618,14 @@ def env_list(args, settings):
 
 def env_status(args, settings):
     containers = get_containers(settings)
-    print("Build Status | Name")
-    print("-------------|---------------------------------------------")
-    print(f"{container_build_status(True):>12} |", "local")
+    print(f" {state_icon('success')} local")
     for c in containers:
-        print(f"{container_build_status(c.exists):>12} |", c.name)
+        if c.exists:
+            icon = state_icon("success")
+        else:
+            icon = state_icon("")
+
+        print(f" {icon} {c.name}")
 
 def config_list(args, settings):
     for c in get_configurations(settings):
@@ -702,7 +693,8 @@ def init_env_command(parser):
 
     clean = subparsers.add_parser('clean', help='remove container image(s)')
     clean.add_argument('images', metavar='image_name', nargs='+', help='container image names')
-    clean.set_defaults(func=env_clean_container)
+    clean.add_argument('-f', '--force', default=False, action='store_true', help="Clean without asking")
+    clean.set_defaults(func=env_clean)
 
 def init_config_command(parser):
     subparsers = parser.add_subparsers(help='sub-command help')
@@ -750,11 +742,6 @@ def main():
     # create the parser for the "checkstyle" command
     parser_checkstyle = subparsers.add_parser('checkstyle', help='check current checkout for code style issues')
     parser_checkstyle.set_defaults(func=checkstyle)
-
-    # create the parser for the "cleanall" command
-    parser_cleanall = subparsers.add_parser('cleanall', help='clean container environment and all builds')
-    parser_cleanall.add_argument('-f', '--force', default=False, action='store_true', help="Clean without asking")
-    parser_cleanall.set_defaults(func=cleanall)
 
     # create the parser for the "compile" command
     parser_compile_test = subparsers.add_parser('compile', help='run compilation tests')
