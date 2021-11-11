@@ -1,42 +1,6 @@
-from ..common import logger, get_configurations, get_container, get_configuration
+from ..common import logger, get_configurations, get_container, expand_selected_config_and_builds
 from ..tests import CompilationTest
 import sys
-
-
-def expand_selected_config_and_builds(selected_builds, settings):
-    builds = {}
-
-    def add_build(config, build):
-        if config not in builds:
-            builds[config] = [build]
-        elif build not in builds[config]:
-            builds[config].append(build)
-
-    if "ALL" in selected_builds or "all" in selected_builds:
-        configurations = get_configurations(settings)
-        for config in configurations:
-            if hasattr(config, "builds"):
-                builds[config.name] = config.builds
-    else:
-        for selected in selected_builds:
-            parts = selected.split('/')
-
-            if len(parts) == 1 or parts[1] == "*":
-                config = get_configuration(parts[0], settings)
-                for build in config.builds:
-                    add_build(config.name, build)
-            elif parts[1].endswith("*"):
-                prefix = parts[1][:-1]
-                config = get_configuration(parts[0], settings)
-                for build in config.builds:
-                    if build.startswith(prefix):
-                        add_build(config.name, build)
-            else:
-                config = get_configuration(parts[0], settings)
-                build = parts[1]
-                add_build(config.name, build)
-    return builds
-
 
 def compilation_test(args, settings):
     selected_builds = args.builds

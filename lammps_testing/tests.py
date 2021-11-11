@@ -105,7 +105,7 @@ class Build(object):
 
     @property
     def build_result_file(self):
-        return os.path.join(self.build_dir, "result.json")
+        return os.path.join(self.build_dir, "build_result.json")
 
     @property
     def exists(self):
@@ -196,48 +196,76 @@ class RunTest(object):
                                    cwd=workdir) == 0
 
 
-class UnitTest(object):
-    def __init__(self, container, settings, ignore_lammps_commit=False):
-        self.container = container
-        self.settings = settings
-        self.ignore_lammps_commit = ignore_lammps_commit
+class UnitTest(Build):
+    def __init__(self, name, container, settings, commit=None):
+        super(UnitTest, self).__init__(name, container, settings, commit)
 
     @property
-    def build_base_dir(self):
-        if self.ignore_lammps_commit:
-            return os.path.join(self.settings.cache_dir, f'builds')
-        return os.path.join(self.settings.cache_dir, f'builds_{self.settings.current_lammps_commit}')
+    def build_script(self):
+        return os.path.join(self.settings.unit_tests_scripts_dir, self.name, "build.sh")
 
-    def get_build_dir(self, build_name):
-        return os.path.join(self.build_base_dir, self.container.name, build_name)
+    @property
+    def test_script(self):
+        return os.path.join(self.settings.unit_tests_scripts_dir, self.name, "test.sh")
 
-    def get_build_script(self, build_name):
-        return os.path.join(self.settings.unit_tests_scripts_dir, build_name, "build.sh")
+    @property
+    def test_result_file(self):
+        return os.path.join(self.build_dir, "test_result.json")
 
-    def get_test_script(self, build_name):
-        return os.path.join(self.settings.unit_tests_scripts_dir, build_name, "test.sh")
-
-    def build(self, build_name):
-        workdir = self.get_build_dir(build_name)
-        build_script = self.get_build_script(build_name)
-
-        os.makedirs(workdir, exist_ok=True)
+    def build(self):
+        os.makedirs(self.build_dir, exist_ok=True)
         LAMMPS_DIR = self.settings.lammps_dir
         BUILD_SCRIPTS_DIR = self.settings.build_scripts_dir
-        return self.container.exec(options=['-B', f'{LAMMPS_DIR}/:{LAMMPS_DIR}/', '-B', f'{BUILD_SCRIPTS_DIR}/:{BUILD_SCRIPTS_DIR}/'],
-                                   command=build_script,
-                                   cwd=workdir) == 0
+        try:
+            return_code = self.container.exec(options=['-B', f'{LAMMPS_DIR}/:{LAMMPS_DIR}/', '-B', f'{BUILD_SCRIPTS_DIR}/:{BUILD_SCRIPTS_DIR}/'],
+                                   command=self.build_script,
+                                   cwd=self.build_dir)
+        except KeyboardInterrupt:
+            return_code = -1
 
-    def test(self, build_name):
-        workdir = self.get_build_dir(build_name)
-        test_script = self.get_test_script(build_name)
+        with open(self.build_result_file, "w") as f:
+            result = {
+                'return_code': return_code
+            }
+            json.dump(result, f)
 
-        os.makedirs(workdir, exist_ok=True)
+        return return_code == 0
+
+    def test(self):
+        os.makedirs(self.build_dir, exist_ok=True)
         LAMMPS_DIR = self.settings.lammps_dir
         BUILD_SCRIPTS_DIR = self.settings.build_scripts_dir
-        return self.container.exec(options=['-B', f'{LAMMPS_DIR}/:{LAMMPS_DIR}/', '-B', f'{BUILD_SCRIPTS_DIR}/:{BUILD_SCRIPTS_DIR}/'],
-                                   command=test_script,
-                                   cwd=workdir) == 0
+        try:
+            return_code = self.container.exec(options=['-B', f'{LAMMPS_DIR}/:{LAMMPS_DIR}/', '-B', f'{BUILD_SCRIPTS_DIR}/:{BUILD_SCRIPTS_DIR}/'],
+                                   command=self.test_script,
+                                   cwd=self.build_dir)
+        except KeyboardInterrupt:
+            return_code = -1
+
+        with open(self.test_result_file, "w") as f:
+            result = {
+                'return_code': return_code
+            }
+            json.dump(result, f)
+
+        return return_code == 0
+
+    @property
+    def exists(self):
+        return super(UnitTest, self).exists and os.path.exists(self.test_result_file)
+
+    @property
+    def state(self):
+        if self.exists:
+            build_state = super(UnitTest, self).state
+            with open(self.test_result_file, "r") as f:
+                result = json.load(f)
+
+            if build_state == "success" and result["return_code"] == 0:
+                return "success"
+            return "failure"
+        else:
+            return "not executed"
 
 
 class RegressionTest(object):

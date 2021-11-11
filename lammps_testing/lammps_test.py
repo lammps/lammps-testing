@@ -12,6 +12,7 @@ from .commands.env import init_command as init_env_command
 from .commands.config import init_command as init_config_command
 from .commands.build import init_command as init_build_command
 from .commands.compile import init_command as init_compile_command
+from .commands.unit import init_command as init_unit_command
 from .commands.reg import init_command as init_reg_command
 
 def container_build_status(value):
@@ -141,37 +142,6 @@ def run_test(args, settings):
                     print(f"Run test of '{build_name}' on '{container.name}' FAILED!")
                     sys.exit(1)
 
-def unit_test(args, settings):
-    selected_config = args.config
-    selected_builds = args.builds
-    configurations = get_configurations(settings)
-
-    for config in configurations:
-        if 'ALL' not in selected_config and config.name not in selected_config:
-            continue
-
-        container = get_container(config.container_image, settings)
-
-        if not container.exists:
-            logger.error(f"Can not find container: {container}")
-            sys.exit(1)
-
-        unitTest = UnitTest(container, settings, args.ignore_commit)
-
-        if hasattr(config, 'unit_tests'):
-            for build_name in config.unit_tests:
-                if 'ALL' not in selected_builds and build_name not in selected_builds:
-                    continue
-
-                if not args.test_only and not unitTest.build(build_name):
-                    print(f"Compilation of '{build_name}' on '{container.name}' FAILED!")
-                    sys.exit(1)
-
-                if not args.build_only and not unitTest.test(build_name):
-                    print(f"Run unit tests of '{build_name}' on '{container.name}' FAILED!")
-                    sys.exit(1)
-
-
 def main():
     s = Settings()
 
@@ -221,13 +191,14 @@ def main():
 
     # create the parser for the "unittests" command
     parser_unit_test = subparsers.add_parser('unit', help='run unit tests')
-    parser_unit_test.add_argument('--builds', metavar='build', nargs='+', default=['ALL'], help='comma separated list of builds that should run')
-    parser_unit_test.add_argument('--config', metavar='config', nargs='+', default=['ALL'], help='name of configuration')
-    parser_unit_test.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
-    unit_test_group = parser_unit_test.add_mutually_exclusive_group()
-    unit_test_group.add_argument('--build-only', default=False, action='store_true', help='Only build run binary')
-    unit_test_group.add_argument('--test-only', default=False, action='store_true', help='Only run test on existing binary')
-    parser_unit_test.set_defaults(func=unit_test)
+    init_unit_command(parser_unit_test)
+    #parser_unit_test.add_argument('--builds', metavar='build', nargs='+', default=['ALL'], help='comma separated list of builds that should run')
+    #parser_unit_test.add_argument('--config', metavar='config', nargs='+', default=['ALL'], help='name of configuration')
+    #parser_unit_test.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
+    #unit_test_group = parser_unit_test.add_mutually_exclusive_group()
+    #unit_test_group.add_argument('--build-only', default=False, action='store_true', help='Only build run binary')
+    #unit_test_group.add_argument('--test-only', default=False, action='store_true', help='Only run test on existing binary')
+    #parser_unit_test.set_defaults(func=unit_test)
 
     # create the parser for the "regression" command
     parser_regression_test = subparsers.add_parser('regression', help='run regression tests')
