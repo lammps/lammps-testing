@@ -43,7 +43,7 @@ def CreateLAMMPSTestCase(testcase_name, script_paths):
 
 commands_dir = os.path.join(TESTS_DIR, 'commands')
 
-for name, scripts in discover_tests(commands_dir):
+for name, scripts, logfiles in discover_tests(commands_dir):
     vars()[name.title() + "TestCase"] = CreateLAMMPSTestCase(name, scripts)
 
 if __name__ == '__main__':

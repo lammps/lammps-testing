@@ -19,7 +19,86 @@ from collections import namedtuple
 import yaml
 
 from termcolor import colored
-from .common import logger, Settings, Container
+from .common import logger, Settings, Container, discover_tests
+
+
+class LAMMPSExampleRun(object):
+    def __init__(self, name, input_script, configuration):
+        self.name = name
+        self.input_script = input_script
+        self.configuration = configuration
+
+    def __str__(self):
+        if "mpi" in self.configuration:
+            return f"{self.name} (MPI: {self.configuration['mpi']['nprocs']} procs)"
+        return f"{self.name} (Serial)"
+
+
+def config_from_logfile(logfile):
+    """This converts the logfile filename into a configuration"""
+    parts = os.path.basename(logfile).split('.')
+    ref_date =  parts[1]
+    compiler = parts[-2]
+    nprocs = int(parts[-1])
+
+    config = {
+        "reference" : {
+            "logfile": logfile,
+            "date": ref_date
+        }
+    }
+
+    config['compiler'] = compiler
+
+    if nprocs > 1:
+        config['mpi'] = {'nprocs': nprocs}
+
+    return config
+
+class LAMMPSExample(object):
+    def __init__(self, name, scripts, logfiles):
+        self.name = name
+        self.testcases = {}
+        self.folder = os.path.dirname(scripts[0])
+
+        for script in scripts:
+            script_name = os.path.basename(script)
+            testcase_name = script_name[3:]
+            logfile_pattern = re.compile(r"log.(?P<date>[0-9]+[a-zA-Z]{3}[0-9]{2})\." + testcase_name + r"\.(?P<config>(g\+\+|clang)\.[1-9]*)")
+            run = LAMMPSExampleRun(testcase_name, script, {'mpi': {'nprocs': 8}})
+            self.testcases[testcase_name] = [run]
+
+            for logfile in logfiles:
+                m = logfile_pattern.match(os.path.basename(logfile))
+                if m is not None:
+                    try:
+                        configuration = config_from_logfile(logfile)
+                        run = LAMMPSExampleRun(testcase_name, script, configuration)
+                        self.testcases[testcase_name].append(run)
+                    except ValueError:
+                        pass
+
+    def save_config(self):
+        config_file = os.path.join(self.folder, '.testing', 'config.yaml')
+        config = []
+
+        for testcase_name, runs in self.testcases.items():
+            run_list = []
+
+            for run in runs:
+                logfile = os.path.basename(run.configuration['logfile'])
+                if 'mpi' in run.configuration:
+                    run_list.append({'logfile': logfile, 'mpi': {'nprocs': run.configuration['mpi']['nprocs']}})
+                else:
+                    run_list.append({'logfile': logfile})
+
+            testcase = {"input_script": f"in.{testcase_name}", "runs": run_list}
+            config.append(testcase)
+
+        os.makedirs(os.path.dirname(config_file),exist_ok=True)
+        with open(config_file, "w") as f:
+            yaml.dump(config, f)
+
 
 class TestRunner():
     def __init__(self, builder, settings):
@@ -677,6 +756,34 @@ def build_status(args, settings):
         print(f"Configuration with name '{args.config}' does not exist!")
         sys.exit(1)
 
+def reg_list(args, settings):
+    examples_dir = os.path.join(settings.lammps_dir, 'examples')
+    testcase_count = 0
+    run_count = 0
+    mpi_run_count = 0
+    for test, scripts, logfiles in discover_tests(examples_dir):
+        example = LAMMPSExample(test, scripts, logfiles)
+        if len(example.testcases) > 0:
+            print(example.name)
+            for testcase, runs in example.testcases.items():
+                print(" -", testcase)
+                testcase_count += 1
+                for run in runs:
+                    if "MPI" in str(run):
+                        mpi_run_count += 1
+                    print("    *", run)
+                    run_count += 1
+    print("Total testcases:", testcase_count)
+    print("Total runs:", run_count)
+    print("Total MPI runs:", mpi_run_count)
+
+def reg_create_yaml(args, settings):
+    examples_dir = os.path.join(settings.lammps_dir, 'examples')
+    for test, scripts, logfiles in discover_tests(examples_dir):
+        example = LAMMPSExample(test, scripts, logfiles)
+        if len(example.testcases) > 0:
+            example.save_config()
+
 def init_env_command(parser):
     subparsers = parser.add_subparsers(help='sub-command help')
 
@@ -714,6 +821,16 @@ def init_build_command(parser):
     status.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
     status.set_defaults(func=build_status)
 
+def init_reg_command(parser):
+    subparsers = parser.add_subparsers(help='sub-command help')
+
+    blist = subparsers.add_parser('list', help='list all configurations')
+    blist.add_argument('config', metavar='config', default=['ALL'], help='name of configuration', nargs='*')
+    blist.set_defaults(func=reg_list)
+
+    create_yaml = subparsers.add_parser('create_yaml', help='generate yaml files for all cases')
+    create_yaml.set_defaults(func=reg_create_yaml)
+
 def main():
     s = Settings()
 
@@ -733,6 +850,10 @@ def main():
     # create the parser for the "build" command
     parser_build = subparsers.add_parser('build', help='test build commands')
     init_build_command(parser_build)
+
+    # create the parser for the "reg" command
+    parser_build = subparsers.add_parser('reg', help='test reg commands')
+    init_reg_command(parser_build)
 
     # create the parser for the "status" command
     parser_status = subparsers.add_parser('status', help='show status of testing environment')

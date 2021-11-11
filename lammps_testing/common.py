@@ -121,7 +121,7 @@ class Container(object):
     def exists(self):
         return os.path.exists(self.container)
 
-    
+
 class LocalRunner(object):
     def __init__(self, lammps_binary_path):
         self.lammps_binary_path = lammps_binary_path
@@ -151,7 +151,7 @@ class MPIRunner(LocalRunner):
         if 'LAMMPS_MPI_OPTIONS' in os.environ:
             logger.debug(f"Using LAMMPS_MPI_OPTIONS: {os.environ['LAMMPS_MPI_OPTIONS']}")
             self.custom_mpi_options = os.environ['LAMMPS_MPI_OPTIONS'].split()
-    
+
     def get_full_command(self, input_script, options=[]):
         base_command = super().get_full_command(input_script, options)
         return  ["mpirun", "-np", str(self.nprocs)] + self.custom_mpi_options + base_command
@@ -165,6 +165,7 @@ def discover_tests(test_dir, skip_list=[]):
             continue
 
         scripts = [os.path.join(path, f) for f in files if f.startswith('in.')]
+        logfiles = [os.path.join(path, f) for f in files if f.startswith('log.')]
 
         if len(scripts) > 0:
-            yield name, scripts
+            yield name, scripts, logfiles

@@ -50,7 +50,7 @@ def CreateLAMMPSTestCaseOMP(testcase_name, script_names):
 
 test_user_omp_dir = os.path.abspath(os.path.join(TESTS_DIR, 'legacy', 'test-user-omp'))
 
-for name, scripts in discover_tests(test_user_omp_dir):
+for name, scripts, logfiles in discover_tests(test_user_omp_dir):
     # for now only use the lower case examples (=simple ones)
     if name.islower():
         vars()[name.title() + "TestCase"] = CreateLAMMPSTestCaseOMP(name, scripts)
