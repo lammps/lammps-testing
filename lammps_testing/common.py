@@ -113,7 +113,12 @@ class Container(object):
     def exec(self, options=[], command=[], cwd="."):
         test_env = os.environ.copy()
         test_env["LAMMPS_CI_RUNNER"] = "lammps_test"
-        return subprocess.call(['singularity', 'exec'] + options + [self.container, command], cwd=cwd, env=test_env)
+        cmd = ['singularity', 'exec'] + options + [self.container, command]
+        try:
+            return subprocess.call(cmd, cwd=cwd, env=test_env)
+        except FileNotFoundError as e:
+            logger.error(f"ERROR: Could not run singularity command '{' '.join(cmd)}'")
+            sys.exit(-1)
 
     def clean(self):
         if self.exists:
