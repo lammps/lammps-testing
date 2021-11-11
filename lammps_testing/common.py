@@ -4,6 +4,9 @@ import glob
 import logging
 import subprocess
 from nose.tools import nottest
+from collections import namedtuple
+
+import yaml
 
 logger = logging.getLogger('lammps_test')
 logger.setLevel(logging.DEBUG)
@@ -169,3 +172,70 @@ def discover_tests(test_dir, skip_list=[]):
 
         if len(scripts) > 0:
             yield name, scripts, logfiles
+
+
+def get_container(name, settings):
+    if name == 'local':
+        return None
+    container = os.path.join(settings.container_dir, name + ".sif")
+    container_definition = os.path.join(settings.container_definition_dir, name + ".def")
+    return Container(name, container, container_definition)
+
+
+def get_names(search_pattern):
+    names = []
+    for path in glob.glob(search_pattern):
+        base = os.path.basename(path)
+        name = os.path.splitext(base)[0]
+        names.append(name)
+    return names
+
+
+def get_containers(settings):
+    containers  = get_names(os.path.join(settings.container_definition_dir, '*.def'))
+    containers += get_names(os.path.join(settings.container_definition_dir, '**/*.def'))
+    return [get_container(c, settings) for c in sorted(containers)]
+
+
+def get_containers_by_selector(selector, settings):
+    if 'all' in selector or 'ALL' in selector:
+        return get_containers(settings)
+    return [get_container(c, settings) for c in sorted(selector)]
+
+
+def state_icon(state):
+    if state == "success":
+        return "✅"
+    elif state == "failed":
+        return "❌"
+    else:
+        return "⭕"
+
+
+def get_configuration(name, settings):
+    configfile = os.path.join(settings.configuration_dir, name + ".yml")
+    if os.path.exists(configfile):
+        with open(configfile) as f:
+            config = yaml.full_load(f)
+            return namedtuple("Configuration", ['name'] + list(config.keys()))(name, *config.values())
+    raise FileNotFoundError(configfile)
+
+
+def get_configurations(settings):
+    configurations = get_names(os.path.join(settings.configuration_dir, '*.yml'))
+    return [get_configuration(c, settings) for c in sorted(configurations)]
+
+
+def get_configurations_by_selector(selector, settings):
+    if 'all' in selector or 'ALL' in selector:
+        return get_configurations(settings)
+    return [get_configuration(c, settings) for c in sorted(selector)]
+
+
+def get_lammps_commit(commit, settings):
+    return subprocess.check_output(['git', 'rev-parse', commit], cwd=settings.lammps_dir).decode().strip()
+
+
+def get_commits(settings):
+    commits = get_names(os.path.join(settings.cache_dir, 'builds_*'))
+    return [c[7:] for c in sorted(commits)]
