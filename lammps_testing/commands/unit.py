@@ -85,6 +85,7 @@ def run_unit_test(args, settings):
                 sys.exit(1)
 
             for unittest_name in config.unit_tests:
+                if unittest_name in selected_builds[config.name]:
                     if args.ignore_commit:
                         unitTest = UnitTest(unittest_name, container, settings)
                     else:

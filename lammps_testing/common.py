@@ -213,6 +213,8 @@ def state_icon(state):
         return "✅"
     elif state == "failed":
         return "❌"
+    elif state == "pending":
+        return "⚪"
     else:
         return "⭕"
 
@@ -246,71 +248,43 @@ def get_commits(settings):
     return [c[7:] for c in sorted(commits)]
 
 
-def expand_selected_config_and_builds(selected_builds, settings):
-    builds = {}
+def expand_selected_config_by_property(selected_list, property_name, settings):
+    expanded = {}
 
-    def add_build(config, build):
-        if config not in builds:
-            builds[config] = [build]
-        elif build not in builds[config]:
-            builds[config].append(build)
+    def add_item(config, item):
+        if config not in expanded:
+            expanded[config] = [item]
+        elif item not in expanded[config]:
+            expanded[config].append(item)
 
-    if "ALL" in selected_builds or "all" in selected_builds:
+    if "ALL" in selected_list or "all" in selected_list:
         configurations = get_configurations(settings)
         for config in configurations:
-            if hasattr(config, "builds"):
-                builds[config.name] = config.builds
+            if hasattr(config, property_name):
+                expanded[config.name] = getattr(config, property_name)
     else:
-        for selected in selected_builds:
+        for selected in selected_list:
             parts = selected.split('/')
 
             if len(parts) == 1 or parts[1] == "*":
                 config = get_configuration(parts[0], settings)
-                for build in config.builds:
-                    add_build(config.name, build)
+                for item in getattr(config, property_name):
+                    add_item(config.name, item)
             elif parts[1].endswith("*"):
                 prefix = parts[1][:-1]
                 config = get_configuration(parts[0], settings)
-                for build in config.builds:
-                    if build.startswith(prefix):
-                        add_build(config.name, build)
+                for item in getattr(config, property_name):
+                    if item.startswith(prefix):
+                        add_item(config.name, item)
             else:
                 config = get_configuration(parts[0], settings)
-                build = parts[1]
-                add_build(config.name, build)
-    return builds
+                item = parts[1]
+                add_item(config.name, item)
+    return expanded
+
+def expand_selected_config_and_builds(selected_builds, settings):
+    return expand_selected_config_by_property(selected_builds, "builds", settings)
 
 
 def expand_selected_config_and_unittests(selected_builds, settings):
-    builds = {}
-
-    def add_build(config, build):
-        if config not in builds:
-            builds[config] = [build]
-        elif build not in builds[config]:
-            builds[config].append(build)
-
-    if "ALL" in selected_builds or "all" in selected_builds:
-        configurations = get_configurations(settings)
-        for config in configurations:
-            if hasattr(config, "unit_tests"):
-                builds[config.name] = config.unit_tests
-    else:
-        for selected in selected_builds:
-            parts = selected.split('/')
-
-            if len(parts) == 1 or parts[1] == "*":
-                config = get_configuration(parts[0], settings)
-                for build in config.unit_tests:
-                    add_build(config.name, build)
-            elif parts[1].endswith("*"):
-                prefix = parts[1][:-1]
-                config = get_configuration(parts[0], settings)
-                for build in config.unit_tests:
-                    if build.startswith(prefix):
-                        add_build(config.name, build)
-            else:
-                config = get_configuration(parts[0], settings)
-                build = parts[1]
-                add_build(config.name, build)
-    return builds
+    return expand_selected_config_by_property(selected_builds, "unit_tests", settings)

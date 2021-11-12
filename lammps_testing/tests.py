@@ -110,12 +110,8 @@ class Build(object):
         return os.path.join(self.build_dir, "build_result.json")
 
     @property
-    def exists(self):
-        return os.path.exists(self.build_result_file)
-
-    @property
     def state(self):
-        if self.exists:
+        if os.path.exists(self.build_result_file):
             with open(self.build_result_file, "r") as f:
                 result = json.load(f)
 
@@ -253,19 +249,18 @@ class UnitTest(Build):
         return return_code == 0
 
     @property
-    def exists(self):
-        return super(UnitTest, self).exists and os.path.exists(self.test_result_file)
-
-    @property
     def state(self):
-        if self.exists:
-            build_state = super(UnitTest, self).state
+        build_state = super(UnitTest, self).state
+
+        if os.path.exists(self.test_result_file):
             with open(self.test_result_file, "r") as f:
                 result = json.load(f)
 
             if build_state == "success" and result["return_code"] == 0 and len(self.result["failed"]) == 0:
                 return "success"
             return "failure"
+        elif build_state == "success":
+            return "pending"
         else:
             return "not executed"
 
