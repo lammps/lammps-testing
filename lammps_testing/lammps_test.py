@@ -192,13 +192,6 @@ def main():
     # create the parser for the "unittests" command
     parser_unit_test = subparsers.add_parser('unit', help='run unit tests')
     init_unit_command(parser_unit_test)
-    #parser_unit_test.add_argument('--builds', metavar='build', nargs='+', default=['ALL'], help='comma separated list of builds that should run')
-    #parser_unit_test.add_argument('--config', metavar='config', nargs='+', default=['ALL'], help='name of configuration')
-    #parser_unit_test.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
-    #unit_test_group = parser_unit_test.add_mutually_exclusive_group()
-    #unit_test_group.add_argument('--build-only', default=False, action='store_true', help='Only build run binary')
-    #unit_test_group.add_argument('--test-only', default=False, action='store_true', help='Only run test on existing binary')
-    #parser_unit_test.set_defaults(func=unit_test)
 
     # create the parser for the "regression" command
     parser_regression_test = subparsers.add_parser('regression', help='run regression tests')

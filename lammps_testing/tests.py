@@ -2,6 +2,8 @@ import os
 import re
 import json
 import yaml
+import glob
+from xml.etree import ElementTree as ET
 
 class LAMMPSExampleRun(object):
     def __init__(self, name, input_script, configuration):
@@ -261,11 +263,28 @@ class UnitTest(Build):
             with open(self.test_result_file, "r") as f:
                 result = json.load(f)
 
-            if build_state == "success" and result["return_code"] == 0:
+            if build_state == "success" and result["return_code"] == 0 and len(self.result["failed"]) == 0:
                 return "success"
             return "failure"
         else:
             return "not executed"
+
+    @property
+    def result(self):
+        test_files = glob.glob(os.path.join(self.build_dir, "**", "**", "**", "Test.xml"))
+        result_dict = {'passed': [], 'failed': [], "skipped": []}
+
+        for result_file in test_files:
+            doc = ET.parse(result_file).getroot()
+            tests = doc.find("Testing").findall("Test")
+            for test in tests:
+                full_name = test.find("FullName").text
+                status = test.attrib["Status"]
+                if status not in result_dict:
+                    result_dict[status] = [full_name]
+                else:
+                    result_dict[status].append(full_name)
+        return result_dict
 
 
 class RegressionTest(object):

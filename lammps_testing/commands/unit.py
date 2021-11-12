@@ -1,4 +1,4 @@
-from ..common import logger, get_configurations_by_selector, get_container, state_icon, expand_selected_config_and_unittests, get_configurations
+from ..common import get_configuration, logger, get_configurations_by_selector, get_container, state_icon, expand_selected_config_and_unittests, get_configurations
 from ..tests import UnitTest
 import sys
 
@@ -42,6 +42,35 @@ def unittest_status(args, settings):
         print(f"Configuration with name '{args.config}' does not exist!")
         sys.exit(1)
 
+def unittest_report(args, settings):
+    configuration_name, unittest_name = args.build.split('/')
+    config = get_configuration(configuration_name, settings)
+    container = get_container(config.container_image, settings)
+
+    if args.ignore_commit:
+        unitTest = UnitTest(unittest_name, container, settings)
+    else:
+        unitTest = UnitTest(unittest_name, container, settings, settings.current_lammps_commit)
+
+    print(f"{configuration_name}/{unittest_name}\n")
+    print("Build Directory:")
+    print(unitTest.build_dir)
+    print()
+
+    result = unitTest.result
+
+    if result is not None:
+        npassed = len(result["passed"])
+        nfailed = len(result["failed"])
+        nskipped = len(result["skipped"])
+        print(f"Result:")
+        print(f"{npassed} passed")
+        print(f"{nfailed} failed")
+        print(f"{nskipped} skipped")
+    else:
+        print("Result: not available")
+
+
 def run_unit_test(args, settings):
     selected_builds = args.builds
     selected_builds = expand_selected_config_and_unittests(args.builds, settings)
@@ -81,6 +110,11 @@ def init_command(parser):
     status.add_argument('config', metavar='config', default=['ALL'], help='name of configuration', nargs='*')
     status.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
     status.set_defaults(func=unittest_status)
+
+    report = subparsers.add_parser('report', help='show report of unit test run')
+    report.add_argument('build', help='name of unit test run')
+    report.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
+    report.set_defaults(func=unittest_report)
 
     run = subparsers.add_parser('run', help='list all unit test runs')
     run.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
