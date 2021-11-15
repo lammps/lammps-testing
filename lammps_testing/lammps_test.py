@@ -12,6 +12,7 @@ from .commands.env import init_command as init_env_command
 from .commands.config import init_command as init_config_command
 from .commands.build import init_command as init_build_command
 from .commands.compile import init_command as init_compile_command
+from .commands.runtest import init_command as init_runtest_command
 from .commands.unit import init_command as init_unit_command
 from .commands.reg import init_command as init_reg_command
 
@@ -179,15 +180,9 @@ def main():
     parser_checkstyle = subparsers.add_parser('checkstyle', help='check current checkout for code style issues')
     parser_checkstyle.set_defaults(func=checkstyle)
 
-    # create the parser for the "run" command
-    parser_run_test = subparsers.add_parser('run', help='run tests')
-    parser_run_test.add_argument('--builds', metavar='build', nargs='+', default=['ALL'], help='comma separated list of builds that should run')
-    parser_run_test.add_argument('--config', metavar='config', nargs='+', default=['ALL'], help='name of configuration')
-    parser_run_test.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
-    run_test_group = parser_run_test.add_mutually_exclusive_group()
-    run_test_group.add_argument('--build-only', default=False, action='store_true', help='Only build run binary')
-    run_test_group.add_argument('--test-only', default=False, action='store_true', help='Only run test on existing binary')
-    parser_run_test.set_defaults(func=run_test)
+    # create the parser for the "runtest" command
+    parser_runtest = subparsers.add_parser('runtest', help='run tests')
+    init_runtest_command(parser_runtest)
 
     # create the parser for the "unittests" command
     parser_unit_test = subparsers.add_parser('unit', help='run unit tests')

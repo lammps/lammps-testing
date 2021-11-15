@@ -282,9 +282,14 @@ def expand_selected_config_by_property(selected_list, property_name, settings):
                 add_item(config.name, item)
     return expanded
 
+
 def expand_selected_config_and_builds(selected_builds, settings):
     return expand_selected_config_by_property(selected_builds, "builds", settings)
 
 
 def expand_selected_config_and_unittests(selected_builds, settings):
     return expand_selected_config_by_property(selected_builds, "unit_tests", settings)
+
+
+def expand_selected_config_and_runs(selected_builds, settings):
+    return expand_selected_config_by_property(selected_builds, "runs", settings)
