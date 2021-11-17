@@ -244,45 +244,25 @@ class UnitTest(RunTest):
         return result_dict
 
 
-class RegressionTest(object):
-    def __init__(self, container, settings, ignore_lammps_commit=False):
-        self.container = container
-        self.settings = settings
-        self.ignore_lammps_commit = ignore_lammps_commit
+class RegressionTest(RunTest):
+    def __init__(self, name, container, settings, commit=None):
+        super(RegressionTest, self).__init__(name, container, settings, commit)
 
     @property
-    def build_base_dir(self):
-        if self.ignore_lammps_commit:
-            return os.path.join(self.settings.cache_dir, f'builds')
-        return os.path.join(self.settings.cache_dir, f'builds_{self.settings.current_lammps_commit}')
+    def scripts_dir(self):
+        return os.path.join(self.settings.regression_scripts_dir, self.name)
 
-    def get_build_dir(self, build_name):
-        return os.path.join(self.build_base_dir, self.container.name, build_name)
-
-    def get_build_script(self, build_name):
-        return os.path.join(self.settings.regression_scripts_dir, build_name, "build.sh")
-
-    def get_test_script(self, build_name):
-        return os.path.join(self.settings.regression_scripts_dir, build_name, "test.sh")
-
-    def build(self, build_name):
-        workdir = self.get_build_dir(build_name)
-        build_script = self.get_build_script(build_name)
-
-        os.makedirs(workdir, exist_ok=True)
-        LAMMPS_DIR = self.settings.lammps_dir
-        BUILD_SCRIPTS_DIR = self.settings.build_scripts_dir
-        return self.container.exec(options=['-B', f'{LAMMPS_DIR}/:{LAMMPS_DIR}/', '-B', f'{BUILD_SCRIPTS_DIR}/:{BUILD_SCRIPTS_DIR}/'],
-                                   command=build_script,
-                                   cwd=workdir) == 0
-
-    def test(self, build_name):
-        workdir = self.get_build_dir(build_name)
-        test_script = self.get_test_script(build_name)
-
-        os.makedirs(workdir, exist_ok=True)
-        LAMMPS_DIR = self.settings.lammps_dir
-        BUILD_SCRIPTS_DIR = self.settings.build_scripts_dir
-        return self.container.exec(options=['-B', f'{LAMMPS_DIR}/:{LAMMPS_DIR}/', '-B', f'{BUILD_SCRIPTS_DIR}/:{BUILD_SCRIPTS_DIR}/'],
-                                   command=test_script,
-                                   cwd=workdir) == 0
+    @property
+    def result(self):
+        # TODO remove placeholder strings with actual job names
+        test_files = glob.glob(os.path.join(self.build_dir, "regression_*.xml"))
+        result_dict = {'passed': [], 'failed': [], "skipped": []}
+        for result_file in test_files:
+            testsuite = ET.parse(result_file).getroot()
+            ntests = int(testsuite.attrib["tests"])
+            nfailures = int(testsuite.attrib["failures"])
+            nskip = int(testsuite.attrib["skip"])
+            result_dict["passed"] += ["passed"] * (ntests - nfailures - nskip)
+            result_dict["failed"] += ["failed"] * nfailures
+            result_dict["skipped"] += ["skipped"] * nskip
+        return result_dict
