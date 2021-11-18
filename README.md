@@ -192,7 +192,7 @@ To modify this behaviour and use the same build directory, independent of the cu
 ### Example:
 
 ```bash
-lammps_test compile ubuntu/cmake_mpi_smallbig_shared --ignore-commit
+lammps_test compile --ignore-commit ubuntu/cmake_mpi_smallbig_shared
 ```
 
 will create the folder:
