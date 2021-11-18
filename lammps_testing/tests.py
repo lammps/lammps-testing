@@ -194,7 +194,7 @@ class RunTest(CompilationTest):
         except KeyboardInterrupt:
             return_code = -1
 
-        with open(self.build_result_file, "w") as f:
+        with open(self.test_result_file, "w") as f:
             result = {
                 'return_code': return_code
             }
