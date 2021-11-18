@@ -16,54 +16,27 @@ from .commands.runtest import init_command as init_runtest_command
 from .commands.unit import init_command as init_unit_command
 from .commands.reg import init_command as init_reg_command
 
-def container_build_status(value):
-    return "[X]" if value else "[ ]"
+from .commands.build import build_status
+from .commands.runtest import run_status
+from .commands.unit import unittest_status
+from .commands.reg import reg_status
 
 def status(args, settings):
+    args.config = ["ALL"]
+    args.builds = ["ALL"]
+    print("Compilation Tests:")
+    build_status(args, settings)
     print()
-    print("Environments:")
-    containers = get_containers(settings)
-    print(container_build_status(True), "local")
-    for c in containers:
-        print(container_build_status(c.exists), c.name)
-
-    containers = [None] + containers
-
+    print("Run Tests:")
+    run_status(args, settings)
     print()
-    print("Configurations:")
-    configurations = get_configurations(settings)
+    print("Regression Tests:")
+    reg_status(args, settings)
+    print()
+    print("Unit Tests:")
+    unittest_status(args, settings)
+    print()
 
-    for config in configurations:
-        print()
-        print(f' {config.name} '.center(120, "+"))
-
-        if hasattr(config, "builds"):
-            print()
-            print("Builds:")
-            for build in config.builds:
-                print(" ", f"{build:<40}")
-
-
-        if hasattr(config, 'unit_tests'):
-            print()
-            print("Unit Tests:")
-
-            for unit in config.unit_tests:
-                print(" ", f"{unit:<40}")
-
-        if hasattr(config, 'run_tests'):
-            print()
-            print("Run Tests:")
-
-            for run in config.run_tests:
-                print(" ", f"{run:<40}")
-
-        if hasattr(config, 'regression_tests'):
-            print()
-            print("Regression Tests:")
-
-            for regtest in config.regression_tests:
-                print(" ", f"{regtest:<40}")
 
 def checkstyle(args, settings):
     files = glob.glob(os.path.join(settings.lammps_dir, 'src', '**/*.cpp'), recursive=True)
@@ -83,65 +56,6 @@ def checkstyle(args, settings):
                         print(f"{filename}:{lineno+1}:found trailing whitespaces")
         except Exception as e:
             print(f"{filename}:exception while reading file:{e}")
-
-def regression_test(args, settings):
-    selected_config = args.config
-    selected_builds = args.builds
-    configurations = get_configurations(settings)
-
-    for config in configurations:
-        if 'ALL' not in selected_config and config.name not in selected_config:
-            continue
-
-        container = get_container(config.container_image, settings)
-
-        if not container.exists:
-            logger.error(f"Can not find container: {container}")
-            sys.exit(1)
-
-        regTest = RegressionTest(container, settings, args.ignore_commit)
-
-        for build_name in config.regression_tests:
-            if 'ALL' not in selected_builds and build_name not in selected_builds:
-                continue
-
-            if not args.test_only and not regTest.build(build_name):
-                print(f"Compilation of '{build_name}' on '{container.name}' FAILED!")
-                sys.exit(1)
-
-            if not args.build_only and not regTest.test(build_name):
-                print(f"Regression test of '{build_name}' on '{container.name}' FAILED!")
-                sys.exit(1)
-
-def run_test(args, settings):
-    selected_config = args.config
-    selected_builds = args.builds
-    configurations = get_configurations(settings)
-
-    for config in configurations:
-        if 'ALL' not in selected_config and config.name not in selected_config:
-            continue
-
-        container = get_container(config.container_image, settings)
-
-        if not container.exists:
-            logger.error(f"Can not find container: {container}")
-            sys.exit(1)
-
-        runTest = RunTest(container, settings, args.ignore_commit)
-
-        if hasattr(config, 'run_tests'):
-            for build_name in config.run_tests:
-                if 'ALL' not in selected_builds and build_name not in selected_builds:
-                    continue
-
-                if not args.test_only and not runTest.build(build_name):
-                    print(f"Compilation of '{build_name}' on '{container.name}' FAILED!")
-                    sys.exit(1)
-
-                if not args.build_only and not runTest.test(build_name):
-                    print(f"Run test of '{build_name}' on '{container.name}' FAILED!")
-                    sys.exit(1)
 
 def main():
     s = Settings()
@@ -173,7 +87,7 @@ def main():
 
     # create the parser for the "status" command
     parser_status = subparsers.add_parser('status', help='show status of testing environment')
-    parser_status.add_argument('-v', '--verbose', action='store_true', help='show verbose output')
+    parser.add_argument('--ignore-commit', default=False, action='store_true', help='Ignore commit and do not create SHA specific build folder')
     parser_status.set_defaults(func=status)
 
     # create the parser for the "checkstyle" command
