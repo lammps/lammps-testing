@@ -139,9 +139,8 @@ these scripts inside the correct container.
 
 On ci.lammps.org, these tests are one environment at a time, running multiple compilations in parallel. Below is a visualization of the current compilation test pipeline that both runs for the [develop](https://ci.lammps.org/blue/organizations/jenkins/dev%2Fdevelop%2Fcompilation_tests/activity) branch (current development version of LAMMPS) and each pull request.
 
-![Pipeline View of Compilation Tests](doc/images/compilation_tests.png "Compilation Tests pipeline on ci.lammps.org")
-
-![Pipeline View of Compilation Tests](doc/images/compilation_tests2.png "Compilation Tests pipeline on ci.lammps.org for a particular environment")
+| ![Pipeline View of Compilation Tests](doc/images/compilation_tests.png "Compilation Tests pipeline on ci.lammps.org") | ![Pipeline View of Compilation Tests](doc/images/compilation_tests2.png "Compilation Tests pipeline on ci.lammps.org for a particular environment") |
+|---|---|
 
 ### Running compilation tests locally
 
