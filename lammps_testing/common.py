@@ -202,9 +202,21 @@ def get_containers(settings):
     return [get_container(c, settings) for c in sorted(containers)]
 
 
+def get_default_containers(settings):
+    configs = get_configurations(settings)
+    cnames = set()
+
+    for config in configs:
+        cnames.add(config.container_image)
+
+    return [get_container(name, settings) for name in cnames]
+
+
 def get_containers_by_selector(selector, settings):
     if 'all' in selector or 'ALL' in selector:
         return get_containers(settings)
+    elif 'default' in selector or 'DEFAULT' in selector:
+        return get_default_containers(settings)
     return [get_container(c, settings) for c in sorted(selector)]
 
 

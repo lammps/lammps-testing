@@ -1,4 +1,4 @@
-from ..common import get_configurations, get_container, logger, get_containers_by_selector, get_containers, state_icon
+from ..common import get_default_containers, logger, get_containers_by_selector, get_containers, state_icon
 
 def env_clean(args, settings):
     containers = get_containers_by_selector(args.images, settings)
@@ -25,17 +25,10 @@ def env_build_container(args, settings):
 
 
 def env_list(args, settings):
-    configs = get_configurations(settings)
-
     if args.all:
         containers = get_containers(settings)
     else:
-        cnames = set()
-
-        for config in configs:
-            cnames.add(config.container_image)
-
-        containers = [get_container(name, settings) for name in cnames]
+        containers = get_default_containers(settings)
 
     print("local")
     for c in containers:
@@ -43,17 +36,10 @@ def env_list(args, settings):
 
 
 def env_status(args, settings):
-    configs = get_configurations(settings)
-
     if args.all:
         containers = get_containers(settings)
     else:
-        cnames = set()
-
-        for config in configs:
-            cnames.add(config.container_image)
-
-        containers = [get_container(name, settings) for name in cnames]
+        containers = get_default_containers(settings)
 
     print(f" {state_icon('success')} local")
     for c in containers:
@@ -77,7 +63,7 @@ def init_command(parser):
     status.set_defaults(func=env_status)
 
     build = subparsers.add_parser('build', help='build container image(s)')
-    build.add_argument('images', metavar='image_name', nargs='+', help='container image names')
+    build.add_argument('images', metavar='image_name', nargs='+', help='container image names, DEFAULT, or ALL')
     build.add_argument('-f', '--force', default=False, action='store_true', help="Force rebuild")
     build.set_defaults(func=env_build_container)
 
