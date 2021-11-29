@@ -1,4 +1,4 @@
-from ..common import logger, get_containers_by_selector, get_containers, state_icon
+from ..common import get_configurations, get_container, logger, get_containers_by_selector, get_containers, state_icon
 
 def env_clean(args, settings):
     containers = get_containers_by_selector(args.images, settings)
@@ -25,14 +25,36 @@ def env_build_container(args, settings):
 
 
 def env_list(args, settings):
-    containers = get_containers(settings)
+    configs = get_configurations(settings)
+
+    if args.all:
+        containers = get_containers(settings)
+    else:
+        cnames = set()
+
+        for config in configs:
+            cnames.add(config.container_image)
+
+        containers = [get_container(name, settings) for name in cnames]
+
     print("local")
     for c in containers:
         print(c.name)
 
 
 def env_status(args, settings):
-    containers = get_containers(settings)
+    configs = get_configurations(settings)
+
+    if args.all:
+        containers = get_containers(settings)
+    else:
+        cnames = set()
+
+        for config in configs:
+            cnames.add(config.container_image)
+
+        containers = [get_container(name, settings) for name in cnames]
+
     print(f" {state_icon('success')} local")
     for c in containers:
         if c.exists:
@@ -47,9 +69,11 @@ def init_command(parser):
     subparsers = parser.add_subparsers(help='sub-command help')
 
     elist = subparsers.add_parser('list', help='list all test environments')
+    elist.add_argument('-a', '--all', default=False, action='store_true', help="Show all environments")
     elist.set_defaults(func=env_list)
 
     status = subparsers.add_parser('status', help='show build status of all test environments')
+    status.add_argument('-a', '--all', default=False, action='store_true', help="Show all environments")
     status.set_defaults(func=env_status)
 
     build = subparsers.add_parser('build', help='build container image(s)')
