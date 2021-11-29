@@ -136,12 +136,12 @@ def reg_create_yaml(args, settings):
 def init_command(parser):
     subparsers = parser.add_subparsers(help='sub-command help')
 
-    blist = subparsers.add_parser('list-tests', help='list all configurations')
-    blist.add_argument('config', metavar='config', default=['ALL'], help='name of configuration', nargs='*')
-    blist.set_defaults(func=reg_list_tests)
+    #blist = subparsers.add_parser('list-tests', help='list all configurations')
+    #blist.add_argument('config', metavar='config', default=['ALL'], help='name of configuration', nargs='*')
+    #blist.set_defaults(func=reg_list_tests)
 
-    create_yaml = subparsers.add_parser('create_yaml', help='generate yaml files for all cases')
-    create_yaml.set_defaults(func=reg_create_yaml)
+    #create_yaml = subparsers.add_parser('create_yaml', help='generate yaml files for all cases')
+    #create_yaml.set_defaults(func=reg_create_yaml)
 
     rlist = subparsers.add_parser('list', help='list all run tests')
     rlist.add_argument('config', metavar='config', default=['ALL'], help='name of configuration', nargs='*')
