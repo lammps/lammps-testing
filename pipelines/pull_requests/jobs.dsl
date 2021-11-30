@@ -10,7 +10,7 @@ pipelineJob("dev/pull_requests/checkstyle") {
         pipelineTriggers {
             triggers {
                 githubPullRequests {
-                    spec("* * * * *")
+                    spec("H * * * *")
                     triggerMode('HEAVY_HOOKS')
                     cancelQueued(true)
                     repoProviders {
@@ -44,7 +44,7 @@ pipelineJob("dev/pull_requests/compilation_tests") {
         pipelineTriggers {
             triggers {
                 githubPullRequests {
-                    spec("* * * * *")
+                    spec("H * * * *")
                     triggerMode('HEAVY_HOOKS')
                     cancelQueued(true)
                     repoProviders {
@@ -78,7 +78,7 @@ pipelineJob("dev/pull_requests/unit_tests") {
         pipelineTriggers {
             triggers {
                 githubPullRequests {
-                    spec("* * * * *")
+                    spec("H * * * *")
                     triggerMode('HEAVY_HOOKS')
                     cancelQueued(true)
                     repoProviders {
@@ -112,7 +112,7 @@ pipelineJob("dev/pull_requests/gpu_unit_tests") {
         pipelineTriggers {
             triggers {
                 githubPullRequests {
-                    spec("* * * * *")
+                    spec("H * * * *")
                     triggerMode('HEAVY_HOOKS')
                     cancelQueued(true)
                     repoProviders {
@@ -166,7 +166,7 @@ pipelineJob("dev/pull_requests/ibmxl_ppc64le") {
         pipelineTriggers {
             triggers {
                 githubPullRequests {
-                    spec("* * * * *")
+                    spec("H * * * *")
                     triggerMode('HEAVY_HOOKS')
                     cancelQueued(true)
                     repoProviders {
@@ -220,7 +220,7 @@ pipelineJob("dev/pull_requests/run_tests") {
         pipelineTriggers {
             triggers {
                 githubPullRequests {
-                    spec("* * * * *")
+                    spec("H * * * *")
                     triggerMode('HEAVY_HOOKS')
                     cancelQueued(true)
                     repoProviders {
@@ -274,7 +274,7 @@ pipelineJob("dev/pull_requests/regression_tests") {
         pipelineTriggers {
             triggers {
                 githubPullRequests {
-                    spec("* * * * *")
+                    spec("H * * * *")
                     triggerMode('HEAVY_HOOKS')
                     cancelQueued(true)
                     repoProviders {
@@ -328,7 +328,7 @@ pipelineJob("dev/pull_requests/build_docs") {
         pipelineTriggers {
             triggers {
                 githubPullRequests {
-                    spec("* * * * *")
+                    spec("H * * * *")
                     triggerMode('HEAVY_HOOKS')
                     cancelQueued(true)
                     repoProviders {
