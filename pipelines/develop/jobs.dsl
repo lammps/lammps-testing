@@ -8,6 +8,10 @@ folder('dev/stable')
 pipelineJob("dev/develop/checkstyle") {
     quietPeriod(120)
 
+    logRotator {
+       numToKeep(100)
+    }
+
     properties {
         disableConcurrentBuilds()
         pipelineTriggers {
@@ -27,6 +31,10 @@ pipelineJob("dev/develop/checkstyle") {
 
 pipelineJob("dev/develop/compilation_tests") {
     quietPeriod(120)
+
+    logRotator {
+       numToKeep(100)
+    }
 
     properties {
         disableConcurrentBuilds()
@@ -48,6 +56,10 @@ pipelineJob("dev/develop/compilation_tests") {
 pipelineJob("dev/develop/run_tests") {
     quietPeriod(120)
 
+    logRotator {
+       numToKeep(100)
+    }
+
     properties {
         disableConcurrentBuilds()
         pipelineTriggers {
@@ -68,6 +80,10 @@ pipelineJob("dev/develop/run_tests") {
 pipelineJob("dev/develop/regression_tests") {
     quietPeriod(120)
 
+    logRotator {
+       numToKeep(100)
+    }
+
     properties {
         disableConcurrentBuilds()
         pipelineTriggers {
@@ -87,6 +103,10 @@ pipelineJob("dev/develop/regression_tests") {
 
 pipelineJob("dev/develop/build_docs") {
     quietPeriod(120)
+
+    logRotator {
+       numToKeep(100)
+    }
 
     properties {
         pipelineTriggers {
@@ -146,6 +166,10 @@ pipelineJob("dev/stable/build_docs") {
 pipelineJob("dev/develop/unit_tests") {
     quietPeriod(120)
 
+    logRotator {
+       numToKeep(100)
+    }
+
     properties {
         disableConcurrentBuilds()
         pipelineTriggers {
@@ -168,6 +192,10 @@ folder('dev/develop/docker')
 
 pipelineJob("dev/develop/docker_containers") {
     quietPeriod(120)
+
+    logRotator {
+       numToKeep(100)
+    }
 
     properties {
         disableConcurrentBuilds()
@@ -203,6 +231,10 @@ configurations.each { yaml_file ->
             stringParam('CONTAINER_NAME', container)
         }
 
+        logRotator {
+           numToKeep(100)
+        }
+
         definition {
             cps {
                 script(readFileFromWorkspace('pipelines/develop/container_compilation_tests.groovy'))
@@ -219,6 +251,10 @@ configurations.each { yaml_file ->
                 stringParam('CCACHE_DIR', '.ccache')
                 stringParam('CONTAINER_NAME', container)
                 stringParam('CONTAINER_IMAGE', config.container_image)
+            }
+
+            logRotator {
+               numToKeep(100)
             }
 
             definition {
@@ -241,6 +277,10 @@ configurations.each { yaml_file ->
                     stringParam('CCACHE_DIR', '.ccache')
                     stringParam('CONTAINER_NAME', container)
                     stringParam('CONTAINER_IMAGE', config.container_image)
+                }
+
+                logRotator {
+                   numToKeep(100)
                 }
 
                 definition {
@@ -266,6 +306,10 @@ configurations.each { yaml_file ->
                     stringParam('CONTAINER_IMAGE', config.container_image)
                 }
 
+                logRotator {
+                   numToKeep(100)
+                }
+
                 definition {
                     cps {
                         script(readFileFromWorkspace('pipelines/develop/regression.groovy'))
@@ -289,6 +333,10 @@ configurations.each { yaml_file ->
                     stringParam('CONTAINER_IMAGE', config.container_image)
                 }
 
+                logRotator {
+                   numToKeep(100)
+                }
+
                 definition {
                     cps {
                         script(readFileFromWorkspace('pipelines/develop/run_unit_tests.groovy'))
@@ -310,6 +358,10 @@ container_definitions.each { definition_file ->
 
     pipelineJob("dev/containers/${name}") {
         concurrentBuild(false)
+
+        logRotator {
+           numToKeep(100)
+        }
 
         definition {
             cpsScm {
@@ -340,6 +392,10 @@ docker_config.containers.each { name ->
             stringParam('WORKSPACE_PARENT')
         }
 
+        logRotator {
+           numToKeep(100)
+        }
+
         definition {
             cps {
                 script(readFileFromWorkspace('pipelines/develop/docker_container.groovy'))
@@ -361,6 +417,10 @@ pipelineJob("dev/develop/static_analysis/cmake_coverity") {
                 }
             }
         }
+    }
+
+    logRotator {
+       numToKeep(100)
     }
 
     definition {

@@ -81,6 +81,7 @@ ${CMAKE_COMMAND} \
       -D PKG_ML-RANN=on \
       -D PKG_NETCDF=on \
       -D PKG_PTM=on \
+      -D PKG_PYTHON=on \
       -D PKG_QTB=on \
       -D PKG_SMTBQ=on \
       -D PKG_TALLY=on \
