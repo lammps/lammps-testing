@@ -4,6 +4,9 @@ import glob
 import logging
 import subprocess
 from nose.tools import nottest
+from collections import namedtuple
+
+import yaml
 
 logger = logging.getLogger('lammps_test')
 logger.setLevel(logging.DEBUG)
@@ -110,7 +113,12 @@ class Container(object):
     def exec(self, options=[], command=[], cwd="."):
         test_env = os.environ.copy()
         test_env["LAMMPS_CI_RUNNER"] = "lammps_test"
-        return subprocess.call(['singularity', 'exec'] + options + [self.container, command], cwd=cwd, env=test_env)
+        cmd = ['singularity', 'exec'] + options + [self.container, command]
+        try:
+            return subprocess.call(cmd, cwd=cwd, env=test_env)
+        except FileNotFoundError as e:
+            logger.error(f"ERROR: Could not run singularity command '{' '.join(cmd)}'")
+            sys.exit(-1)
 
     def clean(self):
         if self.exists:
@@ -121,7 +129,7 @@ class Container(object):
     def exists(self):
         return os.path.exists(self.container)
 
-    
+
 class LocalRunner(object):
     def __init__(self, lammps_binary_path):
         self.lammps_binary_path = lammps_binary_path
@@ -151,7 +159,7 @@ class MPIRunner(LocalRunner):
         if 'LAMMPS_MPI_OPTIONS' in os.environ:
             logger.debug(f"Using LAMMPS_MPI_OPTIONS: {os.environ['LAMMPS_MPI_OPTIONS']}")
             self.custom_mpi_options = os.environ['LAMMPS_MPI_OPTIONS'].split()
-    
+
     def get_full_command(self, input_script, options=[]):
         base_command = super().get_full_command(input_script, options)
         return  ["mpirun", "-np", str(self.nprocs)] + self.custom_mpi_options + base_command
@@ -165,6 +173,135 @@ def discover_tests(test_dir, skip_list=[]):
             continue
 
         scripts = [os.path.join(path, f) for f in files if f.startswith('in.')]
+        logfiles = [os.path.join(path, f) for f in files if f.startswith('log.')]
 
         if len(scripts) > 0:
-            yield name, scripts
+            yield name, scripts, logfiles
+
+
+def get_container(name, settings):
+    if name == 'local':
+        return None
+    container = os.path.join(settings.container_dir, name + ".sif")
+    container_definition = os.path.join(settings.container_definition_dir, name + ".def")
+    return Container(name, container, container_definition)
+
+
+def get_names(search_pattern):
+    names = []
+    for path in glob.glob(search_pattern):
+        base = os.path.basename(path)
+        name = os.path.splitext(base)[0]
+        names.append(name)
+    return names
+
+
+def get_containers(settings):
+    containers  = get_names(os.path.join(settings.container_definition_dir, '*.def'))
+    containers += get_names(os.path.join(settings.container_definition_dir, '**/*.def'))
+    return [get_container(c, settings) for c in sorted(containers)]
+
+
+def get_default_containers(settings):
+    configs = get_configurations(settings)
+    cnames = set()
+
+    for config in configs:
+        cnames.add(config.container_image)
+
+    return [get_container(name, settings) for name in cnames]
+
+
+def get_containers_by_selector(selector, settings):
+    if 'all' in selector or 'ALL' in selector:
+        return get_containers(settings)
+    elif 'default' in selector or 'DEFAULT' in selector:
+        return get_default_containers(settings)
+    return [get_container(c, settings) for c in sorted(selector)]
+
+
+def state_icon(state):
+    if state == "success":
+        return "✅"
+    elif state == "failed":
+        return "❌"
+    elif state == "pending":
+        return "⚪"
+    else:
+        return "⭕"
+
+
+def get_configuration(name, settings):
+    configfile = os.path.join(settings.configuration_dir, name + ".yml")
+    if os.path.exists(configfile):
+        with open(configfile) as f:
+            config = yaml.full_load(f)
+            return namedtuple("Configuration", ['name'] + list(config.keys()))(name, *config.values())
+    raise FileNotFoundError(configfile)
+
+
+def get_configurations(settings):
+    configurations = get_names(os.path.join(settings.configuration_dir, '*.yml'))
+    return [get_configuration(c, settings) for c in sorted(configurations)]
+
+
+def get_configurations_by_selector(selector, settings):
+    if 'all' in selector or 'ALL' in selector:
+        return get_configurations(settings)
+    return [get_configuration(c, settings) for c in sorted(selector)]
+
+
+def get_lammps_commit(commit, settings):
+    return subprocess.check_output(['git', 'rev-parse', commit], cwd=settings.lammps_dir).decode().strip()
+
+
+def get_commits(settings):
+    commits = get_names(os.path.join(settings.cache_dir, 'builds_*'))
+    return [c[7:] for c in sorted(commits)]
+
+
+def expand_selected_config_by_property(selected_list, property_name, settings):
+    expanded = {}
+
+    def add_item(config, item):
+        if config not in expanded:
+            expanded[config] = [item]
+        elif item not in expanded[config]:
+            expanded[config].append(item)
+
+    if "ALL" in selected_list or "all" in selected_list:
+        configurations = get_configurations(settings)
+        for config in configurations:
+            if hasattr(config, property_name):
+                expanded[config.name] = getattr(config, property_name)
+    else:
+        for selected in selected_list:
+            parts = selected.split('/')
+
+            if len(parts) == 1 or parts[1] == "*":
+                config = get_configuration(parts[0], settings)
+                for item in getattr(config, property_name):
+                    add_item(config.name, item)
+            elif parts[1].endswith("*"):
+                prefix = parts[1][:-1]
+                config = get_configuration(parts[0], settings)
+                for item in getattr(config, property_name):
+                    if item.startswith(prefix):
+                        add_item(config.name, item)
+            else:
+                config = get_configuration(parts[0], settings)
+                item = parts[1]
+                add_item(config.name, item)
+    return expanded
+
+
+def expand_selected_config_and_builds(selected_builds, settings):
+    return expand_selected_config_by_property(selected_builds, "builds", settings)
+
+
+def expand_selected_config_and_unittests(selected_builds, settings):
+    return expand_selected_config_by_property(selected_builds, "unit_tests", settings)
+
+
+def expand_selected_config_and_runs(selected_builds, settings):
+    return expand_selected_config_by_property(selected_builds, "runs", settings)

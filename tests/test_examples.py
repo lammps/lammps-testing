@@ -125,7 +125,7 @@ examples_dir = os.path.join(TESTS_DIR, 'examples')
 
 skip_list = ['accelerate', 'kim', 'neb', 'reax', 'rerun', 'tad', 'prd', 'mscg']
 
-for name, scripts in discover_tests(examples_dir, skip_list):
+for name, scripts, logfiles in discover_tests(examples_dir, skip_list):
     # for now only use the lower case examples (=simple ones)
     if name.islower():    
         vars()[name.title() + "TestCase"] = CreateLAMMPSTestCase(name, scripts)

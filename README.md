@@ -1,18 +1,17 @@
 # LAMMPS Test Suite
 
-This repository contains code and examples that drive the regression testing on
+This repository contains code and examples that drive the testing on
 [ci.lammps.org](https://ci.lammps.org). It's is run on hardware that is hosted
 at Temple University.
 
 The tools provided here can also be installed locally for testing on a workstation.
 
 `lammps_test` is a utility to compile LAMMPS in different configurations on
-various environments using containers and perform both run tests
-and regression testing.
+various environments using containers and perform compilation, run, regression, and unit tests.
 
 ## Prerequisites
 
-* Singularity (https://sylabs.io/guides/3.5/user-guide/)
+* Singularity (https://sylabs.io/guides/3.9/user-guide/)
 
 ## Installation
 
@@ -43,9 +42,56 @@ LAMMPS testing source directory
 `LAMMPS_CACHE_DIR`
 Directory storing compiled binaries and containers
 
+## Basic Usage
+
+The general idea behind `lammps_test` is to provide similar feedback to a LAMMPS commit to what is available when running on `ci.lammps.org`. The main benefit of running it locally on your workstation is that you have the same exact binaries and output folders as on the CI server.
+
+When you type `lammps_test status` what you get is a full report of the current testing status of the HEAD commit in your LAMMPS git checkout (specified by `LAMMPS_DIR`).
+
+```bash
+$ lammps_test status
+Compilation Tests:
+ ⭕ centos7/cmake_mpi_openmp_bigbig_static (4a048e3f)
+ ⭕ centos7/cmake_serial_smallsmall_static (4a048e3f)
+ ⭕ centos7/cmake_mpi_smallbig_shared (4a048e3f)
+ ⭕ centos7/legacy_serial_openmp_smallsmall_static (4a048e3f)
+ ⭕ fedora/cmake_kokkos_mpi_openmp_clang_shared (4a048e3f)
+ ⭕ fedora/cmake_serial_smallsmall_static (4a048e3f)
+ ⭕ fedora/cmake_mpi_smallbig_shared (4a048e3f)
+ ⭕ fedora/legacy_mpi_bigbig_shared (4a048e3f)
+ ⭕ intel/cmake_mpi_openmp_bigbig_icc_static (4a048e3f)
+ ⭕ intel/cmake_kokkos_mpi_openmp_smallbig_icc_shared (4a048e3f)
+ ⭕ intel_oneapi/cmake_mpi_openmp_bigbig_oneapi_static (4a048e3f)
+ ⭕ intel_oneapi/cmake_kokkos_mpi_openmp_smallbig_oneapi_shared (4a048e3f)
+ ⭕ ubuntu/cmake_mpi_openmp_bigbig_static (4a048e3f)
+ ⭕ ubuntu/legacy_mpi_bigbig_shared (4a048e3f)
+ ⭕ ubuntu/legacy_serial_openmp_smallsmall_static (4a048e3f)
+ ⭕ windows/cmake_mpi_openmp_smallbig_shared_win64 (4a048e3f)
+ ⭕ windows/cmake_serial_smallsmall_static_win32 (4a048e3f)
+
+Run Tests:
+ ⭕ ubuntu/cmake_testing_serial (4a048e3f)
+ ⭕ ubuntu/cmake_testing_mpi (4a048e3f)
+ ⭕ ubuntu/cmake_testing_openmp (4a048e3f)
+
+Regression Tests:
+ ⭕ ubuntu/cmake_regression_mpi (4a048e3f)
+
+Unit Tests:
+ ⭕ ubuntu/cmake_mpi_openmp_smallsmall_shared (4a048e3f)
+ ⭕ ubuntu/cmake_mpi_openmp_smallbig_shared (4a048e3f)
+ ⭕ ubuntu/cmake_mpi_openmp_bigbig_shared (4a048e3f)
+ ⭕ ubuntu_gpu/cmake_gpu_cuda_double_smallbig_clang_shared (4a048e3f)
+ ⭕ ubuntu_gpu/cmake_gpu_cuda_single_bigbig_static (4a048e3f)
+ ⭕ ubuntu_gpu/cmake_gpu_opencl_double_bigbig_shared (4a048e3f)
+ ⭕ ubuntu_gpu/cmake_gpu_opencl_mixed_smallbig_clang_static (4a048e3f)
+```
+
+As you execute other `lammps_test` subcommands, this status is updated. Before running tests, you will need the LAMMPS containers.
+
 ## Containers
 
-To make builds reproducable, `lammps_test` uses Singularity containers for
+To make builds reproducible, `lammps_test` uses [Singularity](https://sylabs.io/singularity/) containers for
 building all binaries. Singularity must be installed and the current user must
 have `sudo` rights to build containers.
 
@@ -58,25 +104,27 @@ with `lammps_test`:
 
 ```bash
 # builds all container definitions at once
-lammps_test build_container ALL
+lammps_test env build ALL
 
 # only build ubuntu18.04 container
-lammps_test build_container ubuntu18.04
+lammps_test env build ubuntu18.04
 
 # build multiple containers
-lammps_test build_container ubuntu18.04 centos7 fedora30_mingw
+lammps_test env build ubuntu18.04 centos7 fedora30_mingw
 ```
 
 ## Compilation Tests
 
 The compilation tests done by the LAMMPS Jenkins server executes several bash
 scripts on multiple containers. Each environment that should be tested defines
-a YAML file in the `scripts/` folder. Currently it has 5 definitions:
+a YAML file in the `scripts/` folder. Currently it has 7 definitions:
 
 * ubuntu.yml
-* centos.yml
+* ubuntu_gpu.yml
+* centos7.yml
 * fedora.yml
 * intel.yml
+* intel_oneapi.yml
 * windows.yml
 
 Each of these environment defines a list of `builds` and the used
@@ -85,13 +133,14 @@ in `scripts/builds/<BUILD_NAME>.sh`.
 
 These build scripts assume the necessary environment variables described above
 are defined and will compile LAMMPS in the current working directory.
-`lammps_test compilation` is a wrapper command that create the necessary
+`lammps_test compile` is a wrapper command that create the necessary
 working directory inside of the `$LAMMPS_CACHE_DIR` folder, and then launches
 these scripts inside the correct container.
 
-On ci.lammps.org, these tests are one environment at a time, running multiple compilations in parallel. Below is a visualization of the current compilation test pipeline that both runs for the [master](https://ci.lammps.org/blue/organizations/jenkins/dev%2Fmaster%2Fcompilation_tests/activity) branch (current development version of LAMMPS) and each pull request.
+On ci.lammps.org, these tests are one environment at a time, running multiple compilations in parallel. Below is a visualization of the current compilation test pipeline that both runs for the [develop](https://ci.lammps.org/blue/organizations/jenkins/dev%2Fdevelop%2Fcompilation_tests/activity) branch (current development version of LAMMPS) and each pull request.
 
-![Pipeline View of Compilation Tests](doc/images/compilation_tests.png "Compilation Tests pipeline on ci.lammps.org")
+| ![Pipeline View of Compilation Tests](doc/images/compilation_tests.png "Compilation Tests pipeline on ci.lammps.org") | ![Pipeline View of Compilation Tests](doc/images/compilation_tests2.png "Compilation Tests pipeline on ci.lammps.org for a particular environment") |
+|---|---|
 
 ### Running compilation tests locally
 
@@ -99,36 +148,41 @@ You can build all compilation tests at once as follows:
 
 ```bash
 # this will launch all ubuntu, centos and windows compilation tests
-lammps_test compilation
+lammps_test compile
 ```
 
-To limit the compilation tests to a single environment use the `--config` option:
+To limit the compilation tests use the environment name as selector:
 
 ```bash
 # only run ubuntu compilation tests
-lammps_test compilation --config ubuntu
+lammps_test compile ubuntu
 ```
 
-If only a few builds in an environment should be run specify the builds with `--builds`:
+If only a few builds in an environment should be run specify them with their full name:
 
 
 ```bash
 # only run 'cmake_mpi_smallbig_shared' compilation test on ubuntu
-lammps_test compilation --config ubuntu --builds cmake_mpi_smallbig_shared
+lammps_test compile ubuntu/cmake_mpi_smallbig_shared
 
 # run two compilations tests on ubuntu
-lammps_test compilation --config ubuntu --builds cmake_serial_smallsmall_static cmake_mpi_smallbig_shared
+lammps_test compile ubuntu/cmake_serial_smallsmall_static ubuntu/cmake_mpi_smallbig_shared
+
+# run only legacy compilation tests
+lammps_test compile ubuntu/legacy*
 ```
 
 ## Build directories
+
 Each build will create its own working directory based on the current Git SHA
 of the `LAMMPS_DIR` checkout.
 
 It will be located in: `$LAMMPS_CACHE_DIR/builds_<CURENT_LAMMPS_SHA>/<CONFIG_NAME>/<BUILD_NAME>`
 
 ### Example:
+
 ```bash
-lammps_test compilation --config ubuntu --builds cmake_mpi_smallbig_shared
+lammps_test compile ubuntu/cmake_mpi_smallbig_shared
 ```
 
 will create the folder:
@@ -137,8 +191,9 @@ will create the folder:
 To modify this behaviour and use the same build directory, independent of the current SHA, use the `--ignore-commit` option:
 
 ### Example:
+
 ```bash
-lammps_test compilation --config ubuntu --builds cmake_mpi_smallbig_shared --ignore-commit
+lammps_test compile --ignore-commit ubuntu/cmake_mpi_smallbig_shared
 ```
 
 will create the folder:
@@ -180,25 +235,25 @@ To launch all run tests at once use the `lammps_test run` command:
 
 ```bash
 # this will launch all ubuntu, centos and windows run tests
-lammps_test run
+lammps_test runtest
 ```
 
-To only test a single environment use the `--config` option:
+To only test a single environment:
 
 ```bash
-# only run ubuntu run tests
-lammps_test run --config ubuntu
+# only run a single ubuntu run tests
+lammps_test runtest run ubuntu/*
 ```
 
-To further limit the run tests to invividual builds, use the `--builds` option:
+To further limit the run tests to invividual builds, specify each build individual:
 
 
 ```bash
 # Launch serial run tests on ubuntu
-lammps_test run --config ubuntu --builds cmake_testing_serial
+lammps_test runtest run ubuntu/cmake_testing_serial
 
 # Lauch MPI and OpenMP run tests on ubuntu
-lammps_test run --config ubuntu --builds cmake_testing_mpi cmake_testing_openmp
+lammps_test runtest run ubuntu/cmake_testing_mpi ubuntu/cmake_testing_openmp
 ```
 
 ## Regression Tests
@@ -235,25 +290,25 @@ test.sh:
     A script which launches the test suite
 
 
-To launch all regressions tests at once use the `lammps_test regression` command:
+To launch all regressions tests at once use the `lammps_test reg` command:
 
 ```bash
 # this will launch all ubuntu, centos and windows regression tests
-lammps_test regression
+lammps_test reg run
 ```
 
-To only test a single environment use the `--config` option:
+To only test a single environment specify the environment name:
 
 ```bash
 # only run ubuntu regression tests
-lammps_test regression --config ubuntu
+lammps_test reg run ubuntu
 ```
 
-To further limit the regression tests to invividual builds, use the `--builds` option:
+To further limit the regression tests to individual builds, specify the full name:
 
 ```bash
 # Launch serial regression tests on ubuntu
-lammps_test run --config ubuntu --builds cmake_regression_mpi
+lammps_test reg run ubuntu/cmake_regression_mpi
 ```
 
-> **NOTE**:  Both `lammps_test run` and `lammps_test regression` have the `--build-only` and `--test-only` option. Use them to avoid one of the two phases.
+> **NOTE**:  Both `lammps_test runtest` and `lammps_test reg` have the `--build-only` and `--test-only` option. Use them to avoid one of the two phases.

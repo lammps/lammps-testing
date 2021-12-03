@@ -70,7 +70,7 @@ skip_list = [
     'tad'
 ]
 
-for name, scripts in discover_tests(examples_dir, skip_list):
+for name, scripts, logfiles in discover_tests(examples_dir, skip_list):
     name = name.replace('/', '__')
     name = name.replace('-', '_')
     vars()[name.title() + "TestCase"] = CreateLAMMPSTestCase(name, scripts)
