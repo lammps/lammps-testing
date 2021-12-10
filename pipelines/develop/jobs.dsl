@@ -430,3 +430,29 @@ pipelineJob("dev/develop/static_analysis/cmake_coverity") {
         }
     }
 }
+
+folder('dev/develop/macos_arm64/unit_tests')
+
+pipelineJob("dev/develop/macos_arm64/unit_tests/cmake_mpi_openmp_smallbig_clang_shared") {
+    quietPeriod(120)
+
+    logRotator {
+       numToKeep(100)
+    }
+
+    properties {
+        disableConcurrentBuilds()
+        pipelineTriggers {
+            triggers {
+                githubPush()
+            }
+        }
+    }
+
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/develop/macos_unittest.groovy'))
+            sandbox()
+        }
+    }
+}
