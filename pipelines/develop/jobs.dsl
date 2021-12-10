@@ -357,7 +357,9 @@ container_definitions.each { definition_file ->
     def name = definition_file.getBaseName()
 
     pipelineJob("dev/containers/${name}") {
-        concurrentBuild(false)
+        properties {
+          disableConcurrentBuilds()
+        }
 
         logRotator {
            numToKeep(100)
