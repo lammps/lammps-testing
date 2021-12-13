@@ -2,7 +2,6 @@
 import org.yaml.snakeyaml.Yaml
 
 folder('dev/develop')
-folder('dev/release')
 
 pipelineJob("dev/develop/checkstyle") {
     quietPeriod(120)
@@ -122,26 +121,6 @@ pipelineJob("dev/develop/build_docs") {
         }
     }
 }
-
-pipelineJob("dev/release/build_docs") {
-    quietPeriod(120)
-
-    properties {
-        pipelineTriggers {
-            triggers {
-                githubPush()
-            }
-        }
-    }
-
-    definition {
-        cps {
-            script(readFileFromWorkspace('pipelines/release/build_docs.groovy'))
-            sandbox()
-        }
-    }
-}
-
 
 pipelineJob("dev/develop/unit_tests") {
     quietPeriod(120)
