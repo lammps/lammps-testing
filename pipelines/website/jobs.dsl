@@ -1,6 +1,6 @@
 folder('website')
 
-pipelineJob("website/build_www") {
+pipelineJob("website/build_www_lammps_org") {
     logRotator {
        numToKeep(100)
     }
@@ -16,7 +16,7 @@ pipelineJob("website/build_www") {
 
     definition {
         cps {
-            script(readFileFromWorkspace('pipelines/website/build_www.groovy'))
+            script(readFileFromWorkspace('pipelines/website/build_www_lammps_org.groovy'))
             sandbox()
         }
     }
