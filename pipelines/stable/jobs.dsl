@@ -18,3 +18,12 @@ pipelineJob("dev/stable/build_docs") {
         }
     }
 }
+
+pipelineJob("dev/stable/update_release") {
+    definition {
+        cps {
+            script(readFileFromWorkspace('pipelines/stable/update_release.groovy'))
+            sandbox()
+        }
+    }
+}
