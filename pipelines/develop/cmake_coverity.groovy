@@ -67,7 +67,8 @@ node('atlas2') {
 
         stage('Upload') {
             withCredentials([string(credentialsId: 'coverity-token', variable: 'COVERITY_TOKEN'), string(credentialsId: 'coverity-email', variable: 'COVERITY_EMAIL')]) {
-                sh "curl --form token=$COVERITY_TOKEN --form email=$COVERITY_EMAIL  --form file=@build/lammps.tgz --form version=\"${commit.GIT_COMMIT}\"   --form description=\"LAMMPS automated build\" https://scan.coverity.com/builds?project=LAMMPS"
+                env.GIT_COMMIT = commit.GIT_COMMIT
+                sh 'curl --form token=$COVERITY_TOKEN --form email=$COVERITY_EMAIL  --form file=@build/lammps.tgz --form version="$GIT_COMMIT" --form description="LAMMPS automated build" https://scan.coverity.com/builds?project=LAMMPS'
             }
         }
     } catch (caughtErr) {
