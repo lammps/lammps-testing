@@ -65,7 +65,7 @@ node('wheatley2') {
         tools.add(gcc())
     }
 
-    recordIssues(tools: tools)
+    recordIssues(filters: [excludeFile('.*/lib/.*')], tools: tools)
 
     xunit(thresholds: [failed(failureNewThreshold: '0', failureThreshold: '0', unstableNewThreshold: '0', unstableThreshold: '0')], tools: [CTest(deleteOutputFiles: true, failIfNotNew: true, pattern: 'build/Testing/**/Test.xml', skipNoTestFiles: false, stopProcessingIfError: true)])
     

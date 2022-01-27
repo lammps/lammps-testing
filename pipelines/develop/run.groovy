@@ -42,7 +42,7 @@ node('atlas2') {
         tools.add(gcc())
     }
 
-    recordIssues(tools: tools)
+    recordIssues(filters: [excludeFile('.*/lib/.*')], tools: tools)
 
     junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'nosetests-*.xml'
 

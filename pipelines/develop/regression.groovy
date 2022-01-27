@@ -29,7 +29,7 @@ node('atlas2') {
         }
     }
 
-    recordIssues(tools: [gcc()])
+    recordIssues(filters: [excludeFile('.*/lib/.*')], tools: [gcc()])
 
     junit testDataPublishers: [[$class: 'AttachmentPublisher']], testResults: 'regression_*.xml'
 

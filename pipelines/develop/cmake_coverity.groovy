@@ -63,7 +63,7 @@ node('atlas2') {
             tools.add(gcc())
         }
 
-        recordIssues(tools: tools)
+        recordIssues(filters: [excludeFile('.*/lib/.*')], tools: tools)
 
         stage('Upload') {
             withCredentials([string(credentialsId: 'coverity-token', variable: 'COVERITY_TOKEN'), string(credentialsId: 'coverity-email', variable: 'COVERITY_EMAIL')]) {

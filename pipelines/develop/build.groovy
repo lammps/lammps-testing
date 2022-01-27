@@ -47,7 +47,7 @@ node(selector) {
         tools.add(gcc())
     }
 
-    recordIssues(tools: tools)
+    recordIssues(filters: [excludeFile('.*/lib/.*')], tools: tools)
 
     if (fileExists('pyenv/lammps.tgz')) {
         archiveArtifacts artifacts: 'pyenv/lammps.tgz', fingerprint: true, followSymlinks: false

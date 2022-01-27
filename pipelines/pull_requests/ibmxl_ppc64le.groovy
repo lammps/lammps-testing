@@ -63,7 +63,7 @@ node('ppc64le') {
             tools.add(gcc())
         }
 
-        recordIssues(tools: tools)
+        recordIssues(filters: [excludeFile('.*/lib/.*')], tools: tools)
     } catch (caughtErr) {
         err = caughtErr
         currentBuild.result = 'FAILURE'
