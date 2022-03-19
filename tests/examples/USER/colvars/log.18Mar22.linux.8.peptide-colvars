@@ -42,8 +42,8 @@ Finding 1-2 1-3 1-4 neighbors ...
      7 = max # of 1-3 neighbors
     14 = max # of 1-4 neighbors
     18 = max # of special neighbors
-  special bonds CPU = 0.001 seconds
-  read_data CPU = 0.030 seconds
+  special bonds CPU = 0.632 seconds
+  read_data CPU = 1.176 seconds
 
 neighbor	2.0 bin
 neigh_modify	delay 5
@@ -72,7 +72,7 @@ fix		4 all shake 0.0001 10 100 b 4 6 8 10 12 14 18 a 31
        6 = # of size 3 clusters
        3 = # of size 4 clusters
      640 = # of frozen angles
-  find clusters CPU = 0.001 seconds
+  find clusters CPU = 0.007 seconds
 
 #dump		1 colvar custom 1 dump.colvar.lammpstrj id xu yu zu fx fy fz
 #dump_modify 1 sort id
@@ -280,13 +280,13 @@ colvars: Re-initialized atom group for variable "two":0/0. 4 atoms: total mass =
 colvars: Re-initialized atom group for variable "two":0/1. 1 atoms: total mass = 12.011, total charge = 0.51.
 colvars: Synchronizing (emptying the buffer of) trajectory file "out.colvars.traj".
 SHAKE stats (type/ave/delta/count) on step 0
-Bond:    4   1.111     1.44264e-05       18
+Bond:    4   1.111     1.44264e-05        9
 Bond:    6   0.996998  7.26967e-06        6
-Bond:    8   1.08      1.32536e-05        9
-Bond:   10   1.111     1.22749e-05       12
+Bond:    8   1.08      1.32536e-05        6
+Bond:   10   1.111     1.22749e-05        8
 Bond:   12   1.08      1.11767e-05        9
 Bond:   14   0.96      0                  1
-Bond:   18   0.957206  4.37979e-05     1920
+Bond:   18   0.957206  4.37979e-05     1280
 Angle:  31   104.519   0.00396029       640
 Per MPI rank memory allocation (min/avg/max) = 15.4 | 15.5 | 15.78 Mbytes
 Step Temp TotEng PotEng KinEng E_pair E_bond f_2 
@@ -301,32 +301,32 @@ Step Temp TotEng PotEng KinEng E_pair E_bond f_2
       80    267.51495   -5206.4046    -6282.644    1076.2394   -6456.6369    31.611883    6.3554178 
       90    278.15579   -5245.3824    -6364.431    1119.0485   -6499.8063    28.849773   0.36941576 
 SHAKE stats (type/ave/delta/count) on step 100
-Bond:    4   1.11098   8.97155e-05       18
+Bond:    4   1.11098   8.97155e-05        9
 Bond:    6   0.996996  1.00568e-05        6
-Bond:    8   1.08      6.02345e-06        9
-Bond:   10   1.111     1.84253e-05       12
+Bond:    8   1.08      6.02345e-06        6
+Bond:   10   1.111     1.84253e-05        8
 Bond:   12   1.08      7.2713e-06         9
 Bond:   14   0.959996  0                  1
-Bond:   18   0.957198  3.36079e-05     1920
+Bond:   18   0.957198  3.36079e-05     1280
 Angle:  31   104.52    0.0030599        640
      100    260.10613   -5292.6885   -6339.1215     1046.433   -6471.6734    25.362042   0.21987323 
 colvars: Saving collective variables state to "out.colvars.state".
-Loop time of 0.38013 on 8 procs for 100 steps with 2004 atoms
+Loop time of 1.63391 on 8 procs for 100 steps with 2004 atoms
 
-Performance: 45.458 ns/day, 0.528 hours/ns, 263.068 timesteps/s
-96.3% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 10.576 ns/day, 2.269 hours/ns, 61.203 timesteps/s
+86.6% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.18757    | 0.20418    | 0.22645    |   2.5 | 53.71
-Bond    | 7.092e-05  | 0.00080783 | 0.0023632  |   0.0 |  0.21
-Kspace  | 0.054098   | 0.074668   | 0.090515   |   3.9 | 19.64
-Neigh   | 0.045895   | 0.045981   | 0.046079   |   0.0 | 12.10
-Comm    | 0.022723   | 0.023606   | 0.024126   |   0.3 |  6.21
-Output  | 0.00040507 | 0.00043947 | 0.0006488  |   0.0 |  0.12
-Modify  | 0.027866   | 0.027955   | 0.028019   |   0.0 |  7.35
-Other   |            | 0.002493   |            |       |  0.66
+Pair    | 0.2997     | 0.34265    | 0.45131    |   7.6 | 20.97
+Bond    | 0.00027409 | 0.0014617  | 0.0039324  |   3.7 |  0.09
+Kspace  | 0.556      | 0.6839     | 0.72974    |   6.3 | 41.86
+Neigh   | 0.28093    | 0.28856    | 0.30639    |   1.4 | 17.66
+Comm    | 0.090906   | 0.1041     | 0.12482    |   3.9 |  6.37
+Output  | 0.00066438 | 0.00080916 | 0.0016628  |   0.0 |  0.05
+Modify  | 0.1901     | 0.20564    | 0.21607    |   2.4 | 12.59
+Other   |            | 0.006792   |            |       |  0.42
 
 Nlocal:          250.5 ave         263 max         235 min
 Histogram: 1 0 1 1 0 1 2 0 0 2
@@ -357,13 +357,13 @@ colvars: Re-initialized atom group for variable "one":0/1. 1 atoms: total mass =
 colvars: Re-initialized atom group for variable "two":0/0. 4 atoms: total mass = 15.035, total charge = 0.16.
 colvars: Re-initialized atom group for variable "two":0/1. 1 atoms: total mass = 12.011, total charge = 0.51.
 SHAKE stats (type/ave/delta/count) on step 100
-Bond:    4   1.11098   8.97155e-05       18
+Bond:    4   1.11098   8.97155e-05        9
 Bond:    6   0.996996  1.00568e-05        6
-Bond:    8   1.08      6.02345e-06        9
-Bond:   10   1.111     1.84253e-05       12
+Bond:    8   1.08      6.02345e-06        6
+Bond:   10   1.111     1.84253e-05        8
 Bond:   12   1.08      7.2713e-06         9
 Bond:   14   0.959996  0                  1
-Bond:   18   0.957198  3.36079e-05     1920
+Bond:   18   0.957198  3.36079e-05     1280
 Angle:  31   104.52    0.0030599        640
 Per MPI rank memory allocation (min/avg/max) = 15.4 | 15.5 | 15.78 Mbytes
 Step Temp TotEng PotEng KinEng E_pair E_bond f_2 
@@ -371,39 +371,39 @@ Step Temp TotEng PotEng KinEng E_pair E_bond f_2
      110    266.26438   -5341.1991   -6412.4073    1071.2082   -6552.7551    33.573173    1.9229657 
      120    262.66604   -5386.2387   -6442.9704    1056.7317   -6587.5483    29.859587    2.7124812 
      130    252.83379   -5422.5401   -6439.7157    1017.1756   -6580.4703    25.979343    1.2031591 
-     140    253.85111   -5452.1837   -6473.4521    1021.2684   -6609.4826    26.071651   0.30585517 
-     150    261.31816   -5490.4725   -6541.7816    1051.3091   -6646.6075    16.258823    6.9051008 
-     160     255.7352   -5521.5941   -6550.4423    1028.8483   -6658.1373    19.717399    12.339679 
+     140    253.85111   -5452.1838   -6473.4521    1021.2684   -6609.4826    26.071651   0.30585517 
+     150    261.31816   -5490.4726   -6541.7817    1051.3091   -6646.6075    16.258823    6.9051008 
+     160     255.7352   -5521.5941   -6550.4423    1028.8483   -6658.1372    19.717399    12.339679 
      170    253.42527   -5540.0942   -6559.6494    1019.5552   -6656.6678    23.293812    10.290217 
-     180    248.51161   -5550.3254   -6550.1125    999.78704   -6661.4235    26.200127    3.4336037 
+     180    248.51161   -5550.3254   -6550.1125    999.78704   -6661.4236    26.200127    3.4336037 
      190    250.80862   -5555.2554   -6564.2835    1009.0281   -6666.1639     25.53634    3.3494286 
 SHAKE stats (type/ave/delta/count) on step 200
-Bond:    4   1.111     1.81266e-06       18
+Bond:    4   1.111     1.81266e-06        9
 Bond:    6   0.997     7.79424e-07        6
-Bond:    8   1.08      1.08903e-06        9
-Bond:   10   1.111     2.96503e-07       12
+Bond:    8   1.08      1.08903e-06        6
+Bond:   10   1.111     2.96503e-07        8
 Bond:   12   1.08      4.69038e-07        9
 Bond:   14   0.960001  0                  1
-Bond:   18   0.957201  3.76471e-06     1920
+Bond:   18   0.957201  3.76471e-06     1280
 Angle:  31   104.52    0.000411055      640
-     200    251.50475   -5557.4251   -6569.2538    1011.8288   -6674.0845    24.804906    7.1387572 
+     200    251.50475   -5557.4251   -6569.2539    1011.8288   -6674.0846    24.804906    7.1387572 
 colvars: Saving collective variables state to "out.colvars.state".
-Loop time of 0.364989 on 8 procs for 100 steps with 2004 atoms
+Loop time of 1.08949 on 8 procs for 100 steps with 2004 atoms
 
-Performance: 47.344 ns/day, 0.507 hours/ns, 273.981 timesteps/s
-93.2% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 15.861 ns/day, 1.513 hours/ns, 91.786 timesteps/s
+89.3% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.18827    | 0.20583    | 0.22292    |   2.3 | 56.39
-Bond    | 6.9608e-05 | 0.00079912 | 0.002302   |   0.0 |  0.22
-Kspace  | 0.056375   | 0.072895   | 0.08983    |   3.7 | 19.97
-Neigh   | 0.030561   | 0.030648   | 0.030743   |   0.0 |  8.40
-Comm    | 0.022259   | 0.023049   | 0.0235     |   0.3 |  6.31
-Output  | 0.00038317 | 0.00041576 | 0.00061728 |   0.0 |  0.11
-Modify  | 0.028465   | 0.028569   | 0.028683   |   0.0 |  7.83
-Other   |            | 0.002785   |            |       |  0.76
+Pair    | 0.28577    | 0.33545    | 0.39881    |   5.6 | 30.79
+Bond    | 0.00027111 | 0.0034734  | 0.016319   |   8.5 |  0.32
+Kspace  | 0.3578     | 0.41879    | 0.46971    |   5.3 | 38.44
+Neigh   | 0.11569    | 0.11711    | 0.11824    |   0.3 | 10.75
+Comm    | 0.049215   | 0.053802   | 0.059798   |   1.2 |  4.94
+Output  | 0.00065974 | 0.00082793 | 0.0019187  |   0.0 |  0.08
+Modify  | 0.14712    | 0.15347    | 0.15636    |   0.9 | 14.09
+Other   |            | 0.006564   |            |       |  0.60
 
 Nlocal:          250.5 ave         261 max         238 min
 Histogram: 1 0 1 1 1 0 1 1 0 2
@@ -597,53 +597,53 @@ colvars: Re-initialized atom group for variable "one":0/1. 1 atoms: total mass =
 colvars: Re-initialized atom group for variable "two":0/0. 4 atoms: total mass = 15.035, total charge = 0.16.
 colvars: Re-initialized atom group for variable "two":0/1. 1 atoms: total mass = 12.011, total charge = 0.51.
 SHAKE stats (type/ave/delta/count) on step 200
-Bond:    4   1.111     1.81266e-06       18
+Bond:    4   1.111     1.81266e-06        9
 Bond:    6   0.997     7.79424e-07        6
-Bond:    8   1.08      1.08903e-06        9
-Bond:   10   1.111     2.96503e-07       12
+Bond:    8   1.08      1.08903e-06        6
+Bond:   10   1.111     2.96503e-07        8
 Bond:   12   1.08      4.69038e-07        9
 Bond:   14   0.960001  0                  1
-Bond:   18   0.957201  3.76471e-06     1920
+Bond:   18   0.957201  3.76471e-06     1280
 Angle:  31   104.52    0.000411055      640
 Per MPI rank memory allocation (min/avg/max) = 15.4 | 15.52 | 15.78 Mbytes
 Step Temp TotEng PotEng KinEng E_pair E_bond f_2 
-     200    251.50475   -5557.4251   -6569.2538    1011.8288   -6674.0845    24.804906    7.1387572 
-     210    253.15303   -5538.5615   -6557.0214    1018.4599   -6672.0497    37.676621   0.61219488 
-     220    245.19621    -5522.519   -6508.9679    986.44887   -6628.1899    36.657688  0.048643392 
-     230    258.69885   -5495.7275   -6536.4988    1040.7713   -6658.2886    34.857911   0.22092559 
-     240    260.79633   -5469.8677   -6519.0774    1049.2097   -6624.1799    31.576952    3.7574815 
-     250    269.07527   -5438.3946   -6520.9113    1082.5167   -6616.4382    25.447675    8.6600022 
-     260    266.01046   -5397.3485   -6467.5352    1070.1867   -6580.2896    26.871919    8.3323103 
-     270    272.81307   -5350.8819   -6448.4362    1097.5543   -6563.8228    23.114196    10.973132 
-     280    279.42264   -5307.9799   -6432.1251    1124.1452   -6557.3368    33.644022    8.5490489 
-     290    286.85168   -5260.8409   -6414.8739     1154.033   -6515.6796    28.574838    5.9100102 
+     200    251.50475   -5557.4251   -6569.2539    1011.8288   -6674.0846    24.804906    7.1387572 
+     210    253.15304   -5538.5614   -6557.0214      1018.46   -6672.0497    37.676621   0.61219489 
+     220    245.19621   -5522.5191    -6508.968    986.44887     -6628.19    36.657688  0.048643368 
+     230    258.69885   -5495.7276   -6536.4989    1040.7713   -6658.2887    34.857911   0.22092546 
+     240    260.79635   -5469.8677   -6519.0775    1049.2098     -6624.18    31.576951    3.7574814 
+     250    269.07527   -5438.3946   -6520.9113    1082.5167   -6616.4382    25.447674    8.6600016 
+     260    266.01049   -5397.3484   -6467.5352    1070.1868   -6580.2896    26.871917    8.3323102 
+     270    272.81314   -5350.8818   -6448.4364    1097.5545    -6563.823    23.114195    10.973132 
+     280    279.42263   -5307.9799   -6432.1251    1124.1452   -6557.3368    33.644026    8.5490502 
+     290    286.85171   -5260.8409    -6414.874    1154.0331   -6515.6797    28.574837    5.9100135 
 SHAKE stats (type/ave/delta/count) on step 300
-Bond:    4   1.111     1.79793e-05       18
+Bond:    4   1.111     1.79792e-05        9
 Bond:    6   0.997005  1.02512e-05        6
-Bond:    8   1.08      1.85103e-05        9
-Bond:   10   1.111     9.98839e-06       12
-Bond:   12   1.08      8.84114e-06        9
+Bond:    8   1.08      1.85102e-05        6
+Bond:   10   1.111     9.98838e-06        8
+Bond:   12   1.08      8.84113e-06        9
 Bond:   14   0.960008  0                  1
-Bond:   18   0.957203  1.8445e-05      1920
-Angle:  31   104.52    0.00168383       640
-     300    291.52795   -5216.2878   -6389.1339    1172.8461   -6503.1274    27.889149    2.2482427 
+Bond:   18   0.957203  1.8445e-05      1280
+Angle:  31   104.52    0.00168382       640
+     300    291.52794    -5216.288   -6389.1341    1172.8461   -6503.1275    27.889155    2.2482458 
 colvars: Saving collective variables state to "out2.colvars.state".
-Loop time of 0.366428 on 8 procs for 100 steps with 2004 atoms
+Loop time of 0.766388 on 8 procs for 100 steps with 2004 atoms
 
-Performance: 47.158 ns/day, 0.509 hours/ns, 272.905 timesteps/s
-93.4% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 22.547 ns/day, 1.064 hours/ns, 130.482 timesteps/s
+94.3% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.19269    | 0.2066     | 0.23294    |   2.6 | 56.38
-Bond    | 9.4189e-05 | 0.0007866  | 0.0023107  |   0.0 |  0.21
-Kspace  | 0.048526   | 0.07256    | 0.086402   |   4.0 | 19.80
-Neigh   | 0.032257   | 0.032386   | 0.032544   |   0.1 |  8.84
-Comm    | 0.021598   | 0.022988   | 0.023678   |   0.4 |  6.27
-Output  | 0.00040563 | 0.00043836 | 0.00064715 |   0.0 |  0.12
-Modify  | 0.027817   | 0.027889   | 0.028012   |   0.0 |  7.61
-Other   |            | 0.002783   |            |       |  0.76
+Pair    | 0.28894    | 0.32563    | 0.39299    |   6.2 | 42.49
+Bond    | 0.0002091  | 0.00143    | 0.0040864  |   3.7 |  0.19
+Kspace  | 0.1578     | 0.22519    | 0.25966    |   7.5 | 29.38
+Neigh   | 0.057266   | 0.057716   | 0.058028   |   0.1 |  7.53
+Comm    | 0.03895    | 0.051826   | 0.057283   |   2.3 |  6.76
+Output  | 0.0005883  | 0.00082569 | 0.0024266  |   0.0 |  0.11
+Modify  | 0.096466   | 0.099188   | 0.10127    |   0.6 | 12.94
+Other   |            | 0.004578   |            |       |  0.60
 
 Nlocal:          250.5 ave         264 max         226 min
 Histogram: 1 0 0 0 0 2 2 0 1 2
@@ -659,4 +659,4 @@ Neighbor list builds = 8
 Dangerous builds = 0
 
 colvars: Resetting the Collective Variables module.
-Total wall time: 0:00:01
+Total wall time: 0:00:05

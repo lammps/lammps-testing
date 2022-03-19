@@ -1,4 +1,4 @@
-LAMMPS (5 May 2020)
+LAMMPS (17 Feb 2022)
 # 250 butane system for drude polarizability example (Nose-Hoover)
 
 units real
@@ -15,7 +15,8 @@ pair_modify mix geometric tail yes
 kspace_style pppm 1.0e-4
 
 read_data data.butane
-  orthogonal box = (-19.1 -19.0999 -19.1) to (19.1 19.1 19.1)
+Reading data file ...
+  orthogonal box = (-19.099988 -19.099913 -19.099998) to (19.099998 19.099999 19.099987)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
   4500 atoms
@@ -31,12 +32,15 @@ read_data data.butane
   6000 angles
   reading dihedrals ...
   6750 dihedrals
-  5 = max # of 1-2 neighbors
-  8 = max # of 1-3 neighbors
-  12 = max # of 1-4 neighbors
-  17 = max # of special neighbors
-  special bonds CPU = 0.000823779 secs
-  read_data CPU = 0.0396398 secs
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     5 = max # of 1-2 neighbors
+     8 = max # of 1-3 neighbors
+    12 = max # of 1-4 neighbors
+    17 = max # of special neighbors
+  special bonds CPU = 0.016 seconds
+  read_data CPU = 0.154 seconds
 
 group gBUTANE molecule 1:250
 4500 atoms in group gBUTANE
@@ -71,11 +75,11 @@ velocity gDRUDES create 1 12345
 fix fDRUDE all drude C C N D D
 
 fix fSHAKE gCORES shake 0.0001 20 0 b 2 4
-  0 = # of size 2 clusters
-  500 = # of size 3 clusters
-  500 = # of size 4 clusters
-  0 = # of frozen angles
-  find clusters CPU = 0.000646297 secs
+       0 = # of size 2 clusters
+     500 = # of size 3 clusters
+     500 = # of size 4 clusters
+       0 = # of frozen angles
+  find clusters CPU = 0.001 seconds
 
 comm_modify vel yes
 compute cTEMP_CORE gCORES temp/com
@@ -98,14 +102,15 @@ thermo 50
 timestep 0.5
 run 20
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (src/kspace.cpp:332)
-  G vector (1/distance) = 0.367867
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:340)
+  G vector (1/distance) = 0.36786669
   grid = 36 36 36
   stencil order = 5
-  estimated absolute RMS force accuracy = 0.031354
-  estimated relative force accuracy = 9.44215e-05
+  estimated absolute RMS force accuracy = 0.031353958
+  estimated relative force accuracy = 9.4421513e-05
   using double precision FFTW3
   3d grid and FFT values/proc = 15625 6480
+  generated 0 of 10 mixed pair_coeff terms from geometric mixing rule
 Rebuild special list taking Drude particles into account
 Old max number of 1-2 to 1-4 neighbors: 17
 New max number of 1-2 to 1-4 neighbors: 17 (+0)
@@ -119,7 +124,7 @@ Neighbor list info ...
   (1) pair lj/cut/coul/long, perpetual
       attributes: half, newton on
       pair build: half/bin/newton
-      stencil: half/bin/3d/newton
+      stencil: half/bin/3d
       bin: standard
   (2) pair thole, perpetual, skip from (1)
       attributes: half, newton on
@@ -129,34 +134,34 @@ Neighbor list info ...
 Per MPI rank memory allocation (min/avg/max) = 15.46 | 15.82 | 15.9 Mbytes
 Step CPU TotEng KinEng Temp PotEng E_bond E_angle E_dihed E_impro E_vdwl E_coul E_long Press Volume c_cTEMP[1] c_cTEMP[2] 
        0            0    6535.5187      2714.74    248.45112    3820.7787    3724.3278    140.75328    1.4735401            0   -518.77975    595169.42   -594696.41    4439.7916    55742.797    334.61375    18.435655 
-      20   0.17629307    2110.6159    1286.2897    117.72034    824.32616     200.6474    892.23866    56.146398            0   -746.97708    595293.79   -594871.52    8572.3317    55742.797    158.81461    8.0179029 
-Loop time of 0.176355 on 8 procs for 20 steps with 4500 atoms
+      20   0.53746907    2110.6159    1286.2897    117.72034    824.32615     200.6474    892.23866    56.146398            0   -746.97708    595293.79   -594871.52    8572.3317    55742.797    158.81461    8.0179029 
+Loop time of 0.537667 on 8 procs for 20 steps with 4500 atoms
 
-Performance: 4.899 ns/day, 4.899 hours/ns, 113.408 timesteps/s
-81.2% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 1.607 ns/day, 14.935 hours/ns, 37.198 timesteps/s
+87.5% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.047603   | 0.065454   | 0.081573   |   5.1 | 37.12
-Bond    | 0.005418   | 0.0072834  | 0.0097077  |   1.8 |  4.13
-Kspace  | 0.049067   | 0.066335   | 0.084556   |   5.2 | 37.61
+Pair    | 0.10158    | 0.11257    | 0.13155    |   2.6 | 20.94
+Bond    | 0.0095722  | 0.010733   | 0.011737   |   0.6 |  2.00
+Kspace  | 0.19559    | 0.213      | 0.22542    |   2.1 | 39.62
 Neigh   | 0          | 0          | 0          |   0.0 |  0.00
-Comm    | 0.005725   | 0.0074221  | 0.0088738  |   1.5 |  4.21
-Output  | 8.2626e-05 | 0.00011424 | 0.0001536  |   0.0 |  0.06
-Modify  | 0.027907   | 0.02904    | 0.029774   |   0.4 | 16.47
-Other   |            | 0.0007056  |            |       |  0.40
+Comm    | 0.022226   | 0.040068   | 0.060769   |   8.6 |  7.45
+Output  | 0.00021341 | 0.00073123 | 0.00098964 |   0.0 |  0.14
+Modify  | 0.14044    | 0.15746    | 0.1736     |   3.9 | 29.29
+Other   |            | 0.003113   |            |       |  0.58
 
-Nlocal:    562.5 ave 614 max 463 min
+Nlocal:          562.5 ave         614 max         463 min
 Histogram: 1 0 0 1 1 0 1 0 1 3
-Nghost:    4297.75 ave 4432 max 4210 min
+Nghost:        4297.75 ave        4432 max        4210 min
 Histogram: 1 2 1 1 0 1 1 0 0 1
-Neighs:    114247 ave 145444 max 96205 min
+Neighs:         114247 ave      145444 max       96205 min
 Histogram: 1 1 1 2 2 0 0 0 0 1
 
 Total # of neighbors = 913979
-Ave neighs/atom = 203.106
-Ave special neighs/atom = 13.3333
+Ave neighs/atom = 203.10644
+Ave special neighs/atom = 13.333333
 Neighbor list builds = 0
 Dangerous builds = 0
 Total wall time: 0:00:00
