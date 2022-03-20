@@ -21,7 +21,7 @@ class LammpsLog:
                     current_run = {}
                     for k in keys:
                         current_run[k] = []
-                elif line.startswith('---------------- Step'):
+                elif re.match(r"^-------\+ Step",line):
                     if not in_thermo:
                        current_run = {'Step': [], 'CPU': []}
                     in_thermo = True
