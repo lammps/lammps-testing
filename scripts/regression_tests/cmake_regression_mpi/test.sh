@@ -2,7 +2,7 @@
 export WORKING_DIR=$PWD
 SCRIPT_BASE_DIR=$LAMMPS_TESTING_DIR/scripts
 SCRIPTDIR="$(dirname "$(realpath "$0")")"
-export PYTHON=$(which python3)
+export PYTHON=$(/bin/which python3)
 
 # copy tests
 rsync -a --delete $LAMMPS_TESTING_DIR/tests .

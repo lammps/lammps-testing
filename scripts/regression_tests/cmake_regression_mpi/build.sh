@@ -43,7 +43,7 @@ else
     BUILD_HTTP_CACHE_CONFIGURATION="-D LAMMPS_DOWNLOADS_URL=${HTTP_CACHE_URL} -C ${LAMMPS_HTTP_CACHE_CONFIG}"
 fi
 
-export PYTHON=$(which python3)
+export PYTHON=$(/bin/which python3)
 
 # Set up environment
 ccache -M 10G
