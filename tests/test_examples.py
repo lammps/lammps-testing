@@ -127,7 +127,7 @@ skip_list = ['accelerate', 'kim', 'neb', 'reax', 'rerun', 'tad', 'prd', 'mscg']
 
 for name, scripts, logfiles in discover_tests(examples_dir, skip_list):
     # for now only use the lower case examples (=simple ones)
-    if name.islower():    
+    if name.islower():
         vars()[name.title() + "TestCase"] = CreateLAMMPSTestCase(name, scripts)
 
 if 'omp' in LAMMPS_TEST_MODES:

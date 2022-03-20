@@ -16,7 +16,7 @@ def regression(args, settings):
         runner = MPIRunner(args.binary, nprocs=args.nprocs)
     else:
         runner = LocalRunner(args.binary)
-    
+
     runner.working_dir = test_directory
 
     test = RegressionTest(name, test_directory, descriptor=args.descriptor, options=args.lammps_options.split())

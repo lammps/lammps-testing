@@ -29,7 +29,7 @@ class TwoPointCharges(LAMMPSTestCase, unittest.TestCase):
         xbound = ybound = zbound = "p"
         energy, _ = self.two_point_charges(name, kspace_style, accuracy, kspace_modify, xbound, ybound, zbound)
         self.assertLess(energy,    -119.15)
-        self.assertGreater(energy, -119.17) 
+        self.assertGreater(energy, -119.17)
 
     def test_periodic_box_with_pppm(self):
         """
@@ -42,7 +42,7 @@ class TwoPointCharges(LAMMPSTestCase, unittest.TestCase):
         xbound = ybound = zbound = "p"
         energy, _ = self.two_point_charges(name, kspace_style, accuracy, kspace_modify, xbound, ybound, zbound)
         self.assertLess(energy,    -119.15)
-        self.assertGreater(energy, -119.17) 
+        self.assertGreater(energy, -119.17)
 
     def test_periodic_box_with_ad_pppm(self):
         """
@@ -55,7 +55,7 @@ class TwoPointCharges(LAMMPSTestCase, unittest.TestCase):
         xbound = ybound = zbound = "p"
         energy, _ = self.two_point_charges(name, kspace_style, accuracy, kspace_modify, xbound, ybound, zbound)
         self.assertLess(energy,    -119.15)
-        self.assertGreater(energy, -119.17) 
+        self.assertGreater(energy, -119.17)
 
     def test_periodic_box_with_msm(self):
         """
@@ -68,7 +68,7 @@ class TwoPointCharges(LAMMPSTestCase, unittest.TestCase):
         xbound = ybound = zbound = "p"
         energy, _ = self.two_point_charges(name, kspace_style, accuracy, kspace_modify, xbound, ybound, zbound)
         self.assertLess(energy,    -119.15)
-        self.assertGreater(energy, -119.17) 
+        self.assertGreater(energy, -119.17)
 
     def test_non_periodic_box_with_msm(self):
         """
@@ -97,9 +97,9 @@ class TwoPointCharges(LAMMPSTestCase, unittest.TestCase):
         zbound = "f"
         energy, _ = self.two_point_charges(name, kspace_style, accuracy, kspace_modify, xbound, ybound, zbound)
         self.assertLess(energy,    -119.1)
-        self.assertGreater(energy, -119.2) 
+        self.assertGreater(energy, -119.2)
 
-  
+
     def two_point_charges(self, name, kspace_style, accuracy, kspace_modify, xbound, ybound, zbound):
         """
         run a two point charges in a box test
@@ -118,7 +118,7 @@ class TwoPointCharges(LAMMPSTestCase, unittest.TestCase):
         CPU = lg.runs[0]["CPU"]
         energy = total_energy_vector[0]
         pressure = pressure_vector[0]
-        
+
         print(f"Two point charges in a box with boundary {xbound} {ybound} {zbound}")
         print(f"  kspace_style = {kspace_style}")
         print(f"  accuracy = {accuracy}")
@@ -205,7 +205,7 @@ class Rhodopsin(LAMMPSTestCase, unittest.TestCase):
         energy = self.rhodopsin(name, kspace_style, accuracy, kspace_modify)
         self.assertLess(energy, -25340)
         self.assertGreater(energy, -25380)
-  
+
     def rhodopsin(self, name, kspace_style, accuracy, kspace_modify):
         working_directory = os.path.join(TESTS_DIR, 'kspace')
         infile = os.path.join(working_directory, f"in.{name}")
@@ -219,7 +219,7 @@ class Rhodopsin(LAMMPSTestCase, unittest.TestCase):
         total_energy_vector = lg.runs[0]["TotEng"]
         CPU = lg.runs[0]["CPU"]
         energy = total_energy_vector[0]
-    
+
         print(f"Rhodopsin test")
         print(f"  kspace_style = {kspace_style}")
         print(f"  accuracy = {accuracy}")
@@ -299,7 +299,7 @@ class RandomPointCharges(LAMMPSTestCase, unittest.TestCase):
         actual_accuracy = self.random_point_charges(name, kspace_style, accuracy, kspace_modify)
         self.assertLess(actual_accuracy, 1e-2)
 
-  
+
     def random_point_charges(self, name, kspace_style, accuracy, kspace_modify):
         """
         run random point charges in a box test
@@ -317,7 +317,7 @@ class RandomPointCharges(LAMMPSTestCase, unittest.TestCase):
         CPU = lg.runs[2]["CPU"]
         avefersq = avefersq_vector[0]
         actual_accuracy = math.sqrt(avefersq)
-        
+
         print(f"Random point charges in a box test")
         print(f"  kspace_style = {kspace_style}")
         print(f"  accuracy = {accuracy}")
@@ -325,7 +325,7 @@ class RandomPointCharges(LAMMPSTestCase, unittest.TestCase):
             print(f"  kspace_modify = {kspace_modify}")
         print(f"  actual_absolute_accuracy = {actual_accuracy}")
         print(f"  loop time = {CPU[1]}s")
-        
+
         return actual_accuracy
 
     def in_write_random(self,infile,kspace_style,accuracy,kspace_modify):
@@ -411,7 +411,7 @@ class SPCEWater(LAMMPSTestCase, unittest.TestCase):
         lg = LammpsLog(logfile)
         run = lg.runs[0]
         CPU = lg.runs[0]["CPU"]
-    
+
         print(f"SPC/E test")
         print(f"  kspace_style = {kspace_style}")
         print(f"  accuracy = {accuracy}")
@@ -419,13 +419,13 @@ class SPCEWater(LAMMPSTestCase, unittest.TestCase):
             print(f"  kspace_modify = {kspace_modify}")
         print(f"  loop time = {CPU[1]}s")
         return run
-    
+
     def assertEqualToStandard(self, run):
         # standards are from an Ewald run with accuracy = 1e-11
         energy_standard_0 = {
             'PotEng': -132836.07,
             'sumpe':  -132836.07
-        }        
+        }
 
         pressure_standard_0 = {
             'Press':    513.09891,
@@ -524,7 +524,7 @@ class SPCEWater(LAMMPSTestCase, unittest.TestCase):
             pair_style = "lj/cut/coul/msm"
         else:
             pair_style = "lj/cut/coul/long"
-        
+
         # in.spce.tmpl
         loader = FileSystemLoader(os.path.join(TESTS_DIR, 'kspace'))
         env = Environment(loader=loader)
