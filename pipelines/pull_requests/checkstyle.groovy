@@ -59,6 +59,18 @@ node('slow'){
                 echo 'Skipping'
             }
         }
+
+        stage('Errordoc Headers') {
+            if(fileExists('tools/coding_standard/errordocs.py')) {
+                tee('errordocs.log') {
+                    sh(label: "Check for obsolete Error docs in headers",
+                       script: "${launch_container} python3 tools/coding_standard/errordocs.py . || true")
+                }
+                recordIssues qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], failOnError: true, tools: [groovyScript(parserId: 'errordocs', pattern: 'errordocs.log')]
+            } else {
+                echo 'Skipping'
+            }
+        }
     } catch(Exception e) {
         currentBuild.result = 'FAILURE'
     } finally {
