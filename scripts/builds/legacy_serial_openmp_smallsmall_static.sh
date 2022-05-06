@@ -25,6 +25,7 @@ LAMMPS_PACKAGES=(
                  yes-dpd-react
                  yes-reaxff
                  yes-meam
+                 yes-electrode
                 )
 
 . $SCRIPTDIR/legacy_build.sh
