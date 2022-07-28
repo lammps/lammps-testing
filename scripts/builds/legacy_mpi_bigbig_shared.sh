@@ -25,6 +25,7 @@ LAMMPS_PACKAGES=(
                  yes-reaxff
                  yes-meam
                  yes-mpiio
+                 yes-electrode
                  yes-latboltz
                 )
 # temporarily disabled. fails to link ML-IAP /w Python on some Fedora versions

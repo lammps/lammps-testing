@@ -125,6 +125,12 @@ build_libraries() {
     then
         make -C ${LAMMPS_DIR}/src lib-machdyn args="-p /usr/include/eigen3" || exit 1
     fi
+
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-electrode"* ]]
+    then
+        make -C ${LAMMPS_DIR}/lib/electrode -f Makefile.${LAMMPS_MACH} clean
+        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/electrode -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE=Makefile.lammps.installed || exit 1
+    fi
 }
 
 if [ -z "${CCACHE_DIR}" ]
