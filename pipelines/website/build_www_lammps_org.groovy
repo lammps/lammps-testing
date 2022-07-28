@@ -33,7 +33,7 @@ node('atlas2') {
                     sh(label: "Clean directory",
                        script: "${launch_container} make -C website clean")
                     sh(label: "Build HTML on ${container}",
-                       script: "${launch_container} make -C website -j 8 all | tee html_build.log")
+                       script: "${launch_container} make -C website all | tee html_build.log")
                     sh 'cd website/html; tar cvzf ../../lammps-website.tar.gz *'
                 }
             }

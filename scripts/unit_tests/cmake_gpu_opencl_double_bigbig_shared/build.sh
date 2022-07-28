@@ -87,7 +87,7 @@ ${CMAKE_COMMAND} \
       -D PKG_COLLOID=on \
       -D PKG_CORESHELL=on \
       -D PKG_DIPOLE=on \
-      -D PKG_CG-SDK=on \
+      -D PKG_CG-SPICA=on \
       -D PKG_EXTRA-PAIR=on \
       ${LAMMPS_DIR}/cmake || exit 1
 
