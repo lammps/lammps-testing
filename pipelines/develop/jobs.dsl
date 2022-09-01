@@ -366,32 +366,6 @@ docker_config.containers.each { name ->
     }
 }
 
-folder('dev/develop/static_analysis')
-
-pipelineJob("dev/develop/static_analysis/cmake_coverity") {
-    properties {
-        disableConcurrentBuilds()
-        pipelineTriggers {
-            triggers {
-                cron {
-                    spec("H 2 * * 5")
-                }
-            }
-        }
-    }
-
-    logRotator {
-       numToKeep(100)
-    }
-
-    definition {
-        cps {
-            script(readFileFromWorkspace('pipelines/develop/cmake_coverity.groovy'))
-            sandbox()
-        }
-    }
-}
-
 folder('dev/develop/macos_arm64/unit_tests')
 
 pipelineJob("dev/develop/macos_arm64/unit_tests/cmake_mpi_openmp_smallbig_clang_shared") {
