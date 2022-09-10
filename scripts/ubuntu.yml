@@ -1,5 +1,6 @@
 display_name: 'Ubuntu 18.04'
 container_image: 'ubuntu18.04'
+
 builds:
  - cmake_mpi_openmp_bigbig_static
  - legacy_mpi_bigbig_shared
@@ -17,10 +18,8 @@ unit_tests:
  - cmake_mpi_openmp_smallsmall_shared
  - cmake_mpi_openmp_smallbig_shared
  - cmake_mpi_openmp_bigbig_shared
- - cmake_serial_kokkos_smallbig_shared
 
 pr_unit_tests:
  - cmake_mpi_openmp_smallsmall_shared
  - cmake_mpi_openmp_smallbig_shared
  - cmake_mpi_openmp_bigbig_shared
- - cmake_serial_kokkos_smallbig_shared
