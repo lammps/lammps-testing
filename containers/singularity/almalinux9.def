@@ -2,8 +2,9 @@ BootStrap: docker
 From: quay.io/almalinux/almalinux:9
 
 %post
-        dnf -y install epel-release dnf-utils
+        dnf -y install 'dnf-command(config-manager)'
         dnf config-manager --set-enabled crb
+        dnf -y install epel-release dnf-utils
         dnf -y update
         dnf -y install vim-enhanced git file make cmake patch which file ninja-build \
                ccache gcc-c++ gcc-gfortran clang libomp-devel gdb valgrind libubsan libasan libtsan \
@@ -17,7 +18,7 @@ From: quay.io/almalinux/almalinux:9
                texlive-framed texlive-wrapfig texlive-upquote texlive-capt-of \
                texlive-needspace texlive-titlesec texlive-anysize texlive-dvipng \
                blas-devel lapack-devel libyaml-devel \
-               zstd libzstd-devel yaml-cpp-devel
+               zstd libzstd-devel yaml-cpp-devel python-unversioned-command
         # voro++-devel, kim-api-devel, openkim-models are missing in EPEL9
         dnf clean all
 

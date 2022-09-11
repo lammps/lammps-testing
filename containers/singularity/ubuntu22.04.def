@@ -4,7 +4,7 @@ From: ubuntu:22.04
 %post
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
-    apt-get install --no-install-recommends -y software-properties-common gpg-agent
+    apt-get install --no-install-recommends -y software-properties-common gpg gpg-agent
     add-apt-repository ppa:openkim/latest
     apt-get update
     apt-get upgrade --no-install-recommends -y
@@ -29,7 +29,7 @@ From: ubuntu:22.04
         libenchant-2-dev \
         libfftw3-dev \
         libgsl-dev \
-        libhdf5-dev \
+        libhdf5-serial-dev \
         libhwloc-dev \
         libjpeg-dev \
         liblapack-dev \
@@ -52,6 +52,7 @@ From: ubuntu:22.04
         python3-pkg-resources \
         python3-setuptools \
         python3-virtualenv \
+        python3-venv \
         rsync \
         ssh \
         texlive \
@@ -122,7 +123,7 @@ From: ubuntu:22.04
     CUSTOM_PROMPT_ENV=/.singularity.d/env/99-zz_custom_prompt.sh
     cat >$CUSTOM_PROMPT_ENV <<EOF
 #!/bin/bash
-PS1="[ubuntu20.04:\u@\h] \W> "
+PS1="[ubuntu22.04:\u@\h] \W> "
 EOF
     chmod 755 $CUSTOM_PROMPT_ENV
 
