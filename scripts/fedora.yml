@@ -9,7 +9,6 @@ builds:
 
 unit_tests:
  - cmake_serial_kokkos_smallbig_shared
- - cmake_mpi_openmp_smallbig_shared_multi
 
 pr_unit_tests:
  - cmake_serial_kokkos_smallbig_shared
