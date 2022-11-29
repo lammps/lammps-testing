@@ -26,6 +26,7 @@ LAMMPS_PACKAGES=(
                  yes-reaxff
                  yes-meam
                  yes-electrode
+                 yes-ml-pod
                 )
 
 . $SCRIPTDIR/legacy_build.sh
