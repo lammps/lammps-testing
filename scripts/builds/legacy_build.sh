@@ -82,7 +82,7 @@ build_libraries() {
 
     if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-colvars"* ]]
     then
-        make -C ${LAMMPS_DIR}/src lib-colvars args="-m ${LAMMPS_MACH}"
+        make -C ${LAMMPS_DIR}/src lib-colvars args="-m ${LAMMPS_MACH}" CXX="${LAMMPS_COMPILER} -std=c++11"
     fi
 
 #    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-colvars"* ]]
