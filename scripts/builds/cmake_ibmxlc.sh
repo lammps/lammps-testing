@@ -56,6 +56,7 @@ export NETCDF_ROOT=/usr
 # Configure
 ${CMAKE_COMMAND} \
       -C ${LAMMPS_DIR}/cmake/presets/basic.cmake \
+      -D DOWNLOAD_POTENTIALS=off \
       -D CMAKE_CXX_COMPILER=xlc++ \
       -D CMAKE_C_COMPILER=xlc \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \

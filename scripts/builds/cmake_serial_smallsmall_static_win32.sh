@@ -45,6 +45,7 @@ cd ${BUILD}
 ${CMAKE_COMMAND} \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
       -C ${LAMMPS_DIR}/cmake/presets/mingw-cross.cmake \
+      -D DOWNLOAD_POTENTIALS=off \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_BUILD_TYPE="Release" \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-return-value -Wno-maybe-uninitialized" \
