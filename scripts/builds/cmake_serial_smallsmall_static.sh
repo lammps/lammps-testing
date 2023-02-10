@@ -64,6 +64,7 @@ export NETCDF_ROOT=/usr
 ${CMAKE_COMMAND} \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
+      -D DOWNLOAD_POTENTIALS=off \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \

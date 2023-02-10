@@ -63,6 +63,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LIBRARY_PATH}
 ${CMAKE_COMMAND} \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
+      -D DOWNLOAD_POTENTIALS=off \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_CUDA_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-maybe-uninitialized" \

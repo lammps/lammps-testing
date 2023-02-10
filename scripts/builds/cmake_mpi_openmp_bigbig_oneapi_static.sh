@@ -64,6 +64,7 @@ export HDF5_ROOT=/usr
 # Configure
 ${CMAKE_COMMAND} -G Ninja \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
+      -D DOWNLOAD_POTENTIALS=off \
       -C ${LAMMPS_DIR}/cmake/presets/intel.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \

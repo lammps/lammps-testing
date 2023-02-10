@@ -60,6 +60,7 @@ cd ${BUILD}
 ${CMAKE_COMMAND} -G Ninja \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
+      -D DOWNLOAD_POTENTIALS=off \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result" \

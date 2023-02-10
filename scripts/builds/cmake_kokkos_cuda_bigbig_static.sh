@@ -59,6 +59,7 @@ cd ${BUILD}
 # Configure
 ${CMAKE_COMMAND} \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
+      -D DOWNLOAD_POTENTIALS=off \
       -C ${LAMMPS_DIR}/cmake/presets/minimal.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/kokkos-cuda.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \

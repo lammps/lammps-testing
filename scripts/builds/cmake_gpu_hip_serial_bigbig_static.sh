@@ -68,6 +68,7 @@ export HCC_AMDGPU_TARGET=gfx906
 ${CMAKE_COMMAND} \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
+      -D DOWNLOAD_POTENTIALS=off \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result -Wno-macro-redefined" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D CMAKE_LIBRARY_PATH=$LIBRARY_PATH \

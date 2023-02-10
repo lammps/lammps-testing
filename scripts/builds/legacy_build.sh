@@ -82,9 +82,14 @@ build_libraries() {
 
     if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-colvars"* ]]
     then
-        make -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} clean
-        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} CXX="${LAMMPS_COMPILER} -std=c++11" || exit 1
+        make -C ${LAMMPS_DIR}/src lib-colvars args="-m ${LAMMPS_MACH}" CXX="${LAMMPS_COMPILER} -std=c++11"
     fi
+
+#    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-colvars"* ]]
+#    then
+#        make -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} clean
+#        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} CXX="${LAMMPS_COMPILER} -std=c++11" || exit 1
+#    fi
 
     if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-poems"* ]]
     then
