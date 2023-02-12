@@ -137,7 +137,7 @@ build_libraries() {
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/electrode -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE=Makefile.lammps.installed || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-ml-pod"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-ml-pod"* ]] && [[ -d ${LAMMPS_DIR}/lib/mlpod ]]
     then
         make -C ${LAMMPS_DIR}/lib/mlpod -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/mlpod -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE=Makefile.lammps.installed || exit 1
