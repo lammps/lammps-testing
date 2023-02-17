@@ -72,10 +72,10 @@ enable_packages() {
 
     for PKG in "${LAMMPS_PACKAGES[@]}"
     do
-        dir=${LAMMPS_DIR}/src/`echo ${PKG} | sed -e 's/^\(yes\|no\)-//' | tr \[:lower:\] \[:upper:\]`
-        if [[ -d ${dir} ]]
+        dir=`echo ${PKG} | sed -e 's/^\(yes\|no\)-//' | tr \[:lower:\] \[:upper:\]`
+        if [[ "${dir}" == "ALL" ]] || [[ "${dir}" == "LIB" ]] || [[ -d ${LAMMPS_DIR}/src/${dir} ]]
         then
-            make -C ${LAMMPS_DIR}/src $PKG || exit 1
+            make -C ${LAMMPS_DIR}/src ${PKG} || exit 1
         fi
     done
 }
