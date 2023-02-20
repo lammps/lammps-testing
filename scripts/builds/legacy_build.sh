@@ -72,7 +72,11 @@ enable_packages() {
 
     for PKG in "${LAMMPS_PACKAGES[@]}"
     do
-        make -C ${LAMMPS_DIR}/src $PKG || exit 1
+        dir=`echo ${PKG} | sed -e 's/^\(yes\|no\)-//' | tr \[:lower:\] \[:upper:\]`
+        if [[ "${dir}" == "ALL" ]] || [[ "${dir}" == "LIB" ]] || [[ -d ${LAMMPS_DIR}/src/${dir} ]]
+        then
+            make -C ${LAMMPS_DIR}/src ${PKG} || exit 1
+        fi
     done
 }
 
@@ -80,64 +84,58 @@ build_libraries() {
     echo "Build libraries..."
     make -C ${LAMMPS_DIR}/src/STUBS clean
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-colvars"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-colvars"* ]] && [[ -d ${LAMMPS_DIR}/lib/colvars ]]
     then
         make -C ${LAMMPS_DIR}/src lib-colvars args="-m ${LAMMPS_MACH}" CXX="${LAMMPS_COMPILER} -std=c++11"
     fi
 
-#    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-colvars"* ]]
-#    then
-#        make -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} clean
-#        make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/colvars -f Makefile.${LAMMPS_MACH} CXX="${LAMMPS_COMPILER} -std=c++11" || exit 1
-#    fi
-
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-poems"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-poems"* ]] && [[ -d ${LAMMPS_DIR}/lib/poems ]]
     then
         make -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/poems -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" LINK="${LAMMPS_COMPILER}" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-awpmd"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-awpmd"* ]] && [[ -d ${LAMMPS_DIR}/lib/awpmd ]]
     then
         make -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/awpmd -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE=Makefile.lammps.installed || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-h5md"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-h5md"* ]] && [[ -d ${LAMMPS_DIR}/lib/h5md ]]
     then
         make -C ${LAMMPS_DIR}/lib/h5md -f Makefile.h5cc clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/h5md -f Makefile.h5cc || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-voronoi"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-voronoi"* ]] && [[ -d ${LAMMPS_DIR}/lib/voronoi ]]
     then
         make -C ${LAMMPS_DIR}/src lib-voronoi args="-b" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-atc"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-atc"* ]] && [[ -d ${LAMMPS_DIR}/lib/atc ]]
     then
         make -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/atc -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE="Makefile.lammps.installed" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-qmmm"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-qmmm"* ]] && [[ -d ${LAMMPS_DIR}/lib/qmmm ]]
     then
         make -C ${LAMMPS_DIR}/lib/qmmm -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/qmmm -f Makefile.${LAMMPS_MACH} || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-machdyn"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-machdyn"* ]] && [[ -d ${LAMMPS_DIR}/lib/machdyn ]]
     then
         make -C ${LAMMPS_DIR}/src lib-machdyn args="-p /usr/include/eigen3" || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-electrode"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-electrode"* ]] && [[ -d ${LAMMPS_DIR}/lib/electrode ]]
     then
         make -C ${LAMMPS_DIR}/lib/electrode -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/electrode -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE=Makefile.lammps.installed || exit 1
     fi
 
-    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-ml-pod"* ]]
+    if [[ "${LAMMPS_PACKAGES[@]}" == *"yes-ml-pod"* ]] && [[ -d ${LAMMPS_DIR}/lib/mlpod ]]
     then
         make -C ${LAMMPS_DIR}/lib/mlpod -f Makefile.${LAMMPS_MACH} clean
         make -j ${LAMMPS_COMPILE_NPROC} -C ${LAMMPS_DIR}/lib/mlpod -f Makefile.${LAMMPS_MACH} CC="${LAMMPS_COMPILER} -std=c++11" EXTRAMAKE=Makefile.lammps.installed || exit 1
