@@ -106,6 +106,7 @@ From: ubuntu:18.04
     apt-get update
 
     export CUDA_PKG_VERSION=12.0
+    export CUDA_DRV_VERSION=525
 
     apt-get install -y --no-install-recommends \
         cuda-libraries-${CUDA_PKG_VERSION} \
@@ -114,7 +115,8 @@ From: ubuntu:18.04
         cuda-minimal-build-${CUDA_PKG_VERSION} \
         cuda-compat-$CUDA_PKG_VERSION \
         libcublas-${CUDA_PKG_VERSION} \
-        libcublas-dev-${CUDA_PKG_VERSION}
+        libcublas-dev-${CUDA_PKG_VERSION} \
+        libnvidia-compute-${CUDA_DRV_VERSION}
 
     # add missing symlink
     ln -s /usr/local/cuda-${CUDA_PKG_VERSION}/lib64/stubs/libcuda.so /usr/local/cuda-${CUDA_PKG_VERSION}/lib64/stubs/libcuda.so.1
