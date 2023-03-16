@@ -95,6 +95,7 @@ make -j ${LAMMPS_COMPILE_NPROC} || exit 1
 
 # Install
 make install || exit 1
+make install-python || exit 1
 deactivate
 
 ccache -s

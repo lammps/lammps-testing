@@ -100,5 +100,6 @@ cmake --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
 # Install
 # running install target repeats the compilation with Kokkos enabled
 cmake --build . --target  install || exit 1
+cmake --build . --target  install-python || exit 1
 
 ccache -s
