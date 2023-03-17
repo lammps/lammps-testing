@@ -1,0 +1,176 @@
+LAMMPS (8 Feb 2023)
+# Pour granular particles into chute container, then induce flow
+
+atom_style	sphere
+boundary	p p fm
+newton		off
+comm_modify	vel yes
+
+region		reg block -10 10 -10 10 -0.5 16 units box
+create_box	1 reg
+Created orthogonal box = (-10 -10 -0.5) to (10 10 16)
+  2 by 2 by 2 MPI processor grid
+
+neighbor	0.2 bin
+neigh_modify	delay 0
+
+# IMPORTANT NOTE: these values of stiffness (2000) and timestep (0.001)
+# are used in this example file to produce a quick simulation and movie.
+# More appropriate values for realistic simulations would be
+# k = 2.0e5 and dt = 0.0001, as in bench/in.chute.
+
+pair_style      gran/hooke/history 2000.0 NULL 50.0 NULL 0.5 0
+pair_coeff	* *
+
+timestep	0.001
+
+fix		1 all nve/sphere
+fix		2 all gravity 1.0 spherical 0.0 -180.0
+fix		zlower all wall/gran hooke/history 2000.0 NULL 50.0 NULL 0.5 0 		zplane 0.0 2000.0
+
+region		slab block -9.0 9.0 -9.0 9.0 10.0 15.0 units box
+fix		ins all pour 3000 1 300719 vol 0.13 50 region slab
+Particle insertion: 402 every 3162 steps, 3000 by step 22135
+
+compute		1 all erotate/sphere
+thermo_style	custom step atoms ke c_1 vol
+thermo		1000
+thermo_modify	lost ignore norm no
+compute_modify	thermo_temp dynamic/dof yes
+
+#dump		id all atom 1000 dump.pour
+
+#dump		2 all image 1000 image.*.jpg type type #		axes yes 0.8 0.02 view 80 -30
+#dump_modify	2 pad 5
+
+#dump		3 all movie 1000 movie.mpg type type #		axes yes 0.8 0.02 view 80 -30
+#dump_modify	3 pad 5
+
+run		25000
+Generated 0 of 0 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 1.2
+  ghost atom cutoff = 1.2
+  binsize = 0.6, bins = 34 34 28
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair gran/hooke/history, perpetual
+      attributes: half, newton off, size, history
+      pair build: half/size/bin/newtoff
+      stencil: full/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 5.812 | 5.812 | 5.812 Mbytes
+   Step        Atoms        KinEng          c_1           Volume    
+         0           0  -0              0              6600         
+      1000         402   753.1301       0              6600         
+      2000         402   1389.6785      0              6600         
+      3000         402   1439.3007      16.360577      6600         
+      4000         804   1694.9311      52.966189      6600         
+      5000         804   1564.7533      67.202593      6600         
+      6000         804   1303.6937      65.31424       6600         
+      7000        1206   1590.3342      63.948699      6600         
+      8000        1206   1489.2483      54.736993      6600         
+      9000        1206   1234.442       56.141183      6600         
+     10000        1608   1314.3588      49.189128      6600         
+     11000        1608   1237.9825      42.554536      6600         
+     12000        1608   1143.2257      41.53367       6600         
+     13000        2010   1233.8365      48.39171       6600         
+     14000        2010   1172.9488      40.910823      6600         
+     15000        2010   1027.7515      42.531113      6600         
+     16000        2412   1117.9003      43.115504      6600         
+     17000        2412   1053.075       43.247331      6600         
+     18000        2412   868.10184      40.333021      6600         
+     19000        2814   964.36105      38.29279       6600         
+     20000        2814   938.80272      39.09494       6600         
+     21000        2814   835.42162      38.720264      6600         
+     22000        2814   557.11568      40.257306      6600         
+     23000        3000   432.90547      37.976021      6600         
+     24000        3000   346.54841      21.239984      6600         
+     25000        3000   239.81375      21.231603      6600         
+Loop time of 9.2794 on 8 procs for 25000 steps with 3000 atoms
+
+Performance: 232773.604 tau/day, 2694.139 timesteps/s, 8.082 Matom-step/s
+91.4% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.025791   | 1.225      | 2.4789     | 107.5 | 13.20
+Neigh   | 0.054248   | 0.27928    | 0.55056    |  41.1 |  3.01
+Comm    | 1.7982     | 2.3443     | 2.8188     |  24.8 | 25.26
+Output  | 0.0021575  | 0.0059183  | 0.018097   |   6.3 |  0.06
+Modify  | 0.20119    | 0.70817    | 1.284      |  58.2 |  7.63
+Other   |            | 4.717      |            |       | 50.83
+
+Nlocal:            375 ave         751 max           7 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+Nghost:        211.375 ave         394 max          27 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+Neighs:        1790.88 ave        3632 max           0 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+
+Total # of neighbors = 14327
+Ave neighs/atom = 4.7756667
+Neighbor list builds = 1152
+Dangerous builds = 0
+
+unfix		ins
+fix		2 all gravity 1.0 chute 26.0
+run		25000
+Generated 0 of 0 mixed pair_coeff terms from geometric mixing rule
+Per MPI rank memory allocation (min/avg/max) = 10.38 | 10.39 | 10.41 Mbytes
+   Step        Atoms        KinEng          c_1           Volume    
+     25000        3000   239.81375      21.231603      6600         
+     26000        3000   120.61249      17.965708      6600         
+     27000        3000   185.58843      12.141787      6600         
+     28000        3000   334.35407      13.399483      6600         
+     29000        3000   563.14316      16.081458      6600         
+     30000        3000   874.82551      19.196855      6600         
+     31000        3000   1224.4003      27.549361      6600         
+     32000        3000   1664.9974      27.761496      6600         
+     33000        3000   2171.6091      38.888527      6600         
+     34000        3000   2773.6702      44.670599      6600         
+     35000        3000   3351.367       45.416321      6600         
+     36000        3000   4039.5124      49.310311      6600         
+     37000        3000   4810.68        39.354046      6600         
+     38000        3000   5572.8119      47.993182      6600         
+     39000        3000   6347.4089      59.298165      6600         
+     40000        3000   7300.5525      51.358723      6600         
+     41000        3000   8246.9271      43.687227      6600         
+     42000        3000   9263.6077      46.508171      6600         
+     43000        3000   10283.776      49.892668      6600         
+     44000        3000   11443.714      53.353112      6600         
+     45000        3000   12546.693      44.565016      6600         
+     46000        3000   13774.826      49.046394      6600         
+     47000        3000   15128.984      40.34307       6600         
+     48000        3000   16429.428      32.575424      6600         
+     49000        3000   17839.088      40.1           6600         
+     50000        3000   19279.578      41.443325      6600         
+Loop time of 26.8625 on 8 procs for 25000 steps with 3000 atoms
+
+Performance: 80409.348 tau/day, 930.664 timesteps/s, 2.792 Matom-step/s
+88.2% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.0060664  | 3.1602     | 6.5687     | 177.5 | 11.76
+Neigh   | 0.013039   | 0.42316    | 0.88482    |  63.1 |  1.58
+Comm    | 4.4511     | 5.2397     | 6.1013     |  29.9 | 19.51
+Output  | 0.018565   | 0.027555   | 0.058108   |   7.3 |  0.10
+Modify  | 0.016597   | 1.0916     | 2.3213     | 103.2 |  4.06
+Other   |            | 16.92      |            |       | 62.99
+
+Nlocal:            375 ave         757 max           0 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+Nghost:        213.125 ave         416 max          12 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+Neighs:        1838.62 ave        3706 max           0 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+
+Total # of neighbors = 14709
+Ave neighs/atom = 4.903
+Neighbor list builds = 844
+Dangerous builds = 0
+Total wall time: 0:00:36
