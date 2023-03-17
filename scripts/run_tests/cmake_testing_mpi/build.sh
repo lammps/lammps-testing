@@ -14,7 +14,7 @@ then
     BUILD=build-$(basename $0 .sh)
 else
     # when running lammps_test or inside jenkins
-    BUILD=build
+    BUILD=build-mpi
 fi
 
 exists()
