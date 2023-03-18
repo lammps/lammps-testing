@@ -16,6 +16,7 @@ else
     # when running lammps_test or inside jenkins
     BUILD=build
 fi
+export BUILD
 
 exists()
 {
