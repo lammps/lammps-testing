@@ -1,0 +1,165 @@
+LAMMPS (2 Aug 2023 - Development - bc02a7cc6)
+units real
+boundary p p p
+
+atom_style full
+bond_style harmonic
+angle_style harmonic
+special_bonds lj/coul 0.0 0.0 0.5
+
+pair_style lj/cut/coul/long 12.0 12.0
+kspace_style pppm 1.0e-3
+
+read_data data.swm4-ndp
+Reading data file ...
+  orthogonal box = (-12 -12 -12) to (12 12 12)
+  2 by 2 by 2 MPI processor grid
+  reading atoms ...
+  2500 atoms
+  scanning bonds ...
+  1 = max bonds/atom
+  scanning angles ...
+  1 = max angles/atom
+  reading bonds ...
+  2000 bonds
+  reading angles ...
+  500 angles
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
+     4 = max # of 1-2 neighbors
+     3 = max # of 1-3 neighbors
+     3 = max # of 1-4 neighbors
+     4 = max # of special neighbors
+  special bonds CPU = 0.001 seconds
+  read_data CPU = 0.048 seconds
+
+pair_coeff    1    1      0.210939     3.183950  # ODw ODw
+pair_coeff    *   2*      0.000000     0.0
+
+group ATOMS type 1:3
+2000 atoms in group ATOMS
+group CORES type 1
+500 atoms in group CORES
+group DRUDES type 4
+500 atoms in group DRUDES
+
+variable TK equal 300.0
+variable TDK equal 1.0
+variable PBAR equal 1.0
+
+neighbor 2.0 bin
+
+timestep 1.0
+
+fix DRUDE all drude C N N D
+
+velocity ATOMS create ${TK} 12345
+velocity ATOMS create 300 12345
+velocity DRUDES create ${TDK} 12345
+velocity DRUDES create 1 12345
+
+delete_bonds ATOMS multi
+System init for delete_bonds ...
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:342)
+  G vector (1/distance) = 0.21745695
+  grid = 10 10 10
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.19728846
+  estimated relative force accuracy = 0.00059412835
+  using double precision FFTW3
+  3d grid and FFT values/proc = 1000 200
+Generated 0 of 6 mixed pair_coeff terms from geometric mixing rule
+Rebuild special list taking Drude particles into account
+Old max number of 1-2 to 1-4 neighbors: 4
+New max number of 1-2 to 1-4 neighbors: 4 (+0)
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 14
+  ghost atom cutoff = 14
+  binsize = 7, bins = 4 4 4
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/cut/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Deleting bonds ...
+  2000 total bonds, 500 turned on, 1500 turned off
+  500 total angles, 0 turned on, 500 turned off
+  0 total dihedrals, 0 turned on, 0 turned off
+  0 total impropers, 0 turned on, 0 turned off
+
+comm_modify vel yes
+compute TATOM ATOMS temp/com
+compute TEMP all temp/drude
+
+fix DTDIR all drude/transform/direct
+fix RIGID ATOMS rigid/npt/small molecule temp ${TK} ${TK} 100 iso ${PBAR} ${PBAR} 500
+fix RIGID ATOMS rigid/npt/small molecule temp 300 ${TK} 100 iso ${PBAR} ${PBAR} 500
+fix RIGID ATOMS rigid/npt/small molecule temp 300 300 100 iso ${PBAR} ${PBAR} 500
+fix RIGID ATOMS rigid/npt/small molecule temp 300 300 100 iso 1 ${PBAR} 500
+fix RIGID ATOMS rigid/npt/small molecule temp 300 300 100 iso 1 1 500
+  create bodies CPU = 0.000 seconds
+  500 rigid bodies with 2000 atoms
+  0.83209864 = max distance from body owner to body atom
+fix_modify RIGID temp TATOM press thermo_press
+WARNING: Temperature for fix modify is not for group all (src/RIGID/fix_rigid_nh_small.cpp:1331)
+fix NVT DRUDES nvt temp ${TDK} ${TDK} 100.0
+fix NVT DRUDES nvt temp 1 ${TDK} 100.0
+fix NVT DRUDES nvt temp 1 1 100.0
+fix DTINV all drude/transform/inverse
+
+thermo_style custom step cpu etotal ke pe ebond eangle evdwl ecoul elong press vol temp c_TEMP[1] c_TEMP[2]
+thermo 20
+
+run 20
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:342)
+  G vector (1/distance) = 0.21745695
+  grid = 10 10 10
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.19728846
+  estimated relative force accuracy = 0.00059412835
+  using double precision FFTW3
+  3d grid and FFT values/proc = 1000 200
+Generated 0 of 6 mixed pair_coeff terms from geometric mixing rule
+WARNING: fix drude/transform/direct is not compatible with box changing rigid fixes (src/DRUDE/fix_drude_transform.cpp:64)
+WARNING: fix drude/transform/inverse is not compatible with box changing rigid fixes (src/DRUDE/fix_drude_transform.cpp:64)
+Per MPI rank memory allocation (min/avg/max) = 16.93 | 17.23 | 17.31 Mbytes
+   Step          CPU           TotEng         KinEng         PotEng         E_bond        E_angle         E_vdwl         E_coul         E_long         Press          Volume          Temp        c_TEMP[1]      c_TEMP[2]   
+         0   0              4568.0415      903.41148      3664.63        623.46454      0              2890.2449      157955.66     -157804.74      244591.08      13824          202.18534      295.64644      14.858785    
+        20   0.42448102     3742.8114      5338.8112     -1595.9999      567.27181      0              662.20936      155098.52     -157924         31679.869      13979.575      1194.8369      1690.2317      201.65774    
+Loop time of 0.424567 on 8 procs for 20 steps with 2500 atoms
+
+Performance: 4.070 ns/day, 5.897 hours/ns, 47.107 timesteps/s, 117.767 katom-step/s
+91.5% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.14351    | 0.19527    | 0.25212    |   8.3 | 45.99
+Bond    | 8.9825e-05 | 0.00011496 | 0.00014503 |   0.0 |  0.03
+Kspace  | 0.019792   | 0.07717    | 0.12964    |  13.3 | 18.18
+Neigh   | 0.018396   | 0.018466   | 0.018561   |   0.0 |  4.35
+Comm    | 0.01613    | 0.017136   | 0.017879   |   0.4 |  4.04
+Output  | 0.00010524 | 0.0001583  | 0.00019769 |   0.0 |  0.04
+Modify  | 0.11306    | 0.1138     | 0.11513    |   0.2 | 26.80
+Other   |            | 0.002458   |            |       |  0.58
+
+Nlocal:          312.5 ave         326 max         292 min
+Histogram: 1 0 1 0 1 0 1 1 1 2
+Nghost:        11354.5 ave       11462 max       11209 min
+Histogram: 1 0 0 2 1 0 0 1 1 2
+Neighs:         322375 ave      344481 max      285557 min
+Histogram: 1 0 0 0 0 2 1 2 0 2
+
+Total # of neighbors = 2579003
+Ave neighs/atom = 1031.6012
+Ave special neighs/atom = 4
+Neighbor list builds = 1
+Dangerous builds = 0
+
+Total wall time: 0:00:00

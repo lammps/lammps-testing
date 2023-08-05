@@ -1,0 +1,191 @@
+LAMMPS (2 Aug 2023 - Development - bc02a7cc6)
+# Big colloid particles and small LJ particles
+
+units		lj
+atom_style	sphere
+dimension	2
+
+lattice		sq 0.01
+Lattice spacing in x,y,z = 10 10 10
+region		box block 0 30 0 30 -0.5 0.5
+create_box	2 box
+Created orthogonal box = (0 0 -5) to (300 300 5)
+  4 by 2 by 1 MPI processor grid
+create_atoms	1 box
+Created 900 atoms
+  using lattice units in orthogonal box = (0 0 -5) to (300 300 5)
+  create_atoms CPU = 0.002 seconds
+
+set		group all type/fraction 2 0.96 23984
+Setting atom values ...
+  861 settings made for type/fraction
+
+set		type 1 mass 9
+Setting atom values ...
+  39 settings made for mass
+set		type 2 mass 1
+Setting atom values ...
+  861 settings made for mass
+
+velocity	all create 1.44 87287 loop geom
+
+# multi neighbor and comm for efficiency
+
+neighbor	1 multi
+neigh_modify	delay 0
+comm_modify     mode multi
+
+# colloid potential
+
+pair_style	colloid 12.5
+pair_coeff	1 1  1.0 1.0 5.0 5.0 12.5
+pair_coeff	1 2  5.0 1.0 5.0 0.0 7.0
+pair_coeff	2 2 10.0 1.0 0.0 0.0 2.5
+
+fix		1 all npt temp 2.0 2.0 1.0 iso 0.0 1.0 10.0 drag 1.0 	        mtk no pchain 0 tchain 1
+fix		2 all enforce2d
+
+#dump		1 all atom 1000 dump.colloid
+
+#dump		2 all image 1000 image.*.jpg type type #		zoom 1.5 center d 0.5 0.5 0.5
+#dump_modify	2 pad 5 adiam 1 5.0 adiam 2 1.5
+
+#dump		3 all movie 1000 movie.mpg type type #		zoom 1.5 center d 0.5 0.5 0.5
+#dump_modify	3 pad 5 adiam 1 5.0 adiam 2 1.5
+
+thermo_style	custom step temp epair etotal press vol
+thermo		1000
+
+timestep	0.005
+
+run		50000
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- neighbor multi command: doi:10.1016/j.cpc.2008.03.005, doi:10.1007/s40571-020-00361-2
+
+@Article{Intveld08,
+ author =  {in 't Veld, P. J. and S. J.~Plimpton and G. S. Grest},
+ title =   {Accurate and Efficient Methods for Modeling Colloidal
+            Mixtures in an Explicit Solvent using Molecular Dynamics},
+ journal = {Comput.\ Phys.\ Commut.},
+ year =    2008,
+ volume =  179,
+ pages =   {320--329}
+}
+
+@article{Shire2020,
+ author = {Shire, Tom and Hanley, Kevin J. and Stratford, Kevin},
+ title = {{DEM} Simulations of Polydisperse Media: Efficient Contact
+          Detection Applied to Investigate the Quasi-Static Limit},
+ journal = {Computational Particle Mechanics},
+ year = {2020}
+@article{Monti2022,
+ author = {Monti, Joseph M. and Clemmer, Joel T. and Srivastava, 
+           Ishan and Silbert, Leonardo E. and Grest, Gary S. 
+           and Lechman, Jeremy B.},
+ title = {Large-scale frictionless jamming with power-law particle 
+          size distributions},
+ journal = {Phys. Rev. E},
+ volume = {106}
+ issue = {3}
+ year = {2022}
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Generated 0 of 1 mixed pair_coeff terms from geometric mixing rule
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 13.5
+  ghost atom cutoff = 13.5
+  binsize = 1.75, bins = 172 172 6
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair colloid, perpetual
+      attributes: half, newton on
+      pair build: half/multi/newton
+      stencil: half/multi/2d
+      bin: multi
+Per MPI rank memory allocation (min/avg/max) = 4.323 | 4.323 | 4.323 Mbytes
+   Step          Temp          E_pair         TotEng         Press          Volume    
+         0   1.44          -2.2136534e-06  1.4383978      0.014383923    90000        
+      1000   1.9572809     -0.00036743274  1.9547388      0.017982269    98935.161    
+      2000   2.068567      -0.0010518227   2.0652168      0.019466739    96307.439    
+      3000   2.1787472      0.0045846363   2.180911       0.029249545    68560.31     
+      4000   2.1979309      0.0017234058   2.1972121      0.048831814    42699.657    
+      5000   2.1541368      0.0068842503   2.1586276      0.07471981     28571.492    
+      6000   2.1113172      0.0024197494   2.1113911      0.091799827    21611.61     
+      7000   2.0789336      0.0060254141   2.0826491      0.11638111     17868.762    
+      8000   2.0619822      0.0062714223   2.0659626      0.13145201     15516.399    
+      9000   2.0386577      0.022458165    2.0588507      0.16029615     13889.596    
+     10000   2.033068       0.026418606    2.0572276      0.20242949     12597.896    
+     11000   2.0497957      0.01175214     2.0592703      0.18678766     11494.795    
+     12000   2.0359213      0.020668042    2.0543272      0.20770327     10575.767    
+     13000   2.0381195      0.019482989    2.055338       0.23066784     9779.3337    
+     14000   2.04816        0.010878153    2.0567624      0.23863213     9096.1079    
+     15000   2.0423318      0.011987931    2.0520504      0.28594392     8539.027     
+     16000   2.0491905      0.0047024168   2.051616       0.26559743     8122.5441    
+     17000   2.0041328      0.046096185    2.0480022      0.32075847     7746.3218    
+     18000   2.0313077      0.025409932    2.0544606      0.32563468     7366.1192    
+     19000   2.0208135      0.032389995    2.0509582      0.35341525     7057.7109    
+     20000   2.0276398      0.026129354    2.0515162      0.34115478     6799.5363    
+     21000   2.0122043      0.044572095    2.0545406      0.41217434     6537.4908    
+     22000   2.0094226      0.047840831    2.0550308      0.44165483     6321.6245    
+     23000   2.0169332      0.038108787    2.0528009      0.46536154     6103.2223    
+     24000   2.0116446      0.04892919     2.0583386      0.50579741     5905.9592    
+     25000   2.0081207      0.052911915    2.0588013      0.50762189     5720.4249    
+     26000   2.0223251      0.036552104    2.0566302      0.51149762     5564.5568    
+     27000   2.0388327      0.021447627    2.0580149      0.47142664     5453.832     
+     28000   2.0081424      0.053537068    2.0594482      0.59166001     5327.8716    
+     29000   1.9898802      0.071954166    2.0596234      0.64505026     5220.8679    
+     30000   2.0312297      0.037495818    2.0664686      0.61943603     5065.3671    
+     31000   1.9932699      0.071224013    2.0622791      0.62738162     4943.2577    
+     32000   2.0129652      0.05372681     2.0644554      0.62065921     4859.3255    
+     33000   2.0210008      0.052947322    2.0717025      0.67703322     4747.492     
+     34000   2.0135544      0.054271518    2.0655886      0.62678781     4649.559     
+     35000   2.0214642      0.04523021     2.0644483      0.6643388      4578.3618    
+     36000   2.0305357      0.046420526    2.0747001      0.63145842     4494.7692    
+     37000   2.025026       0.051219418    2.0739954      0.6787801      4400.4302    
+     38000   1.9661797      0.10427508     2.0682701      0.82860067     4350.9074    
+     39000   2.0100589      0.061976442    2.0698019      0.7506896      4308.4247    
+     40000   2.0277083      0.054118954    2.0795743      0.76050868     4242.5603    
+     41000   2.0080804      0.071950011    2.0777992      0.77266375     4164.6803    
+     42000   1.9985653      0.078595588    2.0749402      0.8643297      4117.1788    
+     43000   2.0077505      0.069071779    2.0745914      0.79829982     4077.8566    
+     44000   2.0569355      0.035300701    2.0899507      0.79776743     4016.0644    
+     45000   1.9883623      0.099754456    2.0859075      1.0453319      3963.5478    
+     46000   2.0115906      0.079111816    2.0884674      0.90414126     3932.5818    
+     47000   1.9906842      0.10093743     2.0894098      1.0585264      3902.4857    
+     48000   2.015008       0.079470877    2.09224        0.89883521     3860.012     
+     49000   1.9853767      0.10936519     2.0925359      1.0384552      3791.9151    
+     50000   2.0130756      0.078710856    2.0895497      1.0021523      3754.4379    
+Loop time of 4.5407 on 8 procs for 50000 steps with 900 atoms
+
+Performance: 4756974.967 tau/day, 11011.516 timesteps/s, 9.910 Matom-step/s
+99.9% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.6134     | 0.68037    | 0.77247    |   5.1 | 14.98
+Neigh   | 0.19101    | 0.22056    | 0.2497     |   3.8 |  4.86
+Comm    | 1.783      | 1.9038     | 1.9845     |   4.4 | 41.93
+Output  | 0.0023205  | 0.0025006  | 0.0035099  |   0.8 |  0.06
+Modify  | 1.3553     | 1.3947     | 1.4271     |   1.8 | 30.72
+Other   |            | 0.3388     |            |       |  7.46
+
+Nlocal:          112.5 ave         130 max          89 min
+Histogram: 1 0 0 1 0 2 1 1 1 1
+Nghost:        248.625 ave         262 max         231 min
+Histogram: 1 1 1 0 0 1 0 1 0 3
+Neighs:         750.25 ave         846 max         617 min
+Histogram: 2 0 0 0 1 0 2 0 1 2
+
+Total # of neighbors = 6002
+Ave neighs/atom = 6.6688889
+Neighbor list builds = 3086
+Dangerous builds = 0
+Total wall time: 0:00:04

@@ -1,0 +1,106 @@
+LAMMPS (2 Aug 2023 - Development - bc02a7cc6)
+
+units metal
+boundary p p p
+read_data vacancy.data
+Reading data file ...
+  orthogonal box = (0 0 0) to (8.071125 8.071125 8.071125)
+  2 by 2 by 2 MPI processor grid
+  reading atoms ...
+  31 atoms
+  read_data CPU = 0.002 seconds
+
+pair_style agni
+pair_coeff * * Al_jpc.agni Al
+Reading agni potential file Al_jpc.agni with DATE: 2017-02-24
+WARNING: Ignoring unknown tag 'Rs' in AGNI potential file. (src/MISC/pair_agni.cpp:348)
+WARNING: Ignoring unknown tag 'neighbors' in AGNI potential file. (src/MISC/pair_agni.cpp:348)
+WARNING: Ignoring unknown tag 'lambda' in AGNI potential file. (src/MISC/pair_agni.cpp:348)
+neighbor 0.3 bin
+neigh_modify delay 2 check yes
+
+
+timestep 0.0005
+velocity all create 1000 12345
+fix 1 all nvt temp 900 900 200
+fix 5 all momentum 1 linear 1 1 1
+
+
+thermo 100
+thermo_style custom step ke etotal temp
+
+# dump MyDump all custom 250 dump.atoms id type x y z vx vy vz fx fy fz
+
+run 1000
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- pair agni command: doi:10.1021/acs.jpcc.9b04207
+
+@article{huan2019jpc,
+ author    = {Huan, T. and Batra, R. and Chapman, J. and Kim, C. and Chandrasekaran, A. and Ramprasad, Rampi},
+ journal   = {J.~Phys.\ Chem.~C},
+ volume    = {123},
+ number    = {34},
+ pages     = {20715--20722},
+ year      = {2019},
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Neighbor list info ...
+  update: every = 1 steps, delay = 2 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 8.3
+  ghost atom cutoff = 8.3
+  binsize = 4.15, bins = 2 2 2
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair agni, perpetual
+      attributes: full, newton on
+      pair build: full/bin/atomonly
+      stencil: full/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 2.983 | 2.983 | 2.983 Mbytes
+   Step         KinEng         TotEng          Temp     
+         0   3.8778043      3.8778043      1000         
+       100   2.9986263      2.9986263      773.27943    
+       200   3.6860314      3.6860314      950.54599    
+       300   3.8133148      3.8133148      983.36957    
+       400   3.7330282      3.7330282      962.66544    
+       500   3.5875452      3.5875452      925.14859    
+       600   3.5331521      3.5331521      911.12181    
+       700   2.6509461      2.6509461      683.62038    
+       800   3.3763496      3.3763496      870.6859     
+       900   3.9036732      3.9036732      1006.671     
+      1000   3.0884818      3.0884818      796.45116    
+Loop time of 1.33319 on 8 procs for 1000 steps with 31 atoms
+
+Performance: 32.404 ns/day, 0.741 hours/ns, 750.082 timesteps/s, 23.253 katom-step/s
+100.0% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.56936    | 0.73609    | 1.0947     |  20.2 | 55.21
+Neigh   | 0.0013245  | 0.001737   | 0.0026406  |   1.0 |  0.13
+Comm    | 0.22211    | 0.57914    | 0.74463    |  22.6 | 43.44
+Output  | 0.00023194 | 0.00029928 | 0.00053999 |   0.0 |  0.02
+Modify  | 0.0086677  | 0.011094   | 0.013086   |   1.8 |  0.83
+Other   |            | 0.004834   |            |       |  0.36
+
+Nlocal:          3.875 ave           5 max           2 min
+Histogram: 1 0 0 1 0 0 4 0 0 2
+Nghost:            518 ave         534 max         507 min
+Histogram: 3 1 0 0 0 1 0 2 0 1
+Neighs:              0 ave           0 max           0 min
+Histogram: 8 0 0 0 0 0 0 0 0 0
+FullNghs:          545 ave         705 max         288 min
+Histogram: 1 0 0 1 0 0 4 0 0 2
+
+Total # of neighbors = 4360
+Ave neighs/atom = 140.64516
+Neighbor list builds = 53
+Dangerous builds = 0
+Total wall time: 0:00:01
