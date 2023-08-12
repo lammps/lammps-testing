@@ -72,6 +72,7 @@ From: ubuntu:20.04
         python3-pkg-resources \
         python3-setuptools \
         python3-virtualenv \
+        python-is-python3 \
         rsync \
         ssh \
         vim-nox \
