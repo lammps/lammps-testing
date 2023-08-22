@@ -1,11 +1,11 @@
 # Test of Kawasaki Dynamics on LJ test system
 
-units		metal
+units           metal
 #newton off
-boundary	p p p
+boundary        p p p
 
 lattice         fcc 1 origin 0.25 0.25 0.25
-atom_style	atomic
+atom_style      atomic
 
 # indexed atom variables in test 5 need a map
 
@@ -23,8 +23,8 @@ pair_coeff      1 1 0.0 1.0
 pair_coeff      1 2 0.0 1.0
 pair_coeff      2 2 0.0 1.0
 
-neighbor	0.3 bin
-neigh_modify	delay 10
+neighbor        0.3 bin
+neigh_modify    delay 10
 
 # set the cut-off to 2.5x the cutoff from the potential
 comm_modify     cutoff 5.0
@@ -146,10 +146,16 @@ variable i2 equal 257
 compute v1 all voronoi/atom occupation
 compute r0 all   reduce sum c_v1[1]
 compute r1 all   reduce sum c_v1[2]
-variable d5a equal c_v1[${i1}][1]
-variable d5b equal c_v1[${i2}][1]
-variable d5c equal c_v1[${i1}][2]
-variable d5d equal c_v1[${i2}][2]
+if $(version<=20230802) then &
+  "variable d5a equal c_v1[${i1}][1]" &
+  "variable d5b equal c_v1[${i2}][1]" &
+  "variable d5c equal c_v1[${i1}][2]" &
+  "variable d5d equal c_v1[${i2}][2]" &
+else &
+  "variable d5a equal C_v1[${i1}][1]" &
+  "variable d5b equal C_v1[${i2}][1]" &
+  "variable d5c equal C_v1[${i1}][2]" &
+  "variable d5d equal C_v1[${i2}][2]"
 thermo_style custom step c_r0 c_r1 v_d5a v_d5b v_d5c v_d5d
 
 run 0
