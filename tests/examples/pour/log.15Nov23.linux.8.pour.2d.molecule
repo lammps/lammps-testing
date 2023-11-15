@@ -1,4 +1,4 @@
-LAMMPS (2 Aug 2023 - Development - bc02a7cc6)
+LAMMPS (3 Aug 2023 - Development - 5e4761d63)
 # Pour 2d granular particles into container
 
 dimension	2
@@ -42,7 +42,7 @@ Read molecule template object:
   0 dihedrals with max type 0
   0 impropers with max type 0
 fix             3 all rigid/small molecule mol object
-  create bodies CPU = 0.084 seconds
+  create bodies CPU = 0.000 seconds
   0 rigid bodies with 0 atoms
   2.236068 = max distance from body owner to body atom
 
@@ -76,7 +76,7 @@ thermo		1000
 
 run	        25000
 Generated 0 of 0 mixed pair_coeff terms from geometric mixing rule
-WARNING: Gravity may not be correctly applied to rigid bodies if they consist of overlapped particles (src/RIGID/fix_rigid_small.cpp:554)
+WARNING: Gravity may not be correctly applied to rigid bodies if they consist of overlapped particles (src/RIGID/fix_rigid_small.cpp:549)
 Neighbor list info ...
   update: every = 1 steps, delay = 0 steps, check = yes
   max neighbors/atom: 2000, page size: 100000
@@ -107,40 +107,40 @@ Per MPI rank memory allocation (min/avg/max) = 5.773 | 5.773 | 5.773 Mbytes
      13000         650   1881.6358      3.9606372      5000         
      14000         650   1648.6494      3.8239413      5000         
      15000         650   1463.0973      2.9363978      5000         
-     16000         780   1571.0119      3.9061208      5000         
-     17000         780   1472.9412      2.028971       5000         
-     18000         780   1370.527       3.1038535      5000         
-     19000         910   1433.674       2.7600294      5000         
-     20000         910   1375.3189      2.954622       5000         
-     21000         910   1183.553       2.4697431      5000         
-     22000        1040   1310.8115      1.8806105      5000         
-     23000        1040   1182.7349      1.67352        5000         
-     24000        1040   1265.7299      2.2063138      5000         
-     25000        1170   1174.9466      2.9277633      5000         
-Loop time of 2.94703 on 8 procs for 25000 steps with 1170 atoms
+     16000         780   1571.0119      3.9061209      5000         
+     17000         780   1472.9412      2.0289705      5000         
+     18000         780   1370.527       3.1038532      5000         
+     19000         910   1433.6741      2.7600234      5000         
+     20000         910   1375.3155      2.95453        5000         
+     21000         910   1183.568       2.4690349      5000         
+     22000        1040   1310.7106      1.880758       5000         
+     23000        1040   1182.3133      1.6621255      5000         
+     24000        1040   1264.7821      2.0831722      5000         
+     25000        1170   1180.5724      2.9671755      5000         
+Loop time of 1.45745 on 8 procs for 25000 steps with 1170 atoms
 
-Performance: 732940.516 tau/day, 8483.108 timesteps/s, 9.925 Matom-step/s
-96.8% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 1482044.126 tau/day, 17153.288 timesteps/s, 20.069 Matom-step/s
+99.8% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.13947    | 0.25082    | 0.40226    |  20.5 |  8.51
-Neigh   | 0.016588   | 0.043501   | 0.078712   |  12.9 |  1.48
-Comm    | 0.26558    | 0.33063    | 0.37942    |   6.1 | 11.22
-Output  | 0.0021647  | 0.002551   | 0.0049667  |   1.8 |  0.09
-Modify  | 1.7775     | 1.9277     | 2.0425     |   7.6 | 65.41
-Other   |            | 0.3919     |            |       | 13.30
+Pair    | 0.095671   | 0.16099    | 0.23666    |  15.4 | 11.05
+Neigh   | 0.01074    | 0.032339   | 0.058817   |  11.4 |  2.22
+Comm    | 0.16866    | 0.18055    | 0.19198    |   2.5 | 12.39
+Output  | 0.0010376  | 0.0010939  | 0.0013257  |   0.3 |  0.08
+Modify  | 0.84438    | 0.91638    | 0.98205    |   6.2 | 62.88
+Other   |            | 0.1661     |            |       | 11.40
 
-Nlocal:         146.25 ave         267 max          26 min
-Histogram: 4 0 0 0 0 0 0 0 1 3
-Nghost:         28.875 ave          71 max           6 min
-Histogram: 2 2 0 2 0 0 0 0 1 1
-Neighs:         216.25 ave         415 max          21 min
+Nlocal:         146.25 ave         266 max          26 min
+Histogram: 4 0 0 0 0 0 0 0 0 4
+Nghost:             29 ave          71 max           6 min
+Histogram: 2 2 1 1 0 0 0 0 1 1
+Neighs:         215.75 ave         415 max          21 min
 Histogram: 4 0 0 0 0 0 0 0 1 3
 
-Total # of neighbors = 1730
-Ave neighs/atom = 1.4786325
+Total # of neighbors = 1726
+Ave neighs/atom = 1.4752137
 Neighbor list builds = 1707
 Dangerous builds = 0
-Total wall time: 0:00:03
+Total wall time: 0:00:01
