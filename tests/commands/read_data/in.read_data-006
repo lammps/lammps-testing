@@ -1,7 +1,8 @@
 
-timer	off
+timer   off
 
 read_data empty-tric.data
+change_box all xy final 0.0 xz final 0.0 yz final 0.0 ortho
 read_data few-orth.data add append
 
-info	all
+info    all
