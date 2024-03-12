@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "lammps_testing"
+version = "1.0.1"
+description = "Utilities to run LAMMPS tests"
+authors = [
+  {name = "Richard Berger", email = "richard.berger@outlook.com"}
+]
+license = {text = "GPL"}
+dependencies = [
+ "nose",
+ "gcovr",
+ "termcolor",
+ "matplotlib",
+ "pyyaml",
+ "Jinja2",
+ "coverage"
+]
+
+[project.urls]
+Homepage = "https://github.com/lammps/lammps-testing"
+Repository = "https://github.com/lammps/lammps-testing.git"
+
+[project.scripts]
+lammps_run_tests = "lammps_testing.run_tests:main"
+lammps_generate_regression_xml  = "lammps_testing.generate_regression_xml:main"
+lammps_regression_tests = "lammps_testing.regression:main"
+lammps_test = "lammps_testing.lammps_test:main"
+lammps_run_regression_test = "lammps_testing.run_regression_test:main"

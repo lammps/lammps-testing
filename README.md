@@ -17,10 +17,10 @@ various environments using containers and perform compilation, run, regression, 
 
 ```bash
 # regular install
-python setup.py install
+pip install .
 
 # for development install
-python setup.py develop
+pip install --editable .
 ```
 
 ## Configuration
