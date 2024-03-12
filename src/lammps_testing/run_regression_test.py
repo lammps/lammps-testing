@@ -2,8 +2,8 @@
 import os
 import sys
 import argparse
-from .common import Settings, LocalRunner, MPIRunner
-from .regression_testing import RegressionTest
+from lammps_testing.common import Settings, LocalRunner, MPIRunner
+from lammps_testing.regression_testing import RegressionTest
 
 def regression(args, settings):
     test_directory = os.path.realpath(os.path.dirname(args.input_script))

@@ -1,25 +1,24 @@
-#!/usr/bin/python
 import argparse
 import glob
 import os
 import re
 import sys
 
-from .common import logger, Settings, get_containers, get_configurations, get_container
-from .tests import RunTest, RegressionTest, UnitTest
+from lammps_testing.common import logger, Settings, get_containers, get_configurations, get_container
+from lammps_testing.tests import RunTest, RegressionTest, UnitTest
 
-from .commands.env import init_command as init_env_command
-from .commands.config import init_command as init_config_command
-from .commands.build import init_command as init_build_command
-from .commands.compile import init_command as init_compile_command
-from .commands.runtest import init_command as init_runtest_command
-from .commands.unit import init_command as init_unit_command
-from .commands.reg import init_command as init_reg_command
+from lammps_testing.commands.env import init_command as init_env_command
+from lammps_testing.commands.config import init_command as init_config_command
+from lammps_testing.commands.build import init_command as init_build_command
+from lammps_testing.commands.compile import init_command as init_compile_command
+from lammps_testing.commands.runtest import init_command as init_runtest_command
+from lammps_testing.commands.unit import init_command as init_unit_command
+from lammps_testing.commands.reg import init_command as init_reg_command
 
-from .commands.build import build_status
-from .commands.runtest import run_status
-from .commands.unit import unittest_status
-from .commands.reg import reg_status
+from lammps_testing.commands.build import build_status
+from lammps_testing.commands.runtest import run_status
+from lammps_testing.commands.unit import unittest_status
+from lammps_testing.commands.reg import reg_status
 
 def status(args, settings):
     args.config = ["ALL"]

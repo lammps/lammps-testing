@@ -1,4 +1,3 @@
-#!/bin/env python
 from __future__ import print_function
 import os
 import nose
@@ -7,10 +6,6 @@ import argparse
 import subprocess
 import glob
 from multiprocessing import Pool
-
-__author__ = 'Richard Berger'
-__email__ = "richard.berger@temple.edu"
-
 
 def load_tests(filename):
     print("Loading tests from %s..." % filename)

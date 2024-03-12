@@ -5,7 +5,7 @@ import platform
 import shutil
 from datetime import datetime
 
-from .formats import LammpsLog
+from lammps_testing.formats import LammpsLog
 
 
 def L1_norm(seq):
