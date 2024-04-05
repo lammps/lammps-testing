@@ -1,4 +1,4 @@
-LAMMPS (3 Aug 2023 - Development - 5e4761d63)
+LAMMPS (7 Feb 2024 - Development - 292747189)
 # 2d micelle simulation
 
 dimension	2
@@ -28,7 +28,7 @@ Finding 1-2 1-3 1-4 neighbors ...
      1 = max # of 1-4 neighbors
      2 = max # of special neighbors
   special bonds CPU = 0.001 seconds
-  read_data CPU = 0.012 seconds
+  read_data CPU = 0.010 seconds
 special_bonds	fene
 Finding 1-2 1-3 1-4 neighbors ...
   special bond factors lj:    0        1        1       
@@ -55,7 +55,7 @@ fix		4 all enforce2d
 thermo		50
 run		500
 Generated 0 of 6 mixed pair_coeff terms from geometric mixing rule
-WARNING: Communication cutoff 1.42246 is shorter than a bond length based estimate of 1.425. This may lead to errors. (src/comm.cpp:723)
+WARNING: Communication cutoff 1.42246 is shorter than a bond length based estimate of 1.425. This may lead to errors. (src/comm.cpp:730)
 Neighbor list info ...
   update: every = 1 steps, delay = 5 steps, check = yes
   max neighbors/atom: 2000, page size: 100000
@@ -68,7 +68,7 @@ Neighbor list info ...
       pair build: half/bin/newton
       stencil: half/bin/2d
       bin: standard
-WARNING: Communication cutoff 1.42246 is shorter than a bond length based estimate of 1.425. This may lead to errors. (src/comm.cpp:723)
+WARNING: Communication cutoff 1.42246 is shorter than a bond length based estimate of 1.425. This may lead to errors. (src/comm.cpp:730)
 Per MPI rank memory allocation (min/avg/max) = 4.122 | 4.122 | 4.122 Mbytes
    Step          Temp          E_pair         E_mol          TotEng         Press     
          0   0.45           0.40003481     2.2200223e-06  0.84966203     0.78952518   
@@ -82,21 +82,21 @@ Per MPI rank memory allocation (min/avg/max) = 4.122 | 4.122 | 4.122 Mbytes
        400   0.45           0.75067331     0.14165013     1.3419484      6.3840708    
        450   0.64839221     0.62402486     0.14173679     1.4136135      6.4791009    
        500   0.45           0.66669513     0.13695201     1.2532721      6.807146     
-Loop time of 0.0363839 on 8 procs for 500 steps with 1200 atoms
+Loop time of 0.0340593 on 8 procs for 500 steps with 1200 atoms
 
-Performance: 5936687.230 tau/day, 13742.332 timesteps/s, 16.491 Matom-step/s
-98.7% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 6341889.059 tau/day, 14680.299 timesteps/s, 17.616 Matom-step/s
+99.9% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.0058627  | 0.0082574  | 0.011255   |   2.2 | 22.70
-Bond    | 0.00030121 | 0.0004758  | 0.00070862 |   0.0 |  1.31
-Neigh   | 0.0040992  | 0.004225   | 0.0043321  |   0.1 | 11.61
-Comm    | 0.013601   | 0.01735    | 0.020593   |   2.0 | 47.69
-Output  | 0.00035134 | 0.00037453 | 0.00043651 |   0.0 |  1.03
-Modify  | 0.0021087  | 0.0029705  | 0.0042939  |   1.5 |  8.16
-Other   |            | 0.002731   |            |       |  7.51
+Pair    | 0.0074664  | 0.0089562  | 0.010146   |   0.8 | 26.30
+Bond    | 0.00041711 | 0.00054807 | 0.00065446 |   0.0 |  1.61
+Neigh   | 0.0034783  | 0.003504   | 0.0035539  |   0.0 | 10.29
+Comm    | 0.013251   | 0.014595   | 0.016846   |   1.0 | 42.85
+Output  | 0.00041307 | 0.00044404 | 0.00054952 |   0.0 |  1.30
+Modify  | 0.0027671  | 0.0036177  | 0.0044529  |   0.9 | 10.62
+Other   |            | 0.002394   |            |       |  7.03
 
 Nlocal:            150 ave         154 max         145 min
 Histogram: 1 0 1 1 1 1 0 0 1 2
@@ -179,41 +179,41 @@ Neighbor list info ...
 Per MPI rank memory allocation (min/avg/max) = 5.372 | 5.372 | 5.372 Mbytes
    Step          Temp          E_pair         E_mol          TotEng         Press     
          0   0.45318168    -1.3753652      0.13695201    -0.8705807      1.975423     
-        50   0.77436325    -1.6951244      0.13695208    -0.92964744     0.56387057   
-       100   1.6952241     -1.7312762      0.13695047    -0.21836885     0.94789765   
-       150   9.7837741     -1.7830358      0.13695011     6.2950777      8.1738237    
-       200   29.310998     -1.8014575      0.13696044     22.126263      25.322733    
-       250   28.673166     -1.853002       0.13697116     21.557022      24.168814    
-       300   83.003531     -1.8579929      0.13698236     65.650188      65.221281    
-       350   178.61413     -1.8851227      0.13699411     143.22701      130.12595    
-       400   289.52971     -1.8796966      0.13700454     233.25892      214.89833    
-       450   1022.4975     -1.8999958      0.13701579     828.16414      777.2669     
-       500   1867.5417     -1.9060688      0.13702898     1514.0523      1413.915     
-Loop time of 0.113983 on 8 procs for 500 steps with 1200 atoms
+        50   0.77344732    -1.6944083      0.13695201    -0.92967487     0.58657109   
+       100   0.53530681    -1.7006195      0.13695201    -1.1291768      0.11219772   
+       150   0.60820175    -1.8071581      0.13695201    -1.176549       1.5161796    
+       200   0.49410558    -1.7945459      0.13695201    -1.2565449      4.0469262    
+       250   0.52460847    -1.8528672      0.13695201    -1.290108       2.9929445    
+       300   0.46596803    -1.8680499      0.13695201    -1.3528872      2.7958851    
+       350   0.48831812    -1.8723486      0.13695201    -1.3390451     -4.5106818    
+       400   0.46798432    -1.9008529      0.13695201    -1.3840536     -4.3096566    
+       450   0.46000658    -1.9081144      0.13695201    -1.3977904      3.3360611    
+       500   0.45822409    -1.9077531      0.13695201    -1.3988759      0.45428738   
+Loop time of 0.114404 on 8 procs for 500 steps with 1200 atoms
 
-Performance: 1895017.928 tau/day, 4386.616 timesteps/s, 5.264 Matom-step/s
-97.3% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 1888043.781 tau/day, 4370.472 timesteps/s, 5.245 Matom-step/s
+94.4% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.0081282  | 0.010604   | 0.014308   |   2.2 |  9.30
-Bond    | 0.00030461 | 0.00044208 | 0.00068805 |   0.0 |  0.39
-Neigh   | 0.011122   | 0.011382   | 0.01154    |   0.1 |  9.99
-Comm    | 0.017479   | 0.0237     | 0.028378   |   2.2 | 20.79
-Output  | 0.00045794 | 0.00049135 | 0.00055537 |   0.0 |  0.43
-Modify  | 0.05615    | 0.060243   | 0.067378   |   1.4 | 52.85
-Other   |            | 0.007121   |            |       |  6.25
+Pair    | 0.01021    | 0.012875   | 0.014897   |   1.7 | 11.25
+Bond    | 0.00039234 | 0.0005535  | 0.00067874 |   0.0 |  0.48
+Neigh   | 0.0059873  | 0.0060454  | 0.0061202  |   0.1 |  5.28
+Comm    | 0.017582   | 0.020241   | 0.023792   |   1.8 | 17.69
+Output  | 0.00045739 | 0.00049027 | 0.00063312 |   0.0 |  0.43
+Modify  | 0.065706   | 0.068302   | 0.070628   |   0.6 | 59.70
+Other   |            | 0.005897   |            |       |  5.15
 
-Nlocal:            150 ave         154 max         145 min
-Histogram: 1 0 0 2 0 0 3 1 0 1
-Nghost:        171.125 ave         178 max         165 min
-Histogram: 2 0 0 2 0 1 1 1 0 1
-Neighs:        1091.12 ave        1143 max        1024 min
-Histogram: 1 1 0 1 0 0 2 0 2 1
+Nlocal:            150 ave         155 max         141 min
+Histogram: 1 0 0 0 0 2 2 1 0 2
+Nghost:        169.875 ave         178 max         163 min
+Histogram: 1 0 2 1 1 0 1 0 1 1
+Neighs:        1094.88 ave        1150 max        1023 min
+Histogram: 1 0 2 0 1 0 0 1 1 2
 
-Total # of neighbors = 8729
-Ave neighs/atom = 7.2741667
+Total # of neighbors = 8759
+Ave neighs/atom = 7.2991667
 Ave special neighs/atom = 0.5
 Neighbor list builds = 46
 Dangerous builds = 2
@@ -227,45 +227,45 @@ fix		5 solute rigid/small molecule
 fix		4 all enforce2d
 run		500
 Generated 0 of 6 mixed pair_coeff terms from geometric mixing rule
-Per MPI rank memory allocation (min/avg/max) = 9.211 | 9.212 | 9.214 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 9.208 | 9.211 | 9.213 Mbytes
    Step          Temp          E_pair         E_mol          TotEng         Press     
-       500   1.8285472     -1.9060688      0.13702898    -0.28486904     4.3734791    
-       550   488.13026     -1.7899397      0.13704115     394.54616      372.63402    
-       600   211.24222     -1.7816802      0.13704777     169.81363      162.88839    
-       650   260.4134      -1.7845447      0.13705484     209.72139      200.2632     
-       700   1229.4189     -1.7911665      0.13706282     996.22424      934.31851    
-       750   755.51953     -1.783092       0.13706941     611.58399      575.39678    
-       800   176.83626     -1.7609494      0.13707676     141.90823      137.35852    
-       850   1430.4106     -1.751311       0.13708497     1159.4023      1087.1327    
-       900   2079.0035     -1.7634907      0.13709166     1685.8314      1578.0972    
-       950   796.12686     -1.7322792      0.13709947     644.59445      606.46648    
-      1000   1219.2666     -1.7828669      0.13710763     987.99229      926.87408    
-Loop time of 0.0607386 on 8 procs for 500 steps with 1200 atoms
+       500   0.45822409    -1.9077531      0.13695201    -1.3988759      2.4509752    
+       550   0.46736204    -1.9141964      0.13695201    -1.3979022      2.1695662    
+       600   0.47872194    -1.9232781      0.13695201    -1.3977635      2.0058379    
+       650   0.47491575    -1.9224109      0.13695201    -1.3999857      2.0637789    
+       700   0.44714331    -1.8990682      0.13695201    -1.3991848      2.4863082    
+       750   0.49089274    -1.9231004      0.13695201    -1.3877071      2.123147     
+       800   0.4753839     -1.8959698      0.13695201    -1.3731645      2.3030481    
+       850   0.46870816    -1.8972225      0.13695201    -1.3798357      2.2464703    
+       900   0.49610454    -1.9070748      0.13695201    -1.3674513      2.2196388    
+       950   0.4773035     -1.8925765      0.13695201    -1.3682132      2.3534786    
+      1000   0.50413702    -1.9292393      0.13695201    -1.383096       2.1630987    
+Loop time of 0.0635058 on 8 procs for 500 steps with 1200 atoms
 
-Performance: 3556221.996 tau/day, 8231.995 timesteps/s, 9.878 Matom-step/s
-99.9% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 3401261.559 tau/day, 7873.291 timesteps/s, 9.448 Matom-step/s
+100.0% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.0072571  | 0.0094849  | 0.013051   |   1.9 | 15.62
-Bond    | 0.00030238 | 0.00038781 | 0.00053448 |   0.0 |  0.64
-Neigh   | 0.0062465  | 0.0063001  | 0.0063434  |   0.0 | 10.37
-Comm    | 0.014755   | 0.017725   | 0.019731   |   1.4 | 29.18
-Output  | 0.00037713 | 0.00039268 | 0.00044098 |   0.0 |  0.65
-Modify  | 0.023769   | 0.024407   | 0.025392   |   0.4 | 40.18
-Other   |            | 0.002041   |            |       |  3.36
+Pair    | 0.010307   | 0.011927   | 0.014587   |   1.5 | 18.78
+Bond    | 0.00041252 | 0.00051678 | 0.00063514 |   0.0 |  0.81
+Neigh   | 0.004664   | 0.0047086  | 0.004755   |   0.1 |  7.41
+Comm    | 0.014259   | 0.01696    | 0.018799   |   1.4 | 26.71
+Output  | 0.00042773 | 0.00046148 | 0.00058309 |   0.0 |  0.73
+Modify  | 0.025729   | 0.026206   | 0.026649   |   0.2 | 41.27
+Other   |            | 0.002725   |            |       |  4.29
 
-Nlocal:            150 ave         160 max         139 min
-Histogram: 2 0 0 1 1 0 2 0 0 2
-Nghost:         171.75 ave         181 max         161 min
-Histogram: 1 0 0 2 1 0 1 0 2 1
-Neighs:        1100.75 ave        1239 max         919 min
-Histogram: 1 0 0 2 0 1 0 2 0 2
+Nlocal:            150 ave         158 max         140 min
+Histogram: 1 0 0 1 1 1 2 0 1 1
+Nghost:        171.875 ave         182 max         166 min
+Histogram: 2 0 1 2 1 1 0 0 0 1
+Neighs:        1081.75 ave        1162 max         993 min
+Histogram: 1 1 0 2 0 0 1 1 0 2
 
-Total # of neighbors = 8806
-Ave neighs/atom = 7.3383333
+Total # of neighbors = 8654
+Ave neighs/atom = 7.2116667
 Ave special neighs/atom = 0.5
-Neighbor list builds = 60
-Dangerous builds = 12
+Neighbor list builds = 39
+Dangerous builds = 0
 Total wall time: 0:00:00

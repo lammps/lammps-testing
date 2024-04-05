@@ -1,4 +1,4 @@
-LAMMPS (24 Aug 2020)
+LAMMPS (7 Feb 2024 - Development - 292747189)
 units real
 boundary p p p
 
@@ -13,7 +13,7 @@ kspace_style pppm 1.0e-3
 comm_modify vel yes
 read_data data.swm4-ndp
 Reading data file ...
-  orthogonal box = (-12.000000 -12.000000 -12.000000) to (12.000000 12.000000 12.000000)
+  orthogonal box = (-12 -12 -12) to (12 12 12)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
   2500 atoms
@@ -26,14 +26,14 @@ Reading data file ...
   reading angles ...
   500 angles
 Finding 1-2 1-3 1-4 neighbors ...
-  special bond factors lj:    0.0      0.0      0.5     
-  special bond factors coul:  0.0      0.0      0.5     
+  special bond factors lj:    0        0        0.5     
+  special bond factors coul:  0        0        0.5     
      4 = max # of 1-2 neighbors
      3 = max # of 1-3 neighbors
      3 = max # of 1-4 neighbors
      4 = max # of special neighbors
   special bonds CPU = 0.001 seconds
-  read_data CPU = 0.019 seconds
+  read_data CPU = 0.043 seconds
 
 pair_coeff    1    1      0.210939     3.183950  # ODw ODw
 pair_coeff    *   2*      0.000000     0.0
@@ -63,7 +63,7 @@ velocity DRUDES create 1 12345
 delete_bonds ATOMS multi
 System init for delete_bonds ...
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (src/kspace.cpp:328)
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:342)
   G vector (1/distance) = 0.21745695
   grid = 10 10 10
   stencil order = 5
@@ -71,11 +71,12 @@ PPPM initialization ...
   estimated relative force accuracy = 0.00059412835
   using double precision FFTW3
   3d grid and FFT values/proc = 1000 200
+Generated 0 of 6 mixed pair_coeff terms from geometric mixing rule
 Rebuild special list taking Drude particles into account
 Old max number of 1-2 to 1-4 neighbors: 4
 New max number of 1-2 to 1-4 neighbors: 4 (+0)
 Neighbor list info ...
-  update every 1 steps, delay 10 steps, check yes
+  update: every = 1 steps, delay = 0 steps, check = yes
   max neighbors/atom: 2000, page size: 100000
   master list distance cutoff = 14
   ghost atom cutoff = 14
@@ -84,7 +85,7 @@ Neighbor list info ...
   (1) pair lj/cut/coul/long, perpetual
       attributes: half, newton on
       pair build: half/bin/newton
-      stencil: half/bin/3d/newton
+      stencil: half/bin/3d
       bin: standard
 Deleting bonds ...
   2000 total bonds, 500 turned on, 1500 turned off
@@ -110,7 +111,7 @@ thermo 20
 
 run 20
 PPPM initialization ...
-  using 12-bit tables for long-range coulomb (src/kspace.cpp:328)
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:342)
   G vector (1/distance) = 0.21745695
   grid = 10 10 10
   stencil order = 5
@@ -118,37 +119,38 @@ PPPM initialization ...
   estimated relative force accuracy = 0.00059412835
   using double precision FFTW3
   3d grid and FFT values/proc = 1000 200
-Per MPI rank memory allocation (min/avg/max) = 15.82 | 16.13 | 16.21 Mbytes
-Step CPU TotEng KinEng PotEng E_bond E_angle E_vdwl E_coul E_long Press Volume Temp c_TEMP[1] c_TEMP[2] 
-       0            0    4568.0415    903.41148      3664.63    623.46454            0    2890.2449    157955.66   -157804.74    244591.08        13824    202.18534    295.64644    14.858785 
-      20   0.26435679     2935.023    4591.6891   -1656.6661    566.95551            0    600.60316    155098.49   -157922.71    27116.247     14058.84    1027.6294    1460.0168    160.99145 
-Loop time of 0.26448 on 8 procs for 20 steps with 2500 atoms
+Generated 0 of 6 mixed pair_coeff terms from geometric mixing rule
+Per MPI rank memory allocation (min/avg/max) = 16.93 | 17.23 | 17.31 Mbytes
+   Step          CPU           TotEng         KinEng         PotEng         E_bond        E_angle         E_vdwl         E_coul         E_long         Press          Volume          Temp        c_TEMP[1]      c_TEMP[2]   
+         0   0              4568.0415      903.41148      3664.63        623.46454      0              2890.2449      157955.66     -157804.74      244591.08      13824          202.18534      295.64644      14.858785    
+        20   0.24356603     2934.8663      4591.6483     -1656.7821      566.9763       0              600.59663      155098.36     -157922.72      27113.312      14058.84       1027.6203      1460.0045      160.98865    
+Loop time of 0.243636 on 8 procs for 20 steps with 2500 atoms
 
-Performance: 6.534 ns/day, 3.673 hours/ns, 75.620 timesteps/s
-95.6% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 7.093 ns/day, 3.384 hours/ns, 82.090 timesteps/s, 205.225 katom-step/s
+95.0% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.12345    | 0.15325    | 0.17445    |   4.3 | 57.95
-Bond    | 6.8771e-05 | 8.1467e-05 | 9.6492e-05 |   0.0 |  0.03
-Kspace  | 0.030333   | 0.051559   | 0.080975   |   7.4 | 19.49
-Neigh   | 0.010021   | 0.010029   | 0.010038   |   0.0 |  3.79
-Comm    | 0.017455   | 0.018432   | 0.01908    |   0.4 |  6.97
-Output  | 0.00012811 | 0.00013672 | 0.00017611 |   0.0 |  0.05
-Modify  | 0.029661   | 0.029919   | 0.030354   |   0.2 | 11.31
-Other   |            | 0.001067   |            |       |  0.40
+Pair    | 0.12255    | 0.14376    | 0.1734     |   3.6 | 59.01
+Bond    | 7.2579e-05 | 8.2453e-05 | 8.9742e-05 |   0.0 |  0.03
+Kspace  | 0.010198   | 0.040458   | 0.062193   |   6.9 | 16.61
+Neigh   | 0.011312   | 0.011322   | 0.011335   |   0.0 |  4.65
+Comm    | 0.013741   | 0.014263   | 0.014825   |   0.4 |  5.85
+Output  | 7.5477e-05 | 7.8843e-05 | 9.6786e-05 |   0.0 |  0.03
+Modify  | 0.031738   | 0.031996   | 0.032561   |   0.2 | 13.13
+Other   |            | 0.001673   |            |       |  0.69
 
-Nlocal:        312.500 ave         326 max         289 min
+Nlocal:          312.5 ave         326 max         289 min
 Histogram: 1 0 1 0 0 1 0 2 1 2
 Nghost:        11329.8 ave       11442 max       11184 min
 Histogram: 1 0 1 1 0 1 0 1 2 1
-Neighs:       321203.0 ave      343439 max      283646 min
+Neighs:         321204 ave      343439 max      283647 min
 Histogram: 1 0 0 0 1 2 0 2 0 2
 
-Total # of neighbors = 2569622
-Ave neighs/atom = 1027.8488
-Ave special neighs/atom = 4.0000000
+Total # of neighbors = 2569632
+Ave neighs/atom = 1027.8528
+Ave special neighs/atom = 4
 Neighbor list builds = 1
 Dangerous builds = 0
 

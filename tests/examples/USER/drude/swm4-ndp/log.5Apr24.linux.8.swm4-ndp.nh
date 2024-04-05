@@ -1,4 +1,4 @@
-LAMMPS (2 Aug 2023 - Development - bc02a7cc6)
+LAMMPS (7 Feb 2024 - Development - 292747189)
 units real
 boundary p p p
 
@@ -32,7 +32,7 @@ Finding 1-2 1-3 1-4 neighbors ...
      3 = max # of 1-4 neighbors
      4 = max # of special neighbors
   special bonds CPU = 0.001 seconds
-  read_data CPU = 0.048 seconds
+  read_data CPU = 0.029 seconds
 
 pair_coeff    1    1      0.210939     3.183950  # ODw ODw
 pair_coeff    *   2*      0.000000     0.0
@@ -106,7 +106,7 @@ fix RIGID ATOMS rigid/npt/small molecule temp 300 300 100 iso 1 1 500
   500 rigid bodies with 2000 atoms
   0.83209864 = max distance from body owner to body atom
 fix_modify RIGID temp TATOM press thermo_press
-WARNING: Temperature for fix modify is not for group all (src/RIGID/fix_rigid_nh_small.cpp:1331)
+WARNING: Temperature for fix modify is not for group all (src/RIGID/fix_rigid_nh_small.cpp:1281)
 fix NVT DRUDES nvt temp ${TDK} ${TDK} 100.0
 fix NVT DRUDES nvt temp 1 ${TDK} 100.0
 fix NVT DRUDES nvt temp 1 1 100.0
@@ -126,38 +126,38 @@ PPPM initialization ...
   using double precision FFTW3
   3d grid and FFT values/proc = 1000 200
 Generated 0 of 6 mixed pair_coeff terms from geometric mixing rule
-WARNING: fix drude/transform/direct is not compatible with box changing rigid fixes (src/DRUDE/fix_drude_transform.cpp:64)
-WARNING: fix drude/transform/inverse is not compatible with box changing rigid fixes (src/DRUDE/fix_drude_transform.cpp:64)
+WARNING: fix drude/transform/direct is not compatible with box changing rigid fixes (src/DRUDE/fix_drude_transform.cpp:63)
+WARNING: fix drude/transform/inverse is not compatible with box changing rigid fixes (src/DRUDE/fix_drude_transform.cpp:63)
 Per MPI rank memory allocation (min/avg/max) = 16.93 | 17.23 | 17.31 Mbytes
    Step          CPU           TotEng         KinEng         PotEng         E_bond        E_angle         E_vdwl         E_coul         E_long         Press          Volume          Temp        c_TEMP[1]      c_TEMP[2]   
          0   0              4568.0415      903.41148      3664.63        623.46454      0              2890.2449      157955.66     -157804.74      244591.08      13824          202.18534      295.64644      14.858785    
-        20   0.42448102     3742.8114      5338.8112     -1595.9999      567.27181      0              662.20936      155098.52     -157924         31679.869      13979.575      1194.8369      1690.2317      201.65774    
-Loop time of 0.424567 on 8 procs for 20 steps with 2500 atoms
+        20   0.26492621     3742.7996      5338.7916     -1595.992       567.29333      0              662.20695      155098.51     -157924         31680.402      13979.575      1194.8325      1690.2243      201.65931    
+Loop time of 0.264996 on 8 procs for 20 steps with 2500 atoms
 
-Performance: 4.070 ns/day, 5.897 hours/ns, 47.107 timesteps/s, 117.767 katom-step/s
-91.5% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 6.521 ns/day, 3.681 hours/ns, 75.473 timesteps/s, 188.682 katom-step/s
+92.8% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 0.14351    | 0.19527    | 0.25212    |   8.3 | 45.99
-Bond    | 8.9825e-05 | 0.00011496 | 0.00014503 |   0.0 |  0.03
-Kspace  | 0.019792   | 0.07717    | 0.12964    |  13.3 | 18.18
-Neigh   | 0.018396   | 0.018466   | 0.018561   |   0.0 |  4.35
-Comm    | 0.01613    | 0.017136   | 0.017879   |   0.4 |  4.04
-Output  | 0.00010524 | 0.0001583  | 0.00019769 |   0.0 |  0.04
-Modify  | 0.11306    | 0.1138     | 0.11513    |   0.2 | 26.80
-Other   |            | 0.002458   |            |       |  0.58
+Pair    | 0.12274    | 0.13883    | 0.15012    |   2.1 | 52.39
+Bond    | 7.4366e-05 | 8.5844e-05 | 9.4705e-05 |   0.0 |  0.03
+Kspace  | 0.009424   | 0.020751   | 0.036837   |   5.4 |  7.83
+Neigh   | 0.011291   | 0.0113     | 0.011309   |   0.0 |  4.26
+Comm    | 0.012513   | 0.012625   | 0.012712   |   0.1 |  4.76
+Output  | 7.536e-05  | 8.2355e-05 | 0.00010269 |   0.0 |  0.03
+Modify  | 0.080261   | 0.080432   | 0.080621   |   0.0 | 30.35
+Other   |            | 0.0008891  |            |       |  0.34
 
 Nlocal:          312.5 ave         326 max         292 min
 Histogram: 1 0 1 0 1 0 1 1 1 2
 Nghost:        11354.5 ave       11462 max       11209 min
 Histogram: 1 0 0 2 1 0 0 1 1 2
-Neighs:         322375 ave      344481 max      285557 min
+Neighs:         322375 ave      344479 max      285556 min
 Histogram: 1 0 0 0 0 2 1 2 0 2
 
-Total # of neighbors = 2579003
-Ave neighs/atom = 1031.6012
+Total # of neighbors = 2578997
+Ave neighs/atom = 1031.5988
 Ave special neighs/atom = 4
 Neighbor list builds = 1
 Dangerous builds = 0
