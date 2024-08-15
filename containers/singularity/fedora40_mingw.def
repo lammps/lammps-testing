@@ -89,7 +89,7 @@ From: fedora:40
         tar -xzf plumed.tar.gz
         cd plumed-${version}
         ./configure --disable-doc --prefix=/usr
-        make -j 4
+        make
         make install
         # fix up installation for CentOS and Fedora
         mv -v /usr/lib64/pkgconfig/plumed* /usr/share/pkgconfig/
