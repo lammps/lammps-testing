@@ -1,7 +1,5 @@
 # LAMMPS regression test driver using Python's unittest
 from __future__ import print_function
-__author__ = 'Richard Berger'
-__email__ = "richard.berger@temple.edu"
 
 import unittest
 import os
