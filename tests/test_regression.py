@@ -65,7 +65,6 @@ skip_list = [
     'kim',
     'mscg',
     'neb',
-    'nemd',
     'prd',
     'tad'
 ]
