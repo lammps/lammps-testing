@@ -3,7 +3,7 @@ import sys
 import glob
 import logging
 import subprocess
-from nose.tools import nottest
+from nose2.tools import nottest
 from collections import namedtuple
 
 import yaml

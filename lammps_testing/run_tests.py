@@ -1,7 +1,7 @@
 #!/bin/env python
 from __future__ import print_function
 import os
-import nose
+import nose2 as nose
 import xml.etree.ElementTree as ET
 import argparse
 import subprocess
