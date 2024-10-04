@@ -1,5 +1,5 @@
-display_name: 'CentOS 7'
-container_image: 'centos7'
+display_name: 'Rocky Linux 8'
+container_image: 'rocky8'
 builds:
  - cmake_mpi_openmp_bigbig_static
  - cmake_serial_smallsmall_static
