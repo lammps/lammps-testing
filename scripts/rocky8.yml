@@ -1,7 +1,0 @@
-display_name: 'Rocky Linux 8'
-container_image: 'rocky8'
-builds:
- - cmake_mpi_openmp_bigbig_static
- - cmake_serial_smallsmall_static
- - cmake_mpi_smallbig_shared
- - legacy_serial_openmp_smallsmall_static
