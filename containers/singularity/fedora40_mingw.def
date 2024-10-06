@@ -11,6 +11,8 @@ From: fedora:40
                netcdf-devel netcdf-cxx-devel netcdf-mpich-devel netcdf-openmpi-devel \
                readline-devel python3-pyyaml python3-Cython \
                python3-mpi4py-mpich python3-mpi4py-openmpi \
+               hipcc-17.3-6.rocm6.1.2.fc40.x86_64 \
+               rocm-hip-devel-6.1.2-2.fc40.x86_64 \
                mingw-filesystem-base mingw32-nsis mingw-binutils-generic \
                mingw32-filesystem mingw32-pkg-config \
                mingw64-filesystem mingw64-pkg-config \
@@ -76,10 +78,25 @@ From: fedora:40
         unzip -d /usr/share/nsis EnVar_plugin.zip
         rm EnVar_plugin.zip
 
-        # enable Lmod and load MPI
-        source /usr/share/lmod/lmod/init/profile
-        module purge
-        module load mpi
+        # set MPI environment
+        PATH="/usr/lib64/openmpi/bin:${PATH}"
+        LD_LIBRARY_PATH="/usr/lib64/openmpi/lib:${LD_LIBRARY_PATH}"
+        PKG_CONFIG_PATH="/usr/lib64/openmpi/lib/pkgconfig:${PKG_CONFIG_PATH}"
+        CMAKE_PREFIX_PATH="/usr/lib64/openmpi:${CMAKE_PREFIX_PATH}"
+        MPI_BIN="/usr/lib64/openmpi/bin"
+        MPI_SYSCONFIG="/etc/openmpi-x86_64"
+        MPI_FORTRAN_MOD_DIR="/usr/lib64/gfortran/modules/openmpi"
+        MPI_INCLUDE="/usr/include/openmpi-x86_64"
+        MPI_LIB="/usr/lib64/openmpi/lib"
+        MPI_COMPILER="openmpi-x86_64"
+        MPI_SUFFIX="_openmpi"
+        MPI_HOME="/usr/lib64/openmpi"
+        export PATH LD_LIBRARY_PATH PKG_CONFIG_PATH CMAKE_PREFIX_PATH MPI_BIN MPI_SYSCONFIG MPI_FORTRAN_MOD_DIR MPI_INCLUDE MPI_LIB MPI_COMPILER MPI_SUFFIX MPI_HOME
+
+        #source /usr/share/lmod/lmod/init/profile
+        #source /etc/profile.d/modules.sh
+        #module purge
+        #module load mpi
 
         # manually install Plumed
         mkdir plumed
