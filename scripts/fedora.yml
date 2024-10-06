@@ -1,5 +1,5 @@
-display_name: 'Fedora 34'
-container_image: 'fedora34_mingw'
+display_name: 'Fedora 40'
+container_image: 'fedora40_mingw'
 
 builds:
  - cmake_kokkos_mpi_openmp_clang_shared
