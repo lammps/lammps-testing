@@ -1,4 +1,5 @@
 #!/bin/bash -x
+set(CMAKE_Fortran_COMPILER "ifx" CACHE STRING "" FORCE)
 if [ -z "${LAMMPS_DIR}" ]
 then
     echo "Must set LAMMPS_DIR environment variable"

@@ -189,7 +189,7 @@ rsync -a --delete --include='src/***' --include='lib/***' --include='potentials/
 
 export LAMMPS_DIR=${BUILD}/lammps
 
-virtualenv --python=$PYTHON pyenv
+$PYTHON -m venv pyenv
 
 source pyenv/bin/activate
 pip install --upgrade pip setuptools
