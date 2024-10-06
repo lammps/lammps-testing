@@ -160,7 +160,7 @@ EOF
     LC_ALL=C
     export LC_ALL
     # tell OpenMPI to not try using Infiniband
-    OMPI_MCA_btl="^openib"
+    OMPI_MCA_btl="^openib,ofi"
     # do not warn about unused components as this messes up testing
     OMPI_MCA_btl_base_warn_component_unused="0"
     export OMPI_MCA_btl OMPI_MCA_btl_base_warn_component_unused
