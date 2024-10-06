@@ -6,7 +6,7 @@ From: library/almalinux:9
         dnf config-manager --set-enabled crb
         dnf -y install epel-release dnf-utils
         dnf -y update
-        dnf -y install vim-enhanced git file make cmake patch which file ninja-build \
+        dnf -y install vim-enhanced git file make cmake patch which file ninja-build rsync \
                ccache gcc-c++ gcc-gfortran clang libomp-devel gdb valgrind libubsan libasan libtsan \
                eigen3-devel openblas-devel libpng-devel libjpeg-devel platform-python-devel \
                openmpi-devel fftw-devel voro++-devel gsl-devel hdf5-devel \
