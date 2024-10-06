@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -vx
 SCRIPTDIR="$(dirname "$(realpath "$0")")"
 
 export LAMMPS_MODE=static

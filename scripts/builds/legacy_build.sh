@@ -37,7 +37,7 @@ fi
 # CXX17
 if [ -z "$LAMMPS_CXX_STANDARD" ]
 then
-    export LAMMPS_CXX_STANDARD=CXX11
+    export LAMMPS_CXX_STANDARD=CXX17
 fi
 
 if [ -z "$LAMMPS_MACH" ]
