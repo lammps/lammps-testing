@@ -1,4 +1,4 @@
-LAMMPS (2 Aug 2023 - Development - bc02a7cc6)
+LAMMPS (29 Aug 2024 - Development - f820c928a)
 # REAX potential for VOH system
 # .....
 
@@ -11,9 +11,9 @@ Reading data file ...
   2 by 2 by 2 MPI processor grid
   reading atoms ...
   100 atoms
-  read_data CPU = 0.004 seconds
+  read_data CPU = 0.007 seconds
 
-pair_style	reax/c lmp_control
+pair_style	reaxff lmp_control
 WARNING: Ignoring inactive control parameter: simulation_name (src/REAXFF/reaxff_control.cpp:98)
 WARNING: Ignoring inactive control parameter: energy_update_freq (src/REAXFF/reaxff_control.cpp:98)
 WARNING: Support for writing native trajectories has been removed after LAMMPS version 8 April 2021 (src/REAXFF/reaxff_control.cpp:114)
@@ -25,7 +25,7 @@ WARNING: Ignoring inactive control parameter: bond_info (src/REAXFF/reaxff_contr
 WARNING: Ignoring inactive control parameter: angle_info (src/REAXFF/reaxff_control.cpp:98)
 pair_coeff	* * ffield.reax.V_O_C_H H C O V
 Reading potential file ffield.reax.V_O_C_H with DATE: 2011-02-18
-WARNING: Changed valency_val to valency_boc for X (src/REAXFF/reaxff_ffield.cpp:296)
+WARNING: Changed valency_val to valency_boc for X (src/REAXFF/reaxff_ffield.cpp:294)
 
 neighbor	2 bin
 neigh_modify	every 10 delay 0 check no
@@ -43,6 +43,18 @@ run		3000
 CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
 
 Your simulation uses code contributions which should be cited:
+
+- Type Label Framework: https://doi.org/10.1021/acs.jpcb.3c08419
+
+@Article{Gissinger24,
+ author = {Jacob R. Gissinger, Ilia Nikiforov, Yaser Afshar, Brendon Waters, Moon-ki Choi, Daniel S. Karls, Alexander Stukowski, Wonpil Im, Hendrik Heinz, Axel Kohlmeyer, and Ellad B. Tadmor},
+ title = {Type Label Framework for Bonded Force Fields in LAMMPS},
+ journal = {J. Phys. Chem. B},
+ year =    2024,
+ volume =  128,
+ number =  13,
+ pages =   {3282--3297}
+}
 
 - pair reaxff command: doi:10.1016/j.parco.2011.08.005
 
@@ -76,9 +88,9 @@ Neighbor list info ...
   ghost atom cutoff = 12
   binsize = 6, bins = 5 5 5
   2 neighbor lists, perpetual/occasional/extra = 2 0 0
-  (1) pair reax/c, perpetual
+  (1) pair reaxff, perpetual
       attributes: half, newton off, ghost
-      pair build: half/bin/newtoff/ghost
+      pair build: half/bin/ghost/newtoff
       stencil: full/ghost/bin/3d
       bin: standard
   (2) fix qeq/reax, perpetual, copy from (1)
@@ -89,31 +101,31 @@ Neighbor list info ...
 Per MPI rank memory allocation (min/avg/max) = 8.523 | 9.766 | 10.79 Mbytes
    Step          Temp          E_pair         E_mol          TotEng         Press     
          0   0             -10246.825      0             -10246.825      42.256092    
-      3000   507.92537     -10193.103      0             -10043.214     -914.43285    
-Loop time of 5.21984 on 8 procs for 3000 steps with 100 atoms
+      3000   470.25163     -10183.418      0             -10044.646     -490.00572    
+Loop time of 4.01861 on 8 procs for 3000 steps with 100 atoms
 
-Performance: 12.414 ns/day, 1.933 hours/ns, 574.730 timesteps/s, 57.473 katom-step/s
-99.6% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 16.125 ns/day, 1.488 hours/ns, 746.526 timesteps/s, 74.653 katom-step/s
+98.5% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 1.5541     | 2.0627     | 2.8909     |  25.3 | 39.52
-Neigh   | 0.13429    | 0.16918    | 0.19687    |   5.5 |  3.24
-Comm    | 0.18335    | 0.98147    | 1.51       |  36.2 | 18.80
-Output  | 0.00010224 | 0.00010778 | 0.00012719 |   0.0 |  0.00
-Modify  | 1.9451     | 2.0022     | 2.1504     |   4.3 | 38.36
-Other   |            | 0.004109   |            |       |  0.08
+Pair    | 1.383      | 1.6355     | 1.9706     |  16.1 | 40.70
+Neigh   | 0.10831    | 0.15608    | 0.1979     |   6.8 |  3.88
+Comm    | 0.3817     | 0.70402    | 0.97735    |  26.0 | 17.52
+Output  | 9.2358e-05 | 9.5848e-05 | 0.00011603 |   0.0 |  0.00
+Modify  | 1.488      | 1.5209     | 1.5593     |   2.0 | 37.85
+Other   |            | 0.001985   |            |       |  0.05
 
 Nlocal:           12.5 ave          23 max           0 min
 Histogram: 1 0 1 0 2 1 1 0 0 2
-Nghost:        283.375 ave         376 max         188 min
+Nghost:          284.5 ave         378 max         188 min
 Histogram: 1 0 0 3 0 1 1 1 0 1
-Neighs:          583.5 ave        1251 max           0 min
+Neighs:        585.875 ave        1261 max           0 min
 Histogram: 1 0 2 2 0 0 1 0 1 1
 
-Total # of neighbors = 4668
-Ave neighs/atom = 46.68
+Total # of neighbors = 4687
+Ave neighs/atom = 46.87
 Neighbor list builds = 300
 Dangerous builds not checked
-Total wall time: 0:00:05
+Total wall time: 0:00:04

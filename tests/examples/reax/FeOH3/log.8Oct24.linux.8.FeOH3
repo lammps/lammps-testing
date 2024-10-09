@@ -1,19 +1,19 @@
-LAMMPS (2 Aug 2023 - Development - bc02a7cc6)
-# REAX potential for ZnOH2 system
+LAMMPS (29 Aug 2024 - Development - f820c928a)
+# REAX potential for Fe/O/H system
 # .....
 
 units		real
 
 atom_style	charge
-read_data	data.ZnOH2
+read_data	data.FeOH3
 Reading data file ...
   orthogonal box = (0 0 0) to (25 25 25)
   2 by 2 by 2 MPI processor grid
   reading atoms ...
   105 atoms
-  read_data CPU = 0.002 seconds
+  read_data CPU = 0.003 seconds
 
-pair_style	reax/c lmp_control
+pair_style	reaxff lmp_control
 WARNING: Ignoring inactive control parameter: simulation_name (src/REAXFF/reaxff_control.cpp:98)
 WARNING: Ignoring inactive control parameter: energy_update_freq (src/REAXFF/reaxff_control.cpp:98)
 WARNING: Support for writing native trajectories has been removed after LAMMPS version 8 April 2021 (src/REAXFF/reaxff_control.cpp:114)
@@ -23,9 +23,8 @@ WARNING: Ignoring inactive control parameter: atom_forces (src/REAXFF/reaxff_con
 WARNING: Ignoring inactive control parameter: atom_velocities (src/REAXFF/reaxff_control.cpp:98)
 WARNING: Ignoring inactive control parameter: bond_info (src/REAXFF/reaxff_control.cpp:98)
 WARNING: Ignoring inactive control parameter: angle_info (src/REAXFF/reaxff_control.cpp:98)
-pair_coeff	* * ffield.reax.ZnOH H O Zn
-Reading potential file ffield.reax.ZnOH with DATE: 2011-02-18
-WARNING: Changed valency_val to valency_boc for X (src/REAXFF/reaxff_ffield.cpp:296)
+pair_coeff	* * ffield.reax.Fe_O_C_H H O Fe
+Reading potential file ffield.reax.Fe_O_C_H with DATE: 2011-02-18
 
 neighbor	2 bin
 neigh_modify	every 10 delay 0 check no
@@ -36,13 +35,25 @@ fix             3 all temp/berendsen 500.0 500.0 100.0
 
 timestep	0.25
 
-#dump		1 all atom 30 dump.reax.znoh
+#dump		1 all atom 30 dump.reax.feoh
 
 run		3000
 
 CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
 
 Your simulation uses code contributions which should be cited:
+
+- Type Label Framework: https://doi.org/10.1021/acs.jpcb.3c08419
+
+@Article{Gissinger24,
+ author = {Jacob R. Gissinger, Ilia Nikiforov, Yaser Afshar, Brendon Waters, Moon-ki Choi, Daniel S. Karls, Alexander Stukowski, Wonpil Im, Hendrik Heinz, Axel Kohlmeyer, and Ellad B. Tadmor},
+ title = {Type Label Framework for Bonded Force Fields in LAMMPS},
+ journal = {J. Phys. Chem. B},
+ year =    2024,
+ volume =  128,
+ number =  13,
+ pages =   {3282--3297}
+}
 
 - pair reaxff command: doi:10.1016/j.parco.2011.08.005
 
@@ -76,9 +87,9 @@ Neighbor list info ...
   ghost atom cutoff = 12
   binsize = 6, bins = 5 5 5
   2 neighbor lists, perpetual/occasional/extra = 2 0 0
-  (1) pair reax/c, perpetual
+  (1) pair reaxff, perpetual
       attributes: half, newton off, ghost
-      pair build: half/bin/newtoff/ghost
+      pair build: half/bin/ghost/newtoff
       stencil: full/ghost/bin/3d
       bin: standard
   (2) fix qeq/reax, perpetual, copy from (1)
@@ -86,34 +97,34 @@ Neighbor list info ...
       pair build: copy
       stencil: none
       bin: none
-Per MPI rank memory allocation (min/avg/max) = 8.564 | 9.887 | 11.13 Mbytes
+Per MPI rank memory allocation (min/avg/max) = 9.163 | 10.05 | 10.69 Mbytes
    Step          Temp          E_pair         E_mol          TotEng         Press     
-         0   0             -7900.2668      0             -7900.2668      60.076093    
-      3000   542.6733      -7937.0491      0             -7768.8181     -578.49955    
-Loop time of 3.4458 on 8 procs for 3000 steps with 105 atoms
+         0   0             -9715.3326      0             -9715.3326     -139.61126    
+      3000   527.4281      -9636.095       0             -9472.59        115.13902    
+Loop time of 3.31872 on 8 procs for 3000 steps with 105 atoms
 
-Performance: 18.806 ns/day, 1.276 hours/ns, 870.626 timesteps/s, 91.416 katom-step/s
-99.5% CPU use with 8 MPI tasks x no OpenMP threads
+Performance: 19.526 ns/day, 1.229 hours/ns, 903.963 timesteps/s, 94.916 katom-step/s
+96.6% CPU use with 8 MPI tasks x no OpenMP threads
 
 MPI task timing breakdown:
 Section |  min time  |  avg time  |  max time  |%varavg| %total
 ---------------------------------------------------------------
-Pair    | 1.1191     | 1.3496     | 1.6206     |  16.4 | 39.17
-Neigh   | 0.16089    | 0.20423    | 0.26772    |   7.8 |  5.93
-Comm    | 0.26609    | 0.53861    | 0.77436    |  26.4 | 15.63
-Output  | 9.2003e-05 | 0.00011431 | 0.00025656 |   0.0 |  0.00
-Modify  | 1.2881     | 1.3491     | 1.3939     |   3.1 | 39.15
-Other   |            | 0.004144   |            |       |  0.12
+Pair    | 1.1303     | 1.3795     | 1.748      |  17.8 | 41.57
+Neigh   | 0.14027    | 0.17044    | 0.19476    |   4.4 |  5.14
+Comm    | 0.30325    | 0.68073    | 0.94726    |  25.6 | 20.51
+Output  | 9.4646e-05 | 9.821e-05  | 0.00011868 |   0.0 |  0.00
+Modify  | 1.0702     | 1.0861     | 1.1124     |   1.5 | 32.73
+Other   |            | 0.001848   |            |       |  0.06
 
-Nlocal:         13.125 ave          28 max           2 min
-Histogram: 2 0 1 0 2 1 0 1 0 1
-Nghost:         306.75 ave         427 max         194 min
-Histogram: 1 0 1 2 0 0 3 0 0 1
-Neighs:            605 ave        1424 max          55 min
-Histogram: 2 0 0 2 1 2 0 0 0 1
+Nlocal:         13.125 ave          31 max           3 min
+Histogram: 2 0 2 1 0 2 0 0 0 1
+Nghost:            309 ave         353 max         263 min
+Histogram: 2 0 0 2 0 1 0 0 1 2
+Neighs:        576.875 ave        1286 max         136 min
+Histogram: 2 1 0 1 2 0 1 0 0 1
 
-Total # of neighbors = 4840
-Ave neighs/atom = 46.095238
+Total # of neighbors = 4615
+Ave neighs/atom = 43.952381
 Neighbor list builds = 300
 Dangerous builds not checked
 Total wall time: 0:00:03

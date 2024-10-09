@@ -1,0 +1,288 @@
+LAMMPS (29 Aug 2024 - Development - f820c928a)
+
+units           real
+
+atom_style      full
+bond_style      harmonic
+angle_style     charmm
+dihedral_style  charmm
+improper_style  harmonic
+
+pair_style      lj/charmm/coul/long 8 10
+pair_modify     mix arithmetic
+kspace_style    pppm 1e-4
+
+read_data       data.bpti
+Reading data file ...
+  orthogonal box = (-10 -10 -30) to (50 50 30)
+  2 by 2 by 2 MPI processor grid
+  reading atoms ...
+  892 atoms
+  scanning bonds ...
+  4 = max bonds/atom
+  scanning angles ...
+  6 = max angles/atom
+  scanning dihedrals ...
+  18 = max dihedrals/atom
+  scanning impropers ...
+  2 = max impropers/atom
+  orthogonal box = (-10 -10 -30) to (50 50 30)
+  2 by 2 by 2 MPI processor grid
+  reading bonds ...
+  906 bonds
+  reading angles ...
+  1626 angles
+  reading dihedrals ...
+  2501 dihedrals
+  reading impropers ...
+  137 impropers
+Finding 1-2 1-3 1-4 neighbors ...
+  special bond factors lj:    0        0        0       
+  special bond factors coul:  0        0        0       
+     4 = max # of 1-2 neighbors
+     9 = max # of 1-3 neighbors
+    19 = max # of 1-4 neighbors
+    21 = max # of special neighbors
+  special bonds CPU = 0.001 seconds
+  read_data CPU = 0.046 seconds
+
+special_bonds   charmm
+neigh_modify    delay 2 every 1
+
+
+# ------------- MINIMIZE ----------
+
+minimize 	1e-4 1e-6 1000 10000
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- Type Label Framework: https://doi.org/10.1021/acs.jpcb.3c08419
+
+@Article{Gissinger24,
+ author = {Jacob R. Gissinger, Ilia Nikiforov, Yaser Afshar, Brendon Waters, Moon-ki Choi, Daniel S. Karls, Alexander Stukowski, Wonpil Im, Hendrik Heinz, Axel Kohlmeyer, and Ellad B. Tadmor},
+ title = {Type Label Framework for Bonded Force Fields in LAMMPS},
+ journal = {J. Phys. Chem. B},
+ year =    2024,
+ volume =  128,
+ number =  13,
+ pages =   {3282--3297}
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Switching to 'neigh_modify every 1 delay 0 check yes' setting during minimization
+PPPM initialization ...
+WARNING: System is not charge neutral, net charge = 6 (src/kspace.cpp:327)
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:342)
+  G vector (1/distance) = 0.20327216
+  grid = 16 16 16
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.031639896
+  estimated relative force accuracy = 9.5282607e-05
+  using double precision FFTW3
+  3d grid and FFT values/proc = 2197 512
+Generated 378 of 378 mixed pair_coeff terms from arithmetic mixing rule
+Neighbor list info ...
+  update: every = 1 steps, delay = 0 steps, check = yes
+  max neighbors/atom: 2000, page size: 100000
+  master list distance cutoff = 12
+  ghost atom cutoff = 12
+  binsize = 6, bins = 10 10 10
+  1 neighbor lists, perpetual/occasional/extra = 1 0 0
+  (1) pair lj/charmm/coul/long, perpetual
+      attributes: half, newton on
+      pair build: half/bin/newton
+      stencil: half/bin/3d
+      bin: standard
+Per MPI rank memory allocation (min/avg/max) = 17.21 | 17.38 | 17.87 Mbytes
+   Step          Temp          E_pair         E_mol          TotEng         Press     
+         0   0             -3075.6498      943.91164     -2131.7381     -380.67776    
+       241   0             -4503.3131      749.58665     -3753.7264     -29.04496     
+Loop time of 1.30355 on 8 procs for 241 steps with 892 atoms
+
+92.9% CPU use with 8 MPI tasks x no OpenMP threads
+
+Minimization stats:
+  Stopping criterion = energy tolerance
+  Energy initial, next-to-last, final = 
+     -2131.73812515172  -3753.43988815141  -3753.72640682744
+  Force two-norm initial, final = 1086.2055 26.368727
+  Force max component initial, final = 310.81136 3.927707
+  Final line search alpha, max atom move = 0.005966495 0.023434644
+  Iterations, force evaluations = 241 463
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.089528   | 0.33385    | 0.78179    |  41.3 | 25.61
+Bond    | 0.0070187  | 0.025704   | 0.06372    |  11.6 |  1.97
+Kspace  | 0.38871    | 0.87491    | 1.1382     |  27.4 | 67.12
+Neigh   | 0.022447   | 0.023353   | 0.023552   |   0.2 |  1.79
+Comm    | 0.030991   | 0.033662   | 0.036419   |   1.1 |  2.58
+Output  | 0          | 0          | 0          |   0.0 |  0.00
+Modify  | 0          | 0          | 0          |   0.0 |  0.00
+Other   |            | 0.01207    |            |       |  0.93
+
+Nlocal:          111.5 ave         285 max          27 min
+Histogram: 2 2 1 1 0 0 0 1 0 1
+Nghost:            660 ave         709 max         579 min
+Histogram: 1 0 0 0 2 1 0 0 3 1
+Neighs:        18611.4 ave       44258 max        4887 min
+Histogram: 3 1 1 0 0 0 2 0 0 1
+
+Total # of neighbors = 148891
+Ave neighs/atom = 166.91816
+Ave special neighs/atom = 10.939462
+Neighbor list builds = 15
+Dangerous builds = 0
+reset_timestep  0
+
+# ------------- RUN ---------------
+
+thermo          100
+thermo_style    multi
+timestep	8
+
+run_style respa 3 2 8 bond 1 dihedral 2 pair 2 kspace 3
+Respa levels:
+  1 = bond angle
+  2 = dihedral improper pair
+  3 = kspace
+
+velocity        all create 200.0 12345678 dist uniform
+#dump            dump1 all atom 100 4pti.dump
+
+fix             1 all nvt temp 200 300 25
+fix             cor all filter/corotate m 1.0
+  163 = # of size 2 clusters
+  0 = # of size 3 clusters
+  25 = # of size 4 clusters
+  0 = # of size 5 clusters
+  100 = # of frozen angles
+
+run             1000
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+Your simulation uses code contributions which should be cited:
+
+- Mollified Impulse Method with Corotational Filter: doi:10.1016/j.jcp.2016.12.024
+
+@Article{Fath2017,
+ Title ={A Fast Mollified Impulse Method for Biomolecular Atomistic Simulations},
+ Author = {L. Fath and M. Hochbruck and C. V. Singh},
+ Journal = {Journal of Computational Physics},
+ Year = {2017},
+ Pages = {180--198},
+ Volume = {333},
+
+ Doi = {https://doi.org/10.1016/j.jcp.2016.12.024},
+ ISSN = {0021-9991},
+ Keywords = {Mollified impulse method},
+ Url = {https://www.sciencedirect.com/science/article/pii/S0021999116306787}
+}
+
+CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE-CITE
+
+PPPM initialization ...
+  using 12-bit tables for long-range coulomb (src/kspace.cpp:342)
+  G vector (1/distance) = 0.20327216
+  grid = 16 16 16
+  stencil order = 5
+  estimated absolute RMS force accuracy = 0.031639896
+  estimated relative force accuracy = 9.5282607e-05
+  using double precision FFTW3
+  3d grid and FFT values/proc = 2197 512
+Generated 378 of 378 mixed pair_coeff terms from arithmetic mixing rule
+Per MPI rank memory allocation (min/avg/max) = 17.27 | 17.59 | 18.4 Mbytes
+------------ Step              0 ----- CPU =            0 (sec) -------------
+TotEng   =     -3220.3378 KinEng   =       531.1804 Temp     =       200.0000 
+PotEng   =     -3751.5182 E_bond   =        42.2810 E_angle  =       345.2593 
+E_dihed  =       337.8361 E_impro  =        24.2103 E_vdwl   =      -288.5339 
+E_coul   =      -886.3622 E_long   =     -3326.2088 Press    =        83.2284
+------------ Step            100 ----- CPU =     1.332874 (sec) -------------
+TotEng   =     -2718.4268 KinEng   =       539.6246 Temp     =       203.1794 
+PotEng   =     -3258.0514 E_bond   =       203.2306 E_angle  =       566.1887 
+E_dihed  =       397.6756 E_impro  =        34.7695 E_vdwl   =      -248.6577 
+E_coul   =      -874.8446 E_long   =     -3336.4135 Press    =       135.8653
+------------ Step            200 ----- CPU =     2.641914 (sec) -------------
+TotEng   =     -2662.0494 KinEng   =       625.0161 Temp     =       235.3310 
+PotEng   =     -3287.0655 E_bond   =       208.1680 E_angle  =       590.8265 
+E_dihed  =       389.1414 E_impro  =        30.5876 E_vdwl   =      -240.5357 
+E_coul   =      -926.3159 E_long   =     -3338.9374 Press    =       103.4899
+------------ Step            300 ----- CPU =     3.970506 (sec) -------------
+TotEng   =     -2660.1135 KinEng   =       621.3427 Temp     =       233.9479 
+PotEng   =     -3281.4562 E_bond   =       203.2112 E_angle  =       575.4910 
+E_dihed  =       382.1175 E_impro  =        41.8918 E_vdwl   =      -216.9267 
+E_coul   =      -925.7155 E_long   =     -3341.5254 Press    =        48.8615
+------------ Step            400 ----- CPU =     5.313651 (sec) -------------
+TotEng   =     -2615.4515 KinEng   =       656.7253 Temp     =       247.2702 
+PotEng   =     -3272.1767 E_bond   =       194.3143 E_angle  =       612.6369 
+E_dihed  =       411.1897 E_impro  =        44.1862 E_vdwl   =      -218.6561 
+E_coul   =      -970.8340 E_long   =     -3345.0137 Press    =      -119.1673
+------------ Step            500 ----- CPU =     6.639469 (sec) -------------
+TotEng   =     -2593.9619 KinEng   =       661.7920 Temp     =       249.1779 
+PotEng   =     -3255.7539 E_bond   =       234.0658 E_angle  =       590.9938 
+E_dihed  =       399.6828 E_impro  =        43.9458 E_vdwl   =      -206.0859 
+E_coul   =      -977.0464 E_long   =     -3341.3098 Press    =       238.6286
+------------ Step            600 ----- CPU =     7.906122 (sec) -------------
+TotEng   =     -2511.6508 KinEng   =       714.3338 Temp     =       268.9609 
+PotEng   =     -3225.9846 E_bond   =       221.3752 E_angle  =       576.6542 
+E_dihed  =       417.5624 E_impro  =        40.3393 E_vdwl   =      -206.5922 
+E_coul   =      -933.5716 E_long   =     -3341.7519 Press    =        20.5241
+------------ Step            700 ----- CPU =     9.021722 (sec) -------------
+TotEng   =     -2563.0839 KinEng   =       662.8085 Temp     =       249.5606 
+PotEng   =     -3225.8925 E_bond   =       226.0757 E_angle  =       615.0997 
+E_dihed  =       386.1420 E_impro  =        38.3407 E_vdwl   =      -250.4538 
+E_coul   =      -905.4814 E_long   =     -3335.6153 Press    =      -161.4481
+------------ Step            800 ----- CPU =     10.35223 (sec) -------------
+TotEng   =     -2468.3877 KinEng   =       750.9309 Temp     =       282.7405 
+PotEng   =     -3219.3186 E_bond   =       255.1782 E_angle  =       619.2221 
+E_dihed  =       381.2930 E_impro  =        26.9005 E_vdwl   =      -220.8383 
+E_coul   =      -943.5281 E_long   =     -3337.5461 Press    =      -119.5179
+------------ Step            900 ----- CPU =     11.65448 (sec) -------------
+TotEng   =     -2403.3977 KinEng   =       759.4570 Temp     =       285.9507 
+PotEng   =     -3162.8547 E_bond   =       277.2632 E_angle  =       671.2293 
+E_dihed  =       398.5445 E_impro  =        38.7940 E_vdwl   =      -233.9120 
+E_coul   =      -982.3058 E_long   =     -3332.4679 Press    =       -93.7847
+------------ Step           1000 ----- CPU =     12.65655 (sec) -------------
+TotEng   =     -2379.0167 KinEng   =       752.4519 Temp     =       283.3132 
+PotEng   =     -3131.4687 E_bond   =       287.7293 E_angle  =       658.7270 
+E_dihed  =       382.7170 E_impro  =        36.0423 E_vdwl   =      -203.0150 
+E_coul   =      -953.7214 E_long   =     -3339.9479 Press    =        62.2809
+Loop time of 12.6566 on 8 procs for 1000 steps with 892 atoms
+
+Performance: 54.612 ns/day, 0.439 hours/ns, 79.010 timesteps/s, 70.477 katom-step/s
+94.8% CPU use with 8 MPI tasks x no OpenMP threads
+
+MPI task timing breakdown:
+Section |  min time  |  avg time  |  max time  |%varavg| %total
+---------------------------------------------------------------
+Pair    | 0.53288    | 3.8154     | 8.1826     | 135.7 | 30.15
+Bond    | 0.073311   | 0.53736    | 1.1251     |  48.6 |  4.25
+Kspace  | 0.62285    | 0.71459    | 0.78211    |   6.6 |  5.65
+Neigh   | 0.26888    | 0.27126    | 0.27331    |   0.2 |  2.14
+Comm    | 1.9393     | 6.9275     | 10.708     | 114.4 | 54.73
+Output  | 0.00092248 | 0.0010001  | 0.0013479  |   0.4 |  0.01
+Modify  | 0.22541    | 0.31598    | 0.44376    |  13.3 |  2.50
+Other   |            | 0.07354    |            |       |  0.58
+
+Nlocal:          111.5 ave         262 max           4 min
+Histogram: 1 1 2 0 1 1 1 0 0 1
+Nghost:          642.5 ave         701 max         595 min
+Histogram: 2 1 1 1 0 0 0 0 1 2
+Neighs:        18469.4 ave       35002 max         975 min
+Histogram: 1 2 1 0 0 0 0 1 2 1
+
+Total # of neighbors = 147755
+Ave neighs/atom = 165.64462
+Ave special neighs/atom = 10.939462
+Neighbor list builds = 194
+Dangerous builds = 0
+
+unfix           cor
+unfix           1
+
+Total wall time: 0:00:14
