@@ -1,4 +1,4 @@
-nose
+pynose
 gcovr
 termcolor
 matplotlib

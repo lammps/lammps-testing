@@ -19,7 +19,7 @@ setup(name='lammps_testing',
                            ]
     },
     install_requires=[
-        'nose',
+        'pynose',
         'gcovr',
         'termcolor',
         'matplotlib',
