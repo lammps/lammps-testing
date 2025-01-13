@@ -59,6 +59,7 @@ ${CMAKE_COMMAND} \
       -D DOWNLOAD_POTENTIALS=off \
       -D CMAKE_CXX_COMPILER=xlc++ \
       -D CMAKE_C_COMPILER=xlc \
+      -D LAMMPS_CXX11=on \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_C_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra -Wno-unused-result" \
