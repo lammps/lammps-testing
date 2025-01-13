@@ -1,0 +1,5 @@
+display_name: 'AlmaLinux9 (Intel SYCL)'
+container_image: 'almalinux9'
+builds:
+ - cmake_kokkos_bigbig_sycl_static
+ - cmake_kokkos_mpi_openmp_smallbig_sycl_shared

@@ -1,5 +1,0 @@
-display_name: 'Ubuntu 20.04 (Intel OneAPI)'
-container_image: 'ubuntu20.04_oneapi'
-builds:
- - cmake_mpi_openmp_bigbig_oneapi_static
- - cmake_kokkos_mpi_openmp_smallbig_oneapi_shared

@@ -19,9 +19,6 @@ exists()
   command -v "$1" >/dev/null 2>&1
 }
 
-# init OneAPI
-source /opt/intel/oneapi/setvars.sh
-
 if exists "cmake3"
 then
     CMAKE_COMMAND=cmake3
@@ -62,22 +59,24 @@ cd ${BUILD}
 # need to set this to avoid picking up parallel HDF5 on centos/fedora
 export HDF5_ROOT=/usr
 # Configure
-${CMAKE_COMMAND} -G Ninja \
+${CMAKE_COMMAND} \
       ${BUILD_HTTP_CACHE_CONFIGURATION} \
       -D DOWNLOAD_POTENTIALS=off \
-      -C ${LAMMPS_DIR}/cmake/presets/intel.cmake \
+      -C ${LAMMPS_DIR}/cmake/presets/oneapi.cmake \
       -C ${LAMMPS_DIR}/cmake/presets/most.cmake \
+      -C ${LAMMPS_DIR}/cmake/presets/kokkos-openmp.cmake \
       -D CMAKE_BUILD_TYPE="RelWithDebug" \
       -D CMAKE_CXX_COMPILER_LAUNCHER=ccache \
       -D CMAKE_TUNE_FLAGS="-Wall -Wextra" \
       -D CMAKE_INSTALL_PREFIX=${VIRTUAL_ENV} \
       -D BUILD_MPI=on \
       -D BUILD_OMP=on \
-      -D BUILD_SHARED_LIBS=off \
-      -D LAMMPS_SIZES=BIGBIG \
+      -D BUILD_SHARED_LIBS=on \
+      -D LAMMPS_SIZES=SMALLBIG \
       -D LAMMPS_EXCEPTIONS=on \
-      -D FFT=MKL \
+      -D PKG_MESSAGE=on \
       -D PKG_MPIIO=on \
+      -D PKG_ATC=on \
       -D PKG_AWPMD=on \
       -D PKG_BOCS=on \
       -D PKG_EFF=on \
@@ -85,6 +84,7 @@ ${CMAKE_COMMAND} -G Ninja \
       -D PKG_INTEL=on \
       -D PKG_LATBOLTZ=on \
       -D PKG_MANIFOLD=on \
+      -D PKG_MGPT=on \
       -D PKG_MOLFILE=on \
       -D PKG_NETCDF=on \
       -D PKG_PTM=on \
@@ -98,7 +98,8 @@ ${CMAKE_COMMAND} -G Ninja \
 ${CMAKE_COMMAND} --build . -- -j ${LAMMPS_COMPILE_NPROC} || exit 1
 
 # Install
-${CMAKE_COMMAND} --build . --target  install || exit 1
+# running install target repeats the compilation with Kokkos enabled
+#${CMAKE_COMMAND} --build . --target  install || exit 1
 deactivate
 
 ccache -s
