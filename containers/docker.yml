@@ -1,5 +1,3 @@
 containers:
- - centos7_openmpi_py3
  - rockylinux8_openmpi_py3
- - ubuntu18.04_openmpi_py3
  - ubuntu20.04_openmpi_py3
