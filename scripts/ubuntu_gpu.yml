@@ -1,5 +1,5 @@
-display_name: 'Ubuntu 20.04 (GPU)'
-container_image: 'ubuntu20.04_gpu'
+display_name: 'Ubuntu 22.04 (GPU)'
+container_image: 'ubuntu22.04_gpu'
 unit_tests:
  - cmake_gpu_cuda_double_smallbig_clang_shared
  - cmake_gpu_cuda_single_bigbig_static
