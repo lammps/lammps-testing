@@ -9,7 +9,7 @@ node('slow'){
     cleanWs()
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
-    def container = "fedora34_mingw"
+    def container = "ubuntu_22.04"
     def container_args = ""
     def launch_container = "singularity exec ${container_args} \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
@@ -67,6 +67,18 @@ node('slow'){
                        script: "${launch_container} python3 tools/coding_standard/errordocs.py . || true")
                 }
                 recordIssues qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], failOnError: true, tools: [groovyScript(parserId: 'errordocs', pattern: 'errordocs.log')]
+            } else {
+                echo 'Skipping'
+            }
+        }
+
+        stage('fmtlib custom calls') {
+            if(fileExists('tools/coding_standard/fmtlib.py')) {
+                tee('errordocs.log') {
+                    sh(label: "Check for deprecated fmtlib function calls",
+                       script: "${launch_container} python3 tools/coding_standard/fmtlib.py . || true")
+                }
+                recordIssues qualityGates: [[threshold: 1, type: 'TOTAL', unstable: true]], failOnError: true, tools: [groovyScript(parserId: 'fmtlib', pattern: 'fmtlib.log')]
             } else {
                 echo 'Skipping'
             }
