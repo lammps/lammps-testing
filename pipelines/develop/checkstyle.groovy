@@ -10,7 +10,7 @@ node('slow'){
     cleanWs()
     def utils = new Utils()
     env.LAMMPS_CONTAINER_DIR = "/mnt/lammps/containers"
-    def container = "ubuntu_22.04"
+    def container = "fedora36_mingw"
     def container_args = ""
     def launch_container = "singularity exec ${container_args} \$LAMMPS_CONTAINER_DIR/${container}.sif"
 
@@ -73,7 +73,7 @@ node('slow'){
 
         stage('fmtlib custom calls') {
             if(fileExists('tools/coding_standard/fmtlib.py')) {
-                tee('errordocs.log') {
+                tee('fmtlib.log') {
                     sh(label: "Check for deprecated fmtlib function calls",
                        script: "${launch_container} python3 tools/coding_standard/fmtlib.py . || true")
                 }
